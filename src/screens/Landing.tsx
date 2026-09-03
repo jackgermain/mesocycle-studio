@@ -35,25 +35,22 @@ export default function Landing() {
 function SignIn() {
   const nav = useNavigate();
   const [step, setStep] = useState<"welcome" | "form">("welcome");
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [showInviteField, setShowInviteField] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
 
-  async function send() {
+  async function submit() {
     setError(null);
     setBusy(true);
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      // No "#/…" here — this app uses hash-based routing, and Supabase appends its own auth tokens as
-      // a URL fragment on the way back, which collides with a literal route hash in the redirect URL.
-      options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` },
-    });
+    const { error } = mode === "signin" ? await supabase.auth.signInWithPassword({ email, password }) : await supabase.auth.signUp({ email, password });
     setBusy(false);
     if (error) setError(error.message);
-    else setSent(true);
+    // On success, AuthProvider's onAuthStateChange picks up the new session and Landing re-renders
+    // itself into the right place (coach desk, client app, or the "set up as coach" bootstrap step).
   }
 
   function goToInvite() {
@@ -77,64 +74,66 @@ function SignIn() {
 
   return (
     <Hero>
-      {sent ? (
-        <InfoBanner icon="ph-envelope-simple-open" tone="accent">
-          Check {email} for a sign-in link — open it on this device to continue.
-        </InfoBanner>
-      ) : (
+      {!showInviteField ? (
         <>
-          {!showInviteField ? (
-            <>
-              <div className="field">
-                <label>Email</label>
-                <input
-                  className="input"
-                  style={{ height: 50, fontSize: 15 }}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@email.com"
-                  autoFocus
-                  onKeyDown={(e) => e.key === "Enter" && email.trim() && !busy && send()}
-                />
-              </div>
-              {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-              <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && !busy ? 1 : 0.5 }} disabled={!email.trim() || busy} onClick={send}>
-                {busy ? "Sending…" : "Sign in with email"}
-              </button>
-              <p className="mu" style={{ fontSize: 12, lineHeight: 1.6, textAlign: "center" }}>
-                No password — we'll email you a link. If you're a client or friend/family, use the email your coach sent your invite to.
-              </p>
+          <div className="field">
+            <label>Email</label>
+            <input className="input" style={{ height: 50, fontSize: 15 }} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
+          </div>
+          <div className="field">
+            <label>Password</label>
+            <input
+              className="input"
+              style={{ height: 50, fontSize: 15 }}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={mode === "signup" ? "At least 6 characters" : "••••••••"}
+              onKeyDown={(e) => e.key === "Enter" && email.trim() && password.length >= 6 && !busy && submit()}
+            />
+          </div>
+          {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+          <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
+            {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
+          </button>
+          <button
+            className="btn btn-ghost"
+            style={{ height: 34, fontSize: 12.5 }}
+            onClick={() => {
+              setMode((m) => (m === "signin" ? "signup" : "signin"));
+              setError(null);
+            }}
+          >
+            {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
+          </button>
 
-              <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
+          <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
 
-              <button className="btn btn-ghost" style={{ height: 40, fontSize: 13 }} onClick={() => setShowInviteField(true)}>
-                Have an invite code instead?
-              </button>
-            </>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div className="field">
-                <label>Invite code</label>
-                <input
-                  className="input"
-                  style={{ height: 46, fontSize: 15, textTransform: "uppercase", letterSpacing: 1 }}
-                  value={inviteCode}
-                  onChange={(e) => setInviteCode(e.target.value)}
-                  placeholder="ABC123"
-                  autoFocus
-                  onKeyDown={(e) => e.key === "Enter" && goToInvite()}
-                />
-              </div>
-              <button className="btn btn-solid btn-block" style={{ height: 46, opacity: inviteCode.trim() ? 1 : 0.5 }} disabled={!inviteCode.trim()} onClick={goToInvite}>
-                Continue with code
-              </button>
-              <button className="btn btn-ghost" style={{ height: 36, fontSize: 13 }} onClick={() => setShowInviteField(false)}>
-                Sign in by email instead
-              </button>
-            </div>
-          )}
+          <button className="btn btn-ghost" style={{ height: 40, fontSize: 13 }} onClick={() => setShowInviteField(true)}>
+            Have an invite code instead?
+          </button>
         </>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="field">
+            <label>Invite code</label>
+            <input
+              className="input"
+              style={{ height: 46, fontSize: 15, textTransform: "uppercase", letterSpacing: 1 }}
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
+              placeholder="ABC123"
+              autoFocus
+              onKeyDown={(e) => e.key === "Enter" && goToInvite()}
+            />
+          </div>
+          <button className="btn btn-solid btn-block" style={{ height: 46, opacity: inviteCode.trim() ? 1 : 0.5 }} disabled={!inviteCode.trim()} onClick={goToInvite}>
+            Continue with code
+          </button>
+          <button className="btn btn-ghost" style={{ height: 36, fontSize: 13 }} onClick={() => setShowInviteField(false)}>
+            Sign in with email instead
+          </button>
+        </div>
       )}
     </Hero>
   );

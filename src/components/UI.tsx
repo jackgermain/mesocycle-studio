@@ -123,11 +123,11 @@ export function AuthHero({ children }: { children: React.ReactNode }) {
     <div className="screen" style={{ background: "radial-gradient(130% 90% at 50% -8%, #1f2f28, #161826 55%)" }}>
       <div className="screen-scroll" style={{ gap: 0, padding: "24px 24px calc(24px + env(safe-area-inset-bottom))" }}>
         <div style={{ margin: "auto 0", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div style={{ marginBottom: 20 }}>
-            <Logomark size={128} />
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <Logomark size={84} />
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 56, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1 }}>Jacked</div>
           </div>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: 38, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1 }}>Jacked</div>
-          <div className="mu" style={{ marginTop: 14, fontSize: 13 }}>Coach-programmed training, in your pocket.</div>
+          <div className="mu" style={{ marginTop: 18, fontSize: 13 }}>Coach-programmed training, in your pocket.</div>
 
           <div style={{ width: "100%", marginTop: 40, display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
         </div>

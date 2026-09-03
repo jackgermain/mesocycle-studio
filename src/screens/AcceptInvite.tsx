@@ -57,64 +57,64 @@ export default function AcceptInvite() {
     return <ClaimStep code={code} invite={invite} onClaimed={refreshAccount} />;
   }
 
-  return <SignInStep code={code} invite={invite} />;
+  return <SignInStep invite={invite} />;
 }
 
-function SignInStep({ code, invite }: { code: string; invite: PublicInvite }) {
+function SignInStep({ invite }: { invite: PublicInvite }) {
+  const [mode, setMode] = useState<"signup" | "signin">("signup");
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  async function send() {
+  async function submit() {
     setError(null);
     setBusy(true);
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      // A query param, not a "#/invite/…" hash route — Supabase appends its own auth tokens as a URL
-      // fragment on the way back, which would collide with a literal route hash here. Landing.tsx
-      // forwards ?invite=CODE back to this screen once the person is signed back in.
-      options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}?invite=${code}` },
-    });
+    const { error } = mode === "signup" ? await supabase.auth.signUp({ email, password }) : await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) setError(error.message);
-    else setSent(true);
+    // On success, AuthProvider picks up the new session and AcceptInvite re-renders into ClaimStep.
   }
 
   return (
     <Hero>
       <div className="h1" style={{ textAlign: "center" }}>You're invited, {invite.clientName.split(" ")[0]}</div>
-      {sent ? (
-        <InfoBanner icon="ph-envelope-simple-open" tone="accent">
-          Check {email} for a sign-in link — open it on this device to finish setting up.
-        </InfoBanner>
-      ) : (
-        <>
-          <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
-            {invite.coachName} sent you this link
-            {invite.role === "friend"
-              ? " — once you're in, you can build your own programs from scratch or clone one of their saved templates, plus full nutrition tracking."
-              : " — once you're in, you'll only ever see the program they build for you."}
-          </p>
-          <div className="field">
-            <label>Email</label>
-            <input
-              className="input"
-              style={{ height: 50, fontSize: 15 }}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@email.com"
-              autoFocus
-              onKeyDown={(e) => e.key === "Enter" && email.trim() && !busy && send()}
-            />
-          </div>
-          {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-          <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && !busy ? 1 : 0.5 }} disabled={!email.trim() || busy} onClick={send}>
-            {busy ? "Sending…" : "Send sign-in link"}
-          </button>
-        </>
-      )}
+      <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
+        {invite.coachName} sent you this link
+        {invite.role === "friend"
+          ? " — once you're in, you can build your own programs from scratch or clone one of their saved templates, plus full nutrition tracking."
+          : " — once you're in, you'll only ever see the program they build for you."}
+      </p>
+      <div className="field">
+        <label>Email</label>
+        <input className="input" style={{ height: 50, fontSize: 15 }} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
+      </div>
+      <div className="field">
+        <label>Password</label>
+        <input
+          className="input"
+          style={{ height: 50, fontSize: 15 }}
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder={mode === "signup" ? "At least 6 characters" : "••••••••"}
+          onKeyDown={(e) => e.key === "Enter" && email.trim() && password.length >= 6 && !busy && submit()}
+        />
+      </div>
+      {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+      <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
+        {busy ? "Working…" : mode === "signup" ? "Create account" : "Sign in"}
+      </button>
+      <button
+        className="btn btn-ghost"
+        style={{ height: 34, fontSize: 12.5 }}
+        onClick={() => {
+          setMode((m) => (m === "signup" ? "signin" : "signup"));
+          setError(null);
+        }}
+      >
+        {mode === "signup" ? "Already have an account? Sign in" : "New here? Create an account"}
+      </button>
     </Hero>
   );
 }
