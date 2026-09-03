@@ -95,7 +95,7 @@ export default function Reorder() {
         </div>
 
         <InfoBanner icon="ph-eye" tone="accent">
-          {state.program.coachName} sees the order you actually trained in, so she can fix the program if it keeps happening.
+          {state.program.coachName} sees the order you actually trained in, so they can fix the program if it keeps happening.
         </InfoBanner>
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>

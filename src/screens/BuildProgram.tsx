@@ -36,7 +36,7 @@ export default function BuildProgram() {
       <div className="screen">
         <BackHeader kicker="Your program" title="Build a program" />
         <div className="screen-scroll">
-          <InfoBanner icon="ph-info">Nothing here is prescribed by {state.program.coachName === "Dana" ? "your coach" : "anyone"} — build your own from scratch, or start from one of {state.program.coachName}'s templates and make it yours.</InfoBanner>
+          <InfoBanner icon="ph-info">Nothing here is prescribed by {state.program.coachName === state.profile.name ? "anyone" : "your coach"} — build your own from scratch, or start from one of {state.program.coachName}'s templates and make it yours.</InfoBanner>
 
           <button className="cell row" style={{ padding: "14px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setMode("scratch")}>
             <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
@@ -222,7 +222,7 @@ function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryExercise
           <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search exercises" style={{ flex: 1, background: "none", border: "none", outline: "none", color: "var(--color-text)", fontSize: 14 }} autoFocus />
         </div>
-        <div className="row" style={{ gap: 6, flexWrap: "wrap", flex: "none", marginTop: 8 }}>
+        <div className="row hscroll" style={{ gap: 6, flex: "none", marginTop: 8 }}>
           <button className={`chip${muscle === null ? " on" : ""}`} onClick={() => setMuscle(null)}>All</button>
           {MUSCLE_GROUPS.map((m) => (
             <button key={m} className={`chip${muscle === m ? " on" : ""}`} onClick={() => setMuscle(m)}>{m}</button>

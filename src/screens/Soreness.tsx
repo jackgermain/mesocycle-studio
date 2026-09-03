@@ -18,7 +18,7 @@ export default function Soreness({ dayId }: { dayId: string }) {
   function submit() {
     dispatch({ type: "SET_SORENESS_DONE", dayId });
     if (anyUnhealed) {
-      dispatch({ type: "SHOW_TOAST", message: "Noted — those sets hold at last week's number, and Dana's flagged." });
+      dispatch({ type: "SHOW_TOAST", message: `Noted — those sets hold at last week's number, and ${state.program.coachName}'s flagged.` });
       setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
     }
     nav(`/block/day/${dayId}`, { replace: true });
