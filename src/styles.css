@@ -67,8 +67,13 @@ a { color: var(--color-accent); text-decoration: none; }
   /* --app-vh (set by src/lib/viewportHeight.ts from window.visualViewport) rather than 100dvh/100% —
      iOS standalone PWAs can leave a gap at the bottom after a text input is focused and blurred, since
      the *visual* viewport changes without the layout viewport (or any CSS unit) noticing. Falls back to
-     100% for the instant before that script's first paint. */
+     100% for the instant before that script's first paint. min-height is a safety net on top of that: if
+     Safari's own chrome (address bar) shows/hides without firing a resize event the JS catches in time,
+     --app-vh can under-report the true screen height and leave a real gap of plain page background below
+     the tab bar. 100dvh always reflects the *current* dynamic viewport regardless of JS timing, so the
+     shell can only ever end up taller than --app-vh here, never shorter. */
   height: var(--app-vh, 100%);
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   background: var(--color-bg);
@@ -77,6 +82,7 @@ a { color: var(--color-accent); text-decoration: none; }
   width: 100%;
   max-width: 448px;
   height: var(--app-vh, 100%);
+  min-height: 100dvh;
   background: var(--color-bg);
   display: flex;
   flex-direction: column;
@@ -85,7 +91,10 @@ a { color: var(--color-accent); text-decoration: none; }
 }
 @media (min-width: 640px) {
   .app-shell {
+    /* Desktop intentionally caps the shell at 920px tall rather than filling the whole browser window --
+       the mobile-only min-height safety net above would fight that cap, so it's reset here. */
     height: min(920px, var(--app-vh, 100%));
+    min-height: 0;
     margin: 20px 0;
     border-radius: 28px;
     box-shadow: var(--shadow-lg);

@@ -23,6 +23,11 @@ function install() {
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) apply();
   });
+  // Safari's own chrome (address bar) showing/hiding on scroll changes the true available height without
+  // always firing a plain window "resize" -- visualViewport's resize event catches that reliably. Still
+  // reads window.innerHeight above, never visualViewport.height, so this doesn't reintroduce the
+  // keyboard-shrinks-the-visual-viewport bug the comment at the top of this file describes.
+  window.visualViewport?.addEventListener("resize", apply);
 }
 
 install();
