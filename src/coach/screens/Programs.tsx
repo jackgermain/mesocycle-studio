@@ -52,6 +52,9 @@ export default function Programs() {
           <div className="k">{state.programs.length} programs</div>
           <div className="h1">Programs</div>
         </div>
+        <button className="btn btn-secondary btn-icon" aria-label="Browse the exercise library" onClick={() => nav("/coach/library")}>
+          <i className="ph ph-barbell" style={{ fontSize: 17 }} />
+        </button>
         <button className="btn btn-secondary btn-icon" aria-label="Add a program" onClick={() => setChoosing(true)}>
           <i className="ph ph-plus" style={{ fontSize: 17 }} />
         </button>

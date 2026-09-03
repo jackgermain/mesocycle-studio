@@ -17,7 +17,9 @@ export function TabBar() {
         const on = pathname === t.path || pathname.startsWith(t.path + "/");
         return (
           <button key={t.path} className={`tbi${on ? " on" : ""}`} onClick={() => nav(t.path)}>
-            <i className={`${on ? "ph-fill" : "ph"} ${t.icon}`} />
+            <span className="tbi-icon">
+              <i className={`${on ? "ph-fill" : "ph"} ${t.icon}`} />
+            </span>
             {t.label}
           </button>
         );

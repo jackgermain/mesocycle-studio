@@ -41,7 +41,7 @@ export function ExercisePickerSheet({
           <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search exercises" style={{ flex: 1, background: "none", border: "none", outline: "none", color: "var(--color-text)", fontSize: 14 }} autoFocus />
         </div>
-        <div className="row" style={{ gap: 6, flexWrap: "wrap", flex: "none", marginTop: 8 }}>
+        <div className="row hscroll" style={{ gap: 6, marginTop: 8 }}>
           <button className={`chip${muscle === null ? " on" : ""}`} onClick={() => setMuscle(null)}>All</button>
           {MUSCLE_GROUPS.map((m) => (
             <button key={m} className={`chip${muscle === m ? " on" : ""}`} onClick={() => setMuscle(m)}>{m}</button>

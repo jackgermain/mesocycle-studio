@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useCoachStore } from "../store";
-import { CoachTabBar } from "../components/CoachTabBar";
-import { Seg } from "../../components/UI";
+import { BackHeader, Seg } from "../../components/UI";
 import { libraryExercises, MUSCLE_GROUPS } from "../exerciseLibrary";
 import type { ExerciseKind, LibraryExercise } from "../types";
 
@@ -32,15 +31,15 @@ export default function Library() {
 
   return (
     <div className="screen">
-      <div className="hdr">
-        <div style={{ flex: 1 }}>
-          <div className="k">{allExercises.length} exercises</div>
-          <div className="h1">Library</div>
-        </div>
-        <button onClick={() => setAdding(true)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a custom exercise">
-          <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
-        </button>
-      </div>
+      <BackHeader
+        kicker={`${allExercises.length} exercises`}
+        title="Library"
+        right={
+          <button onClick={() => setAdding(true)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a custom exercise">
+            <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
+          </button>
+        }
+      />
       <div className="screen-scroll">
         <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)" }}>
           <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
@@ -98,7 +97,6 @@ export default function Library() {
           <div className="mu" style={{ marginTop: 3, color: "var(--color-accent-300)" }}>Not on this list? Add your own — it shows up everywhere the library does.</div>
         </button>
       </div>
-      <CoachTabBar />
 
       {adding && <AddCustomExercise onAdd={addCustom} onClose={() => setAdding(false)} />}
     </div>
