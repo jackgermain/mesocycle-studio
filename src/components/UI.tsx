@@ -127,7 +127,7 @@ export function AuthHero({ children }: { children: React.ReactNode }) {
             <Logomark size={128} />
           </div>
           <div style={{ fontFamily: "var(--font-heading)", fontSize: 38, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1 }}>Jacked</div>
-          <div className="mu" style={{ marginTop: 8, fontSize: 13 }}>Coach-programmed training, in your pocket.</div>
+          <div className="mu" style={{ marginTop: 14, fontSize: 13 }}>Coach-programmed training, in your pocket.</div>
 
           <div style={{ width: "100%", marginTop: 40, display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
         </div>
