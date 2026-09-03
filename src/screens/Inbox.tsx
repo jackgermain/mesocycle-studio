@@ -3,6 +3,7 @@ import { useStore } from "../state/store";
 import { supabase } from "../lib/supabase";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, HeroHeader } from "../components/UI";
+import { formatMessageTime } from "../shared/formatTime";
 
 interface Bubble {
   from: "coach" | "client";
@@ -62,36 +63,40 @@ export default function Inbox() {
   return (
     <div className="screen">
       <HeroHeader kicker={coachName} title="Inbox" />
-      <div className="screen-scroll" style={{ justifyContent: bubbles.length ? "flex-end" : "flex-start", gap: 10 }}>
+      <div className="screen-scroll" style={{ justifyContent: bubbles.length ? "flex-end" : "flex-start", gap: 4 }}>
         {thread === "loading" && <div className="mu">Loading…</div>}
         {thread !== "loading" && bubbles.length === 0 && (
           <InfoBanner icon="ph-chat-circle-dots">
             No messages yet — send {coachName.split(" ")[0]} something below and they'll see it.
           </InfoBanner>
         )}
-        {bubbles.map((b, i) => (
-          <div key={i} style={{ alignSelf: b.from === "coach" ? "flex-start" : "flex-end", maxWidth: "84%" }}>
-            <div
-              style={{
-                padding: "10px 12px",
-                borderRadius: b.from === "coach" ? "12px 12px 12px 4px" : "12px 12px 4px 12px",
-                background: b.from === "client" ? "var(--color-accent)" : "var(--color-surface)",
-                border: b.from === "coach" ? "1px solid var(--color-neutral-800)" : undefined,
-              }}
-            >
-              <div style={{ fontSize: 13.5, lineHeight: 1.5, fontWeight: b.from === "client" ? 600 : 400, color: b.from === "client" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
-              {b.receipt && (
-                <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "rgba(11, 23, 16, 0.15)" }}>
-                  <div className="row" style={{ gap: 7, fontSize: 11.5 }}>
-                    <i className="ph ph-arrows-left-right" style={{ fontSize: 13 }} />
-                    {b.receipt}
+        {bubbles.map((b, i) => {
+          const prev = bubbles[i - 1];
+          const senderChanged = !prev || prev.from !== b.from;
+          return (
+            <div key={i} style={{ alignSelf: b.from === "coach" ? "flex-start" : "flex-end", maxWidth: "84%", marginTop: senderChanged ? 12 : 0 }}>
+              <div
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: b.from === "coach" ? "12px 12px 12px 4px" : "12px 12px 4px 12px",
+                  background: b.from === "client" ? "var(--color-accent)" : "var(--color-surface)",
+                  border: b.from === "coach" ? "1px solid var(--color-neutral-800)" : undefined,
+                }}
+              >
+                <div style={{ fontSize: 13.5, lineHeight: 1.5, fontWeight: b.from === "client" ? 600 : 400, color: b.from === "client" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
+                {b.receipt && (
+                  <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "rgba(11, 23, 16, 0.15)" }}>
+                    <div className="row" style={{ gap: 7, fontSize: 11.5 }}>
+                      <i className="ph ph-arrows-left-right" style={{ fontSize: 13 }} />
+                      {b.receipt}
+                    </div>
                   </div>
-                </div>
-              )}
-              <div style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "client" ? "right" : "left", opacity: 0.7 }}>{b.time}</div>
+                )}
+                <div style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "client" ? "right" : "left", opacity: 0.7 }}>{formatMessageTime(b.time)}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div style={{ flex: "none", padding: "8px 12px 18px", background: "#1b1e2e", borderTop: "1px solid var(--color-neutral-900)" }}>
         {error && (

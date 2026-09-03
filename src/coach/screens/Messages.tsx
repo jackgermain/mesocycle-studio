@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { CoachTabBar } from "../components/CoachTabBar";
 import { BackHeader, HeroHeader, HeroStat } from "../../components/UI";
+import { formatMessageTime, formatThreadPreviewTime } from "../../shared/formatTime";
 
 type Filter = "unread" | "all" | "flagged";
 
@@ -51,7 +52,7 @@ export default function Messages() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="row">
                   <div className="name" style={{ flex: 1 }}>{t.clientName}</div>
-                  <span className="mu">{t.time}</span>
+                  <span className="mu">{formatThreadPreviewTime(t.time)}</span>
                 </div>
                 <div className="mu trunc" style={{ marginTop: 3, color: t.unread ? "var(--color-neutral-200)" : undefined }}>{t.preview}</div>
               </div>
@@ -78,6 +79,11 @@ export function CoachThread() {
 
   const thread = existingThread ?? { id: threadId, clientId: threadId, clientName: rosterClient!.name, context: "", unread: false, time: "", preview: "", bubbles: [] as { from: "coach" | "client"; text: string; time: string; attached?: string; receipt?: string }[] };
 
+  useEffect(() => {
+    if (existingThread?.unread) dispatch({ type: "MARK_READ", threadId: existingThread.id });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [existingThread?.id, existingThread?.unread]);
+
   function send() {
     if (!draft.trim()) return;
     dispatch({ type: "SEND_MESSAGE", threadId: thread.id, text: draft.trim(), clientName: thread.clientName });
@@ -87,46 +93,50 @@ export function CoachThread() {
   return (
     <div className="screen">
       <BackHeader kicker={thread.context} title={thread.clientName} />
-      <div className="screen-scroll" style={{ justifyContent: "flex-end", gap: 10 }}>
-        {thread.bubbles.map((b, i) => (
-          <div key={i} style={{ alignSelf: b.from === "client" ? "flex-start" : "flex-end", maxWidth: "84%" }}>
-            {b.attached ? (
-              <div style={{ borderRadius: 12, background: "var(--color-neutral-900)", border: "1px solid var(--color-neutral-800)", padding: "10px 11px" }}>
-                <div className="row" style={{ gap: 7, marginBottom: 7 }}>
-                  <i className="ph ph-paperclip" style={{ fontSize: 13, color: "var(--color-neutral-500)" }} />
-                  <span className="scr">attached from her log</span>
-                </div>
-                <div className="row">
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13 }}>{b.text}</div>
-                    <div className="mu" style={{ marginTop: 2 }}>{b.attached}</div>
+      <div className="screen-scroll" style={{ justifyContent: "flex-end", gap: 4 }}>
+        {thread.bubbles.map((b, i) => {
+          const prev = thread.bubbles[i - 1];
+          const senderChanged = !prev || prev.from !== b.from;
+          return (
+            <div key={i} style={{ alignSelf: b.from === "client" ? "flex-start" : "flex-end", maxWidth: "84%", marginTop: senderChanged ? 12 : 0 }}>
+              {b.attached ? (
+                <div style={{ borderRadius: 12, background: "var(--color-neutral-900)", border: "1px solid var(--color-neutral-800)", padding: "10px 11px" }}>
+                  <div className="row" style={{ gap: 7, marginBottom: 7 }}>
+                    <i className="ph ph-paperclip" style={{ fontSize: 13, color: "var(--color-neutral-500)" }} />
+                    <span className="scr">attached from their log</span>
                   </div>
-                  <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
-                </div>
-              </div>
-            ) : (
-              <div
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: b.from === "client" ? "12px 12px 12px 4px" : "12px 12px 4px 12px",
-                  background: b.from === "coach" ? "var(--color-accent)" : "var(--color-surface)",
-                  border: b.from === "client" ? "1px solid var(--color-neutral-800)" : undefined,
-                }}
-              >
-                <div style={{ fontSize: 13.5, lineHeight: 1.5, fontWeight: b.from === "coach" ? 600 : 400, color: b.from === "coach" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
-                {b.receipt && (
-                  <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "rgba(11, 23, 16, 0.15)" }}>
-                    <div className="row" style={{ gap: 7, fontSize: 11.5 }}>
-                      <i className="ph ph-arrows-left-right" style={{ fontSize: 13 }} />
-                      {b.receipt}
+                  <div className="row">
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13 }}>{b.text}</div>
+                      <div className="mu" style={{ marginTop: 2 }}>{b.attached}</div>
                     </div>
+                    <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
                   </div>
-                )}
-                <div style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "coach" ? "right" : "left", opacity: b.from === "coach" ? 0.7 : undefined, color: b.from === "coach" ? "#0b1710" : "var(--color-neutral-500)" }}>{b.time}</div>
-              </div>
-            )}
-          </div>
-        ))}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: b.from === "client" ? "12px 12px 12px 4px" : "12px 12px 4px 12px",
+                    background: b.from === "coach" ? "var(--color-accent)" : "var(--color-surface)",
+                    border: b.from === "client" ? "1px solid var(--color-neutral-800)" : undefined,
+                  }}
+                >
+                  <div style={{ fontSize: 13.5, lineHeight: 1.5, fontWeight: b.from === "coach" ? 600 : 400, color: b.from === "coach" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
+                  {b.receipt && (
+                    <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "rgba(11, 23, 16, 0.15)" }}>
+                      <div className="row" style={{ gap: 7, fontSize: 11.5 }}>
+                        <i className="ph ph-arrows-left-right" style={{ fontSize: 13 }} />
+                        {b.receipt}
+                      </div>
+                    </div>
+                  )}
+                  <div style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "coach" ? "right" : "left", opacity: b.from === "coach" ? 0.7 : undefined, color: b.from === "coach" ? "#0b1710" : "var(--color-neutral-500)" }}>{formatMessageTime(b.time)}</div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
       <div style={{ flex: "none", padding: "8px 12px 18px", background: "#1b1e2e", borderTop: "1px solid var(--color-neutral-900)" }}>
         <div className="row" style={{ gap: 8 }}>
@@ -136,11 +146,11 @@ export function CoachThread() {
             <i className="ph-fill ph-paper-plane-right" style={{ fontSize: 19, color: "var(--color-accent)" }} />
           </button>
         </div>
-        <div className="row" style={{ gap: 6, marginTop: 8 }}>
-          <button className="chip" onClick={() => thread.clientId !== thread.id && nav(`/coach/clients/${thread.clientId}`)}>Swap an exercise</button>
-          <button className="chip">Send a demo</button>
-          <button className="chip">Adjust week</button>
-        </div>
+        {thread.clientId !== thread.id && (
+          <div className="row" style={{ gap: 6, marginTop: 8 }}>
+            <button className="chip" onClick={() => nav(`/coach/clients/${thread.clientId}`)}>Open their profile</button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,27 +1,28 @@
-/** iOS standalone PWAs have a long-documented bug: after a text input is focused (bringing up the
- * keyboard) and then blurred, Safari sometimes fails to fully reclaim the vacated space, leaving a gap
- * at the bottom that persists until the page reloads. Pure CSS units (100dvh, 100%) don't react to this
- * because nothing about the layout viewport actually changed -- only the *visual* viewport did. This
- * tracks window.visualViewport directly and writes its height to a CSS var so .app-root can size itself
- * off the real, current viewport instead of a unit that can get stuck. */
+/** Locks --app-vh to window.innerHeight -- the true layout viewport, which stays constant in a standalone
+ * iOS PWA even while the keyboard is open (only the *visual* viewport shrinks for that). Earlier this
+ * tracked visualViewport instead so it could react to the keyboard, but that's exactly what caused the
+ * bug: once a resize/scroll event fired while the keyboard was up, --app-vh got stuck at the shorter
+ * value and never grew back, leaving a permanent gap. Only real layout changes -- rotation, or the page
+ * becoming visible again after being backgrounded -- should ever move this number. */
 function install() {
-  const vv = window.visualViewport;
   const root = document.documentElement;
 
   function apply() {
-    const h = vv?.height ?? window.innerHeight;
-    root.style.setProperty("--app-vh", `${h}px`);
+    // window.innerHeight is the *layout* viewport (unaffected by the iOS keyboard, which only shrinks the
+    // *visual* viewport) -- safe to react to on every plain resize. A 0 reading only ever happens mid
+    // viewport-metrics transition (seen in automated/emulated resizing) and must never get written, or
+    // this gets stuck at 0 forever since nothing else would trigger a recompute.
+    const h = window.innerHeight;
+    if (h > 0) root.style.setProperty("--app-vh", `${h}px`);
   }
 
   apply();
-  if (vv) {
-    vv.addEventListener("resize", apply);
-    vv.addEventListener("scroll", apply);
-  }
   window.addEventListener("resize", apply);
-  window.addEventListener("orientationchange", apply);
-  // Also re-check on focus/blur of any field, belt-and-suspenders for the exact keyboard-close case.
-  document.addEventListener("focusout", () => setTimeout(apply, 50));
+  window.addEventListener("orientationchange", () => setTimeout(apply, 60));
+  window.addEventListener("pageshow", apply);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) apply();
+  });
 }
 
 install();

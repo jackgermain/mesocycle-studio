@@ -93,7 +93,8 @@ function reducer(state: CoachState, action: Action): CoachState {
       return { ...state, programs };
     }
     case "SEND_MESSAGE": {
-      const bubble = { from: "coach" as const, text: action.text, time: "now" };
+      const now = new Date().toISOString();
+      const bubble = { from: "coach" as const, text: action.text, time: now };
       const exists = state.threads.some((t) => t.id === action.threadId);
       if (!exists) {
         const newThread = {
@@ -102,13 +103,13 @@ function reducer(state: CoachState, action: Action): CoachState {
           clientName: action.clientName ?? "Client",
           context: "",
           unread: false,
-          time: "now",
+          time: now,
           preview: action.text,
           bubbles: [bubble],
         };
         return { ...state, threads: [newThread, ...state.threads] };
       }
-      const threads = state.threads.map((t) => (t.id === action.threadId ? { ...t, bubbles: [...t.bubbles, bubble], preview: action.text, unread: false } : t));
+      const threads = state.threads.map((t) => (t.id === action.threadId ? { ...t, bubbles: [...t.bubbles, bubble], preview: action.text, unread: false, time: now } : t));
       return { ...state, threads };
     }
     case "MARK_READ": {
