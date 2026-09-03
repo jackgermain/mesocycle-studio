@@ -1,4 +1,5 @@
 import type { DraftDay } from "../shared/programConvert";
+import { libraryExercises } from "./exerciseLibrary";
 
 /** A minimal RFC-4180-ish CSV parser -- handles quoted fields, escaped quotes ("") inside them, and both
  * \n and \r\n line endings. No external dependency needed for a format this simple. */
@@ -118,21 +119,179 @@ export function parseCsvToDraftDays(text: string): CsvParseResult {
   return rowsToDraftDays(parseCsv(text));
 }
 
+function titleCase(s: string): string {
+  return s.toLowerCase().replace(/(^|[\s\-/(])([a-z])/g, (_m, sep: string, ch: string) => sep + ch.toUpperCase());
+}
+
+function isTierCode(v: string): boolean {
+  return /^T\d+$/i.test(v.trim());
+}
+
+function normalizeExerciseName(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** A spreadsheet's own muscle-group tag next to an exercise is often stale -- copy-pasted from a previous
+ * row and never updated (a real, common issue in hand-maintained templates, not something we can fix by
+ * parsing more carefully). Matching the exercise name against the app's own library gives a more reliable
+ * answer when the name is recognizable, so this is tried first and the sheet's tag is only a fallback. */
+function guessMuscleFromLibrary(name: string): string | undefined {
+  const norm = normalizeExerciseName(name);
+  if (!norm) return undefined;
+  const tokens = new Set(norm.split(" ").filter(Boolean));
+
+  let best: { muscle: string; score: number } | undefined;
+  for (const ex of libraryExercises) {
+    const exNorm = normalizeExerciseName(ex.name);
+    if (!exNorm) continue;
+    if (exNorm === norm) return ex.muscle;
+
+    const exTokens = exNorm.split(" ").filter(Boolean);
+    const overlap = exTokens.filter((t) => tokens.has(t)).length;
+    // Requiring 2+ shared words (not just a single generic one like "press" or "raise") before counting
+    // it as a match keeps this from confidently mislabeling an exercise the library doesn't actually have.
+    if (overlap < 2) continue;
+    const score = overlap / exTokens.length;
+    if (!best || score > best.score) best = { muscle: ex.muscle, score };
+  }
+  return best?.muscle;
+}
+
+/** Parses the "RP-style" periodization layout some coaches use instead of a flat table: multiple training
+ * days laid out side by side across the sheet, each a fixed-width block of columns -- a tier code (T1, T2…)
+ * and exercise name on one row, then one row per set with Set/Rep/Load/Time columns for week 1 (and further
+ * week blocks to the right, which this only reads the first of -- the app already handles week-to-week
+ * progression itself once a program is running, so this just needs a starting point). A muscle-group tag
+ * follows each exercise's set rows in the same tier column. Detected structurally (by finding "DAY n" and
+ * "T<n>" cells and the "SET" sub-header) rather than by fixed row/column numbers, since blank rows between
+ * exercises vary by how many sets each one has. */
+export function parseGridLayoutToDraftDays(rows: string[][]): CsvParseResult {
+  const dayCols: { col: number; label: string }[] = [];
+  for (let r = 0; r < rows.length; r++) {
+    for (let c = 0; c < (rows[r]?.length ?? 0); c++) {
+      const m = String(rows[r][c] ?? "").trim().match(/^DAY\s*(\d+)$/i);
+      if (m) dayCols.push({ col: c - 1, label: `Day ${m[1]}` });
+    }
+  }
+  if (dayCols.length === 0) {
+    return { days: [], rowCount: 0, errors: [] };
+  }
+
+  const days: DraftDay[] = [];
+  let rowCount = 0;
+
+  for (const { col: tierCol, label: dayLabel } of dayCols) {
+    if (tierCol < 0) continue;
+    const nameCol = tierCol + 1;
+    const tierRows: number[] = [];
+    for (let r = 0; r < rows.length; r++) {
+      if (isTierCode(String(rows[r]?.[tierCol] ?? ""))) tierRows.push(r);
+    }
+    if (tierRows.length === 0) continue;
+
+    const weekdayRaw = String(rows[tierRows[0] - 1]?.[nameCol] ?? "").trim();
+    const dayName = weekdayRaw && !/^(WEEK|BASE|LOAD|SET|REP|TIME)/i.test(weekdayRaw) ? titleCase(weekdayRaw) : dayLabel;
+
+    // The Set/Rep/Load header only appears once, above this day's first exercise -- every exercise below
+    // shares the same columns, so this is found once per day rather than re-searched per exercise.
+    const headerRow = rows[tierRows[0] - 1] ?? [];
+    let setCol = -1;
+    for (let c = nameCol + 1; c <= tierCol + 12; c++) {
+      if (String(headerRow[c] ?? "").trim().toUpperCase() === "SET") {
+        setCol = c;
+        break;
+      }
+    }
+    if (setCol === -1) continue;
+    const repCol = setCol + 1;
+    const loadCol = setCol + 2;
+
+    const exercises: DraftDay["exercises"] = [];
+
+    for (let ti = 0; ti < tierRows.length; ti++) {
+      const r = tierRows[ti];
+      const name = String(rows[r]?.[nameCol] ?? "").trim();
+      if (!name) continue;
+
+      const nextTierRow = tierRows[ti + 1] ?? rows.length;
+      let sets = 0;
+      let lastReps = "";
+      let lastLoad = "";
+      let rr = r;
+      while (rr < nextTierRow) {
+        const setVal = String(rows[rr]?.[setCol] ?? "").trim();
+        const repVal = String(rows[rr]?.[repCol] ?? "").trim();
+        if (!setVal && !repVal) break;
+        sets++;
+        if (repVal) lastReps = repVal;
+        const loadVal = String(rows[rr]?.[loadCol] ?? "").trim();
+        if (loadVal) lastLoad = loadVal;
+        rr++;
+      }
+      if (sets === 0) continue;
+
+      let sheetMuscle = "";
+      for (let mr = rr; mr < nextTierRow; mr++) {
+        const v = String(rows[mr]?.[tierCol] ?? "").trim();
+        if (v) {
+          if (!isTierCode(v)) sheetMuscle = titleCase(v);
+          break;
+        }
+      }
+
+      const reps = Number(lastReps);
+      const load = Number(lastLoad);
+      exercises.push({
+        name: titleCase(name),
+        muscle: guessMuscleFromLibrary(name) || sheetMuscle || "General",
+        sets,
+        reps: Number.isFinite(reps) && reps > 0 ? reps : undefined,
+        load: Number.isFinite(load) && load > 0 ? load : undefined,
+      });
+      rowCount++;
+    }
+
+    if (exercises.length > 0) days.push({ name: dayName, exercises });
+  }
+
+  return { days, rowCount, errors: days.length === 0 ? ["Found a day layout but couldn't read any exercises from it."] : [] };
+}
+
 declare const XLSX: {
   read(data: ArrayBuffer, opts: { type: string }): { SheetNames: string[]; Sheets: Record<string, unknown> };
   utils: { sheet_to_json(sheet: unknown, opts: { header: number; raw: boolean; defval: string }): unknown[][] };
 };
 
-/** Parses a real .xlsx/.xls workbook the same way parseCsvToDraftDays parses a CSV -- reads the first
- * sheet as a plain grid and feeds it through the same row logic, so an uploaded Excel file (the format
- * most coaches and clients actually have on hand, vs. remembering to export CSV first) produces an
- * identical result. Uses the SheetJS `XLSX` global loaded via script tag in index.html rather than an npm
- * dependency, since this environment has no npm registry access to install one. */
-export async function parseXlsxToDraftDays(file: File): Promise<CsvParseResult> {
+/** Every sheet in a workbook, in order -- used to let the user pick which one to import when a file has
+ * more than one (a periodized template often has one sheet per training phase). */
+export async function listXlsxSheetNames(file: File): Promise<string[]> {
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: "array" });
-  const sheet = wb.Sheets[wb.SheetNames[0]];
+  return wb.SheetNames;
+}
+
+/** Parses a real .xlsx/.xls workbook the same way parseCsvToDraftDays parses a CSV. Tries the plain
+ * "Day, Exercise, Muscle…" header format first (the common case for a simple export); if that sheet isn't
+ * laid out that way, falls back to the day-block grid layout above rather than just failing, since a coach
+ * uploading their actual program spreadsheet is far more likely to have that than a hand-typed flat table.
+ * Uses the SheetJS `XLSX` global loaded via script tag in index.html rather than an npm dependency, since
+ * this environment has no npm registry access to install one. */
+export async function parseXlsxToDraftDays(file: File, sheetName?: string): Promise<CsvParseResult> {
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf, { type: "array" });
+  const name = sheetName ?? wb.SheetNames[0];
+  const sheet = wb.Sheets[name];
   const raw = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: "" });
   const rows = raw.map((r) => r.map((c) => String(c ?? "").trim()));
-  return rowsToDraftDays(rows);
+
+  const flat = rowsToDraftDays(rows);
+  if (flat.days.length > 0) return flat;
+  const grid = parseGridLayoutToDraftDays(rows);
+  if (grid.days.length > 0) return grid;
+  return flat;
 }

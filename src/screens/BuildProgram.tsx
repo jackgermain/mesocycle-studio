@@ -7,7 +7,7 @@ import type { LibraryExercise } from "../coach/types";
 import { listCoachTemplates } from "../shared/templates";
 import { buildProgramFromDraft, expandCoachProgramToProgram } from "../shared/programConvert";
 import type { DraftDay } from "../shared/programConvert";
-import { parseCsvToDraftDays, parseXlsxToDraftDays } from "../coach/csvProgram";
+import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames } from "../coach/csvProgram";
 import type { CsvParseResult } from "../coach/csvProgram";
 import type { Program } from "../data/types";
 
@@ -219,19 +219,34 @@ function ScratchStep({ ownerName, onBack, onCreate }: { ownerName: string; onBac
 function CsvStep({ ownerName, onBack, onCreate }: { ownerName: string; onBack: () => void; onCreate: (p: Program) => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [sheetNames, setSheetNames] = useState<string[]>([]);
+  const [selectedSheet, setSelectedSheet] = useState<string | null>(null);
   const [parsed, setParsed] = useState<CsvParseResult | null>(null);
   const [name, setName] = useState("My Program");
   const [weeksCount, setWeeksCount] = useState(6);
 
   function handleFile(file: File) {
     setFileName(file.name);
+    setCurrentFile(file);
+    setSheetNames([]);
+    setSelectedSheet(null);
     if (/\.(xlsx|xls)$/i.test(file.name)) {
-      parseXlsxToDraftDays(file).then(setParsed);
+      listXlsxSheetNames(file).then((names) => {
+        setSheetNames(names);
+        setSelectedSheet(names[0]);
+        parseXlsxToDraftDays(file, names[0]).then(setParsed);
+      });
       return;
     }
     const reader = new FileReader();
     reader.onload = () => setParsed(parseCsvToDraftDays(String(reader.result ?? "")));
     reader.readAsText(file);
+  }
+
+  function pickSheet(sheetName: string) {
+    setSelectedSheet(sheetName);
+    if (currentFile) parseXlsxToDraftDays(currentFile, sheetName).then(setParsed);
   }
 
   const totalExercises = parsed?.days.reduce((n, d) => n + d.exercises.length, 0) ?? 0;
@@ -252,6 +267,19 @@ function CsvStep({ ownerName, onBack, onCreate }: { ownerName: string; onBack: (
             <div className="mu" style={{ marginTop: 2 }}>{fileName ? "Tap to choose a different file" : "Excel or CSV, from Excel, Google Sheets, or Numbers"}</div>
           </div>
         </button>
+
+        {sheetNames.length > 1 && (
+          <div>
+            <div className="sh">This file has {sheetNames.length} sheets — which one?</div>
+            <div className="row hscroll" style={{ gap: 6 }}>
+              {sheetNames.map((s) => (
+                <button key={s} className={`chip${selectedSheet === s ? " on" : ""}`} onClick={() => pickSheet(s)}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {parsed && parsed.errors.length > 0 && (
           <InfoBanner icon="ph-warning">

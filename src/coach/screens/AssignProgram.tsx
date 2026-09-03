@@ -6,7 +6,7 @@ import { BackHeader, InfoBanner, ActionGroup, ActionRow } from "../../components
 import { buildBlankProgram } from "../mockData";
 import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
-import { parseCsvToDraftDays, parseXlsxToDraftDays } from "../csvProgram";
+import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames } from "../csvProgram";
 import type { CsvParseResult } from "../csvProgram";
 import { writeProgramToClient, queueProgramForClient } from "../assignProgram";
 import type { CoachProgram } from "../types";
@@ -252,18 +252,33 @@ function CsvStep({
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [parsed, setParsed] = useState<CsvParseResult | null>(null);
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [sheetNames, setSheetNames] = useState<string[]>([]);
+  const [selectedSheet, setSelectedSheet] = useState<string | null>(null);
   const [programName, setProgramName] = useState(`${client.name.split(" ")[0]}'s Program`);
   const [weeksCount, setWeeksCount] = useState(6);
 
   function handleFile(file: File) {
     setFileName(file.name);
+    setCurrentFile(file);
+    setSheetNames([]);
+    setSelectedSheet(null);
     if (/\.(xlsx|xls)$/i.test(file.name)) {
-      parseXlsxToDraftDays(file).then(setParsed);
+      listXlsxSheetNames(file).then((names) => {
+        setSheetNames(names);
+        setSelectedSheet(names[0]);
+        parseXlsxToDraftDays(file, names[0]).then(setParsed);
+      });
       return;
     }
     const reader = new FileReader();
     reader.onload = () => setParsed(parseCsvToDraftDays(String(reader.result ?? "")));
     reader.readAsText(file);
+  }
+
+  function pickSheet(sheetName: string) {
+    setSelectedSheet(sheetName);
+    if (currentFile) parseXlsxToDraftDays(currentFile, sheetName).then(setParsed);
   }
 
   const totalExercises = parsed?.days.reduce((n, d) => n + d.exercises.length, 0) ?? 0;
@@ -293,6 +308,19 @@ function CsvStep({
             <div className="mu" style={{ marginTop: 2 }}>{fileName ? "Tap to choose a different file" : "Excel or CSV, from Excel, Google Sheets, or Numbers"}</div>
           </div>
         </button>
+
+        {sheetNames.length > 1 && (
+          <div>
+            <div className="sh">This file has {sheetNames.length} sheets — which one?</div>
+            <div className="row hscroll" style={{ gap: 6 }}>
+              {sheetNames.map((s) => (
+                <button key={s} className={`chip${selectedSheet === s ? " on" : ""}`} onClick={() => pickSheet(s)}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {parsed && parsed.errors.length > 0 && (
           <InfoBanner icon="ph-warning">
