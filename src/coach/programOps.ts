@@ -1,6 +1,7 @@
-import type { BuilderDay, BuilderExercise, BuilderSet, CoachProgram } from "./types";
+import type { BuilderDay, BuilderExercise, BuilderSet, CoachProgram, LoadMode } from "./types";
 import type { DraftDay } from "../shared/programConvert";
 import { defaultRestSec } from "./rest";
+import { LOAD_DEFAULT } from "./loadMode";
 
 /** True for any not-yet-confirmed working copy, whether it's tied to a specific client's assignment or
  * just a fresh "build from scratch"/"import" started with no client in mind yet. Hidden from the main
@@ -53,19 +54,27 @@ export function duplicateProgram(source: CoachProgram, newName: string): CoachPr
  * normal builder afterward, same as building from scratch, so whatever the sheet got wrong is just as
  * fixable as anything else (drag to reorder, edit sets/reps/load, swap exercises). */
 export function csvDraftDaysToCoachProgram(name: string, days: DraftDay[], weeks: number): CoachProgram {
+  // Most exercises share one load type -- whichever mode shows up most becomes the program default, so
+  // individual exercises only need an override when they actually differ from the rest.
+  const modeCounts = new Map<LoadMode, number>();
+  for (const d of days) for (const e of d.exercises) if (e.loadMode) modeCounts.set(e.loadMode, (modeCounts.get(e.loadMode) ?? 0) + 1);
+  const programDefaultMode: LoadMode = [...modeCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "lb";
+
   const builderDays: BuilderDay[] = days.map((d) => ({
     id: freshDayId(),
     name: d.name,
     exercises: d.exercises.map((e): BuilderExercise => {
       const setCount = Math.max(1, e.sets ?? 3);
+      const mode = e.loadMode ?? "lb";
+      const loadValue = e.load ?? (mode === "lb" ? 0 : LOAD_DEFAULT[mode]);
       const sets: BuilderSet[] = Array.from({ length: setCount }, () => ({
         id: freshSetId(),
         reps: e.reps ?? 10,
-        loadValue: e.load ?? 0,
+        loadValue,
         warmup: false,
         restSec: defaultRestSec(e.name),
       }));
-      return { id: freshExerciseId(), name: e.name, muscle: e.muscle, kind: "strength", sets };
+      return { id: freshExerciseId(), name: e.name, muscle: e.muscle, kind: "strength", sets, loadModeOverride: mode !== programDefaultMode ? mode : undefined };
     }),
   }));
 
@@ -75,7 +84,7 @@ export function csvDraftDaysToCoachProgram(name: string, days: DraftDay[], weeks
     status: "draft",
     weeks: Math.max(1, weeks),
     daysPerWeek: builderDays.length || 1,
-    effortScale: "lb",
+    effortScale: programDefaultMode,
     assignedCount: 0,
     weeklySets: builderDays.reduce((n, d) => n + d.exercises.reduce((m, e) => m + e.sets.length, 0), 0),
     phaseWeights: [1, 0, 0],

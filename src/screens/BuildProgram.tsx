@@ -1,17 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useStore } from "../state/store";
-import { BackHeader, InfoBanner } from "../components/UI";
+import { BackHeader, InfoBanner, Seg } from "../components/UI";
 import { libraryExercises, MUSCLE_GROUPS } from "../coach/exerciseLibrary";
-import type { LibraryExercise } from "../coach/types";
+import type { LibraryExercise, LoadMode } from "../coach/types";
+import { LOAD_LABELS, LOAD_RANGE, LOAD_DEFAULT, clampLoadValue } from "../coach/loadMode";
 import { listCoachTemplates } from "../shared/templates";
 import { buildProgramFromDraft, expandCoachProgramToProgram, draftDaysFromProgram, mergeEditedDraftIntoProgram } from "../shared/programConvert";
-import type { DraftDay } from "../shared/programConvert";
+import type { DraftDay, DraftExercise } from "../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../coach/csvProgram";
 import type { CsvParseResult } from "../coach/csvProgram";
 import { csvDraftDaysToCoachProgram } from "../coach/programOps";
 import { writeTemplateToCoach } from "../coach/assignProgram";
 import { useAuth } from "../lib/auth";
+
+const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
+  { value: "lb", label: "LB" },
+  { value: "pct1rm", label: "%1RM" },
+  { value: "rpe", label: "RPE" },
+  { value: "rir", label: "RIR" },
+];
 
 type Mode = "choose" | "scratch" | "templates" | "csv" | "editMesocycle";
 type ScratchSeed = { name: string; days: DraftDay[]; weeks: number };
@@ -116,10 +124,11 @@ export default function BuildProgram() {
       <ScratchStep
         editMode
         seed={scratchSeed}
-        onBack={() => {
-          setScratchSeed(null);
-          setMode("choose");
-        }}
+        // Reached by a direct link from the "..." menu on today's workout (/build?edit=1), not by
+        // stepping through this screen's own choose→scratch flow -- so "back" here means "back to where
+        // that came from" (real browser history), not "back to the Build-a-program hub" like the other
+        // branches below, which only exist because THIS screen's own internal nav got them there.
+        onBack={() => nav(-1)}
         onCreate={(name, days) => {
           dispatch({ type: "SET_PROGRAM", program: mergeEditedDraftIntoProgram(state.program, days, name) });
           nav("/block");
@@ -218,6 +227,9 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
   function removeExercise(i: number, exIdx: number) {
     setDays((prev) => prev.map((d, idx) => (idx === i ? { ...d, exercises: d.exercises.filter((_, ei) => ei !== exIdx) } : d)));
   }
+  function updateExercise(i: number, exIdx: number, patch: Partial<DraftExercise>) {
+    setDays((prev) => prev.map((d, idx) => (idx === i ? { ...d, exercises: d.exercises.map((e, ei) => (ei === exIdx ? { ...e, ...patch } : e)) } : d)));
+  }
 
   return (
     <div className="screen">
@@ -262,14 +274,9 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
         {days.map((d, i) => (
           <div key={i} className="cell" style={{ padding: 11 }}>
             <input className="input" style={{ height: 34, fontSize: 13 }} value={d.name} onChange={(e) => renameDay(i, e.target.value)} />
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
               {d.exercises.map((ex, ei) => (
-                <div key={ei} className="row" style={{ padding: "7px 9px", background: "var(--color-neutral-900)", borderRadius: 7 }}>
-                  <span style={{ flex: 1, fontSize: 12.5 }}>{ex.name}</span>
-                  <button onClick={() => removeExercise(i, ei)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer" }}>
-                    <i className="ph ph-x" style={{ fontSize: 13 }} />
-                  </button>
-                </div>
+                <DraftExerciseCard key={ei} ex={ex} onChange={(patch) => updateExercise(i, ei, patch)} onRemove={() => removeExercise(i, ei)} />
               ))}
             </div>
             <button className="btn btn-secondary btn-block" style={{ height: 34, marginTop: 8, fontSize: 12 }} onClick={() => setPickerDay(i)}>
@@ -474,6 +481,88 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
             Review & customize
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** A single set target, editable both by tapping +/- or by typing an exact value directly -- keeps its own
+ * draft text while focused so a mid-edit "" isn't fought back to the last committed number, and commits on
+ * blur/Enter. Same interaction pattern as the set-logging inputs on the actual workout screen. */
+function MiniStepper({ value, onChange, step, min, max }: { value: number; onChange: (v: number) => void; step: number; min: number; max?: number }) {
+  const [text, setText] = useState(String(value));
+  useEffect(() => setText(String(value)), [value]);
+  function clamp(n: number) {
+    return max !== undefined ? Math.min(max, Math.max(min, n)) : Math.max(min, n);
+  }
+  function commit() {
+    const n = parseFloat(text);
+    if (Number.isFinite(n)) onChange(clamp(n));
+    else setText(String(value));
+  }
+  return (
+    <div className="row" style={{ justifyContent: "center", gap: 4, flex: 1, minWidth: 0, border: "1px solid var(--color-divider)", borderRadius: 7, padding: "5px 2px" }}>
+      <button onClick={() => onChange(clamp(+(value - step).toFixed(2)))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
+        <i className="ph ph-minus" style={{ fontSize: 11 }} />
+      </button>
+      <input
+        type="number"
+        inputMode="decimal"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onFocus={(e) => e.target.select()}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            commit();
+            e.currentTarget.blur();
+          }
+        }}
+        style={{ width: 30, minWidth: 0, textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 13, color: "inherit", padding: 0 }}
+      />
+      <button onClick={() => onChange(clamp(+(value + step).toFixed(2)))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
+        <i className="ph ph-plus" style={{ fontSize: 11 }} />
+      </button>
+    </div>
+  );
+}
+
+/** One exercise's prescription while building or editing a mesocycle -- sets/reps/load target with the
+ * same load-mode choice (lb, %1RM, RPE, RIR) the coach's own program builder already offers, since a
+ * self-directed lifter needs the same flexibility a coach prescribing for someone else has. Every value is
+ * both tappable (+/-) and directly typeable. */
+function DraftExerciseCard({ ex, onChange, onRemove }: { ex: DraftExercise; onChange: (patch: Partial<DraftExercise>) => void; onRemove: () => void }) {
+  const mode = ex.loadMode ?? "lb";
+  const sets = ex.sets ?? 3;
+  const reps = ex.reps ?? 10;
+  const load = ex.load ?? LOAD_DEFAULT[mode];
+  const range = LOAD_RANGE[mode];
+
+  return (
+    <div className="cell" style={{ padding: "10px 11px", background: "var(--color-neutral-900)" }}>
+      <div className="row" style={{ marginBottom: 8 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="trunc" style={{ fontSize: 13.5 }}>{ex.name}</div>
+          <div className="mu" style={{ marginTop: 1 }}>{ex.muscle}</div>
+        </div>
+        <button onClick={onRemove} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }} aria-label={`Remove ${ex.name}`}>
+          <i className="ph ph-trash" style={{ fontSize: 15 }} />
+        </button>
+      </div>
+
+      <div className="row" style={{ marginBottom: 8 }}>
+        <Seg<LoadMode> value={mode} onChange={(m) => onChange({ loadMode: m, load: undefined })} options={LOAD_MODE_OPTIONS} />
+      </div>
+
+      <div className="scr" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: "0 0 4px" }}>
+        <span style={{ textAlign: "center" }}>sets</span>
+        <span style={{ textAlign: "center" }}>reps</span>
+        <span style={{ textAlign: "center" }}>{LOAD_LABELS[mode]}</span>
+      </div>
+      <div className="row" style={{ gap: 8 }}>
+        <MiniStepper value={sets} min={1} max={10} step={1} onChange={(v) => onChange({ sets: Math.round(v) })} />
+        <MiniStepper value={reps} min={1} max={50} step={1} onChange={(v) => onChange({ reps: Math.round(v) })} />
+        <MiniStepper value={load} min={range.min} max={range.max} step={range.step} onChange={(v) => onChange({ load: clampLoadValue(v, mode) })} />
       </div>
     </div>
   );

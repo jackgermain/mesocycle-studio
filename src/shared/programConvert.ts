@@ -2,6 +2,7 @@ import type { CoachProgram, LoadMode } from "../coach/types";
 import type { EffortScale, Program, TrainingDay, TrainingWeek, WorkExercise, WorkSet } from "../data/types";
 import { equipmentOf } from "../screens/exerciseHelpers";
 import { defaultRestSec } from "../coach/rest";
+import { LOAD_DEFAULT } from "../coach/loadMode";
 
 function isoDate(d: Date): string {
   const y = d.getFullYear();
@@ -28,6 +29,14 @@ function effortForLoadMode(loadMode: LoadMode, loadValue: number): { scale: Effo
 }
 function loadForLoadMode(loadMode: LoadMode, loadValue: number): number | null {
   return loadMode === "lb" ? loadValue : null;
+}
+/** Only meaningful once `prescribed.load` is already known to be null -- that's what actually marks a set
+ * as effort-based rather than a plain weight (see loadForLoadMode above), since older data always carried
+ * an RIR scale as a default even on plain-lb sets. */
+function loadModeFromScale(scale: EffortScale | undefined): LoadMode {
+  if (scale === "RPE") return "rpe";
+  if (scale === "%1RM") return "pct1rm";
+  return "rir";
 }
 
 /** Spreads N day slots evenly across a 7-day week, same placement rule the seed data uses for a 4-day
@@ -110,7 +119,11 @@ export interface DraftExercise {
    * 3×10 default below, same as before this existed. */
   sets?: number;
   reps?: number;
+  /** The load value in whatever unit `loadMode` implies — pounds, %1RM, an RPE, or an RIR. Not always a
+   * literal weight, despite the name (kept for backward compatibility with the CSV importer's field). */
   load?: number;
+  /** Defaults to "lb" when absent, matching the coach builder's own per-exercise default. */
+  loadMode?: LoadMode;
 }
 export interface DraftDay {
   name: string;
@@ -137,11 +150,13 @@ export function buildProgramFromDraft(name: string, days: DraftDay[], weeks: num
         const id = `w${weekNumber}-d${i + 1}-e${ei + 1}`;
         const restSec = defaultRestSec(de.name);
         const setCountForEx = Math.max(1, de.sets ?? 3);
+        const loadMode = de.loadMode ?? "lb";
+        const loadValue = de.load ?? (loadMode === "lb" ? 0 : LOAD_DEFAULT[loadMode]);
         const sets: WorkSet[] = Array.from({ length: setCountForEx }, (_, si) => si + 1).map((setIndex) => ({
           id: `${id}-s${setIndex}`,
           index: setIndex,
           type: "straight",
-          prescribed: { reps: de.reps ?? 10, load: de.load ?? 0, effort: { scale: "RIR", value: 2 }, restSec },
+          prescribed: { reps: de.reps ?? 10, load: loadForLoadMode(loadMode, loadValue), effort: effortForLoadMode(loadMode, loadValue), restSec },
           actual: null,
           checked: false,
         }));
@@ -195,7 +210,20 @@ export function draftDaysFromProgram(program: Program): DraftDay[] {
       exercises: order
         .map((id) => source.exercises[id])
         .filter((e): e is WorkExercise => !!e)
-        .map((e) => ({ name: e.name, muscle: e.muscle, sets: e.sets.length, reps: typeof e.sets[0]?.prescribed.reps === "number" ? (e.sets[0].prescribed.reps as number) : undefined, load: e.sets[0]?.prescribed.load ?? undefined })),
+        .map((e) => {
+          const first = e.sets[0];
+          const isLb = first?.prescribed.load != null;
+          const loadMode: LoadMode = isLb ? "lb" : loadModeFromScale(first?.prescribed.effort.scale);
+          const loadValue = isLb ? (first!.prescribed.load as number) : typeof first?.prescribed.effort.value === "number" ? (first.prescribed.effort.value as number) : undefined;
+          return {
+            name: e.name,
+            muscle: e.muscle,
+            sets: e.sets.length,
+            reps: typeof first?.prescribed.reps === "number" ? (first.prescribed.reps as number) : undefined,
+            load: loadValue,
+            loadMode,
+          };
+        }),
     });
   }
   return slots;
@@ -223,11 +251,13 @@ export function mergeEditedDraftIntoProgram(existing: Program, days: DraftDay[],
         const id = `w${week.number}-d${i + 1}-e${ei + 1}`;
         const restSec = defaultRestSec(de.name);
         const setCountForEx = Math.max(1, de.sets ?? 3);
+        const loadMode = de.loadMode ?? "lb";
+        const loadValue = de.load ?? (loadMode === "lb" ? 0 : LOAD_DEFAULT[loadMode]);
         const sets: WorkSet[] = Array.from({ length: setCountForEx }, (_, si) => si + 1).map((setIndex) => ({
           id: `${id}-s${setIndex}`,
           index: setIndex,
           type: "straight",
-          prescribed: { reps: de.reps ?? 10, load: de.load ?? 0, effort: { scale: "RIR", value: 2 }, restSec },
+          prescribed: { reps: de.reps ?? 10, load: loadForLoadMode(loadMode, loadValue), effort: effortForLoadMode(loadMode, loadValue), restSec },
           actual: null,
           checked: false,
         }));

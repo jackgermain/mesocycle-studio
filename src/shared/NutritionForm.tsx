@@ -344,8 +344,8 @@ function NumField({ label, value, onChange, step }: { label: string; value: numb
   return (
     <div className="cell" style={{ flex: 1, padding: 9 }}>
       <div className="scr">{label}</div>
-      <div className="row" style={{ marginTop: 3, gap: 4 }}>
-        <button onClick={() => onChange(Math.max(0, value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
+      <div className="row" style={{ marginTop: 3, gap: 4, justifyContent: "center" }}>
+        <button onClick={() => onChange(Math.max(0, value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
           <i className="ph ph-minus" style={{ fontSize: 11 }} />
         </button>
         <input
@@ -361,9 +361,9 @@ function NumField({ label, value, onChange, step }: { label: string; value: numb
               e.currentTarget.blur();
             }
           }}
-          style={{ flex: 1, minWidth: 0, textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 14, color: "inherit", padding: 0 }}
+          style={{ width: 44, flex: "none", textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 14, color: "inherit", padding: 0 }}
         />
-        <button onClick={() => onChange(value + step)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
+        <button onClick={() => onChange(value + step)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
           <i className="ph ph-plus" style={{ fontSize: 11 }} />
         </button>
       </div>
@@ -389,8 +389,8 @@ function PctField({ label, value, onChange, step }: { label: string; value: numb
   return (
     <div className="cell" style={{ flex: 1, padding: 9 }}>
       <div className="scr">{label}</div>
-      <div className="row" style={{ marginTop: 3, gap: 4 }}>
-        <button onClick={() => onChange(clamp(value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
+      <div className="row" style={{ marginTop: 3, gap: 4, justifyContent: "center" }}>
+        <button onClick={() => onChange(clamp(value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
           <i className="ph ph-minus" style={{ fontSize: 11 }} />
         </button>
         <input
@@ -413,9 +413,9 @@ function PctField({ label, value, onChange, step }: { label: string; value: numb
               e.currentTarget.blur();
             }
           }}
-          style={{ flex: 1, minWidth: 0, textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 14, color: "inherit", padding: 0 }}
+          style={{ width: 50, flex: "none", textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 14, color: "inherit", padding: 0 }}
         />
-        <button onClick={() => onChange(clamp(value + step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
+        <button onClick={() => onChange(clamp(value + step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
           <i className="ph ph-plus" style={{ fontSize: 11 }} />
         </button>
       </div>
