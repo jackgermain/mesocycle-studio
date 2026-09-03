@@ -4,6 +4,7 @@ import { StoreProvider, useStore } from "./state/store";
 import { AuthProvider, useAuth } from "./lib/auth";
 import { supabase } from "./lib/supabase";
 import { Toast } from "./components/UI";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import Landing from "./screens/Landing";
 import AcceptInvite from "./screens/AcceptInvite";
 import Onboarding from "./screens/Onboarding";
@@ -135,6 +136,7 @@ function LandingShell() {
 
 export default function App() {
   return (
+    <ErrorBoundary>
     <AuthProvider>
       <HashRouter>
         <div className="app-root">
@@ -180,5 +182,6 @@ export default function App() {
         </div>
       </HashRouter>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }

@@ -316,7 +316,9 @@ export function StoreProvider({
         if (!active) return;
         const remote = data?.data as Partial<AppState> | undefined;
         if (remote && remote.profile && remote.program) {
-          dispatch({ type: "HYDRATE", state: remote as AppState });
+          // Merge onto buildBlankState() rather than trusting `remote` to have every field — a row saved
+          // before a field existed would otherwise hydrate as undefined and crash the first reader of it.
+          dispatch({ type: "HYDRATE", state: { ...buildBlankState(ownerName, coachName), ...remote } });
         }
         readyRef.current = true;
         setReady(true);

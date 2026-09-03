@@ -276,7 +276,10 @@ export function CoachStoreProvider({ children }: { children: React.ReactNode }) 
       .then(({ data }) => {
         if (!active) return;
         const remote = data?.data as Partial<CoachState> | undefined;
-        if (remote && remote.clients) dispatch({ type: "HYDRATE", state: remote as CoachState });
+        // Merge onto blankState() rather than trusting `remote` to have every field — a row saved before a
+        // field existed (e.g. `threads`, added by the messaging feature) would otherwise hydrate as
+        // undefined and crash the first component that reads it.
+        if (remote && remote.clients) dispatch({ type: "HYDRATE", state: { ...blankState(), ...remote } });
         readyRef.current = true;
         setReady(true);
       });
