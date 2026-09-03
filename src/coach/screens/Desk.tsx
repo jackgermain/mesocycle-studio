@@ -1,0 +1,186 @@
+import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCoachStore } from "../store";
+import { coachName } from "../mockData";
+import { CoachTabBar } from "../components/CoachTabBar";
+import type { ClientStatus } from "../types";
+
+const STATUS_COLOR: Record<ClientStatus, string> = {
+  "on-track": "var(--color-accent)",
+  behind: "var(--color-accent-700)",
+  "at-risk": "var(--color-neutral-500)",
+  paused: "var(--color-neutral-800)",
+  unassigned: "var(--color-neutral-900)",
+};
+const STATUS_LABEL: Record<ClientStatus, string> = {
+  "on-track": "on track",
+  behind: "behind",
+  "at-risk": "at risk",
+  paused: "paused",
+  unassigned: "unassigned",
+};
+
+export default function Desk() {
+  const { state, dispatch } = useCoachStore();
+  const nav = useNavigate();
+
+  const allFlags = useMemo(() => state.clients.flatMap((c) => c.flags.map((f) => ({ client: c, flag: f }))), [state.clients]);
+  const counts = {
+    volume: allFlags.filter((f) => f.flag.type === "volume-proposal").length,
+    joint: allFlags.filter((f) => f.flag.type === "joint").length,
+    weighin: allFlags.filter((f) => f.flag.type === "weigh-in-missed").length,
+  };
+  const decideNow = allFlags.slice(0, 3);
+  const assigned = state.clients.filter((c) => c.status !== "unassigned");
+  const rosterSegments: { status: ClientStatus; count: number }[] = (["on-track", "behind", "at-risk", "paused"] as ClientStatus[])
+    .map((status) => ({ status, count: assigned.filter((c) => c.status === status).length }))
+    .filter((s) => s.count > 0);
+
+  function applyProposal(clientId: string, flagId: string, tagLabel: string) {
+    dispatch({ type: "APPLY_FLAG", clientId, flagId });
+    dispatch({ type: "SHOW_TOAST", message: `Applied ${tagLabel} — next week's numbers updated.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+  }
+
+  function remindWeighIn(clientId: string, clientName: string) {
+    dispatch({ type: "SEND_MESSAGE", threadId: clientId, text: `Hey ${clientName.split(" ")[0]}, quick reminder to log your weigh-in when you get a chance 👍` });
+    dispatch({ type: "SHOW_TOAST", message: `Reminder sent to ${clientName}.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+  }
+
+  const today = new Date();
+  const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+
+  return (
+    <div className="screen">
+      <div className="hdr hero" style={{ paddingBottom: 16 }}>
+        <div className="row" style={{ marginBottom: 14, width: "100%" }}>
+          <div style={{ flex: 1 }}>
+            <div className="k">{dateLabel} · week 3</div>
+            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 500, fontSize: 26, lineHeight: 1.1, marginTop: 3 }}>Good morning, {coachName}</div>
+          </div>
+          <div className="avatar" style={{ width: 38, height: 38, boxShadow: "0 0 0 1px var(--color-accent-700)" }}>
+            {coachName.slice(0, 2).toUpperCase()}
+          </div>
+        </div>
+        <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
+          <div style={{ flex: "none", paddingRight: 14, borderRight: "1px solid var(--color-neutral-800)" }}>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 34, lineHeight: 1, color: "var(--color-accent)" }}>{allFlags.length}</div>
+            <div className="scr" style={{ marginTop: 4, lineHeight: 1.3 }}>
+              decisions
+              <br />
+              waiting
+            </div>
+          </div>
+          <div style={{ flex: 1, paddingLeft: 14, display: "flex", flexDirection: "column", justifyContent: "center", gap: 7 }}>
+            <div className="row" style={{ fontSize: 12 }}>
+              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
+              <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{counts.volume}</span>
+            </div>
+            <div className="row" style={{ fontSize: 12 }}>
+              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Joint flags</span>
+              <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{counts.joint}</span>
+            </div>
+            <div className="row" style={{ fontSize: 12 }}>
+              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Missed weigh-ins</span>
+              <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{counts.weighin}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="screen-scroll">
+        <div>
+          <div className="sh">Roster this week · {assigned.length} clients</div>
+          <div className="cell" style={{ padding: 12 }}>
+            <div style={{ display: "flex", gap: 2, height: 14, borderRadius: 7, overflow: "hidden" }}>
+              {rosterSegments.map((s) => (
+                <div key={s.status} style={{ flex: s.count, background: STATUS_COLOR[s.status] }} title={`${s.count} ${STATUS_LABEL[s.status]}`} />
+              ))}
+            </div>
+            <div className="row" style={{ marginTop: 10, gap: 14, fontSize: 11, color: "var(--color-neutral-400)", flexWrap: "wrap" }}>
+              {rosterSegments.map((s) => (
+                <span key={s.status} className="row" style={{ gap: 5, width: "auto" }}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: STATUS_COLOR[s.status], flex: "none" }} />
+                  {s.count} {STATUS_LABEL[s.status]}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="row" style={{ marginBottom: 8 }}>
+            <div className="sh" style={{ flex: 1, margin: 0 }}>Decide now</div>
+            <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--color-accent)" }} onClick={() => nav("/coach/clients")}>
+              Review all {allFlags.length}
+            </button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {decideNow.map(({ client, flag: f }, i) => (
+              <div key={f.id} className="cell elev-sm" style={i === 0 ? { borderLeft: "2px solid var(--color-accent)" } : undefined}>
+                <button className="row" style={{ width: "100%", background: "none", border: "none", cursor: "pointer", color: "inherit", textAlign: "left", padding: 0 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
+                  <div className="avatar">{client.initials}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="name">{client.name}</div>
+                    <div className="mu trunc" style={{ marginTop: 1 }}>{f.note}</div>
+                  </div>
+                  {f.tagLabel && <span className={`tag ${f.type === "volume-proposal" ? "tag-accent" : "tag-neutral"}`}>{f.tagLabel}</span>}
+                </button>
+                {f.type === "volume-proposal" && (
+                  <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                    <button className="btn btn-primary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => applyProposal(client.id, f.id, f.tagLabel)}>
+                      Apply
+                    </button>
+                    <button className="btn btn-secondary" style={{ flex: "none", height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
+                      Open
+                    </button>
+                  </div>
+                )}
+                {f.type === "weigh-in-missed" && (
+                  <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                    <button className="btn btn-primary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => remindWeighIn(client.id, client.name)}>
+                      Remind
+                    </button>
+                    <button className="btn btn-secondary" style={{ flex: "none", height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
+                      Open
+                    </button>
+                  </div>
+                )}
+                {f.type === "joint" && (
+                  <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                    <button className="btn btn-primary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}/log`)}>
+                      Swap exercise
+                    </button>
+                    <button className="btn btn-secondary" style={{ flex: "none", height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
+                      Open
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+            {decideNow.length === 0 && <div className="mu">Nothing needs you right now.</div>}
+          </div>
+        </div>
+
+        <div>
+          <div className="sh">Quick actions</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <button className="cell" style={{ gap: 7, padding: 12, textAlign: "left", cursor: "pointer", border: "none" }} onClick={() => nav("/coach/programs/import")}>
+              <i className="ph ph-file-arrow-up" style={{ fontSize: 19, color: "var(--color-accent)" }} />
+              <div style={{ fontSize: 13, fontFamily: "var(--font-heading)" }}>Import a program</div>
+              <div className="mu">PDF or screenshots</div>
+            </button>
+            <button className="cell" style={{ gap: 7, padding: 12, textAlign: "left", cursor: "pointer", border: "none" }} onClick={() => nav("/coach/clients")}>
+              <i className="ph ph-user-plus" style={{ fontSize: 19, color: "var(--color-accent)" }} />
+              <div style={{ fontSize: 13, fontFamily: "var(--font-heading)" }}>Assign a client</div>
+              <div className="mu">{state.clients.filter((c) => c.status === "unassigned").length} waiting</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <CoachTabBar />
+    </div>
+  );
+}
