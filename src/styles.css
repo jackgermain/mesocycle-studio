@@ -48,7 +48,7 @@
 }
 
 * , *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
 body {
   background: #0c0d14;
   color: var(--color-text);
@@ -64,7 +64,7 @@ a { color: var(--color-accent); text-decoration: none; }
 
 /* — app shell (phone-like column on wide viewports) — */
 .app-root {
-  min-height: 100dvh;
+  height: 100dvh;
   display: flex;
   justify-content: center;
   background: #0c0d14;
@@ -72,16 +72,16 @@ a { color: var(--color-accent); text-decoration: none; }
 .app-shell {
   width: 100%;
   max-width: 448px;
-  min-height: 100dvh;
+  height: 100dvh;
   background: var(--color-bg);
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 @media (min-width: 640px) {
   .app-shell {
-    min-height: min(920px, 100dvh);
+    height: min(920px, 100dvh);
     margin: 20px 0;
     border-radius: 28px;
     box-shadow: var(--shadow-lg);

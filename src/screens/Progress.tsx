@@ -44,7 +44,6 @@ export default function Progress() {
           <div className="k">{state.program.totalWeeks} weeks with {state.program.coachName}</div>
           <div className="h1">Progress</div>
         </div>
-        <ViewAllLiftsButton />
       </div>
       <div className="screen-scroll">
         <Seg
@@ -65,15 +64,6 @@ export default function Progress() {
       </div>
       <TabBar />
     </div>
-  );
-}
-
-function ViewAllLiftsButton() {
-  const nav = useNavigate();
-  return (
-    <button className="btn btn-secondary btn-icon" onClick={() => nav("/progress/lifts")} aria-label="See every lift in the mesocycle">
-      <i className="ph ph-list-magnifying-glass" style={{ fontSize: 17, color: "var(--color-neutral-400)" }} />
-    </button>
   );
 }
 
