@@ -51,8 +51,13 @@ function reducer(state: CoachState, action: Action): CoachState {
   switch (action.type) {
     case "HYDRATE":
       return action.state;
-    case "ADD_CLIENT":
+    case "ADD_CLIENT": {
+      // Guard against duplicate self-heal effects racing each other with a stale view of the roster —
+      // the reducer always sees the true current state, so this check is race-proof where an effect's
+      // own pre-dispatch check isn't.
+      if (action.client.accountId && state.clients.some((c) => c.accountId === action.client.accountId)) return state;
       return { ...state, clients: [action.client, ...state.clients] };
+    }
     case "RECONCILE_CLIENT": {
       const clients = state.clients.map((c) => (c.id === action.clientId ? { ...c, accountId: action.accountId, status: "unassigned" as const } : c));
       return { ...state, clients };
