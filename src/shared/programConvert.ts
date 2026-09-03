@@ -179,3 +179,76 @@ export function buildProgramFromDraft(name: string, days: DraftDay[], weeks: num
 
   return { name, totalWeeks: weeks, coachName: ownerName, weeks: outWeeks };
 }
+
+/** One DraftDay per day-of-week slot in a running program, built from the first not-yet-done occurrence of
+ * each slot (so editing shows real current numbers, not stale ones from an already-finished week). Used to
+ * pre-fill the "edit mesocycle" builder with what's actually still ahead. */
+export function draftDaysFromProgram(program: Program): DraftDay[] {
+  const daysPerWeek = program.weeks[0]?.days.length ?? 0;
+  const slots: DraftDay[] = [];
+  for (let i = 0; i < daysPerWeek; i++) {
+    const source = program.weeks.map((w) => w.days[i]).find((d) => d && d.status !== "done") ?? program.weeks[0]?.days[i];
+    if (!source) continue;
+    const order = source.order.length ? source.order : Object.keys(source.exercises);
+    slots.push({
+      name: source.label,
+      exercises: order
+        .map((id) => source.exercises[id])
+        .filter((e): e is WorkExercise => !!e)
+        .map((e) => ({ name: e.name, muscle: e.muscle, sets: e.sets.length, reps: typeof e.sets[0]?.prescribed.reps === "number" ? (e.sets[0].prescribed.reps as number) : undefined, load: e.sets[0]?.prescribed.load ?? undefined })),
+    });
+  }
+  return slots;
+}
+
+/** Applies an edited day/exercise list back onto a program that's already running, day-slot by day-slot
+ * (slot 0 = every week's first day, etc) -- and only to days that haven't happened yet. A day already
+ * marked "done" is returned completely untouched, logged sets and all: the whole point of editing an
+ * in-progress mesocycle is changing what's still ahead, never rewriting history. Slot count/order/dates
+ * are left alone; only each not-done day's exercises (and its slot's name) are regenerated the same way
+ * buildProgramFromDraft builds a fresh day, so edited exercises show up with real, loggable sets. */
+export function mergeEditedDraftIntoProgram(existing: Program, days: DraftDay[], name: string): Program {
+  const weeks: TrainingWeek[] = existing.weeks.map((week) => {
+    const outDays: TrainingDay[] = week.days.map((day, i) => {
+      if (day.status === "done") return day;
+      const dd = days[i];
+      if (!dd) return day;
+
+      const exercises: Record<string, WorkExercise> = {};
+      const order: string[] = [];
+      let setCount = 0;
+      const muscles = new Set<string>();
+
+      dd.exercises.forEach((de, ei) => {
+        const id = `w${week.number}-d${i + 1}-e${ei + 1}`;
+        const restSec = defaultRestSec(de.name);
+        const setCountForEx = Math.max(1, de.sets ?? 3);
+        const sets: WorkSet[] = Array.from({ length: setCountForEx }, (_, si) => si + 1).map((setIndex) => ({
+          id: `${id}-s${setIndex}`,
+          index: setIndex,
+          type: "straight",
+          prescribed: { reps: de.reps ?? 10, load: de.load ?? 0, effort: { scale: "RIR", value: 2 }, restSec },
+          actual: null,
+          checked: false,
+        }));
+        exercises[id] = {
+          id,
+          name: de.name,
+          muscle: de.muscle,
+          metaLine: `${sets.length} sets`,
+          hasVideo: false,
+          equipment: equipmentOf({ name: de.name }),
+          sets,
+        };
+        order.push(id);
+        setCount += sets.length;
+        muscles.add(de.muscle.toLowerCase());
+      });
+
+      return { ...day, label: dd.name, muscleSummary: Array.from(muscles).slice(0, 4).join(", "), setCount, order, exercises };
+    });
+    return { ...week, days: outDays };
+  });
+
+  return { ...existing, name, weeks };
+}

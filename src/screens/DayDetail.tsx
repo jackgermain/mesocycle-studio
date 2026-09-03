@@ -1,6 +1,7 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { findDay, useStore } from "../state/store";
+import { useAuth } from "../lib/auth";
 import { BackHeader, InfoBanner, StatCell } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
@@ -22,6 +23,9 @@ export default function DayDetail() {
 
 function ReopenedDay({ dayId }: { dayId: string }) {
   const { state } = useStore();
+  const nav = useNavigate();
+  const { account, previewingAsClient } = useAuth();
+  const selfDirected = account?.role === "friend" || previewingAsClient;
   const found = findDay(state.program, dayId);
   if (!found) return null;
   const { day, week } = found;
@@ -29,7 +33,12 @@ function ReopenedDay({ dayId }: { dayId: string }) {
 
   return (
     <div className="screen">
-      <BackHeader kicker={`Week ${week.number} · ${day.dow} · logged`} title={dayDisplayTitle(day)} right={<DayNavControls dayId={dayId} />} />
+      <BackHeader
+        kicker={`Week ${week.number} · ${day.dow} · logged`}
+        title={dayDisplayTitle(day)}
+        right={<DayNavControls dayId={dayId} />}
+        onBack={selfDirected ? () => nav("/build") : undefined}
+      />
       <div className="screen-scroll">
         <div className="cell row" style={{ gap: 8 }}>
           <StatCell label="Sets" value={`${day.log?.sessionSets ?? 0}/${day.log?.sessionTotal ?? 0}`} />

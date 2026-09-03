@@ -98,14 +98,14 @@ a { color: var(--color-accent); text-decoration: none; }
 
 .hdr {
   flex: none;
-  padding: calc(26px + env(safe-area-inset-top)) 14px 12px;
+  padding: calc(12px + env(safe-area-inset-top)) 14px 10px;
   display: flex;
   align-items: center;
   gap: 9px;
   background: linear-gradient(#1b1e2e, var(--color-bg));
 }
 .hdr.hero {
-  padding: calc(26px + env(safe-area-inset-top)) 14px 16px;
+  padding: calc(12px + env(safe-area-inset-top)) 14px 16px;
   background: radial-gradient(120% 90% at 12% 0%, #1f2f28, #1b1e2e 45%, #161826);
   flex-direction: column;
   align-items: stretch;

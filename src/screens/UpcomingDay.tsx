@@ -1,5 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { findDay, useStore } from "../state/store";
+import { useAuth } from "../lib/auth";
 import { BackHeader, InfoBanner } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
@@ -23,6 +25,9 @@ function daysAway(iso: string) {
 
 export default function UpcomingDay({ dayId }: { dayId: string }) {
   const { state } = useStore();
+  const nav = useNavigate();
+  const { account, previewingAsClient } = useAuth();
+  const selfDirected = account?.role === "friend" || previewingAsClient;
   const found = findDay(state.program, dayId);
   if (!found) return <div className="screen-scroll">Not found.</div>;
   const { day, week } = found;
@@ -30,7 +35,12 @@ export default function UpcomingDay({ dayId }: { dayId: string }) {
 
   return (
     <div className="screen">
-      <BackHeader kicker={`${friendlyDate(day.date)} · Week ${week.number}`} title={dayDisplayTitle(day)} right={<DayNavControls dayId={dayId} />} />
+      <BackHeader
+        kicker={`${friendlyDate(day.date)} · Week ${week.number}`}
+        title={dayDisplayTitle(day)}
+        right={<DayNavControls dayId={dayId} />}
+        onBack={selfDirected ? () => nav("/build") : undefined}
+      />
       <div className="screen-scroll">
         <InfoBanner icon="ph-eye">
           {daysAway(day.date)} · {day.setCount} sets · {day.muscleSummary}. You can look ahead any time — this unlocks for logging on the day.

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useStore } from "../state/store";
 import { BackHeader, InfoBanner } from "../components/UI";
 import { libraryExercises, MUSCLE_GROUPS } from "../coach/exerciseLibrary";
 import type { LibraryExercise } from "../coach/types";
 import { listCoachTemplates } from "../shared/templates";
-import { buildProgramFromDraft, expandCoachProgramToProgram } from "../shared/programConvert";
+import { buildProgramFromDraft, expandCoachProgramToProgram, draftDaysFromProgram, mergeEditedDraftIntoProgram } from "../shared/programConvert";
 import type { DraftDay } from "../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../coach/csvProgram";
 import type { CsvParseResult } from "../coach/csvProgram";
@@ -13,7 +13,7 @@ import { csvDraftDaysToCoachProgram } from "../coach/programOps";
 import { writeTemplateToCoach } from "../coach/assignProgram";
 import { useAuth } from "../lib/auth";
 
-type Mode = "choose" | "scratch" | "templates" | "csv";
+type Mode = "choose" | "scratch" | "templates" | "csv" | "editMesocycle";
 type ScratchSeed = { name: string; days: DraftDay[]; weeks: number };
 
 /** BackHeader's own back button always pops browser history, which would leave this screen entirely from
@@ -35,14 +35,33 @@ function SubHeader({ title, onBack }: { title: string; onBack: () => void }) {
 export default function BuildProgram() {
   const { state, dispatch } = useStore();
   const nav = useNavigate();
-  const [mode, setMode] = useState<Mode>("choose");
-  const [scratchSeed, setScratchSeed] = useState<ScratchSeed | null>(null);
+  const [searchParams] = useSearchParams();
+  const editRequested = searchParams.get("edit") === "1";
+  const [mode, setMode] = useState<Mode>(editRequested && state.program.weeks.length > 0 ? "editMesocycle" : "choose");
+  const [scratchSeed, setScratchSeed] = useState<ScratchSeed | null>(
+    editRequested && state.program.weeks.length > 0 ? { name: state.program.name, days: draftDaysFromProgram(state.program), weeks: state.program.totalWeeks } : null,
+  );
 
   if (mode === "choose") {
+    const hasCurrentProgram = state.program.weeks.length > 0;
     return (
       <div className="screen">
-        <BackHeader kicker="Your program" title="Build a program" />
+        <BackHeader kicker="Your program" title={hasCurrentProgram ? "Your programs" : "Build a program"} />
         <div className="screen-scroll">
+          {hasCurrentProgram && (
+            <>
+              <button className="cell row" style={{ padding: "14px 12px", textAlign: "left", cursor: "pointer", borderColor: "var(--color-accent-700)" }} onClick={() => nav("/block")}>
+                <i className="ph-fill ph-calendar-check" style={{ fontSize: 20, color: "var(--color-accent)", marginRight: 4 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Current program</div>
+                  <div className="mu trunc" style={{ marginTop: 2 }}>{state.program.name} — jump back in and log today's lift.</div>
+                </div>
+                <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
+              </button>
+              <div className="sh">Or start a new mesocycle</div>
+            </>
+          )}
+
           <InfoBanner icon="ph-info">Nothing here is prescribed by {state.program.coachName === state.profile.name ? "anyone" : "your coach"} — build your own from scratch, or start from one of {state.program.coachName}'s templates and make it yours.</InfoBanner>
 
           <button className="cell row" style={{ padding: "14px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setMode("scratch")}>
@@ -92,16 +111,32 @@ export default function BuildProgram() {
     );
   }
 
+  if (mode === "editMesocycle") {
+    return (
+      <ScratchStep
+        editMode
+        seed={scratchSeed}
+        onBack={() => {
+          setScratchSeed(null);
+          setMode("choose");
+        }}
+        onCreate={(name, days) => {
+          dispatch({ type: "SET_PROGRAM", program: mergeEditedDraftIntoProgram(state.program, days, name) });
+          nav("/block");
+        }}
+      />
+    );
+  }
+
   return (
     <ScratchStep
-      ownerName={state.profile.name}
       seed={scratchSeed}
       onBack={() => {
         setScratchSeed(null);
         setMode("choose");
       }}
-      onCreate={(program) => {
-        dispatch({ type: "SET_PROGRAM", program });
+      onCreate={(name, days, weeksCount) => {
+        dispatch({ type: "SET_PROGRAM", program: buildProgramFromDraft(name, days, weeksCount, state.profile.name) });
         nav("/block");
       }}
     />
@@ -138,7 +173,7 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
   );
 }
 
-function ScratchStep({ ownerName, seed, onBack, onCreate }: { ownerName: string; seed: ScratchSeed | null; onBack: () => void; onCreate: (p: ReturnType<typeof buildProgramFromDraft>) => void }) {
+function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed | null; editMode?: boolean; onBack: () => void; onCreate: (name: string, days: DraftDay[], weeksCount: number) => void }) {
   const { account } = useAuth();
   const { dispatch: clientDispatch } = useStore();
   const [name, setName] = useState(seed?.name || "My Program");
@@ -186,39 +221,43 @@ function ScratchStep({ ownerName, seed, onBack, onCreate }: { ownerName: string;
 
   return (
     <div className="screen">
-      <SubHeader title="From scratch" onBack={onBack} />
+      <SubHeader title={editMode ? "Edit mesocycle" : "From scratch"} onBack={onBack} />
       <div className="screen-scroll">
         <div className="field">
           <label>Program name</label>
           <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
 
-        <div className="row" style={{ gap: 8 }}>
-          <div className="cell" style={{ flex: 1, padding: 9 }}>
-            <div className="scr">Weeks</div>
-            <div className="row" style={{ marginTop: 3, gap: 4 }}>
-              <button onClick={() => setWeeksCount((v) => Math.max(1, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
-                <i className="ph ph-minus" style={{ fontSize: 11 }} />
-              </button>
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, flex: 1, textAlign: "center" }}>{weeksCount}</span>
-              <button onClick={() => setWeeksCount((v) => Math.min(16, v + 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
-                <i className="ph ph-plus" style={{ fontSize: 11 }} />
-              </button>
+        {editMode ? (
+          <InfoBanner icon="ph-info">Editing what's still ahead — any week already done stays exactly as logged.</InfoBanner>
+        ) : (
+          <div className="row" style={{ gap: 8 }}>
+            <div className="cell" style={{ flex: 1, padding: 9 }}>
+              <div className="scr">Weeks</div>
+              <div className="row" style={{ marginTop: 3, gap: 4 }}>
+                <button onClick={() => setWeeksCount((v) => Math.max(1, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
+                  <i className="ph ph-minus" style={{ fontSize: 11 }} />
+                </button>
+                <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, flex: 1, textAlign: "center" }}>{weeksCount}</span>
+                <button onClick={() => setWeeksCount((v) => Math.min(16, v + 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
+                  <i className="ph ph-plus" style={{ fontSize: 11 }} />
+                </button>
+              </div>
+            </div>
+            <div className="cell" style={{ flex: 1, padding: 9 }}>
+              <div className="scr">Days / week</div>
+              <div className="row" style={{ marginTop: 3, gap: 4 }}>
+                <button onClick={() => setDaysCount(days.length - 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
+                  <i className="ph ph-minus" style={{ fontSize: 11 }} />
+                </button>
+                <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, flex: 1, textAlign: "center" }}>{days.length}</span>
+                <button onClick={() => setDaysCount(days.length + 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
+                  <i className="ph ph-plus" style={{ fontSize: 11 }} />
+                </button>
+              </div>
             </div>
           </div>
-          <div className="cell" style={{ flex: 1, padding: 9 }}>
-            <div className="scr">Days / week</div>
-            <div className="row" style={{ marginTop: 3, gap: 4 }}>
-              <button onClick={() => setDaysCount(days.length - 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
-                <i className="ph ph-minus" style={{ fontSize: 11 }} />
-              </button>
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, flex: 1, textAlign: "center" }}>{days.length}</span>
-              <button onClick={() => setDaysCount(days.length + 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
-                <i className="ph ph-plus" style={{ fontSize: 11 }} />
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
 
         {days.map((d, i) => (
           <div key={i} className="cell" style={{ padding: 11 }}>
@@ -245,11 +284,11 @@ function ScratchStep({ ownerName, seed, onBack, onCreate }: { ownerName: string;
             className="btn btn-primary btn-block"
             style={{ height: 46, opacity: totalExercises > 0 ? 1 : 0.5 }}
             disabled={totalExercises === 0}
-            onClick={() => onCreate(buildProgramFromDraft(name || "My Program", days, weeksCount, ownerName))}
+            onClick={() => onCreate(name || "My Program", days, weeksCount)}
           >
-            Start this program
+            {editMode ? "Save changes" : "Start this program"}
           </button>
-          {account?.role === "coach" && (
+          {!editMode && account?.role === "coach" && (
             <button
               className="btn btn-secondary btn-block"
               style={{ height: 40, marginTop: 8, fontSize: 12.5, opacity: totalExercises > 0 && !savingTemplate ? 1 : 0.5 }}
