@@ -35,7 +35,7 @@ export default function AcceptInvite() {
       <div className="screen">
         <div className="hdr" style={{ paddingBottom: 8 }}>
           <div>
-            <div className="k">Mesocycle Studio</div>
+            <div className="k">Jacked</div>
             <div className="h1">Invite not found</div>
           </div>
         </div>
@@ -51,7 +51,7 @@ export default function AcceptInvite() {
       <div className="screen">
         <div className="hdr" style={{ paddingBottom: 8 }}>
           <div>
-            <div className="k">Mesocycle Studio</div>
+            <div className="k">Jacked</div>
             <div className="h1">Already used</div>
           </div>
         </div>
