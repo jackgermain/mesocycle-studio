@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
@@ -27,6 +27,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
   const [account, setAccount] = useState<Account | null>(null);
+  // Tracks whose account is currently loaded, so a session change to a *different* user clears the
+  // stale account synchronously — otherwise there's a window where `session` already reflects the new
+  // person but `account` still shows the previous person's (e.g. the coach's), and anything reading both
+  // together mid-transition — like the invite-accept screen's "already have an account" redirect — can
+  // act on the wrong one.
+  const lastUserIdRef = useRef<string | null>(null);
 
   async function loadAccount(userId: string) {
     const { data } = await supabase.from("accounts").select("id, role, display_name, coach_id").eq("id", userId).maybeSingle();
@@ -37,18 +43,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let active = true;
     supabase.auth.getSession().then(async ({ data }) => {
       if (!active) return;
+      lastUserIdRef.current = data.session?.user.id ?? null;
       setSession(data.session);
       if (data.session?.user.id) await loadAccount(data.session.user.id);
       if (active) setLoading(false);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+      const newUserId = newSession?.user.id ?? null;
+      if (newUserId !== lastUserIdRef.current) setAccount(null);
+      lastUserIdRef.current = newUserId;
       setSession(newSession);
-      if (newSession?.user.id) {
-        await loadAccount(newSession.user.id);
-      } else {
-        setAccount(null);
-      }
+      if (newUserId) await loadAccount(newUserId);
       setLoading(false);
     });
 
