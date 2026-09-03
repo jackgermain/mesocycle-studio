@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useStore } from "../state/store";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
-import { InfoBanner, HeroHeader } from "../components/UI";
+import { InfoBanner, HeroHeader, SetPasswordCard, SignOutButton } from "../components/UI";
 import { formatMessageTime } from "../shared/formatTime";
 
 interface Bubble {
@@ -23,10 +24,12 @@ interface Thread {
  * a client touch their own slice of the coach's threads without any broader access. */
 export default function Inbox() {
   const { state } = useStore();
+  const { account } = useAuth();
   const [thread, setThread] = useState<Thread | "loading" | null>("loading");
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showAccount, setShowAccount] = useState(false);
 
   async function refresh() {
     const { data, error } = await supabase.rpc("get_my_thread");
@@ -59,10 +62,24 @@ export default function Inbox() {
 
   const bubbles = thread === "loading" || thread === null ? [] : thread.bubbles;
   const coachName = state.program.coachName;
+  const myName = account?.display_name ?? state.profile.name;
 
   return (
     <div className="screen">
-      <HeroHeader kicker={coachName} title="Inbox" />
+      <HeroHeader
+        kicker={coachName}
+        title="Inbox"
+        right={
+          <button
+            className="avatar"
+            style={{ width: 38, height: 38, boxShadow: "0 0 0 1px var(--color-accent-700)", border: "none", cursor: "pointer" }}
+            aria-label="Account"
+            onClick={() => setShowAccount(true)}
+          >
+            {myName.slice(0, 2).toUpperCase()}
+          </button>
+        }
+      />
       <div className="screen-scroll" style={{ justifyContent: bubbles.length ? "flex-end" : "flex-start", gap: 4 }}>
         {thread === "loading" && <div className="mu">Loading…</div>}
         {thread !== "loading" && bubbles.length === 0 && (
@@ -119,6 +136,24 @@ export default function Inbox() {
         </div>
       </div>
       <TabBar />
+
+      {showAccount && (
+        <div className="sheet-backdrop" onClick={() => setShowAccount(false)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="row" style={{ marginBottom: 4 }}>
+              <div style={{ flex: 1 }}>
+                <div className="scr">Signed in as</div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{myName}</div>
+              </div>
+              <button onClick={() => setShowAccount(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
+                <i className="ph ph-x" style={{ fontSize: 18 }} />
+              </button>
+            </div>
+            <SetPasswordCard />
+            <SignOutButton />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

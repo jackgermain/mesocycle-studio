@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../lib/auth";
 
 export function BackHeader({ kicker, title, right, onBack }: { kicker: string; title: string; right?: React.ReactNode; onBack?: () => void }) {
   const nav = useNavigate();
@@ -177,6 +178,21 @@ export function SetPasswordCard() {
         </>
       )}
     </div>
+  );
+}
+
+export function SignOutButton() {
+  const { signOut } = useAuth();
+  const nav = useNavigate();
+  async function handle() {
+    await signOut();
+    nav("/", { replace: true });
+  }
+  return (
+    <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 4 }} onClick={handle}>
+      <i className="ph ph-sign-out" style={{ fontSize: 15 }} />
+      Sign out
+    </button>
   );
 }
 

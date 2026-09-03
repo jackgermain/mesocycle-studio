@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore, getAllLifts, getLiftHistory } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
-import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
-import { Seg, SetPasswordCard, InfoBanner, HeroHeader, HeroStat } from "../components/UI";
+import { Seg, InfoBanner, HeroHeader, HeroStat } from "../components/UI";
 
 function todayISO() {
   const t = new Date();
@@ -69,9 +68,6 @@ export default function Progress() {
         {tab === "strength" && <StrengthTab />}
         {tab === "body" && <BodyTab />}
         {tab === "volume" && <VolumeTab />}
-
-        <SetPasswordCard />
-        <SignOutButton />
       </div>
       <TabBar />
     </div>
@@ -351,20 +347,5 @@ function VolumeTab() {
       </div>
       <div className="mu" style={{ marginTop: 10, lineHeight: 1.6 }}>Total prescribed sets per muscle group for this week's program.</div>
     </div>
-  );
-}
-
-function SignOutButton() {
-  const { signOut } = useAuth();
-  const nav = useNavigate();
-  async function handle() {
-    await signOut();
-    nav("/", { replace: true });
-  }
-  return (
-    <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 4 }} onClick={handle}>
-      <i className="ph ph-sign-out" style={{ fontSize: 15 }} />
-      Sign out
-    </button>
   );
 }
