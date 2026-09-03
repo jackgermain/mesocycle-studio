@@ -5,27 +5,28 @@ import { CoachTabBar } from "../components/CoachTabBar";
 import { HeroHeader, HeroStat } from "../../components/UI";
 import { LOAD_LABELS } from "../loadMode";
 import { buildBlankProgram } from "../mockData";
-import { isPendingProgram } from "../programOps";
 import type { CoachProgram } from "../types";
 
-type Filter = "all" | "published" | "drafts";
+type Filter = "templates" | "drafts";
 
 export default function Programs() {
   const { state, dispatch } = useCoachStore();
   const nav = useNavigate();
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filter, setFilter] = useState<Filter>("templates");
   const [publishing, setPublishing] = useState<CoachProgram | null>(null);
   const [visibility, setVisibility] = useState<"private" | "public">("private");
   const [choosing, setChoosing] = useState(false);
   const [naming, setNaming] = useState(false);
   const [newName, setNewName] = useState("");
 
-  // Every not-yet-confirmed working copy -- whether built for one client's assignment, or just started
-  // from scratch/import here with no client in mind yet -- stays hidden until explicitly saved
-  // ("Save as a personal template") or actually assigned to someone. Otherwise every attempt would
-  // permanently clutter this list.
-  const visiblePrograms = state.programs.filter((p) => !isPendingProgram(p));
-  const filtered = visiblePrograms.filter((p) => (filter === "all" ? true : filter === "published" ? p.status === "published" : p.status === "draft"));
+  // Two buckets, no overlap: a program you've explicitly saved ("Save as a personal template") lives
+  // under Templates -- your real, reusable library. Everything else -- still being built, backing a
+  // client's live assignment but never promoted, or just started and not yet finished -- lives under
+  // Drafts, visible there so "save as draft" (see ProgramDetail's leave prompt) is actually resumable
+  // instead of vanishing.
+  const templates = state.programs.filter((p) => p.isTemplate);
+  const drafts = state.programs.filter((p) => !p.isTemplate);
+  const filtered = filter === "templates" ? templates : drafts;
 
   function openPublish(p: CoachProgram) {
     setVisibility(p.visibility === "public" ? "public" : "private");
@@ -67,22 +68,21 @@ export default function Programs() {
           </div>
         }
       >
-        <HeroStat value={visiblePrograms.length} label="programs">
+        <HeroStat value={state.programs.length} label="programs">
           <div className="row" style={{ fontSize: 12 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Published</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{visiblePrograms.filter((p) => p.status === "published").length}</span>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Templates</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{templates.length}</span>
           </div>
           <div className="row" style={{ fontSize: 12 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Drafts</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{visiblePrograms.filter((p) => p.status !== "published").length}</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{drafts.length}</span>
           </div>
         </HeroStat>
       </HeroHeader>
       <div className="screen-scroll">
         <div className="row" style={{ gap: 6 }}>
-          <button className={`chip${filter === "all" ? " on" : ""}`} onClick={() => setFilter("all")}>All</button>
-          <button className={`chip${filter === "published" ? " on" : ""}`} onClick={() => setFilter("published")}>Published</button>
-          <button className={`chip${filter === "drafts" ? " on" : ""}`} onClick={() => setFilter("drafts")}>Drafts</button>
+          <button className={`chip${filter === "templates" ? " on" : ""}`} onClick={() => setFilter("templates")}>Templates {templates.length}</button>
+          <button className={`chip${filter === "drafts" ? " on" : ""}`} onClick={() => setFilter("drafts")}>Drafts {drafts.length}</button>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

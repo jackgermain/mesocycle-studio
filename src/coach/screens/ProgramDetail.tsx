@@ -70,8 +70,8 @@ export default function ProgramDetail() {
       />
       <div className="screen-scroll">
         {isPendingProgram(program) && (
-          <InfoBanner icon="ph-eye-slash">
-            Working copy — hidden from your Programs list until you check "Save as a personal template" below. Otherwise it's cleaned up automatically once you assign something else.
+          <InfoBanner icon="ph-file-dashed">
+            Working copy — lives under the Drafts tab until you check "Save as a personal template" below to make it a real reusable one. Otherwise it's cleaned up automatically once you assign something else.
           </InfoBanner>
         )}
         <div className="cell" style={{ padding: "10px 12px" }}>

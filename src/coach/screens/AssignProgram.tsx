@@ -4,7 +4,7 @@ import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
 import { BackHeader, InfoBanner, ActionGroup, ActionRow } from "../../components/UI";
 import { buildBlankProgram } from "../mockData";
-import { duplicateProgram, csvDraftDaysToCoachProgram, isPendingProgram } from "../programOps";
+import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
 import { parseCsvToDraftDays } from "../csvProgram";
 import { writeProgramToClient, queueProgramForClient } from "../assignProgram";
@@ -41,7 +41,10 @@ export default function AssignProgram() {
   const accountId = client.accountId;
   const clientId2 = client.id;
   const clientName = client.name;
-  const visiblePrograms = state.programs.filter((p) => !isPendingProgram(p));
+  // Only real, explicitly-saved templates make sense as a starting point to duplicate — a still-in-
+  // progress draft (someone else's working copy, or one of this coach's own unfinished ones) isn't a
+  // sensible thing to offer here.
+  const visiblePrograms = state.programs.filter((p) => p.isTemplate);
 
   /** Adds a fresh (or duplicated) program to the coach's library — hidden from the Programs list until
    * explicitly saved — and opens the real builder to finish it: drag to reorder, edit sets/reps/load,
@@ -108,7 +111,7 @@ export default function AssignProgram() {
               subtitle="Opens the full builder — days, exercises, sets, everything"
               onClick={() => createAndEdit(buildBlankProgram(`${client.name.split(" ")[0]}'s Program`))}
             />
-            <ActionRow icon="ph-stack" label="Use one of your programs" subtitle={`${visiblePrograms.length} saved — starts you a copy to edit for them`} onClick={() => setMode("pickToEdit")} />
+            <ActionRow icon="ph-stack" label="Use one of your programs" subtitle={`${visiblePrograms.length} template${visiblePrograms.length === 1 ? "" : "s"} — starts you a copy to edit for them`} onClick={() => setMode("pickToEdit")} />
             <ActionRow icon="ph-file-arrow-up" label="Import from a spreadsheet" subtitle="CSV: Day, Exercise, Muscle, Sets, Reps" onClick={() => setMode("csv")} />
           </ActionGroup>
         </div>
@@ -121,7 +124,7 @@ export default function AssignProgram() {
       <div className="screen">
         <BackHeader kicker={client.name} title="Use one of your programs" />
         <div className="screen-scroll">
-          {visiblePrograms.length === 0 && <InfoBanner icon="ph-tray">No saved programs yet — build one from scratch instead.</InfoBanner>}
+          {visiblePrograms.length === 0 && <InfoBanner icon="ph-tray">No saved templates yet — build one from scratch instead.</InfoBanner>}
           <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
             {visiblePrograms.map((p) => (
               <button key={p.id} className="link-row" style={{ padding: "11px 12px" }} onClick={() => createAndEdit(duplicateProgram(p, `${p.name} — ${client.name.split(" ")[0]}`))}>
