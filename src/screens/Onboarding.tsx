@@ -41,36 +41,55 @@ export default function Onboarding() {
         <p className="mu" style={{ lineHeight: 1.6, fontSize: 12.5 }}>
           Everything you see uses this — loads, plate maths, bodyweight and your history. Change it any time in settings.
         </p>
-        <div style={{ display: "flex", gap: 9 }}>
-          <button className={`pill-opt${units === "lb" ? " on" : ""}`} onClick={() => setUnits("lb")} style={{ padding: "18px 14px", textAlign: "left" }}>
-            <div className="row" style={{ justifyContent: "space-between" }}>
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 24, fontWeight: 800 }}>lb</span>
-              {units === "lb" ? <i className="ph-fill ph-check-circle" style={{ fontSize: 18 }} /> : <div style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid currentColor", opacity: 0.4 }} />}
-            </div>
-            <div style={{ marginTop: 8, lineHeight: 1.5, fontSize: 11.5, opacity: 0.85 }}>
-              Pounds · 5 lb jumps
-              <br />
-              198.4 lb · 200 lb × 6
-            </div>
-          </button>
-          <button className={`pill-opt${units === "kg" ? " on" : ""}`} onClick={() => setUnits("kg")} style={{ padding: "18px 14px", textAlign: "left" }}>
-            <div className="row" style={{ justifyContent: "space-between" }}>
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 24, fontWeight: 800 }}>kg</span>
-              {units === "kg" ? <i className="ph-fill ph-check-circle" style={{ fontSize: 18 }} /> : <div style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid currentColor", opacity: 0.4 }} />}
-            </div>
-            <div style={{ marginTop: 8, lineHeight: 1.5, fontSize: 11.5, opacity: 0.85 }}>
-              Kilos · 2.5 kg jumps
-              <br />
-              90 kg · 90 kg × 6
-            </div>
-          </button>
+        <div>
+          <div className="sh">Units</div>
+          <div className="row" style={{ gap: 9 }}>
+            <button
+              className={`pill-opt${units === "lb" ? " on" : ""}`}
+              onClick={() => setUnits("lb")}
+              style={{ position: "relative", height: 76, display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <span style={{ fontFamily: "var(--font-heading)", fontSize: 28, fontWeight: 800 }}>lb</span>
+              <span style={{ position: "absolute", top: 10, right: 10, display: "flex" }}>
+                {units === "lb" ? (
+                  <i className="ph-fill ph-check-circle" style={{ fontSize: 16 }} />
+                ) : (
+                  <div style={{ width: 16, height: 16, borderRadius: "50%", border: "1.5px solid currentColor", opacity: 0.4 }} />
+                )}
+              </span>
+            </button>
+            <button
+              className={`pill-opt${units === "kg" ? " on" : ""}`}
+              onClick={() => setUnits("kg")}
+              style={{ position: "relative", height: 76, display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <span style={{ fontFamily: "var(--font-heading)", fontSize: 28, fontWeight: 800 }}>kg</span>
+              <span style={{ position: "absolute", top: 10, right: 10, display: "flex" }}>
+                {units === "kg" ? (
+                  <i className="ph-fill ph-check-circle" style={{ fontSize: 16 }} />
+                ) : (
+                  <div style={{ width: 16, height: 16, borderRadius: "50%", border: "1.5px solid currentColor", opacity: 0.4 }} />
+                )}
+              </span>
+            </button>
+          </div>
         </div>
 
         <div>
-          <div className="sh">Height and bodyweight</div>
+          <div className="sh">Height &amp; bodyweight</div>
           <div className="row" style={{ gap: 8 }}>
-            <input className="input" style={{ textAlign: "center" }} value={height} onChange={(e) => setHeight(e.target.value)} />
-            <input className="input" style={{ textAlign: "center" }} value={weight} onChange={(e) => setWeight(e.target.value)} />
+            <div style={{ flex: 1 }}>
+              <div className="cell" style={{ padding: "10px 12px" }}>
+                <div className="scr" style={{ marginBottom: 4 }}>Height</div>
+                <input className="input" style={{ padding: 0, border: "none", background: "none", fontSize: 16, fontFamily: "var(--font-heading)" }} value={height} onChange={(e) => setHeight(e.target.value)} />
+              </div>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div className="cell" style={{ padding: "10px 12px" }}>
+                <div className="scr" style={{ marginBottom: 4 }}>Bodyweight</div>
+                <input className="input" style={{ padding: 0, border: "none", background: "none", fontSize: 16, fontFamily: "var(--font-heading)" }} value={weight} onChange={(e) => setWeight(e.target.value)} />
+              </div>
+            </div>
           </div>
         </div>
 
