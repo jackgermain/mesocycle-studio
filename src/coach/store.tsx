@@ -27,12 +27,12 @@ type Action =
   | { type: "REMOVE_CLIENT"; clientId: string }
   | { type: "APPLY_FLAG"; clientId: string; flagId: string }
   | { type: "DISMISS_FLAG"; clientId: string; flagId: string }
-  | { type: "PUBLISH_PROGRAM"; programId: string; visibility: "private" | "public" }
   | { type: "ADD_PROGRAM"; program: CoachProgram }
   | { type: "REMOVE_PROGRAM"; programId: string }
   | { type: "ASSIGN_PROGRAM"; clientId: string; programId: string; programName: string; totalWeeks: number; mode: "now" | "queued"; sourceProgramId?: string }
   | { type: "SET_PROGRAM_NAME"; programId: string; name: string }
   | { type: "SET_PROGRAM_TEMPLATE"; programId: string; isTemplate: boolean }
+  | { type: "SET_PROGRAM_VISIBILITY"; programId: string; visibility: "private" | "public" }
   | { type: "SEND_MESSAGE"; threadId: string; text: string; clientName?: string }
   | { type: "MARK_READ"; threadId: string }
   | { type: "ADD_CUSTOM_EXERCISE"; exercise: LibraryExercise }
@@ -77,10 +77,8 @@ function reducer(state: CoachState, action: Action): CoachState {
       const clients = state.clients.map((c) => (c.id === action.clientId ? { ...c, flags: c.flags.filter((f) => f.id !== action.flagId) } : c));
       return { ...state, clients };
     }
-    case "PUBLISH_PROGRAM": {
-      const programs = state.programs.map((p) =>
-        p.id === action.programId ? { ...p, status: "published" as const, visibility: p.isTemplate ? "private" : action.visibility } : p
-      );
+    case "SET_PROGRAM_VISIBILITY": {
+      const programs = state.programs.map((p) => (p.id === action.programId ? { ...p, visibility: action.visibility } : p));
       return { ...state, programs };
     }
     case "ADD_PROGRAM":
@@ -122,8 +120,8 @@ function reducer(state: CoachState, action: Action): CoachState {
     }
     case "SET_PROGRAM_TEMPLATE": {
       // Checking this is also the coach's explicit "keep this" signal for any working copy still pending
-      // (see CoachProgram.pendingForClientId / pendingUnsaved) — otherwise it stays hidden from the main
-      // Programs list and gets cleaned up automatically once superseded or discarded.
+      // (see CoachProgram.pendingForClientId / pendingUnsaved) — moving it from the Drafts tab into the
+      // real Templates library, and out of the auto-cleanup path once superseded or discarded.
       const programs = state.programs.map((p) =>
         p.id === action.programId
           ? {

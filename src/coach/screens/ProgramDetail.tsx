@@ -64,7 +64,7 @@ export default function ProgramDetail() {
   return (
     <div className="screen">
       <BackHeader
-        kicker={`${program.status} · ${program.isTemplate ? "template" : `${program.assignedCount} assigned`}`}
+        kicker={program.isTemplate ? (program.visibility === "public" ? "Public template" : "Private template") : "Draft"}
         title={program.name}
         onBack={isUnfinishedWorkingCopy ? () => setShowLeaveConfirm(true) : undefined}
       />
@@ -94,9 +94,24 @@ export default function ProgramDetail() {
             />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 13 }}>Save as a personal template</div>
-              <div className="mu" style={{ marginTop: 1, lineHeight: 1.5 }}>Stays private to you — never listed publicly, only ever prescribed by you.</div>
+              <div className="mu" style={{ marginTop: 1, lineHeight: 1.5 }}>Private by default — only you can see or prescribe it, unless you make it public below.</div>
             </div>
           </label>
+
+          {program.isTemplate && (
+            <label className="row" style={{ gap: 10, cursor: "pointer", marginTop: 12 }}>
+              <input
+                type="checkbox"
+                checked={program.visibility === "public"}
+                onChange={(e) => dispatch({ type: "SET_PROGRAM_VISIBILITY", programId: program.id, visibility: e.target.checked ? "public" : "private" })}
+                style={{ width: 17, height: 17, flex: "none", accentColor: "var(--color-accent)" }}
+              />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13 }}>Make this template public</div>
+                <div className="mu" style={{ marginTop: 1, lineHeight: 1.5 }}>Off by default. Nothing you build is ever public unless you turn this on yourself.</div>
+              </div>
+            </label>
+          )}
         </div>
 
         <div className="cell row" style={{ gap: 8 }}>
@@ -121,6 +136,24 @@ export default function ProgramDetail() {
             Assign to a client
           </button>
         )}
+
+        <button
+          className="btn btn-secondary btn-block"
+          style={{ height: 40, color: "var(--color-neutral-400)" }}
+          onClick={() => {
+            const backing = state.clients.filter((c) => c.assignedProgramId === program.id || c.queuedProgramId === program.id);
+            const warning = backing.length
+              ? ` ${backing.map((c) => c.name).join(", ")} ${backing.length > 1 ? "are" : "is"} currently on this — deleting it here won't change what they're training, but you'll lose easy access to edit it further.`
+              : "";
+            if (window.confirm(`Delete "${program.name}"?${warning} This can't be undone.`)) {
+              dispatch({ type: "REMOVE_PROGRAM", programId: program.id });
+              nav(-1);
+            }
+          }}
+        >
+          <i className="ph ph-trash" style={{ fontSize: 15 }} />
+          Delete this program
+        </button>
 
         <div className="row" style={{ gap: 3 }}>
           {program.phaseWeights.map((w, i) => (
