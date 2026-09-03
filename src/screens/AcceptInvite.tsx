@@ -87,7 +87,10 @@ function SignInStep({ code, invite }: { code: string; invite: PublicInvite }) {
     setBusy(true);
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}#/invite/${code}` },
+      // A query param, not a "#/invite/…" hash route — Supabase appends its own auth tokens as a URL
+      // fragment on the way back, which would collide with a literal route hash here. Landing.tsx
+      // forwards ?invite=CODE back to this screen once the person is signed back in.
+      options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}?invite=${code}` },
     });
     setBusy(false);
     if (error) setError(error.message);

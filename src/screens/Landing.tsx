@@ -8,6 +8,11 @@ import { InfoBanner } from "../components/UI";
 export default function Landing() {
   const { loading, session, account, refreshAccount } = useAuth();
 
+  // Coming back from a magic-link email sent from the invite-accept screen — forward to it (it handles
+  // its own loading/auth state) rather than falling through to the plain sign-in form here.
+  const inviteCode = new URLSearchParams(window.location.search).get("invite");
+  if (inviteCode) return <Navigate to={`/invite/${inviteCode}`} replace />;
+
   if (loading) {
     return (
       <div className="screen">
@@ -43,7 +48,9 @@ function SignIn() {
     setBusy(true);
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}#/` },
+      // No "#/…" here — this app uses hash-based routing, and Supabase appends its own auth tokens as
+      // a URL fragment on the way back, which collides with a literal route hash in the redirect URL.
+      options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` },
     });
     setBusy(false);
     if (error) setError(error.message);
