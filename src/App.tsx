@@ -34,6 +34,8 @@ import NutritionProtocol from "./coach/screens/NutritionProtocol";
 import ImportProgram from "./coach/screens/ImportProgram";
 import LogSession from "./coach/screens/LogSession";
 import InviteRoster from "./coach/screens/InviteRoster";
+import AssignProgram from "./coach/screens/AssignProgram";
+import AssignProgramPickClient from "./coach/screens/AssignProgramPickClient";
 
 function LoadingShell() {
   return (
@@ -167,6 +169,8 @@ export default function App() {
               <Route path="/coach/clients" element={<Clients />} />
               <Route path="/coach/invite" element={<InviteRoster />} />
               <Route path="/coach/clients/:clientId" element={<ClientDetail />} />
+              <Route path="/coach/clients/:clientId/assign" element={<AssignProgram />} />
+              <Route path="/coach/programs/:programId/assign" element={<AssignProgramPickClient />} />
               <Route path="/coach/clients/:clientId/nutrition" element={<NutritionProtocol />} />
               <Route path="/coach/clients/:clientId/log" element={<LogSession />} />
               <Route path="/coach/programs" element={<Programs />} />

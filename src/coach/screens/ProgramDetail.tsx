@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { BackHeader, Seg, StatCell } from "../../components/UI";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
@@ -27,6 +27,7 @@ const MUSCLE_LANDMARKS: Record<string, { mev: number; mrv: number }> = {
 
 export default function ProgramDetail() {
   const { programId = "" } = useParams();
+  const nav = useNavigate();
   const { state, dispatch } = useCoachStore();
   const program = state.programs.find((p) => p.id === programId);
   const [week, setWeek] = useState(1);
@@ -82,6 +83,11 @@ export default function ProgramDetail() {
           <StatCell label="Week" value={week} />
           <StatCell label="Scale" value={LOAD_LABELS[program.effortScale]} />
         </div>
+
+        <button className="btn btn-solid btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
+          <i className="ph ph-user-plus" style={{ fontSize: 15 }} />
+          Assign to a client
+        </button>
 
         <div className="row" style={{ gap: 3 }}>
           {program.phaseWeights.map((w, i) => (

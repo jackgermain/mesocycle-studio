@@ -106,6 +106,11 @@ export function expandCoachProgramToProgram(cp: CoachProgram, coachName: string)
 export interface DraftExercise {
   name: string;
   muscle: string;
+  /** Only ever set by the spreadsheet importer — a from-scratch build always falls back to the plain
+   * 3×10 default below, same as before this existed. */
+  sets?: number;
+  reps?: number;
+  load?: number;
 }
 export interface DraftDay {
   name: string;
@@ -113,8 +118,9 @@ export interface DraftDay {
 }
 
 /** Turns a from-scratch draft — day names plus the exercises picked for each — into a one-week-template
- * Program repeated across `weeks` weeks, each exercise seeded with a plain 3×10 starting point the
- * builder can then edit like any other set. */
+ * Program repeated across `weeks` weeks. Each exercise is seeded either with whatever sets/reps/load the
+ * draft specified (the spreadsheet importer's case) or a plain 3×10 starting point the builder can then
+ * edit like any other set. */
 export function buildProgramFromDraft(name: string, days: DraftDay[], weeks: number, ownerName: string): Program {
   const daysPerWeek = days.length || 1;
   const outWeeks: TrainingWeek[] = [];
@@ -130,11 +136,12 @@ export function buildProgramFromDraft(name: string, days: DraftDay[], weeks: num
       dd.exercises.forEach((de, ei) => {
         const id = `w${weekNumber}-d${i + 1}-e${ei + 1}`;
         const restSec = defaultRestSec(de.name);
-        const sets: WorkSet[] = [1, 2, 3].map((setIndex) => ({
+        const setCountForEx = Math.max(1, de.sets ?? 3);
+        const sets: WorkSet[] = Array.from({ length: setCountForEx }, (_, si) => si + 1).map((setIndex) => ({
           id: `${id}-s${setIndex}`,
           index: setIndex,
           type: "straight",
-          prescribed: { reps: 10, load: 0, effort: { scale: "RIR", value: 2 }, restSec },
+          prescribed: { reps: de.reps ?? 10, load: de.load ?? 0, effort: { scale: "RIR", value: 2 }, restSec },
           actual: null,
           checked: false,
         }));

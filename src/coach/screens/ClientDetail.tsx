@@ -248,12 +248,14 @@ export default function ClientDetail() {
             <div className="sh">Actions</div>
             <ActionGroup>
               <ActionRow
-                icon="ph-pencil-simple-line"
+                icon="ph-stack"
                 iconBg="var(--color-accent-900)"
                 iconColor="var(--color-accent)"
-                label="Log a session in person"
-                onClick={() => nav(`/coach/clients/${client.id}/log`)}
+                label={client.status === "unassigned" ? "Assign a program" : "Change their program"}
+                subtitle={client.status === "unassigned" ? "From scratch, a saved program, or a spreadsheet" : client.programName}
+                onClick={() => nav(`/coach/clients/${client.id}/assign`)}
               />
+              <ActionRow icon="ph-pencil-simple-line" label="Log a session in person" onClick={() => nav(`/coach/clients/${client.id}/log`)} />
               <ActionRow icon="ph-fork-knife" label="Nutrition protocol" onClick={() => nav(`/coach/clients/${client.id}/nutrition`)} />
               <ActionRow icon="ph-chat-circle" label={`Message ${client.name.split(" ")[0]}`} onClick={() => nav(`/coach/messages/${client.accountId}`)} />
               {accountActive !== null && (

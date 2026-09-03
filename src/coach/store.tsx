@@ -28,6 +28,7 @@ type Action =
   | { type: "DISMISS_FLAG"; clientId: string; flagId: string }
   | { type: "PUBLISH_PROGRAM"; programId: string; visibility: "private" | "public" }
   | { type: "ADD_PROGRAM"; program: CoachProgram }
+  | { type: "ASSIGN_PROGRAM"; clientId: string; programName: string; totalWeeks: number; sourceProgramId?: string }
   | { type: "SET_PROGRAM_NAME"; programId: string; name: string }
   | { type: "SET_PROGRAM_TEMPLATE"; programId: string; isTemplate: boolean }
   | { type: "SEND_MESSAGE"; threadId: string; text: string; clientName?: string }
@@ -82,6 +83,17 @@ function reducer(state: CoachState, action: Action): CoachState {
     }
     case "ADD_PROGRAM":
       return { ...state, programs: [action.program, ...state.programs] };
+    case "ASSIGN_PROGRAM": {
+      const clients = state.clients.map((c) =>
+        c.id === action.clientId
+          ? { ...c, programName: action.programName, week: 1, totalWeeks: action.totalWeeks, status: c.status === "unassigned" ? ("on-track" as const) : c.status }
+          : c
+      );
+      const programs = action.sourceProgramId
+        ? state.programs.map((p) => (p.id === action.sourceProgramId ? { ...p, assignedCount: p.assignedCount + 1 } : p))
+        : state.programs;
+      return { ...state, clients, programs };
+    }
     case "SET_PROGRAM_NAME": {
       const programs = state.programs.map((p) => (p.id === action.programId ? { ...p, name: action.name } : p));
       return { ...state, programs };
