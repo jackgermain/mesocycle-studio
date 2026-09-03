@@ -15,7 +15,7 @@ export interface CoachState {
   toast: string | null;
 }
 
-function blankState(): CoachState {
+export function blankState(): CoachState {
   return { clients: [], programs: [], threads: [], customExercises: [], toast: null };
 }
 

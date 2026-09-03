@@ -9,9 +9,12 @@ import { buildProgramFromDraft, expandCoachProgramToProgram } from "../shared/pr
 import type { DraftDay } from "../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../coach/csvProgram";
 import type { CsvParseResult } from "../coach/csvProgram";
-import type { Program } from "../data/types";
+import { csvDraftDaysToCoachProgram } from "../coach/programOps";
+import { writeTemplateToCoach } from "../coach/assignProgram";
+import { useAuth } from "../lib/auth";
 
 type Mode = "choose" | "scratch" | "templates" | "csv";
+type ScratchSeed = { name: string; days: DraftDay[]; weeks: number };
 
 /** BackHeader's own back button always pops browser history, which would leave this screen entirely from
  * a sub-step reached by local state (not a route) — this small header calls back into that state instead. */
@@ -33,6 +36,7 @@ export default function BuildProgram() {
   const { state, dispatch } = useStore();
   const nav = useNavigate();
   const [mode, setMode] = useState<Mode>("choose");
+  const [scratchSeed, setScratchSeed] = useState<ScratchSeed | null>(null);
 
   if (mode === "choose") {
     return (
@@ -77,10 +81,31 @@ export default function BuildProgram() {
   }
 
   if (mode === "csv") {
-    return <CsvStep ownerName={state.profile.name} onBack={() => setMode("choose")} onCreate={(program) => { dispatch({ type: "SET_PROGRAM", program }); nav("/block"); }} />;
+    return (
+      <CsvStep
+        onBack={() => setMode("choose")}
+        onReview={(seed) => {
+          setScratchSeed(seed);
+          setMode("scratch");
+        }}
+      />
+    );
   }
 
-  return <ScratchStep ownerName={state.profile.name} onBack={() => setMode("choose")} onCreate={(program) => { dispatch({ type: "SET_PROGRAM", program }); nav("/block"); }} />;
+  return (
+    <ScratchStep
+      ownerName={state.profile.name}
+      seed={scratchSeed}
+      onBack={() => {
+        setScratchSeed(null);
+        setMode("choose");
+      }}
+      onCreate={(program) => {
+        dispatch({ type: "SET_PROGRAM", program });
+        nav("/block");
+      }}
+    />
+  );
 }
 
 function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack: () => void; onUse: (p: ReturnType<typeof expandCoachProgramToProgram>) => void }) {
@@ -113,11 +138,30 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
   );
 }
 
-function ScratchStep({ ownerName, onBack, onCreate }: { ownerName: string; onBack: () => void; onCreate: (p: ReturnType<typeof buildProgramFromDraft>) => void }) {
-  const [name, setName] = useState("My Program");
-  const [weeksCount, setWeeksCount] = useState(6);
-  const [days, setDays] = useState<DraftDay[]>([{ name: "Day 1", exercises: [] }, { name: "Day 2", exercises: [] }, { name: "Day 3", exercises: [] }]);
+function ScratchStep({ ownerName, seed, onBack, onCreate }: { ownerName: string; seed: ScratchSeed | null; onBack: () => void; onCreate: (p: ReturnType<typeof buildProgramFromDraft>) => void }) {
+  const { account } = useAuth();
+  const { dispatch: clientDispatch } = useStore();
+  const [name, setName] = useState(seed?.name || "My Program");
+  const [weeksCount, setWeeksCount] = useState(seed?.weeks ?? 6);
+  const [days, setDays] = useState<DraftDay[]>(seed?.days.length ? seed.days : [{ name: "Day 1", exercises: [] }, { name: "Day 2", exercises: [] }, { name: "Day 3", exercises: [] }]);
   const [pickerDay, setPickerDay] = useState<number | null>(null);
+  const [savingTemplate, setSavingTemplate] = useState(false);
+
+  function saveAsTemplate() {
+    if (!account) return;
+    setSavingTemplate(true);
+    const template = { ...csvDraftDaysToCoachProgram(name || "My Program", days, weeksCount), isTemplate: true, visibility: "private" as const };
+    writeTemplateToCoach(account.id, template)
+      .then(() => {
+        clientDispatch({ type: "SHOW_TOAST", message: "Saved as a template — find it in Programs > Templates." });
+        setTimeout(() => clientDispatch({ type: "CLEAR_TOAST" }), 3200);
+      })
+      .catch(() => {
+        clientDispatch({ type: "SHOW_TOAST", message: "Couldn't save that template — try again." });
+        setTimeout(() => clientDispatch({ type: "CLEAR_TOAST" }), 3200);
+      })
+      .finally(() => setSavingTemplate(false));
+  }
 
   const totalExercises = days.reduce((n, d) => n + d.exercises.length, 0);
 
@@ -205,6 +249,16 @@ function ScratchStep({ ownerName, onBack, onCreate }: { ownerName: string; onBac
           >
             Start this program
           </button>
+          {account?.role === "coach" && (
+            <button
+              className="btn btn-secondary btn-block"
+              style={{ height: 40, marginTop: 8, fontSize: 12.5, opacity: totalExercises > 0 && !savingTemplate ? 1 : 0.5 }}
+              disabled={totalExercises === 0 || savingTemplate}
+              onClick={saveAsTemplate}
+            >
+              {savingTemplate ? "Saving…" : "Save as a template instead"}
+            </button>
+          )}
           {totalExercises === 0 && <div className="mu" style={{ textAlign: "center", marginTop: 7 }}>Add at least one exercise to a day first.</div>}
         </div>
       </div>
@@ -216,7 +270,7 @@ function ScratchStep({ ownerName, onBack, onCreate }: { ownerName: string; onBac
   );
 }
 
-function CsvStep({ ownerName, onBack, onCreate }: { ownerName: string; onBack: () => void; onCreate: (p: Program) => void }) {
+function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: ScratchSeed) => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [source, setSource] = useState<{ type: "file"; file: File } | { type: "url"; url: string } | null>(null);
@@ -376,9 +430,9 @@ function CsvStep({ ownerName, onBack, onCreate }: { ownerName: string; onBack: (
             className="btn btn-primary btn-block"
             style={{ height: 46, opacity: totalExercises > 0 ? 1 : 0.5 }}
             disabled={totalExercises === 0}
-            onClick={() => parsed && onCreate(buildProgramFromDraft(name || "My Program", parsed.days, weeksCount, ownerName))}
+            onClick={() => parsed && onReview({ name: name || "My Program", days: parsed.days, weeks: weeksCount })}
           >
-            Start this program
+            Review & customize
           </button>
         </div>
       </div>
