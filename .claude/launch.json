@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "client-app",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": [
+        "-c",
+        "export PATH=\"/private/tmp/claude-501/-Users-jack-Library-Application-Support-Claude-scratch-workspaces-a7374d83-6e7a-4d6f-b2bc-73c5e751a175-cba8b61d-b2b2-4fb7-824c-daec86aafaa4-scratch-2026-09-02-a1b7f1/1312fc8d-f272-4c08-ab04-c0afd4470fcf/scratchpad/node-v22.23.2-darwin-arm64/bin:$PATH\"; cd \"/Users/jack/Desktop/mesocycle-studio\"; exec npm run dev -- --port 5184"
+      ],
+      "port": 5184
+    }
+  ]
+}
