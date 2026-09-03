@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HashRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { StoreProvider, useStore } from "./state/store";
 import { AuthProvider, useAuth } from "./lib/auth";
 import { supabase } from "./lib/supabase";
@@ -51,13 +51,15 @@ function LoadingShell() {
 }
 
 /** Blocks a route tree until we know who's signed in and which app they belong in — a client/friend
- * never sees the coach app and vice versa. */
+ * never sees the coach app and vice versa. The one exception: a coach who's turned on client preview
+ * (see Desk.tsx's account sheet) is let through to the member routes as themselves, to click around the
+ * real client experience without needing a separate test account. */
 function RequireRole({ role, children }: { role: "coach" | "member"; children: React.ReactNode }) {
-  const { loading, account } = useAuth();
+  const { loading, account, previewingAsClient } = useAuth();
   if (loading) return <LoadingShell />;
   if (!account) return <Navigate to="/" replace />;
   if (role === "coach" && account.role !== "coach") return <Navigate to="/" replace />;
-  if (role === "member" && account.role === "coach") return <Navigate to="/" replace />;
+  if (role === "member" && account.role === "coach" && !previewingAsClient) return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 
@@ -67,10 +69,44 @@ function Gate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function PreviewBanner() {
+  const { exitClientPreview } = useAuth();
+  const nav = useNavigate();
+  return (
+    <div
+      style={{
+        flex: "none",
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "8px 12px",
+        background: "var(--color-accent)",
+        color: "#0b1710",
+        fontSize: 11.5,
+        fontWeight: 700,
+      }}
+    >
+      <i className="ph-fill ph-eye" style={{ fontSize: 14 }} />
+      <span style={{ flex: 1 }}>Previewing as a client</span>
+      <button
+        onClick={() => {
+          exitClientPreview();
+          nav("/coach/desk", { replace: true });
+        }}
+        style={{ background: "#0b1710", color: "var(--color-accent)", border: "none", borderRadius: 6, padding: "4px 9px", fontWeight: 700, fontSize: 11, cursor: "pointer" }}
+      >
+        Exit
+      </button>
+    </div>
+  );
+}
+
 function ClientLayout() {
   const { state } = useStore();
+  const { account, previewingAsClient } = useAuth();
   return (
     <div className="app-shell">
+      {account?.role === "coach" && previewingAsClient && <PreviewBanner />}
       <Outlet />
       {state.toast && <Toast message={state.toast} />}
     </div>

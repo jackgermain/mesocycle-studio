@@ -27,6 +27,12 @@ interface AuthState {
   clearRevoked: () => void;
   refreshAccount: () => Promise<void>;
   signOut: () => Promise<void>;
+  /** A coach previewing the client app as themselves — RequireRole lets a coach through to the member
+   * routes while this is on. Gated in the UI to one account (see Desk.tsx); not a real permission
+   * boundary, just a client-side toggle for the account's own owner to click around their own product. */
+  previewingAsClient: boolean;
+  enterClientPreview: () => void;
+  exitClientPreview: () => void;
 }
 
 const Ctx = createContext<AuthState | null>(null);
@@ -37,6 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [account, setAccount] = useState<Account | null>(null);
   const [recovering, setRecovering] = useState(false);
   const [revoked, setRevoked] = useState(false);
+  const [previewingAsClient, setPreviewingAsClient] = useState(false);
   // Tracks whose account is currently loaded, so a session change to a *different* user clears the
   // stale account synchronously — otherwise there's a window where `session` already reflects the new
   // person but `account` still shows the previous person's (e.g. the coach's), and anything reading both
@@ -91,11 +98,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function signOut() {
     await supabase.auth.signOut();
     setAccount(null);
+    setPreviewingAsClient(false);
   }
 
   return (
     <Ctx.Provider
-      value={{ loading, session, account, recovering, clearRecovering: () => setRecovering(false), revoked, clearRevoked: () => setRevoked(false), refreshAccount, signOut }}
+      value={{
+        loading,
+        session,
+        account,
+        recovering,
+        clearRecovering: () => setRecovering(false),
+        revoked,
+        clearRevoked: () => setRevoked(false),
+        refreshAccount,
+        signOut,
+        previewingAsClient,
+        enterClientPreview: () => setPreviewingAsClient(true),
+        exitClientPreview: () => setPreviewingAsClient(false),
+      }}
     >
       {children}
     </Ctx.Provider>

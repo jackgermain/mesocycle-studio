@@ -2,9 +2,14 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
-import { HeroHeader, HeroStat, SetPasswordCard } from "../../components/UI";
+import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
 import type { ClientStatus } from "../types";
+
+/** Client preview (see the account sheet below) is a real feature exposed to real coach accounts once
+ * this app has multiple coaches on it — restricted to this one account for now while it's still just
+ * being tried out. */
+const PREVIEW_ENABLED_EMAIL = "jack.germain@hotmail.com";
 
 const STATUS_COLOR: Record<ClientStatus, string> = {
   "on-track": "var(--color-accent)",
@@ -23,10 +28,11 @@ const STATUS_LABEL: Record<ClientStatus, string> = {
 
 export default function Desk() {
   const { state, dispatch } = useCoachStore();
-  const { account } = useAuth();
+  const { account, session, enterClientPreview } = useAuth();
   const coachName = account?.display_name ?? "Coach";
   const nav = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
+  const canPreviewAsClient = session?.user?.email === PREVIEW_ENABLED_EMAIL;
 
   const allFlags = useMemo(() => state.clients.flatMap((c) => c.flags.map((f) => ({ client: c, flag: f }))), [state.clients]);
   const counts = {
@@ -54,12 +60,14 @@ export default function Desk() {
 
   const today = new Date();
   const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const hour = today.getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
     <div className="screen">
       <HeroHeader
         kicker={dateLabel}
-        title={`Good morning, ${coachName}`}
+        title={`${greeting}, ${coachName}`}
         right={
           <button
             className="avatar"
@@ -189,26 +197,27 @@ export default function Desk() {
                 <i className="ph ph-x" style={{ fontSize: 18 }} />
               </button>
             </div>
+            {canPreviewAsClient && (
+              <ActionGroup>
+                <ActionRow
+                  icon="ph-eye"
+                  iconBg="var(--color-accent-900)"
+                  iconColor="var(--color-accent)"
+                  label="View as a client"
+                  subtitle="See the real client app as yourself"
+                  onClick={() => {
+                    enterClientPreview();
+                    setShowAccount(false);
+                    nav("/block");
+                  }}
+                />
+              </ActionGroup>
+            )}
             <SetPasswordCard />
             <SignOutButton />
           </div>
         </div>
       )}
     </div>
-  );
-}
-
-function SignOutButton() {
-  const { signOut } = useAuth();
-  const nav = useNavigate();
-  async function handle() {
-    await signOut();
-    nav("/", { replace: true });
-  }
-  return (
-    <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 4 }} onClick={handle}>
-      <i className="ph ph-sign-out" style={{ fontSize: 15 }} />
-      Sign out
-    </button>
   );
 }
