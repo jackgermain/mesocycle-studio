@@ -46,7 +46,7 @@ export default function Library() {
           <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search the library" style={{ flex: 1, background: "none", border: "none", outline: "none", color: "var(--color-text)", fontSize: 14 }} />
         </div>
-        <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
+        <div className="row hscroll" style={{ gap: 6 }}>
           <button className={`chip${muscle === null ? " on" : ""}`} onClick={() => setMuscle(null)}>All</button>
           {MUSCLE_GROUPS.map((m) => (
             <button key={m} className={`chip${muscle === m ? " on" : ""}`} onClick={() => setMuscle(m)}>{m}</button>

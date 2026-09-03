@@ -180,6 +180,47 @@ export function SetPasswordCard() {
   );
 }
 
+/** One row in a grouped, settings-style action list — an icon chip, a label (+ optional subtitle), and a
+ * chevron. Several of these inside an ActionGroup read as one structured block instead of a stack of
+ * separately-floating full-width buttons. */
+export function ActionRow({
+  icon,
+  iconColor = "var(--color-neutral-300)",
+  iconBg = "var(--color-neutral-900)",
+  label,
+  subtitle,
+  tone,
+  disabled,
+  onClick,
+}: {
+  icon: string;
+  iconColor?: string;
+  iconBg?: string;
+  label: React.ReactNode;
+  subtitle?: React.ReactNode;
+  tone?: "danger" | "accent";
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  const labelColor = tone === "danger" ? "var(--color-neutral-300)" : tone === "accent" ? "var(--color-accent-200)" : undefined;
+  return (
+    <button className="action-row" disabled={disabled} onClick={onClick} style={{ opacity: disabled ? 0.55 : 1 }}>
+      <div style={{ width: 34, height: 34, borderRadius: 10, background: iconBg, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+        <i className={`ph-fill ${icon}`} style={{ fontSize: 16, color: iconColor }} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="trunc" style={{ fontSize: 13.5, fontFamily: "var(--font-heading)", fontWeight: 500, color: labelColor }}>{label}</div>
+        {subtitle && <div className="mu trunc" style={{ marginTop: 1 }}>{subtitle}</div>}
+      </div>
+      <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)", flex: "none" }} />
+    </button>
+  );
+}
+
+export function ActionGroup({ children }: { children: React.ReactNode }) {
+  return <div className="cell" style={{ padding: 4, display: "flex", flexDirection: "column" }}>{children}</div>;
+}
+
 export function StatCell({ label, value, valueColor }: { label: string; value: React.ReactNode; valueColor?: string }) {
   return (
     <div style={{ flex: 1 }}>

@@ -247,9 +247,14 @@ textarea.input { min-height: 78px; resize: vertical; line-height: 1.5; }
 .chip {
   padding: 7px 11px; border-radius: 8px; font-size: 12px; cursor: pointer;
   border: 1px solid var(--color-divider); color: var(--color-neutral-400); background: none;
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
 }
 .chip.on { border-color: var(--color-accent); background: var(--color-accent-900); color: var(--color-accent-200); }
+
+/* A row of chips/filters that scrolls sideways instead of wrapping into a multi-row wall — keeps a long
+   filter set to one clean line. */
+.hscroll { flex: none; overflow-x: auto; flex-wrap: nowrap; margin: 0 -14px; padding: 0 14px 2px; }
+.hscroll::-webkit-scrollbar { display: none; }
 
 .stepper {
   display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--color-neutral-500);
@@ -295,3 +300,7 @@ textarea.input { min-height: 78px; resize: vertical; line-height: 1.5; }
 
 .link-row { display: flex; align-items: center; gap: 8px; text-align: left; width: 100%; background: none; border: none; color: inherit; cursor: pointer; padding: 11px 12px; border-radius: var(--radius-md); }
 .link-row:hover { background: rgba(233,233,237,0.04); }
+
+.action-row { display: flex; align-items: center; gap: 11px; width: 100%; background: none; border: none; color: inherit; cursor: pointer; text-align: left; padding: 12px 9px; border-radius: 6px; }
+.action-row:not(:disabled):hover { background: rgba(233,233,237,0.05); }
+.action-row + .action-row { border-top: 1px solid var(--color-neutral-900); border-radius: 0; }

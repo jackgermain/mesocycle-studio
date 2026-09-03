@@ -4,7 +4,7 @@ import { useCoachStore } from "../store";
 import { StoreProvider, useStore } from "../../state/store";
 import { useAuth } from "../../lib/auth";
 import { supabase } from "../../lib/supabase";
-import { BackHeader, InfoBanner, StatCell } from "../../components/UI";
+import { ActionGroup, ActionRow, InfoBanner } from "../../components/UI";
 import { createInvite } from "../../shared/invites";
 import type { TrainingDay } from "../../data/types";
 import type { ClientFlag } from "../types";
@@ -101,7 +101,34 @@ export default function ClientDetail() {
 
   return (
     <div className="screen">
-      <BackHeader kicker={accepted ? `${client.programName} · week ${client.week} of ${client.totalWeeks}` : "Not accepted yet"} title={client.name} />
+      <div className="hdr hero" style={{ paddingBottom: 16 }}>
+        <div className="row" style={{ width: "100%", marginBottom: accepted ? 14 : 0 }}>
+          <button className="back" onClick={() => nav(-1)} aria-label="Back">
+            <i className="ph ph-caret-left" />
+          </button>
+          <div className="avatar" style={{ width: 44, height: 44, fontSize: 15, boxShadow: "0 0 0 1px var(--color-accent-700)" }}>{client.initials}</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="k">{accepted ? `${client.programName} · week ${client.week} of ${client.totalWeeks}` : "Not accepted yet"}</div>
+            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 21, lineHeight: 1.15 }} className="trunc">{client.name}</div>
+          </div>
+        </div>
+        {accepted && (
+          <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
+            <div style={{ flex: 1, paddingRight: 12, borderRight: "1px solid var(--color-neutral-800)" }}>
+              <div className="scr">Adherence</div>
+              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3, color: "var(--color-accent-300)" }}>{client.adherencePct}%</div>
+            </div>
+            <div style={{ flex: 1, padding: "0 12px", borderRight: "1px solid var(--color-neutral-800)" }}>
+              <div className="scr">Week</div>
+              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3 }}>{client.week} / {client.totalWeeks}</div>
+            </div>
+            <div style={{ flex: 1, paddingLeft: 12 }}>
+              <div className="scr">Flags</div>
+              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3, color: client.flags.length ? "var(--color-neutral-200)" : undefined }}>{client.flags.length}</div>
+            </div>
+          </div>
+        )}
+      </div>
       <div className="screen-scroll">
         {accepted && accountActive === false && <InfoBanner icon="ph-lock-simple">Access is revoked — {client.name.split(" ")[0]} can't sign in right now.</InfoBanner>}
 
@@ -138,27 +165,24 @@ export default function ClientDetail() {
               </div>
             )}
 
-            <button
-              className="btn btn-secondary btn-block"
-              style={{ height: 40, color: "var(--color-neutral-400)" }}
-              onClick={() => {
-                if (window.confirm(`Remove ${client.name} from your roster? This just removes them from your list — it doesn't delete anything if they've already signed up under a different entry.`)) {
-                  dispatch({ type: "REMOVE_CLIENT", clientId: client.id });
-                  nav("/coach/clients", { replace: true });
-                }
-              }}
-            >
-              Remove from roster
-            </button>
+            <ActionGroup>
+              <ActionRow
+                icon="ph-trash"
+                iconBg="var(--color-neutral-900)"
+                iconColor="var(--color-neutral-400)"
+                tone="danger"
+                label="Remove from roster"
+                onClick={() => {
+                  if (window.confirm(`Remove ${client.name} from your roster? This just removes them from your list — it doesn't delete anything if they've already signed up under a different entry.`)) {
+                    dispatch({ type: "REMOVE_CLIENT", clientId: client.id });
+                    nav("/coach/clients", { replace: true });
+                  }
+                }}
+              />
+            </ActionGroup>
           </>
         ) : (
           <>
-            <div className="cell row" style={{ gap: 8 }}>
-              <StatCell label="Adherence" value={`${client.adherencePct}%`} valueColor="var(--color-accent-300)" />
-              <StatCell label="Week" value={`${client.week} / ${client.totalWeeks}`} />
-              <StatCell label="Flags" value={client.flags.length} valueColor={client.flags.length ? "var(--color-neutral-200)" : undefined} />
-            </div>
-
             {client.flags.length > 0 && (
               <div>
                 <div className="sh">Needs a decision</div>
@@ -220,34 +244,30 @@ export default function ClientDetail() {
         )}
 
         {accepted && (
-          <button className="btn btn-primary btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/clients/${client.id}/log`)}>
-            <i className="ph ph-pencil-simple-line" style={{ fontSize: 15 }} />
-            Log a session in person
-          </button>
-        )}
-        {accepted && (
-          <button className="btn btn-secondary btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/clients/${client.id}/nutrition`)}>
-            <i className="ph ph-fork-knife" style={{ fontSize: 15 }} />
-            Nutrition protocol
-          </button>
-        )}
-        {accepted && (
-          <button className="btn btn-secondary btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/messages/${client.accountId}`)}>
-            <i className="ph ph-chat-circle" style={{ fontSize: 15 }} />
-            Message {client.name.split(" ")[0]}
-          </button>
-        )}
-
-        {accepted && accountActive !== null && (
-          <button
-            className="btn btn-secondary btn-block"
-            style={{ height: 44, color: accountActive ? "var(--color-neutral-400)" : "var(--color-accent)", opacity: revoking ? 0.6 : 1 }}
-            disabled={revoking}
-            onClick={toggleAccess}
-          >
-            <i className={`ph ${accountActive ? "ph-lock-simple" : "ph-lock-key-open"}`} style={{ fontSize: 15 }} />
-            {revoking ? "Working…" : accountActive ? `Revoke ${client.name.split(" ")[0]}'s access` : `Restore ${client.name.split(" ")[0]}'s access`}
-          </button>
+          <div>
+            <div className="sh">Actions</div>
+            <ActionGroup>
+              <ActionRow
+                icon="ph-pencil-simple-line"
+                iconBg="var(--color-accent-900)"
+                iconColor="var(--color-accent)"
+                label="Log a session in person"
+                onClick={() => nav(`/coach/clients/${client.id}/log`)}
+              />
+              <ActionRow icon="ph-fork-knife" label="Nutrition protocol" onClick={() => nav(`/coach/clients/${client.id}/nutrition`)} />
+              <ActionRow icon="ph-chat-circle" label={`Message ${client.name.split(" ")[0]}`} onClick={() => nav(`/coach/messages/${client.accountId}`)} />
+              {accountActive !== null && (
+                <ActionRow
+                  icon={accountActive ? "ph-lock-simple" : "ph-lock-key-open"}
+                  iconColor={accountActive ? "var(--color-neutral-400)" : "var(--color-accent)"}
+                  tone={accountActive ? "danger" : "accent"}
+                  disabled={revoking}
+                  label={revoking ? "Working…" : accountActive ? `Revoke ${client.name.split(" ")[0]}'s access` : `Restore ${client.name.split(" ")[0]}'s access`}
+                  onClick={toggleAccess}
+                />
+              )}
+            </ActionGroup>
+          </div>
         )}
       </div>
     </div>
