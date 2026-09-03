@@ -4,7 +4,7 @@ import { useStore, getAllLifts, getLiftHistory } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
 import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
-import { Seg, SetPasswordCard, InfoBanner } from "../components/UI";
+import { Seg, SetPasswordCard, InfoBanner, HeroHeader, HeroStat } from "../components/UI";
 
 function todayISO() {
   const t = new Date();
@@ -34,15 +34,22 @@ function thisWeekISO() {
 export default function Progress() {
   const { state } = useStore();
   const [tab, setTab] = useState<"strength" | "body" | "volume">("strength");
+  const currentWeek = state.program.weeks.find((w) => w.days.some((d) => d.status === "today"))?.number ?? state.program.weeks[0]?.number ?? 1;
 
   return (
     <div className="screen">
-      <div className="hdr">
-        <div style={{ flex: 1 }}>
-          <div className="k">{state.program.totalWeeks} weeks with {state.program.coachName}</div>
-          <div className="h1">Progress</div>
-        </div>
-      </div>
+      <HeroHeader title="Progress">
+        <HeroStat value={currentWeek} label={<>current<br />week</>}>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Program length</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.program.totalWeeks} weeks</span>
+          </div>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Coach</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.program.coachName}</span>
+          </div>
+        </HeroStat>
+      </HeroHeader>
       <div className="screen-scroll">
         <Seg
           value={tab}

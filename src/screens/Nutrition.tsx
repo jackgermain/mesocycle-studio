@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useStore } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
 import { TabBar } from "../components/TabBar";
-import { InfoBanner, Meter } from "../components/UI";
+import { InfoBanner, Meter, HeroHeader } from "../components/UI";
 import FoodSearchSheet from "./FoodSearchSheet";
 import type { FoodItem } from "../data/foodDatabase";
 import type { PortionCategory } from "../data/types";
@@ -50,12 +50,7 @@ export default function Nutrition() {
   if (profile.nutritionMode === "off") {
     return (
       <div className="screen">
-        <div className="hdr">
-          <div style={{ flex: 1 }}>
-            <div className="k">Nutrition</div>
-            <div className="h1">Not turned on</div>
-          </div>
-        </div>
+        <HeroHeader kicker="Nutrition" title="Not turned on" />
         <div className="screen-scroll">
           <InfoBanner icon="ph-fork-knife">
             {state.program.coachName} hasn't turned on food tracking for you yet. Ask them if you'd like to log meals and get targets.
@@ -108,17 +103,20 @@ export default function Nutrition() {
     dispatch({ type: "ADD_MEAL", name });
   }
 
+  const todayLabel = new Date().toLocaleDateString("en-US", { weekday: "long" });
+  const hasTrainingToday = state.program.weeks.some((w) => w.days.some((d) => d.status === "today"));
+
   return (
     <div className="screen">
-      <div className="hdr">
-        <div style={{ flex: 1 }}>
-          <div className="k">Tuesday · training day</div>
-          <div className="h1">Nutrition</div>
-        </div>
-        <button onClick={addMeal} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal">
-          <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
-        </button>
-      </div>
+      <HeroHeader
+        kicker={`${todayLabel} · ${hasTrainingToday ? "training day" : "rest day"}`}
+        title="Nutrition"
+        right={
+          <button onClick={addMeal} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal">
+            <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
+          </button>
+        }
+      />
       <div className="screen-scroll">
         <div className="cell elev-sm">
           <div className="row" style={{ alignItems: "baseline", marginBottom: 12 }}>
@@ -261,17 +259,20 @@ function PortionsNutrition() {
   const totalSlots = state.meals.length * targets.length;
   const hitSlots = state.meals.reduce((sum, m) => sum + (m.portionsHit?.length ?? 0), 0);
 
+  const todayLabel = new Date().toLocaleDateString("en-US", { weekday: "long" });
+  const hasTrainingToday = state.program.weeks.some((w) => w.days.some((d) => d.status === "today"));
+
   return (
     <div className="screen">
-      <div className="hdr">
-        <div style={{ flex: 1 }}>
-          <div className="k">Tuesday · training day</div>
-          <div className="h1">Nutrition</div>
-        </div>
-        <button onClick={addMeal} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal">
-          <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
-        </button>
-      </div>
+      <HeroHeader
+        kicker={`${todayLabel} · ${hasTrainingToday ? "training day" : "rest day"}`}
+        title="Nutrition"
+        right={
+          <button onClick={addMeal} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal">
+            <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
+          </button>
+        }
+      />
       <div className="screen-scroll">
         <InfoBanner icon="ph-hand-palm">
           No calorie counting — just hit your portions each meal. {state.program.coachName} set these targets for you.

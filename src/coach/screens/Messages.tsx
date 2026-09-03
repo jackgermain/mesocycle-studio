@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { CoachTabBar } from "../components/CoachTabBar";
-import { BackHeader } from "../../components/UI";
+import { BackHeader, HeroHeader, HeroStat } from "../../components/UI";
 
 type Filter = "unread" | "all" | "flagged";
 
@@ -16,15 +16,21 @@ export default function Messages() {
 
   return (
     <div className="screen">
-      <div className="hdr">
-        <div style={{ flex: 1 }}>
-          <div className="k">{unreadCount} unread · {state.threads.length} threads</div>
-          <div className="h1">Messages</div>
-        </div>
-        <button className="btn btn-secondary btn-icon" aria-label="New message" onClick={() => nav("/coach/clients")}>
-          <i className="ph ph-pencil-simple-line" style={{ fontSize: 16 }} />
-        </button>
-      </div>
+      <HeroHeader
+        title="Messages"
+        right={
+          <button className="btn btn-secondary btn-icon" aria-label="New message" onClick={() => nav("/coach/clients")}>
+            <i className="ph ph-pencil-simple-line" style={{ fontSize: 16 }} />
+          </button>
+        }
+      >
+        <HeroStat value={unreadCount} label="unread" valueColor={unreadCount > 0 ? "var(--color-accent)" : "var(--color-neutral-200)"}>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Total threads</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.threads.length}</span>
+          </div>
+        </HeroStat>
+      </HeroHeader>
       <div className="screen-scroll">
         <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)" }}>
           <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />

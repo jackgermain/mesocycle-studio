@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { CoachTabBar } from "../components/CoachTabBar";
+import { HeroHeader, HeroStat } from "../../components/UI";
 import { LOAD_LABELS } from "../loadMode";
 import { buildBlankProgram } from "../mockData";
 import type { CoachProgram } from "../types";
@@ -47,18 +48,30 @@ export default function Programs() {
 
   return (
     <div className="screen">
-      <div className="hdr">
-        <div style={{ flex: 1 }}>
-          <div className="k">{state.programs.length} programs</div>
-          <div className="h1">Programs</div>
-        </div>
-        <button className="btn btn-secondary btn-icon" aria-label="Browse the exercise library" onClick={() => nav("/coach/library")}>
-          <i className="ph ph-barbell" style={{ fontSize: 17 }} />
-        </button>
-        <button className="btn btn-secondary btn-icon" aria-label="Add a program" onClick={() => setChoosing(true)}>
-          <i className="ph ph-plus" style={{ fontSize: 17 }} />
-        </button>
-      </div>
+      <HeroHeader
+        title="Programs"
+        right={
+          <div className="row" style={{ gap: 8, flex: "none" }}>
+            <button className="btn btn-secondary btn-icon" aria-label="Browse the exercise library" onClick={() => nav("/coach/library")}>
+              <i className="ph ph-barbell" style={{ fontSize: 17 }} />
+            </button>
+            <button className="btn btn-secondary btn-icon" aria-label="Add a program" onClick={() => setChoosing(true)}>
+              <i className="ph ph-plus" style={{ fontSize: 17 }} />
+            </button>
+          </div>
+        }
+      >
+        <HeroStat value={state.programs.length} label="programs">
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Published</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{state.programs.filter((p) => p.status === "published").length}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Drafts</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.programs.filter((p) => p.status !== "published").length}</span>
+          </div>
+        </HeroStat>
+      </HeroHeader>
       <div className="screen-scroll">
         <div className="row" style={{ gap: 6 }}>
           <button className={`chip${filter === "all" ? " on" : ""}`} onClick={() => setFilter("all")}>All</button>

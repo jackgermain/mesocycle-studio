@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../state/store";
 import { supabase } from "../lib/supabase";
 import { TabBar } from "../components/TabBar";
-import { InfoBanner } from "../components/UI";
+import { InfoBanner, HeroHeader } from "../components/UI";
 
 interface Bubble {
   from: "coach" | "client";
@@ -61,12 +61,7 @@ export default function Inbox() {
 
   return (
     <div className="screen">
-      <div className="hdr">
-        <div style={{ flex: 1 }}>
-          <div className="k">{coachName}</div>
-          <div className="h1">Inbox</div>
-        </div>
-      </div>
+      <HeroHeader kicker={coachName} title="Inbox" />
       <div className="screen-scroll" style={{ justifyContent: bubbles.length ? "flex-end" : "flex-start", gap: 10 }}>
         {thread === "loading" && <div className="mu">Loading…</div>}
         {thread !== "loading" && bubbles.length === 0 && (

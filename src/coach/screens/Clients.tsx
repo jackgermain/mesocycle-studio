@@ -5,6 +5,7 @@ import { useAuth } from "../../lib/auth";
 import { supabase } from "../../lib/supabase";
 import { listClaimedInvites } from "../../shared/invites";
 import { CoachTabBar } from "../components/CoachTabBar";
+import { HeroHeader, HeroStat } from "../../components/UI";
 import type { ClientStatus, CoachClient } from "../types";
 
 function initialsFor(name: string): string {
@@ -84,6 +85,8 @@ export default function Clients() {
   }, [account]);
 
   const needsReviewCount = state.clients.filter((c) => c.flags.length > 0).length;
+  const atRiskCount = state.clients.filter((c) => c.status === "at-risk" || c.status === "behind").length;
+  const acceptedCount = state.clients.filter((c) => c.accountId).length;
 
   const filtered = useMemo(() => {
     if (filter === "review") return state.clients.filter((c) => c.flags.length > 0);
@@ -93,16 +96,30 @@ export default function Clients() {
 
   return (
     <div className="screen">
-      <div className="hdr">
-        <div style={{ flex: 1 }}>
-          <div className="k">{state.clients.length} clients</div>
-          <div className="h1">Clients</div>
-        </div>
-        <button className="btn btn-primary" style={{ height: 36, padding: "0 12px", fontSize: 12.5 }} onClick={() => nav("/coach/invite")}>
-          <i className="ph ph-user-plus" style={{ fontSize: 14 }} />
-          Invite
-        </button>
-      </div>
+      <HeroHeader
+        title="Clients"
+        right={
+          <button className="btn btn-solid" style={{ height: 36, padding: "0 13px", fontSize: 12.5, flex: "none" }} onClick={() => nav("/coach/invite")}>
+            <i className="ph ph-user-plus" style={{ fontSize: 14 }} />
+            Invite
+          </button>
+        }
+      >
+        <HeroStat value={state.clients.length} label="clients">
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Accepted</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{acceptedCount}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Needs review</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{needsReviewCount}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>At risk</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{atRiskCount}</span>
+          </div>
+        </HeroStat>
+      </HeroHeader>
       <div className="screen-scroll">
         <div className="row" style={{ gap: 6 }}>
           <button className={`chip${filter === "review" ? " on" : ""}`} onClick={() => setFilter("review")}>

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
-import { SetPasswordCard } from "../../components/UI";
+import { HeroHeader, HeroStat, SetPasswordCard } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
 import type { ClientStatus } from "../types";
 
@@ -56,41 +56,30 @@ export default function Desk() {
 
   return (
     <div className="screen">
-      <div className="hdr hero" style={{ paddingBottom: 16 }}>
-        <div className="row" style={{ marginBottom: 14, width: "100%" }}>
-          <div style={{ flex: 1 }}>
-            <div className="k">{dateLabel} · week 3</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 26, lineHeight: 1.1, marginTop: 3, letterSpacing: "-0.01em" }}>Good morning, {coachName}</div>
-          </div>
+      <HeroHeader
+        kicker={dateLabel}
+        title={`Good morning, ${coachName}`}
+        right={
           <div className="avatar" style={{ width: 38, height: 38, boxShadow: "0 0 0 1px var(--color-accent-700)" }}>
             {coachName.slice(0, 2).toUpperCase()}
           </div>
-        </div>
-        <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
-          <div style={{ flex: "none", paddingRight: 14, borderRight: "1px solid var(--color-neutral-800)" }}>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 34, lineHeight: 1, color: "var(--color-accent)" }}>{allFlags.length}</div>
-            <div className="scr" style={{ marginTop: 4, lineHeight: 1.3 }}>
-              decisions
-              <br />
-              waiting
-            </div>
+        }
+      >
+        <HeroStat value={allFlags.length} label={<>decisions<br />waiting</>}>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{counts.volume}</span>
           </div>
-          <div style={{ flex: 1, paddingLeft: 14, display: "flex", flexDirection: "column", justifyContent: "center", gap: 7 }}>
-            <div className="row" style={{ fontSize: 12 }}>
-              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
-              <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{counts.volume}</span>
-            </div>
-            <div className="row" style={{ fontSize: 12 }}>
-              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Joint flags</span>
-              <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{counts.joint}</span>
-            </div>
-            <div className="row" style={{ fontSize: 12 }}>
-              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Missed weigh-ins</span>
-              <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{counts.weighin}</span>
-            </div>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Joint flags</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{counts.joint}</span>
           </div>
-        </div>
-      </div>
+          <div className="row" style={{ fontSize: 12 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Missed weigh-ins</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{counts.weighin}</span>
+          </div>
+        </HeroStat>
+      </HeroHeader>
 
       <div className="screen-scroll">
         <div>

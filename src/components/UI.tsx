@@ -221,6 +221,42 @@ export function ActionGroup({ children }: { children: React.ReactNode }) {
   return <div className="cell" style={{ padding: 4, display: "flex", flexDirection: "column" }}>{children}</div>;
 }
 
+/** The gradient "hero" header used at the top of every main tab — a kicker line, a big bold title, an
+ * optional right-side slot (avatar, action button), and room for a HeroStat box below. */
+export function HeroHeader({ kicker, title, right, children }: { kicker?: string; title: string; right?: React.ReactNode; children?: React.ReactNode }) {
+  return (
+    <div className="hdr hero">
+      <div className="row" style={{ width: "100%", marginBottom: children ? 14 : 0 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {kicker && <div className="k">{kicker}</div>}
+          <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 26, lineHeight: 1.1, marginTop: kicker ? 3 : 0, letterSpacing: "-0.01em" }}>
+            {title}
+          </div>
+        </div>
+        {right}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/** A boxed, oversized stat used inside a HeroHeader — one big number carries far more weight than a tiny
+ * uppercase kicker, with room for a secondary breakdown list (Desk's volume/joint/weigh-in counts,
+ * Messages' thread count) alongside it. */
+export function HeroStat({ value, label, valueColor = "var(--color-accent)", children }: { value: React.ReactNode; label: React.ReactNode; valueColor?: string; children?: React.ReactNode }) {
+  return (
+    <div className="hero-box">
+      <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
+        <div style={{ flex: children ? "none" : 1, paddingRight: children ? 14 : 0, borderRight: children ? "1px solid var(--color-neutral-800)" : undefined }}>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: 34, lineHeight: 1, color: valueColor }}>{value}</div>
+          <div className="scr" style={{ marginTop: 5, lineHeight: 1.3 }}>{label}</div>
+        </div>
+        {children && <div style={{ flex: 1, paddingLeft: 14, display: "flex", flexDirection: "column", justifyContent: "center", gap: 7, minWidth: 0 }}>{children}</div>}
+      </div>
+    </div>
+  );
+}
+
 export function StatCell({ label, value, valueColor }: { label: string; value: React.ReactNode; valueColor?: string }) {
   return (
     <div style={{ flex: 1 }}>
