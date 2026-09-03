@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useStore } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
+import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
-import { InfoBanner, Meter, HeroHeader } from "../components/UI";
+import { InfoBanner, Meter, HeroHeader, BackHeader } from "../components/UI";
+import { NutritionForm } from "../shared/NutritionForm";
 import FoodSearchSheet from "./FoodSearchSheet";
 import type { FoodItem } from "../data/foodDatabase";
 import type { PortionCategory } from "../data/types";
@@ -46,15 +48,43 @@ export default function Nutrition() {
   const profile = useEffectiveProfile();
   const target = profile.macroTargets;
   const [addingTo, setAddingTo] = useState<string | null>(null);
+  const { account, previewingAsClient } = useAuth();
+  const [settingUp, setSettingUp] = useState(false);
+  // A coach training themselves has no external coach to turn nutrition tracking on for them — let them
+  // set their own targets instead of just telling them to "ask their coach" (which would be themselves).
+  const canSelfServe = account?.role === "coach" && previewingAsClient;
 
   if (profile.nutritionMode === "off") {
+    if (settingUp) {
+      return (
+        <div className="screen">
+          <BackHeader kicker="Nutrition" title="Set up tracking" onBack={() => setSettingUp(false)} />
+          <NutritionForm
+            profile={profile}
+            onSave={(protocol) => {
+              dispatch({ type: "SET_NUTRITION_PROTOCOL", protocol });
+              dispatch({ type: "SHOW_TOAST", message: "Nutrition tracking is on." });
+              setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
+              setSettingUp(false);
+            }}
+          />
+        </div>
+      );
+    }
     return (
       <div className="screen">
         <HeroHeader kicker="Nutrition" title="Not turned on" />
         <div className="screen-scroll">
           <InfoBanner icon="ph-fork-knife">
-            {state.program.coachName} hasn't turned on food tracking for you yet. Ask them if you'd like to log meals and get targets.
+            {canSelfServe
+              ? "Nothing set up yet — since you're training yourself, you can set your own tracking style and targets."
+              : `${state.program.coachName} hasn't turned on food tracking for you yet. Ask them if you'd like to log meals and get targets.`}
           </InfoBanner>
+          {canSelfServe && (
+            <button className="btn btn-primary btn-block" style={{ height: 46 }} onClick={() => setSettingUp(true)}>
+              Set up nutrition tracking
+            </button>
+          )}
         </div>
         <TabBar />
       </div>
