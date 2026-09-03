@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { BackHeader, Seg, StatCell } from "../../components/UI";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
@@ -28,8 +28,11 @@ const MUSCLE_LANDMARKS: Record<string, { mev: number; mrv: number }> = {
 export default function ProgramDetail() {
   const { programId = "" } = useParams();
   const nav = useNavigate();
+  const [searchParams] = useSearchParams();
+  const assignToId = searchParams.get("assignTo");
   const { state, dispatch } = useCoachStore();
   const program = state.programs.find((p) => p.id === programId);
+  const assignToClient = assignToId ? state.clients.find((c) => c.id === assignToId) : null;
   const [week, setWeek] = useState(1);
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() => (program?.days[0] ? { [program.days[0].id]: true } : {}));
 
@@ -84,10 +87,22 @@ export default function ProgramDetail() {
           <StatCell label="Scale" value={LOAD_LABELS[program.effortScale]} />
         </div>
 
-        <button className="btn btn-solid btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
-          <i className="ph ph-user-plus" style={{ fontSize: 15 }} />
-          Assign to a client
-        </button>
+        {assignToClient ? (
+          <>
+            <button className="btn btn-solid btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/clients/${assignToClient.id}/assign?programId=${program.id}`)}>
+              <i className="ph ph-check-circle" style={{ fontSize: 15 }} />
+              Finish assigning to {assignToClient.name.split(" ")[0]}
+            </button>
+            <button className="btn btn-secondary btn-block" style={{ height: 38, fontSize: 12.5 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
+              Assign to someone else instead
+            </button>
+          </>
+        ) : (
+          <button className="btn btn-solid btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
+            <i className="ph ph-user-plus" style={{ fontSize: 15 }} />
+            Assign to a client
+          </button>
+        )}
 
         <div className="row" style={{ gap: 3 }}>
           {program.phaseWeights.map((w, i) => (

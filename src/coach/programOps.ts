@@ -1,0 +1,79 @@
+import type { BuilderDay, BuilderExercise, BuilderSet, CoachProgram } from "./types";
+import type { DraftDay } from "../shared/programConvert";
+import { defaultRestSec } from "./rest";
+
+function freshSetId(): string {
+  return `bset-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+function freshExerciseId(): string {
+  return `bex-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+function freshDayId(): string {
+  return `bday-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+/** A full, independent copy of one of the coach's programs -- fresh ids top to bottom so editing it (or
+ * the original) never bleeds into the other, reset to an unpublished draft with no assignments of its
+ * own yet. Used when assigning an existing program to a client: the coach gets their own editable copy
+ * for that client instead of either a frozen snapshot or shared-state that would change for everyone
+ * already on the original. */
+export function duplicateProgram(source: CoachProgram, newName: string): CoachProgram {
+  const days: BuilderDay[] = source.days.map((d) => ({
+    id: freshDayId(),
+    name: d.name,
+    exercises: d.exercises.map((e) => ({
+      id: freshExerciseId(),
+      name: e.name,
+      muscle: e.muscle,
+      kind: e.kind,
+      loadModeOverride: e.loadModeOverride,
+      sets: e.sets.map((s) => ({ ...s, id: freshSetId() })),
+    })),
+  }));
+  return {
+    ...source,
+    id: `prog-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    name: newName,
+    status: "draft",
+    assignedCount: 0,
+    isTemplate: false,
+    visibility: undefined,
+    days,
+  };
+}
+
+/** Turns the spreadsheet importer's parsed rows into a real, fully-editable CoachProgram -- opened in the
+ * normal builder afterward, same as building from scratch, so whatever the sheet got wrong is just as
+ * fixable as anything else (drag to reorder, edit sets/reps/load, swap exercises). */
+export function csvDraftDaysToCoachProgram(name: string, days: DraftDay[], weeks: number): CoachProgram {
+  const builderDays: BuilderDay[] = days.map((d) => ({
+    id: freshDayId(),
+    name: d.name,
+    exercises: d.exercises.map((e): BuilderExercise => {
+      const setCount = Math.max(1, e.sets ?? 3);
+      const sets: BuilderSet[] = Array.from({ length: setCount }, () => ({
+        id: freshSetId(),
+        reps: e.reps ?? 10,
+        loadValue: e.load ?? 0,
+        warmup: false,
+        restSec: defaultRestSec(e.name),
+      }));
+      return { id: freshExerciseId(), name: e.name, muscle: e.muscle, kind: "strength", sets };
+    }),
+  }));
+
+  return {
+    id: `prog-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    name,
+    status: "draft",
+    weeks: Math.max(1, weeks),
+    daysPerWeek: builderDays.length || 1,
+    effortScale: "lb",
+    assignedCount: 0,
+    weeklySets: builderDays.reduce((n, d) => n + d.exercises.reduce((m, e) => m + e.sets.length, 0), 0),
+    phaseWeights: [1, 0, 0],
+    progressPct: 0,
+    days: builderDays,
+    isTemplate: false,
+  };
+}
