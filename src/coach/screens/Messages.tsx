@@ -21,7 +21,7 @@ export default function Messages() {
           <div className="k">{unreadCount} unread · {state.threads.length} threads</div>
           <div className="h1">Messages</div>
         </div>
-        <button className="btn btn-secondary btn-icon" aria-label="New message">
+        <button className="btn btn-secondary btn-icon" aria-label="New message" onClick={() => nav("/coach/clients")}>
           <i className="ph ph-pencil-simple-line" style={{ fontSize: 16 }} />
         </button>
       </div>
@@ -63,13 +63,18 @@ export function CoachThread() {
   const { threadId = "" } = useParams();
   const { state, dispatch } = useCoachStore();
   const nav = useNavigate();
-  const thread = state.threads.find((t) => t.id === threadId) ?? state.threads.find((t) => t.clientId === threadId);
+  const existingThread = state.threads.find((t) => t.id === threadId) ?? state.threads.find((t) => t.clientId === threadId);
+  // No messages yet with this person — fall back to their roster name so the empty thread still renders
+  // (and the first message sent creates the real thread).
+  const rosterClient = !existingThread ? state.clients.find((c) => c.accountId === threadId) : null;
   const [draft, setDraft] = useState("");
-  if (!thread) return <div className="screen-scroll">Not found.</div>;
+  if (!existingThread && !rosterClient) return <div className="screen-scroll">Not found.</div>;
+
+  const thread = existingThread ?? { id: threadId, clientId: threadId, clientName: rosterClient!.name, context: "", unread: false, time: "", preview: "", bubbles: [] as { from: "coach" | "client"; text: string; time: string; attached?: string; receipt?: string }[] };
 
   function send() {
     if (!draft.trim()) return;
-    dispatch({ type: "SEND_MESSAGE", threadId: thread!.id, text: draft.trim() });
+    dispatch({ type: "SEND_MESSAGE", threadId: thread.id, text: draft.trim(), clientName: thread.clientName });
     setDraft("");
   }
 
@@ -98,20 +103,20 @@ export function CoachThread() {
                 style={{
                   padding: "10px 12px",
                   borderRadius: b.from === "client" ? "12px 12px 12px 4px" : "12px 12px 4px 12px",
-                  background: b.from === "coach" ? "var(--color-accent-900)" : "var(--color-surface)",
-                  border: b.from === "coach" ? "1px solid var(--color-accent-800)" : undefined,
+                  background: b.from === "coach" ? "var(--color-accent)" : "var(--color-surface)",
+                  border: b.from === "client" ? "1px solid var(--color-neutral-800)" : undefined,
                 }}
               >
-                <div style={{ fontSize: 13.5, lineHeight: 1.5, color: b.from === "coach" ? "var(--color-accent-100)" : "var(--color-text)" }}>{b.text}</div>
+                <div style={{ fontSize: 13.5, lineHeight: 1.5, fontWeight: b.from === "coach" ? 600 : 400, color: b.from === "coach" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
                 {b.receipt && (
-                  <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "var(--color-accent-800)" }}>
-                    <div className="row" style={{ gap: 7, fontSize: 11.5, color: "var(--color-accent-100)" }}>
+                  <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "rgba(11, 23, 16, 0.15)" }}>
+                    <div className="row" style={{ gap: 7, fontSize: 11.5 }}>
                       <i className="ph ph-arrows-left-right" style={{ fontSize: 13 }} />
                       {b.receipt}
                     </div>
                   </div>
                 )}
-                <div className="mu" style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "coach" ? "right" : "left" }}>{b.time}</div>
+                <div style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "coach" ? "right" : "left", opacity: b.from === "coach" ? 0.7 : undefined, color: b.from === "coach" ? "#0b1710" : "var(--color-neutral-500)" }}>{b.time}</div>
               </div>
             )}
           </div>

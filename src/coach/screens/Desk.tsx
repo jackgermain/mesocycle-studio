@@ -60,7 +60,7 @@ export default function Desk() {
         <div className="row" style={{ marginBottom: 14, width: "100%" }}>
           <div style={{ flex: 1 }}>
             <div className="k">{dateLabel} · week 3</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 500, fontSize: 26, lineHeight: 1.1, marginTop: 3 }}>Good morning, {coachName}</div>
+            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 26, lineHeight: 1.1, marginTop: 3, letterSpacing: "-0.01em" }}>Good morning, {coachName}</div>
           </div>
           <div className="avatar" style={{ width: 38, height: 38, boxShadow: "0 0 0 1px var(--color-accent-700)" }}>
             {coachName.slice(0, 2).toUpperCase()}
@@ -132,7 +132,7 @@ export default function Desk() {
                 </button>
                 {f.type === "volume-proposal" && (
                   <div className="row" style={{ gap: 8, marginTop: 10 }}>
-                    <button className="btn btn-primary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => applyProposal(client.id, f.id, f.tagLabel)}>
+                    <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => applyProposal(client.id, f.id, f.tagLabel)}>
                       Apply
                     </button>
                     <button className="btn btn-secondary" style={{ flex: "none", height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
@@ -142,7 +142,7 @@ export default function Desk() {
                 )}
                 {f.type === "weigh-in-missed" && (
                   <div className="row" style={{ gap: 8, marginTop: 10 }}>
-                    <button className="btn btn-primary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => remindWeighIn(client.id, client.name)}>
+                    <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => remindWeighIn(client.id, client.name)}>
                       Remind
                     </button>
                     <button className="btn btn-secondary" style={{ flex: "none", height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
@@ -152,7 +152,7 @@ export default function Desk() {
                 )}
                 {f.type === "joint" && (
                   <div className="row" style={{ gap: 8, marginTop: 10 }}>
-                    <button className="btn btn-primary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}/log`)}>
+                    <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}/log`)}>
                       Swap exercise
                     </button>
                     <button className="btn btn-secondary" style={{ flex: "none", height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
@@ -169,14 +169,18 @@ export default function Desk() {
         <div>
           <div className="sh">Quick actions</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <button className="cell" style={{ gap: 7, padding: 12, textAlign: "left", cursor: "pointer", border: "none" }} onClick={() => nav("/coach/programs/import")}>
-              <i className="ph ph-file-arrow-up" style={{ fontSize: 19, color: "var(--color-accent)" }} />
-              <div style={{ fontSize: 13, fontFamily: "var(--font-heading)" }}>Import a program</div>
+            <button className="cell" style={{ gap: 7, padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => nav("/coach/programs/import")}>
+              <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 2 }}>
+                <i className="ph-fill ph-file-arrow-up" style={{ fontSize: 17, color: "var(--color-accent)" }} />
+              </div>
+              <div style={{ fontSize: 13.5, fontFamily: "var(--font-heading)", fontWeight: 700 }}>Import a program</div>
               <div className="mu">PDF or screenshots</div>
             </button>
-            <button className="cell" style={{ gap: 7, padding: 12, textAlign: "left", cursor: "pointer", border: "none" }} onClick={() => nav("/coach/clients")}>
-              <i className="ph ph-user-plus" style={{ fontSize: 19, color: "var(--color-accent)" }} />
-              <div style={{ fontSize: 13, fontFamily: "var(--font-heading)" }}>Assign a client</div>
+            <button className="cell" style={{ gap: 7, padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => nav("/coach/clients")}>
+              <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 2 }}>
+                <i className="ph-fill ph-user-plus" style={{ fontSize: 17, color: "var(--color-accent)" }} />
+              </div>
+              <div style={{ fontSize: 13.5, fontFamily: "var(--font-heading)", fontWeight: 700 }}>Assign a client</div>
               <div className="mu">{state.clients.filter((c) => c.status === "unassigned").length} waiting</div>
             </button>
           </div>

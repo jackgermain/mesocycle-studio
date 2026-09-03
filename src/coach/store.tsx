@@ -29,7 +29,7 @@ type Action =
   | { type: "ADD_PROGRAM"; program: CoachProgram }
   | { type: "SET_PROGRAM_NAME"; programId: string; name: string }
   | { type: "SET_PROGRAM_TEMPLATE"; programId: string; isTemplate: boolean }
-  | { type: "SEND_MESSAGE"; threadId: string; text: string }
+  | { type: "SEND_MESSAGE"; threadId: string; text: string; clientName?: string }
   | { type: "MARK_READ"; threadId: string }
   | { type: "ADD_CUSTOM_EXERCISE"; exercise: LibraryExercise }
   | { type: "SET_DAYS_PER_WEEK"; programId: string; count: number }
@@ -84,9 +84,22 @@ function reducer(state: CoachState, action: Action): CoachState {
       return { ...state, programs };
     }
     case "SEND_MESSAGE": {
-      const threads = state.threads.map((t) =>
-        t.id === action.threadId ? { ...t, bubbles: [...t.bubbles, { from: "coach" as const, text: action.text, time: "now" }], preview: action.text, unread: false } : t
-      );
+      const bubble = { from: "coach" as const, text: action.text, time: "now" };
+      const exists = state.threads.some((t) => t.id === action.threadId);
+      if (!exists) {
+        const newThread = {
+          id: action.threadId,
+          clientId: action.threadId,
+          clientName: action.clientName ?? "Client",
+          context: "",
+          unread: false,
+          time: "now",
+          preview: action.text,
+          bubbles: [bubble],
+        };
+        return { ...state, threads: [newThread, ...state.threads] };
+      }
+      const threads = state.threads.map((t) => (t.id === action.threadId ? { ...t, bubbles: [...t.bubbles, bubble], preview: action.text, unread: false } : t));
       return { ...state, threads };
     }
     case "MARK_READ": {

@@ -15,7 +15,7 @@ import Reorder from "./screens/Reorder";
 import Feedback from "./screens/Feedback";
 import Progress from "./screens/Progress";
 import Nutrition from "./screens/Nutrition";
-import Inbox, { Thread } from "./screens/Inbox";
+import Inbox from "./screens/Inbox";
 import AllDaysCalendar from "./screens/AllDaysCalendar";
 import AllLifts from "./screens/AllLifts";
 import LiftDetail from "./screens/LiftDetail";
@@ -156,7 +156,6 @@ export default function App() {
               <Route path="/progress/lifts/:name" element={<Gate><LiftDetail /></Gate>} />
               <Route path="/nutrition" element={<Gate><Nutrition /></Gate>} />
               <Route path="/inbox" element={<Gate><Inbox /></Gate>} />
-              <Route path="/inbox/:threadId" element={<Gate><Thread /></Gate>} />
               <Route path="/build" element={<Gate><BuildProgram /></Gate>} />
             </Route>
 

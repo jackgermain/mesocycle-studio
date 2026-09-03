@@ -51,7 +51,8 @@ export default function ClientDetail() {
     dispatch({ type: "DISMISS_FLAG", clientId: client.id, flagId });
   }
   function remindWeighIn() {
-    dispatch({ type: "SEND_MESSAGE", threadId: client.id, text: `Hey ${client.name.split(" ")[0]}, quick reminder to log your weigh-in when you get a chance 👍` });
+    if (!client.accountId) return;
+    dispatch({ type: "SEND_MESSAGE", threadId: client.accountId, text: `Hey ${client.name.split(" ")[0]}, quick reminder to log your weigh-in when you get a chance 👍`, clientName: client.name });
     dispatch({ type: "SHOW_TOAST", message: `Reminder sent to ${client.name}.` });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
   }
@@ -217,10 +218,12 @@ export default function ClientDetail() {
             Nutrition protocol
           </button>
         )}
-        <button className="btn btn-secondary btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/messages/${client.id}`)}>
-          <i className="ph ph-chat-circle" style={{ fontSize: 15 }} />
-          Message {client.name.split(" ")[0]}
-        </button>
+        {accepted && (
+          <button className="btn btn-secondary btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/messages/${client.accountId}`)}>
+            <i className="ph ph-chat-circle" style={{ fontSize: 15 }} />
+            Message {client.name.split(" ")[0]}
+          </button>
+        )}
 
         {accepted && accountActive !== null && (
           <button

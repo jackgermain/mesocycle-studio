@@ -1,134 +1,109 @@
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useStore } from "../state/store";
+import { supabase } from "../lib/supabase";
 import { TabBar } from "../components/TabBar";
-import { BackHeader } from "../components/UI";
+import { InfoBanner } from "../components/UI";
 
 interface Bubble {
   from: "coach" | "client";
   text: string;
   time: string;
-  attachedSet?: string;
-  actionReceipt?: string;
+  attached?: string;
+  receipt?: string;
+}
+interface Thread {
+  clientName: string;
+  context: string;
+  bubbles: Bubble[];
 }
 
-const THREADS: Record<string, { name: string; context: string; time: string; preview: string; unread: boolean; bubbles: Bubble[] }> = {
-  dana: {
-    name: "Dana",
-    context: "Hypertrophy 8 · wk 3 · your coach",
-    time: "08:19",
-    preview: "Skip it. I've swapped today's hack squat for a leg press with a shorter range — same sets, same RIR.",
-    unread: true,
-    bubbles: [
-      { from: "client", text: "Knee felt a little off on the second set — should I skip hack squat today?", time: "08:12" },
-      { from: "coach", text: "Skip it. I've swapped today's hack squat for a leg press with a shorter range — same sets, same RIR.", time: "08:19", actionReceipt: "Hack Squat → Leg Press · week 3" },
-      { from: "client", text: "Perfect, thank you 🙏", time: "08:21" },
-    ],
-  },
-  broadcast: {
-    name: "Broadcast · Hypertrophy 8",
-    context: "From Dana to all assigned clients",
-    time: "Sun",
-    preview: "Week 4 is the last accumulation week — push it.",
-    unread: false,
-    bubbles: [{ from: "coach", text: "Week 4 is the last accumulation week — push it.", time: "Sun 09:02" }],
-  },
-};
-
+/** The client's one real conversation with their coach — no separate list screen, since there's only
+ * ever this one thread. Reads/writes through get_my_thread / send_client_message, the two RPCs that let
+ * a client touch their own slice of the coach's threads without any broader access. */
 export default function Inbox() {
   const { state } = useStore();
-  const nav = useNavigate();
+  const [thread, setThread] = useState<Thread | "loading" | null>("loading");
+  const [draft, setDraft] = useState("");
+  const [sending, setSending] = useState(false);
+
+  async function refresh() {
+    const { data } = await supabase.rpc("get_my_thread");
+    setThread((data as Thread | null) ?? null);
+  }
+
+  useEffect(() => {
+    refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function send() {
+    const text = draft.trim();
+    if (!text) return;
+    setSending(true);
+    setDraft("");
+    const { error } = await supabase.rpc("send_client_message", { p_text: text });
+    setSending(false);
+    if (!error) await refresh();
+  }
+
+  const bubbles = thread === "loading" || thread === null ? [] : thread.bubbles;
+  const coachName = state.program.coachName;
+
   return (
     <div className="screen">
       <div className="hdr">
         <div style={{ flex: 1 }}>
-          <div className="k">1 unread · 2 threads</div>
+          <div className="k">{coachName}</div>
           <div className="h1">Inbox</div>
         </div>
-        <button className="btn btn-secondary btn-icon">
-          <i className="ph ph-pencil-simple-line" style={{ fontSize: 16 }} />
-        </button>
       </div>
-      <div className="screen-scroll">
-        <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)" }}>
-          <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
-          <span style={{ fontSize: 14 }}>Search messages</span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-          {Object.entries(THREADS).map(([id, t]) => (
-            <button key={id} className="link-row elev-sm" style={{ alignItems: "flex-start", padding: "11px 12px" }} onClick={() => nav(`/inbox/${id}`)}>
-              <div className="avatar" style={id === "broadcast" ? { background: "var(--color-accent-900)", color: "var(--color-accent-300)" } : undefined}>
-                {id === "broadcast" ? <i className="ph ph-megaphone" style={{ fontSize: 14 }} /> : t.name.slice(0, 2).toUpperCase()}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="row">
-                  <div className="name" style={{ flex: 1 }}>{t.name}</div>
-                  <span className="mu">{t.time}</span>
-                </div>
-                <div className="mu trunc" style={{ marginTop: 3, color: t.unread ? "var(--color-neutral-200)" : undefined }}>
-                  {t.preview}
-                </div>
-              </div>
-              {t.unread && <div style={{ width: 7, height: 7, flex: "none", borderRadius: "50%", background: "var(--color-accent)", marginTop: 6 }} />}
-            </button>
-          ))}
-        </div>
-      </div>
-      <TabBar />
-    </div>
-  );
-}
-
-export function Thread() {
-  const { threadId = "" } = useParams();
-  const thread = THREADS[threadId];
-  const [draft, setDraft] = useState("");
-  const [bubbles, setBubbles] = useState(thread?.bubbles ?? []);
-  if (!thread) return <div className="screen-scroll">Not found.</div>;
-
-  function send() {
-    if (!draft.trim()) return;
-    setBubbles((b) => [...b, { from: "client", text: draft.trim(), time: "now" }]);
-    setDraft("");
-  }
-
-  return (
-    <div className="screen">
-      <BackHeader kicker={thread.context} title={thread.name} />
-      <div className="screen-scroll" style={{ justifyContent: "flex-end", gap: 10 }}>
+      <div className="screen-scroll" style={{ justifyContent: bubbles.length ? "flex-end" : "flex-start", gap: 10 }}>
+        {thread === "loading" && <div className="mu">Loading…</div>}
+        {thread !== "loading" && bubbles.length === 0 && (
+          <InfoBanner icon="ph-chat-circle-dots">
+            No messages yet — send {coachName.split(" ")[0]} something below and they'll see it.
+          </InfoBanner>
+        )}
         {bubbles.map((b, i) => (
           <div key={i} style={{ alignSelf: b.from === "coach" ? "flex-start" : "flex-end", maxWidth: "84%" }}>
             <div
               style={{
                 padding: "10px 12px",
                 borderRadius: b.from === "coach" ? "12px 12px 12px 4px" : "12px 12px 4px 12px",
-                background: b.from === "coach" ? "var(--color-surface)" : "var(--color-accent-900)",
-                border: b.from === "client" ? "1px solid var(--color-accent-800)" : undefined,
+                background: b.from === "client" ? "var(--color-accent)" : "var(--color-surface)",
+                border: b.from === "coach" ? "1px solid var(--color-neutral-800)" : undefined,
               }}
             >
-              <div style={{ fontSize: 13.5, lineHeight: 1.5, color: b.from === "client" ? "var(--color-accent-100)" : "var(--color-text)" }}>{b.text}</div>
-              {b.actionReceipt && (
-                <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "var(--color-accent-800)" }}>
-                  <div className="row" style={{ gap: 7, fontSize: 11.5, color: "var(--color-accent-100)" }}>
+              <div style={{ fontSize: 13.5, lineHeight: 1.5, fontWeight: b.from === "client" ? 600 : 400, color: b.from === "client" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
+              {b.receipt && (
+                <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "rgba(11, 23, 16, 0.15)" }}>
+                  <div className="row" style={{ gap: 7, fontSize: 11.5 }}>
                     <i className="ph ph-arrows-left-right" style={{ fontSize: 13 }} />
-                    {b.actionReceipt}
+                    {b.receipt}
                   </div>
                 </div>
               )}
-              <div className="mu" style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "client" ? "right" : "left" }}>{b.time}</div>
+              <div style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "client" ? "right" : "left", opacity: 0.7 }}>{b.time}</div>
             </div>
           </div>
         ))}
       </div>
       <div style={{ flex: "none", padding: "8px 12px 18px", background: "#1b1e2e", borderTop: "1px solid var(--color-neutral-900)" }}>
         <div className="row" style={{ gap: 8 }}>
-          <i className="ph ph-plus-circle" style={{ fontSize: 22, color: "var(--color-neutral-500)", flex: "none" }} />
-          <input className="input" style={{ flex: 1, height: 40 }} placeholder={`Message ${thread.name}`} value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} />
-          <button onClick={send} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}>
-            <i className="ph-fill ph-paper-plane-right" style={{ fontSize: 19, color: "var(--color-accent)" }} />
+          <input
+            className="input"
+            style={{ flex: 1, height: 42 }}
+            placeholder={`Message ${coachName.split(" ")[0]}`}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && !sending && send()}
+          />
+          <button onClick={send} disabled={sending || !draft.trim()} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", opacity: sending || !draft.trim() ? 0.4 : 1 }}>
+            <i className="ph-fill ph-paper-plane-right" style={{ fontSize: 22, color: "var(--color-accent)" }} />
           </button>
         </div>
       </div>
+      <TabBar />
     </div>
   );
 }

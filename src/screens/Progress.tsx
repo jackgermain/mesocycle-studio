@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useStore } from "../state/store";
+import { useStore, getAllLifts, getLiftHistory } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
 import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
-import { Seg, SetPasswordCard } from "../components/UI";
-
-const BENCH_HISTORY = [52, 55, 58, 57, 64, 68, 72, 70, 80, 86, 92, 100];
+import { Seg, SetPasswordCard, InfoBanner } from "../components/UI";
 
 function todayISO() {
   const t = new Date();
@@ -71,36 +69,38 @@ export default function Progress() {
 function StrengthTab() {
   const { state } = useStore();
   const nav = useNavigate();
-  const max = Math.max(...BENCH_HISTORY);
+  const lifts = getAllLifts(state.program).filter((l) => l.occurrences > 0);
+
+  if (lifts.length === 0) {
+    return <InfoBanner icon="ph-chart-line-up">Nothing logged yet — once you start checking off sets, your lift history shows up here.</InfoBanner>;
+  }
+
+  const featured = [...lifts].sort((a, b) => b.occurrences - a.occurrences)[0];
+  const history = getLiftHistory(state.program, featured.name);
+  const adherence = history.map((h) => (h.setsPrescribed > 0 ? h.setsLogged / h.setsPrescribed : 0));
+  const maxAdherence = Math.max(...adherence, 0.01);
+
   return (
     <>
       <div className="cell elev-sm">
         <div className="row" style={{ alignItems: "baseline" }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontFamily: "var(--font-heading)", fontWeight: 500 }}>Bench press</div>
-            <div className="mu" style={{ marginTop: 2 }}>Est. 1RM · 12 weeks</div>
+            <div style={{ fontSize: 15, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{featured.name}</div>
+            <div className="mu" style={{ marginTop: 2 }}>Sets logged per week · {history.length} weeks</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, color: "var(--color-accent-300)" }}>{BENCH_HISTORY[BENCH_HISTORY.length - 1]}</div>
-            <div className="mu">{state.profile.units} · +{BENCH_HISTORY[BENCH_HISTORY.length - 1] - BENCH_HISTORY[0]}</div>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, color: "var(--color-accent-300)" }}>{featured.lastLoggedTopSet ?? "—"}</div>
+            <div className="mu">last logged top set</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 5, height: 78, marginTop: 12 }}>
-          {BENCH_HISTORY.map((v, i) => (
-            <div
-              key={i}
-              style={{
-                flex: 1,
-                height: `${(v / max) * 100}%`,
-                borderRadius: "3px 3px 0 0",
-                background: i > 8 ? "var(--color-accent)" : i > 5 ? "var(--color-accent-600)" : i > 2 ? "var(--color-accent-700)" : "var(--color-accent-800)",
-              }}
-            />
+          {adherence.map((v, i) => (
+            <div key={i} style={{ flex: 1, height: `${(v / maxAdherence) * 100}%`, borderRadius: "3px 3px 0 0", background: i === adherence.length - 1 ? "var(--color-accent)" : "var(--color-accent-700)" }} />
           ))}
         </div>
         <div className="row" style={{ marginTop: 7, fontSize: 10, color: "var(--color-neutral-600)" }}>
-          <span>wk 1</span>
-          <span style={{ marginLeft: "auto" }}>wk 12</span>
+          <span>wk {history[0]?.weekNumber ?? 1}</span>
+          <span style={{ marginLeft: "auto" }}>wk {history[history.length - 1]?.weekNumber ?? 1}</span>
         </div>
       </div>
 
@@ -112,38 +112,15 @@ function StrengthTab() {
           </button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-          {[
-            { name: "Squat", value: "148", pct: "+11%", spark: [40, 55, 70, 100] },
-            { name: "Deadlift", value: "182", pct: "+7%", spark: [55, 62, 78, 88] },
-            { name: "Pull-Up", value: "6 unassisted", pct: "+2 reps", spark: [20, 40, 60, 100] },
-          ].map((l) => (
+          {lifts.slice(0, 5).map((l) => (
             <div key={l.name} className="cell row" style={{ padding: "11px 12px" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13.5 }}>{l.name}</div>
-                <div className="mu" style={{ marginTop: 2 }}>{l.value} {l.name === "Pull-Up" ? "" : `${state.profile.units} est. 1RM`}</div>
+                <div className="mu" style={{ marginTop: 2 }}>{l.muscle}</div>
               </div>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 20 }}>
-                {l.spark.map((h, i) => (
-                  <div key={i} style={{ width: 4, height: `${h}%`, background: i === l.spark.length - 1 ? "var(--color-accent)" : "var(--color-accent-700)", borderRadius: 1 }} />
-                ))}
-              </div>
-              <span style={{ fontSize: 12.5, color: "var(--color-accent-300)", width: 52, textAlign: "right" }}>{l.pct}</span>
+              <span style={{ fontSize: 12.5, color: "var(--color-accent-300)" }}>{l.lastLoggedTopSet ?? "not logged yet"}</span>
             </div>
           ))}
-        </div>
-      </div>
-
-      <div>
-        <div className="sh">Records this block</div>
-        <div className="cell" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Bench press</span>
-            <span>100 {state.profile.units} × 6 · wk 12</span>
-          </div>
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Pull-up, unassisted</span>
-            <span>6 reps · wk 11</span>
-          </div>
         </div>
       </div>
     </>
@@ -199,7 +176,7 @@ function BodyTab() {
             {p.weighInsPerWeek}× a week — {p.weighInDays.join(", ")}, first thing.
           </div>
           {!loggedToday && !logging && (
-            <button className="btn btn-primary" style={{ flex: "none", height: 34, fontSize: 12.5 }} onClick={() => setLogging(true)}>
+            <button className="btn btn-solid" style={{ flex: "none", height: 34, fontSize: 12.5 }} onClick={() => setLogging(true)}>
               Log
             </button>
           )}
@@ -218,7 +195,7 @@ function BodyTab() {
             autoFocus
           />
           <span className="mu">{p.units}</span>
-          <button className="btn btn-primary" style={{ height: 36, fontSize: 12.5 }} onClick={submitWeighIn}>
+          <button className="btn btn-solid" style={{ height: 36, fontSize: 12.5 }} onClick={submitWeighIn}>
             Save
           </button>
         </div>
@@ -323,36 +300,44 @@ function BodyTab() {
 }
 
 function VolumeTab() {
-  const muscles = [
-    { name: "Chest", sets: 14, mev: 8, mrv: 18 },
-    { name: "Back", sets: 16, mev: 10, mrv: 20 },
-    { name: "Triceps", sets: 10, mev: 6, mrv: 16 },
-    { name: "Side delts", sets: 9, mev: 8, mrv: 16 },
-    { name: "Quads", sets: 12, mev: 8, mrv: 18 },
-  ];
+  const { state } = useStore();
+  const week = state.program.weeks.find((w) => w.days.some((d) => d.status === "today")) ?? state.program.weeks[0];
+
+  const bySet = new Map<string, number>();
+  if (week) {
+    for (const day of week.days) {
+      for (const ex of Object.values(day.exercises)) {
+        const sets = ex.sets.filter((s) => !s.removed).length;
+        bySet.set(ex.muscle, (bySet.get(ex.muscle) ?? 0) + sets);
+      }
+    }
+  }
+  const muscles = Array.from(bySet.entries())
+    .map(([name, sets]) => ({ name, sets }))
+    .sort((a, b) => b.sets - a.sets);
+  const max = Math.max(...muscles.map((m) => m.sets), 1);
+
+  if (muscles.length === 0) {
+    return <InfoBanner icon="ph-chart-bar">No sets prescribed yet this week — this fills in once your program has exercises assigned.</InfoBanner>;
+  }
+
   return (
     <div>
-      <div className="sh">Sets per muscle this week</div>
+      <div className="sh">Sets per muscle · week {week?.number}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {muscles.map((m) => {
-          const pct = Math.min(100, (m.sets / m.mrv) * 100);
-          const mevPct = (m.mev / m.mrv) * 100;
-          const atOrOver = m.sets >= m.mrv;
-          return (
-            <div key={m.name} className="cell" style={{ padding: 11 }}>
-              <div className="row" style={{ marginBottom: 6 }}>
-                <span style={{ flex: 1, fontSize: 13 }}>{m.name}</span>
-                <span style={{ fontSize: 12, color: atOrOver ? "var(--color-neutral-300)" : "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{m.sets} sets</span>
-              </div>
-              <div className="meter" style={{ position: "relative" }}>
-                <div className="meter-fill" style={{ width: `${pct}%`, background: atOrOver ? "var(--color-neutral-400)" : "var(--color-accent)" }} />
-                <div style={{ position: "absolute", top: -2, bottom: -2, left: `${mevPct}%`, width: 1, background: "var(--color-neutral-400)" }} />
-              </div>
+        {muscles.map((m) => (
+          <div key={m.name} className="cell" style={{ padding: 11 }}>
+            <div className="row" style={{ marginBottom: 6 }}>
+              <span style={{ flex: 1, fontSize: 13 }}>{m.name}</span>
+              <span style={{ fontSize: 12, color: "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{m.sets} sets</span>
             </div>
-          );
-        })}
+            <div className="meter">
+              <div className="meter-fill" style={{ width: `${(m.sets / max) * 100}%`, background: "var(--color-accent)" }} />
+            </div>
+          </div>
+        ))}
       </div>
-      <div className="mu" style={{ marginTop: 10, lineHeight: 1.6 }}>The tick marks minimum effective volume; the bar fills toward your maximum recoverable volume. Dana adjusts next week's numbers — this is just the evidence.</div>
+      <div className="mu" style={{ marginTop: 10, lineHeight: 1.6 }}>Total prescribed sets per muscle group for this week's program.</div>
     </div>
   );
 }
