@@ -102,22 +102,15 @@ a { color: var(--color-accent); text-decoration: none; }
   display: flex;
   align-items: center;
   gap: 9px;
-  background: var(--color-accent);
+  background: linear-gradient(#1b1e2e, var(--color-bg));
 }
 .hdr.hero {
   padding: calc(12px + env(safe-area-inset-top)) 14px 16px;
-  background: var(--color-accent);
+  background: radial-gradient(120% 90% at 12% 0%, #1f2f28, #1b1e2e 45%, #161826);
   flex-direction: column;
   align-items: stretch;
 }
-/* The header bar is the app's vivid-green top strip everywhere now, so its own text/icons need dark
-   contrast against that green rather than the light-on-dark colors used in the rest of the screen --
-   scoped to `.hdr` specifically so `.k`/`.h1`/`.mu` keep their normal light-on-dark look everywhere they're
-   reused in body content. */
-.hdr .back { font-size: 20px; color: #0b1710; flex: none; cursor: pointer; background: none; border: none; padding: 4px; display: flex; }
-.hdr .k { color: #123726; }
-.hdr .h1 { color: #0b1710; }
-.hdr .mu { color: #0b1710; opacity: 0.7; }
+.hdr .back { font-size: 20px; color: var(--color-accent); flex: none; cursor: pointer; background: none; border: none; padding: 4px; display: flex; }
 .k { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); }
 .h1 { font-family: var(--font-heading); font-weight: 500; font-size: 21px; line-height: 1.15; }
 .mu { font-size: 11.5px; color: var(--color-neutral-500); }
@@ -130,8 +123,8 @@ a { color: var(--color-accent); text-decoration: none; }
   flex: none;
   display: flex;
   padding: 6px 4px calc(18px + env(safe-area-inset-bottom));
-  background: var(--color-accent);
-  border-top: none;
+  background: linear-gradient(transparent, #1b1e2e 45%);
+  border-top: 1px solid var(--color-neutral-900);
 }
 .tbi {
   flex: 1;
@@ -140,9 +133,7 @@ a { color: var(--color-accent); text-decoration: none; }
   align-items: center;
   gap: 2px;
   padding: 4px 0 5px;
-  /* Same vivid-green bar as the header -- an inactive tab needs a dark (not light-grey) label to read
-     against it, unlike the dark tab bar this replaces. */
-  color: rgba(11, 23, 16, 0.6);
+  color: var(--color-neutral-600);
   font-size: 9.5px;
   letter-spacing: 0.04em;
   background: none;
@@ -152,8 +143,8 @@ a { color: var(--color-accent); text-decoration: none; }
 }
 .tbi-icon { width: 42px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 9px; transition: background 0.15s ease, color 0.15s ease; }
 .tbi-icon i { font-size: 19px; }
-.tbi.on { color: #0b1710; font-weight: 600; }
-.tbi.on .tbi-icon { background: #0b1710; color: var(--color-accent-200); }
+.tbi.on { color: var(--color-accent); font-weight: 600; }
+.tbi.on .tbi-icon { background: var(--color-accent-900); color: var(--color-accent); }
 
 /* — buttons — */
 .btn {
@@ -320,12 +311,8 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; marg
 input[type="number"] { appearance: textfield; }
 
 .hero-box {
-  /* Sits directly on the header's own vivid-green background now (not a dark screen background), so this
-     needs a real opaque dark fill of its own rather than a translucent white overlay -- otherwise every
-     light-on-dark color already used inside a HeroStat (the big number, breakdown rows, etc.) would end up
-     as light text on light green with no contrast, all cascading through many call sites. */
-  background: #12291e;
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--radius-lg);
   padding: 14px 16px;
   width: 100%;

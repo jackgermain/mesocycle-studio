@@ -245,7 +245,7 @@ export function HeroHeader({ kicker, title, right, children }: { kicker?: string
       <div className="row" style={{ width: "100%", marginBottom: children ? 14 : 0 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           {kicker && <div className="k">{kicker}</div>}
-          <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 26, lineHeight: 1.1, marginTop: kicker ? 3 : 0, letterSpacing: "-0.01em", color: "#0b1710" }}>
+          <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 26, lineHeight: 1.1, marginTop: kicker ? 3 : 0, letterSpacing: "-0.01em" }}>
             {title}
           </div>
         </div>

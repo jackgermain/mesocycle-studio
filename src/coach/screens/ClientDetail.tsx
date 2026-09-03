@@ -109,24 +109,22 @@ export default function ClientDetail() {
           <div className="avatar" style={{ width: 44, height: 44, fontSize: 15, boxShadow: "0 0 0 1px var(--color-accent-700)" }}>{client.initials}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="k">{accepted ? `${client.programName} · week ${client.week} of ${client.totalWeeks}` : "Not accepted yet"}</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 21, lineHeight: 1.15, color: "#0b1710" }} className="trunc">{client.name}</div>
+            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 21, lineHeight: 1.15 }} className="trunc">{client.name}</div>
           </div>
         </div>
         {accepted && (
-          <div className="hero-box" style={{ padding: "12px 14px" }}>
-            <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
-              <div style={{ flex: 1, paddingRight: 12, borderRight: "1px solid var(--color-neutral-800)" }}>
-                <div className="scr">Adherence</div>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3, color: "var(--color-accent-300)" }}>{client.adherencePct}%</div>
-              </div>
-              <div style={{ flex: 1, padding: "0 12px", borderRight: "1px solid var(--color-neutral-800)" }}>
-                <div className="scr">Week</div>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3 }}>{client.week} / {client.totalWeeks}</div>
-              </div>
-              <div style={{ flex: 1, paddingLeft: 12 }}>
-                <div className="scr">Flags</div>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3, color: client.flags.length ? "var(--color-neutral-200)" : undefined }}>{client.flags.length}</div>
-              </div>
+          <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
+            <div style={{ flex: 1, paddingRight: 12, borderRight: "1px solid var(--color-neutral-800)" }}>
+              <div className="scr">Adherence</div>
+              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3, color: "var(--color-accent-300)" }}>{client.adherencePct}%</div>
+            </div>
+            <div style={{ flex: 1, padding: "0 12px", borderRight: "1px solid var(--color-neutral-800)" }}>
+              <div className="scr">Week</div>
+              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3 }}>{client.week} / {client.totalWeeks}</div>
+            </div>
+            <div style={{ flex: 1, paddingLeft: 12 }}>
+              <div className="scr">Flags</div>
+              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3, color: client.flags.length ? "var(--color-neutral-200)" : undefined }}>{client.flags.length}</div>
             </div>
           </div>
         )}
