@@ -93,6 +93,40 @@ export function InfoBanner({ icon, tone = "neutral", children }: { icon: string;
   );
 }
 
+/** Full-page, vertically centered splash layout used by every signed-out screen (sign in, invite
+ * accept, coach bootstrap) — the app's logo badge and name stay constant, whatever's specific to that
+ * screen goes below as children. */
+export function AuthHero({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="screen" style={{ background: "radial-gradient(130% 90% at 50% -8%, #1f2f28, #161826 55%)" }}>
+      <div className="screen-scroll" style={{ gap: 0, padding: "24px 24px calc(24px + env(safe-area-inset-bottom))" }}>
+        <div style={{ margin: "auto 0", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <div
+            style={{
+              width: 108,
+              height: 108,
+              borderRadius: 28,
+              background: "var(--color-accent-900)",
+              border: "1px solid var(--color-accent-700)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 22,
+              boxShadow: "0 16px 44px -12px rgba(76, 224, 143, 0.45)",
+            }}
+          >
+            <img src="/icons/icon-192.png" alt="" width={68} height={68} style={{ borderRadius: 15, display: "block" }} />
+          </div>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: 34, fontWeight: 600, letterSpacing: -0.5 }}>Jacked</div>
+          <div className="mu" style={{ marginTop: 6, fontSize: 13 }}>Coach-programmed training, in your pocket.</div>
+
+          <div style={{ width: "100%", marginTop: 40, display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function StatCell({ label, value, valueColor }: { label: string; value: React.ReactNode; valueColor?: string }) {
   return (
     <div style={{ flex: 1 }}>

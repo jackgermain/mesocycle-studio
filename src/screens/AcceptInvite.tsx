@@ -5,7 +5,7 @@ import type { PublicInvite } from "../shared/invites";
 import { claimInvite } from "../lib/accountSetup";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
-import { InfoBanner } from "../components/UI";
+import { AuthHero as Hero, InfoBanner } from "../components/UI";
 
 export default function AcceptInvite() {
   const { code = "" } = useParams();
@@ -22,45 +22,29 @@ export default function AcceptInvite() {
 
   if (invite === "loading" || authLoading) {
     return (
-      <div className="screen">
-        <div className="hdr" style={{ paddingBottom: 8 }}>
-          <div className="h1">Loading…</div>
-        </div>
-      </div>
+      <Hero>
+        <div className="mu" style={{ textAlign: "center" }}>Loading…</div>
+      </Hero>
     );
   }
 
   if (!invite) {
     return (
-      <div className="screen">
-        <div className="hdr" style={{ paddingBottom: 8 }}>
-          <div>
-            <div className="k">Jacked</div>
-            <div className="h1">Invite not found</div>
-          </div>
-        </div>
-        <div className="screen-scroll">
-          <InfoBanner icon="ph-link-break">This invite link isn't valid. Ask your coach to send you a new one.</InfoBanner>
-        </div>
-      </div>
+      <Hero>
+        <div className="h1" style={{ textAlign: "center" }}>Invite not found</div>
+        <InfoBanner icon="ph-link-break">This invite link isn't valid. Ask your coach to send you a new one.</InfoBanner>
+      </Hero>
     );
   }
 
   if (invite.usedAt) {
     return (
-      <div className="screen">
-        <div className="hdr" style={{ paddingBottom: 8 }}>
-          <div>
-            <div className="k">Jacked</div>
-            <div className="h1">Already used</div>
-          </div>
-        </div>
-        <div className="screen-scroll">
-          <InfoBanner icon="ph-check-circle" tone="accent">
-            This invite has already been claimed. If that was you, just sign in from the home page instead.
-          </InfoBanner>
-        </div>
-      </div>
+      <Hero>
+        <div className="h1" style={{ textAlign: "center" }}>Already used</div>
+        <InfoBanner icon="ph-check-circle" tone="accent">
+          This invite has already been claimed. If that was you, just sign in from the home page instead.
+        </InfoBanner>
+      </Hero>
     );
   }
 
@@ -98,38 +82,40 @@ function SignInStep({ code, invite }: { code: string; invite: PublicInvite }) {
   }
 
   return (
-    <div className="screen">
-      <div className="hdr" style={{ paddingBottom: 8 }}>
-        <div>
-          <div className="k">You're invited</div>
-          <div className="h1">{invite.clientName}</div>
-        </div>
-      </div>
-      <div className="screen-scroll" style={{ gap: 16 }}>
-        {sent ? (
-          <InfoBanner icon="ph-envelope-simple-open" tone="accent">
-            Check {email} for a sign-in link — open it on this device to finish setting up.
-          </InfoBanner>
-        ) : (
-          <>
-            <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6 }}>
-              {invite.coachName} sent you this link
-              {invite.role === "friend"
-                ? " — once you're in, you can build your own programs from scratch or clone one of their saved templates, plus full nutrition tracking."
-                : " — once you're in, you'll only ever see the program they build for you."}
-            </p>
-            <div className="field">
-              <label>Email</label>
-              <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
-            </div>
-            {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-            <button className="btn btn-primary btn-block" style={{ height: 48, opacity: email.trim() && !busy ? 1 : 0.5 }} disabled={!email.trim() || busy} onClick={send}>
-              {busy ? "Sending…" : "Send sign-in link"}
-            </button>
-          </>
-        )}
-      </div>
-    </div>
+    <Hero>
+      <div className="h1" style={{ textAlign: "center" }}>You're invited, {invite.clientName.split(" ")[0]}</div>
+      {sent ? (
+        <InfoBanner icon="ph-envelope-simple-open" tone="accent">
+          Check {email} for a sign-in link — open it on this device to finish setting up.
+        </InfoBanner>
+      ) : (
+        <>
+          <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
+            {invite.coachName} sent you this link
+            {invite.role === "friend"
+              ? " — once you're in, you can build your own programs from scratch or clone one of their saved templates, plus full nutrition tracking."
+              : " — once you're in, you'll only ever see the program they build for you."}
+          </p>
+          <div className="field">
+            <label>Email</label>
+            <input
+              className="input"
+              style={{ height: 50, fontSize: 15 }}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@email.com"
+              autoFocus
+              onKeyDown={(e) => e.key === "Enter" && email.trim() && !busy && send()}
+            />
+          </div>
+          {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+          <button className="btn btn-primary btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && !busy ? 1 : 0.5 }} disabled={!email.trim() || busy} onClick={send}>
+            {busy ? "Sending…" : "Send sign-in link"}
+          </button>
+        </>
+      )}
+    </Hero>
   );
 }
 
@@ -155,22 +141,15 @@ function ClaimStep({ code, invite, onClaimed }: { code: string; invite: PublicIn
   if (done) return <Navigate to="/onboarding" replace />;
 
   return (
-    <div className="screen">
-      <div className="hdr" style={{ paddingBottom: 8 }}>
-        <div>
-          <div className="k">You're invited</div>
-          <div className="h1">Finish setting up</div>
-        </div>
-      </div>
-      <div className="screen-scroll" style={{ gap: 16 }}>
-        <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6 }}>
-          You're signed in as {invite.clientName} — finish setting up your account with {invite.coachName}.
-        </p>
-        {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-        <button className="btn btn-primary btn-block" style={{ height: 48, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={claim}>
-          {busy ? "Setting up…" : "Create account & start"}
-        </button>
-      </div>
-    </div>
+    <Hero>
+      <div className="h1" style={{ textAlign: "center" }}>Finish setting up</div>
+      <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
+        You're signed in as {invite.clientName} — finish setting up your account with {invite.coachName}.
+      </p>
+      {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+      <button className="btn btn-primary btn-block" style={{ height: 52, fontSize: 15, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={claim}>
+        {busy ? "Setting up…" : "Create account & start"}
+      </button>
+    </Hero>
   );
 }
