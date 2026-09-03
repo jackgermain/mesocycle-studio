@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Seg } from "../components/UI";
 import { defaultPortionTargets } from "../data/mockData";
 import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../data/types";
@@ -327,7 +327,20 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   );
 }
 
+/** Every numeric field here is editable both ways: the +/- buttons for a quick nudge, or tap the number
+ * and type an exact value -- +/- alone was fine as a touch-only control, but this app needs to work with a
+ * keyboard too. Keeps its own draft text while focused so a mid-edit "" or partial number isn't fought back
+ * to the last committed value; commits on blur/Enter. */
 function NumField({ label, value, onChange, step }: { label: string; value: number; onChange: (v: number) => void; step: number }) {
+  const [text, setText] = useState(String(value));
+  useEffect(() => setText(String(value)), [value]);
+
+  function commit() {
+    const n = parseFloat(text);
+    if (Number.isFinite(n)) onChange(Math.max(0, n));
+    else setText(String(value));
+  }
+
   return (
     <div className="cell" style={{ flex: 1, padding: 9 }}>
       <div className="scr">{label}</div>
@@ -335,7 +348,21 @@ function NumField({ label, value, onChange, step }: { label: string; value: numb
         <button onClick={() => onChange(Math.max(0, value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
           <i className="ph ph-minus" style={{ fontSize: 11 }} />
         </button>
-        <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, flex: 1, textAlign: "center" }}>{value}</span>
+        <input
+          type="number"
+          inputMode="decimal"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onFocus={(e) => e.target.select()}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              commit();
+              e.currentTarget.blur();
+            }
+          }}
+          style={{ flex: 1, minWidth: 0, textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 14, color: "inherit", padding: 0 }}
+        />
         <button onClick={() => onChange(value + step)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
           <i className="ph ph-plus" style={{ fontSize: 11 }} />
         </button>
@@ -347,6 +374,18 @@ function NumField({ label, value, onChange, step }: { label: string; value: numb
 /** Signed, decimal-friendly counterpart to NumField — for a rate that can go negative (losing) or positive (gaining), clamped to a sane weekly range. */
 function PctField({ label, value, onChange, step }: { label: string; value: number; onChange: (v: number) => void; step: number }) {
   const clamp = (v: number) => Math.round(Math.min(3, Math.max(-3, v)) * 10) / 10;
+  const [text, setText] = useState(value.toFixed(1));
+  const [focused, setFocused] = useState(false);
+  useEffect(() => {
+    if (!focused) setText(value.toFixed(1));
+  }, [value, focused]);
+
+  function commit() {
+    const n = parseFloat(text);
+    if (Number.isFinite(n)) onChange(clamp(n));
+    else setText(value.toFixed(1));
+  }
+
   return (
     <div className="cell" style={{ flex: 1, padding: 9 }}>
       <div className="scr">{label}</div>
@@ -354,10 +393,28 @@ function PctField({ label, value, onChange, step }: { label: string; value: numb
         <button onClick={() => onChange(clamp(value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
           <i className="ph ph-minus" style={{ fontSize: 11 }} />
         </button>
-        <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, flex: 1, textAlign: "center" }}>
-          {value > 0 ? "+" : ""}
-          {value.toFixed(1)}%
-        </span>
+        <input
+          type="number"
+          inputMode="decimal"
+          step={0.1}
+          value={text}
+          onFocus={(e) => {
+            setFocused(true);
+            e.target.select();
+          }}
+          onChange={(e) => setText(e.target.value)}
+          onBlur={() => {
+            setFocused(false);
+            commit();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              commit();
+              e.currentTarget.blur();
+            }
+          }}
+          style={{ flex: 1, minWidth: 0, textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 14, color: "inherit", padding: 0 }}
+        />
         <button onClick={() => onChange(clamp(value + step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
           <i className="ph ph-plus" style={{ fontSize: 11 }} />
         </button>

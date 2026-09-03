@@ -1,8 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
 import type { WorkExercise, WorkSet } from "../data/types";
 import { isSpecialSet, specialSummary, stepLoad, typeLabel } from "./exerciseHelpers";
+
+/** A set's weight/reps value, editable by tapping the +/- buttons OR tapping the number itself and typing
+ * a value directly -- the +/- alone made sense on a phone, but not once this app also needs to work with a
+ * keyboard on a desktop/web build. Keeps its own draft text while focused so a mid-edit "" or "1" isn't
+ * immediately fought back to the last committed number; commits on blur/Enter, parseFloat-based like the
+ * bodyweight input on the Progress tab already does. */
+function InlineNumberInput({ value, onCommit, placeholder, color }: { value: number | null; onCommit: (n: number) => void; placeholder?: string; color: string }) {
+  const [text, setText] = useState(value == null ? "" : String(value));
+  useEffect(() => {
+    setText(value == null ? "" : String(value));
+  }, [value]);
+
+  function commit() {
+    const n = parseFloat(text);
+    if (Number.isFinite(n)) onCommit(n);
+    else setText(value == null ? "" : String(value));
+  }
+
+  return (
+    <input
+      type="number"
+      inputMode="decimal"
+      value={text}
+      placeholder={placeholder}
+      onChange={(e) => setText(e.target.value)}
+      onFocus={(e) => e.target.select()}
+      onBlur={commit}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          commit();
+          (e.target as HTMLInputElement).blur();
+        }
+      }}
+      onClick={(e) => e.stopPropagation()}
+      style={{ width: 38, textAlign: "center", background: "none", border: "none", outline: "none", fontSize: 14, fontFamily: "var(--font-heading)", color, padding: 0 }}
+    />
+  );
+}
 
 /** The per-exercise weight/rep/checkbox editor used on both the client's own workout screen and the coach's in-person session logger — same component, same store, so a set logged from either side looks identical everywhere. */
 export function ExerciseSection({
@@ -163,7 +201,12 @@ export function ExerciseSection({
               <button onClick={() => editLoad(s, -1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
                 <i className="ph ph-minus" style={{ fontSize: 12 }} />
               </button>
-              <span style={{ fontSize: 14, fontFamily: "var(--font-heading)", color: valueColor }}>{displayLoad ?? "BW"}</span>
+              <InlineNumberInput
+                value={displayLoad ?? null}
+                placeholder="BW"
+                color={valueColor}
+                onCommit={(n) => dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, load: n })}
+              />
               <button onClick={() => editLoad(s, 1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
                 <i className="ph ph-plus" style={{ fontSize: 12 }} />
               </button>
@@ -172,7 +215,11 @@ export function ExerciseSection({
               <button onClick={() => editReps(s, -1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
                 <i className="ph ph-minus" style={{ fontSize: 12 }} />
               </button>
-              <span style={{ fontSize: 14, fontFamily: "var(--font-heading)", color: valueColor }}>{displayReps}</span>
+              <InlineNumberInput
+                value={typeof displayReps === "number" ? displayReps : null}
+                color={valueColor}
+                onCommit={(n) => dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, reps: Math.max(0, n) })}
+              />
               <button onClick={() => editReps(s, 1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
                 <i className="ph ph-plus" style={{ fontSize: 12 }} />
               </button>

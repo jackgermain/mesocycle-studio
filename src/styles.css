@@ -304,6 +304,12 @@ textarea.input { min-height: 78px; resize: vertical; line-height: 1.5; }
 }
 .setrow:first-of-type { border-top: none; }
 
+/* Numeric inputs everywhere use custom +/- buttons alongside direct typing -- the browser's own spinner
+   arrows would just duplicate that and look out of place next to them. */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { appearance: textfield; }
+
 .hero-box {
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.09);

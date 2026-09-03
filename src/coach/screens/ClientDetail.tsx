@@ -283,8 +283,48 @@ type NotLoggedItem = { exercise: string; logged: number; total: number };
 function NotLoggedSection({ accountId, clientName, coachName }: { accountId: string; clientName: string; coachName: string }) {
   return (
     <StoreProvider accountId={accountId} ownerName={clientName} coachName={coachName}>
+      <LiveWeightTrend />
       <LiveNotLoggedList clientName={clientName} />
     </StoreProvider>
+  );
+}
+
+/** Real week-over-week bodyweight rate, computed from the client's own logged weigh-ins -- same formula as
+ * the "Trend weight" card on the client's own Progress > Body tab, so the number the coach sees here always
+ * matches what the client sees themselves. */
+function LiveWeightTrend() {
+  const { state } = useStore();
+  const p = state.profile;
+  const history = state.weighIns.slice(-14);
+  if (history.length === 0) return null;
+
+  const latest = history[history.length - 1].weight;
+  const first = history[0].weight;
+  const totalChange = Math.round((latest - first) * 10) / 10;
+  const weeks = Math.max(1, history.length / (p.weighInsPerWeek || 3));
+  const ratePerWeek = Math.round((totalChange / weeks) * 10) / 10;
+
+  return (
+    <div className="cell elev-sm">
+      <div className="row" style={{ alignItems: "baseline" }}>
+        <div style={{ flex: 1 }}>
+          <div className="scr">Trend weight</div>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, lineHeight: 1.1, marginTop: 3 }}>
+            {latest.toFixed(1)} <span style={{ fontSize: 12, color: "var(--color-neutral-500)" }}>{p.units}</span>
+          </div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontSize: 13, color: ratePerWeek <= 0 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>
+            {ratePerWeek > 0 ? "+" : ""}
+            {ratePerWeek} {p.units}/wk
+          </div>
+          <div className="mu" style={{ marginTop: 2 }}>
+            {totalChange > 0 ? "+" : ""}
+            {totalChange} total · {history.length} weigh-ins
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
