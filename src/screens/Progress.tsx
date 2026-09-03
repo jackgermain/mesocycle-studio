@@ -4,7 +4,7 @@ import { useStore } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
 import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
-import { Seg } from "../components/UI";
+import { Seg, SetPasswordCard } from "../components/UI";
 
 const BENCH_HISTORY = [52, 55, 58, 57, 64, 68, 72, 70, 80, 86, 92, 100];
 
@@ -60,6 +60,7 @@ export default function Progress() {
         {tab === "body" && <BodyTab />}
         {tab === "volume" && <VolumeTab />}
 
+        <SetPasswordCard />
         <SignOutButton />
       </div>
       <TabBar />

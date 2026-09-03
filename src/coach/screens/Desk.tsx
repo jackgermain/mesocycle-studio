@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
+import { SetPasswordCard } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
 import type { ClientStatus } from "../types";
 
@@ -181,6 +182,7 @@ export default function Desk() {
           </div>
         </div>
 
+        <SetPasswordCard />
         <SignOutButton />
       </div>
 

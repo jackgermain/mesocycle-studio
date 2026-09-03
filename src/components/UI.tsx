@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 export function BackHeader({ kicker, title, right }: { kicker: string; title: string; right?: React.ReactNode }) {
   const nav = useNavigate();
@@ -132,6 +133,51 @@ export function AuthHero({ children }: { children: React.ReactNode }) {
           <div style={{ width: "100%", marginTop: 40, display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Anyone whose account predates password auth (created via the old magic-link flow) has no password on
+ * file at all — this lets them set one while their session is still valid, since without it they'd have
+ * no way back in once that session ends. */
+export function SetPasswordCard() {
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function save() {
+    setBusy(true);
+    setError(null);
+    const { error } = await supabase.auth.updateUser({ password });
+    setBusy(false);
+    if (error) setError(error.message);
+    else {
+      setDone(true);
+      setPassword("");
+    }
+  }
+
+  return (
+    <div className="cell" style={{ padding: 12 }}>
+      <div className="row" style={{ marginBottom: 8 }}>
+        <i className="ph ph-lock-key" style={{ fontSize: 15, color: "var(--color-accent-300)", marginRight: 6 }} />
+        <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Set a password</span>
+      </div>
+      <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
+        Set a password so you can sign back in directly next time, without needing an email link.
+      </div>
+      {done ? (
+        <InfoBanner icon="ph-check-circle" tone="accent">Password set — use it to sign in next time.</InfoBanner>
+      ) : (
+        <>
+          <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" style={{ height: 40, fontSize: 13 }} />
+          {error && <div className="mu" style={{ marginTop: 6 }}>{error}</div>}
+          <button className="btn btn-solid btn-block" style={{ height: 38, marginTop: 8, fontSize: 12.5, opacity: password.length >= 6 && !busy ? 1 : 0.5 }} disabled={password.length < 6 || busy} onClick={save}>
+            {busy ? "Saving…" : "Save password"}
+          </button>
+        </>
+      )}
     </div>
   );
 }
