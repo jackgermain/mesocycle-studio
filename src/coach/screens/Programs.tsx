@@ -5,6 +5,7 @@ import { CoachTabBar } from "../components/CoachTabBar";
 import { HeroHeader, HeroStat } from "../../components/UI";
 import { LOAD_LABELS } from "../loadMode";
 import { buildBlankProgram } from "../mockData";
+import { isPendingProgram } from "../programOps";
 import type { CoachProgram } from "../types";
 
 type Filter = "all" | "published" | "drafts";
@@ -19,10 +20,11 @@ export default function Programs() {
   const [naming, setNaming] = useState(false);
   const [newName, setNewName] = useState("");
 
-  // Working copies built for one client's assignment stay hidden here until the coach explicitly saves
-  // one (checking "Save as a personal template") — otherwise every assign attempt would permanently
-  // clutter this list.
-  const visiblePrograms = state.programs.filter((p) => !p.pendingForClientId);
+  // Every not-yet-confirmed working copy -- whether built for one client's assignment, or just started
+  // from scratch/import here with no client in mind yet -- stays hidden until explicitly saved
+  // ("Save as a personal template") or actually assigned to someone. Otherwise every attempt would
+  // permanently clutter this list.
+  const visiblePrograms = state.programs.filter((p) => !isPendingProgram(p));
   const filtered = visiblePrograms.filter((p) => (filter === "all" ? true : filter === "published" ? p.status === "published" : p.status === "draft"));
 
   function openPublish(p: CoachProgram) {
@@ -43,7 +45,7 @@ export default function Programs() {
 
   function createFromScratch() {
     const name = newName.trim() || "New Program";
-    const program = buildBlankProgram(name);
+    const program = { ...buildBlankProgram(name), pendingUnsaved: true };
     dispatch({ type: "ADD_PROGRAM", program });
     setNaming(false);
     setNewName("");

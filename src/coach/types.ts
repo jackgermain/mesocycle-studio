@@ -91,6 +91,10 @@ export interface CoachProgram {
    * every assign attempt doesn't clutter your library. Cleared (and the program becomes a normal, visible
    * saved program) the moment you check "Save as a personal template". */
   pendingForClientId?: string;
+  /** Same idea, for a program started with no client in mind yet (Programs tab's own "+" -> "Build from
+   * scratch"/"Import a program") — hidden and exit-guarded exactly like pendingForClientId until it's
+   * either explicitly saved or actually assigned to someone. */
+  pendingUnsaved?: boolean;
 }
 
 export interface LibraryExercise {

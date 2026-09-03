@@ -3,6 +3,7 @@ import type { CoachClient, CoachProgram, CoachThread, ExerciseKind, LibraryExerc
 import { LOAD_DEFAULT } from "./loadMode";
 import { CARDIO_DEFAULT } from "./cardio";
 import { defaultRestSec } from "./rest";
+import { isPendingProgram } from "./programOps";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 
@@ -95,7 +96,7 @@ function reducer(state: CoachState, action: Action): CoachState {
       if (client?.assignedProgramId && client.assignedProgramId !== action.programId && action.mode === "now") toCleanup.add(client.assignedProgramId);
       if (client?.queuedProgramId && client.queuedProgramId !== action.programId) toCleanup.add(client.queuedProgramId);
 
-      let programs = toCleanup.size ? state.programs.filter((p) => !(toCleanup.has(p.id) && p.pendingForClientId)) : state.programs;
+      let programs = toCleanup.size ? state.programs.filter((p) => !(toCleanup.has(p.id) && isPendingProgram(p))) : state.programs;
       if (action.sourceProgramId) programs = programs.map((p) => (p.id === action.sourceProgramId ? { ...p, assignedCount: p.assignedCount + 1 } : p));
 
       const clients = state.clients.map((c) => {
@@ -120,12 +121,18 @@ function reducer(state: CoachState, action: Action): CoachState {
       return { ...state, programs };
     }
     case "SET_PROGRAM_TEMPLATE": {
-      // Checking this is also the coach's explicit "keep this" signal for a working copy built for one
-      // client's assignment (see CoachProgram.pendingForClientId) — otherwise it stays hidden from the
-      // main Programs list and gets cleaned up automatically once superseded.
+      // Checking this is also the coach's explicit "keep this" signal for any working copy still pending
+      // (see CoachProgram.pendingForClientId / pendingUnsaved) — otherwise it stays hidden from the main
+      // Programs list and gets cleaned up automatically once superseded or discarded.
       const programs = state.programs.map((p) =>
         p.id === action.programId
-          ? { ...p, isTemplate: action.isTemplate, visibility: action.isTemplate ? ("private" as const) : p.visibility, pendingForClientId: action.isTemplate ? undefined : p.pendingForClientId }
+          ? {
+              ...p,
+              isTemplate: action.isTemplate,
+              visibility: action.isTemplate ? ("private" as const) : p.visibility,
+              pendingForClientId: action.isTemplate ? undefined : p.pendingForClientId,
+              pendingUnsaved: action.isTemplate ? undefined : p.pendingUnsaved,
+            }
           : p
       );
       return { ...state, programs };

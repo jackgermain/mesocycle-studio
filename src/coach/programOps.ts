@@ -2,6 +2,13 @@ import type { BuilderDay, BuilderExercise, BuilderSet, CoachProgram } from "./ty
 import type { DraftDay } from "../shared/programConvert";
 import { defaultRestSec } from "./rest";
 
+/** True for any not-yet-confirmed working copy, whether it's tied to a specific client's assignment or
+ * just a fresh "build from scratch"/"import" started with no client in mind yet. Hidden from the main
+ * Programs list, and exit-guarded (save-as-draft or discard) until explicitly saved or actually assigned. */
+export function isPendingProgram(p: CoachProgram): boolean {
+  return !!p.pendingForClientId || !!p.pendingUnsaved;
+}
+
 function freshSetId(): string {
   return `bset-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }

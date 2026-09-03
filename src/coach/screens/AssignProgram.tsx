@@ -4,7 +4,7 @@ import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
 import { BackHeader, InfoBanner, ActionGroup, ActionRow } from "../../components/UI";
 import { buildBlankProgram } from "../mockData";
-import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
+import { duplicateProgram, csvDraftDaysToCoachProgram, isPendingProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
 import { parseCsvToDraftDays } from "../csvProgram";
 import { writeProgramToClient, queueProgramForClient } from "../assignProgram";
@@ -41,7 +41,7 @@ export default function AssignProgram() {
   const accountId = client.accountId;
   const clientId2 = client.id;
   const clientName = client.name;
-  const visiblePrograms = state.programs.filter((p) => !p.pendingForClientId);
+  const visiblePrograms = state.programs.filter((p) => !isPendingProgram(p));
 
   /** Adds a fresh (or duplicated) program to the coach's library — hidden from the Programs list until
    * explicitly saved — and opens the real builder to finish it: drag to reorder, edit sets/reps/load,

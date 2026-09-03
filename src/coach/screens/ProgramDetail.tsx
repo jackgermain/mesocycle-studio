@@ -6,6 +6,7 @@ import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { LOAD_LABELS, LOAD_RANGE, clampLoadValue } from "../loadMode";
 import { CARDIO_DEFAULT, REST_STEP, formatDuration, workStep } from "../cardio";
 import { defaultRestSec } from "../rest";
+import { isPendingProgram } from "../programOps";
 import type { BuilderExercise, BuilderSet, CoachProgram, LibraryExercise, LoadMode } from "../types";
 
 /** Weekly volume landmarks (RP-style MEV/MRV) for the muscle groups coaches actually program direct volume for. */
@@ -42,7 +43,7 @@ export default function ProgramDetail() {
   // live for a client (or queued to be) isn't: backing that out here would break their real assignment,
   // so leaving it alone is just the normal back button.
   const isUnfinishedWorkingCopy =
-    !!program?.pendingForClientId && !state.clients.some((c) => c.assignedProgramId === program.id || c.queuedProgramId === program.id);
+    !!program && isPendingProgram(program) && !state.clients.some((c) => c.assignedProgramId === program.id || c.queuedProgramId === program.id);
 
   const volumeByMuscle = useMemo(() => {
     if (!program) return [];
@@ -68,7 +69,7 @@ export default function ProgramDetail() {
         onBack={isUnfinishedWorkingCopy ? () => setShowLeaveConfirm(true) : undefined}
       />
       <div className="screen-scroll">
-        {program.pendingForClientId && (
+        {isPendingProgram(program) && (
           <InfoBanner icon="ph-eye-slash">
             Working copy — hidden from your Programs list until you check "Save as a personal template" below. Otherwise it's cleaned up automatically once you assign something else.
           </InfoBanner>
