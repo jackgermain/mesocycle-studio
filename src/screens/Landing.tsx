@@ -6,7 +6,7 @@ import { bootstrapCoach } from "../lib/accountSetup";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
 
 export default function Landing() {
-  const { loading, session, account, refreshAccount } = useAuth();
+  const { loading, session, account, recovering, clearRecovering, refreshAccount } = useAuth();
 
   // Coming back from a magic-link email sent from the invite-accept screen — forward to it (it handles
   // its own loading/auth state) rather than falling through to the plain sign-in form here.
@@ -21,6 +21,12 @@ export default function Landing() {
     );
   }
 
+  // Clicked a "reset your password" email link — this session is only good for setting a new password,
+  // not for using the app, even though technically it's a real signed-in session.
+  if (recovering) {
+    return <ResetPassword onDone={clearRecovering} />;
+  }
+
   if (account) {
     return <Navigate to={account.role === "coach" ? "/coach/desk" : "/block"} replace />;
   }
@@ -30,6 +36,44 @@ export default function Landing() {
   }
 
   return <SignIn />;
+}
+
+function ResetPassword({ onDone }: { onDone: () => void }) {
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function save() {
+    setBusy(true);
+    setError(null);
+    const { error } = await supabase.auth.updateUser({ password });
+    setBusy(false);
+    if (error) setError(error.message);
+    else onDone();
+  }
+
+  return (
+    <Hero>
+      <div className="h1" style={{ textAlign: "center", fontSize: 22 }}>Set a new password</div>
+      <div className="field">
+        <label>New password</label>
+        <input
+          className="input"
+          style={{ height: 50, fontSize: 15 }}
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="At least 6 characters"
+          autoFocus
+          onKeyDown={(e) => e.key === "Enter" && password.length >= 6 && !busy && save()}
+        />
+      </div>
+      {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+      <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: password.length >= 6 && !busy ? 1 : 0.5 }} disabled={password.length < 6 || busy} onClick={save}>
+        {busy ? "Saving…" : "Save password"}
+      </button>
+    </Hero>
+  );
 }
 
 function SignIn() {
@@ -42,6 +86,7 @@ function SignIn() {
   const [busy, setBusy] = useState(false);
   const [showInviteField, setShowInviteField] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
+  const [resetSent, setResetSent] = useState(false);
 
   async function submit() {
     setError(null);
@@ -51,6 +96,15 @@ function SignIn() {
     if (error) setError(error.message);
     // On success, AuthProvider's onAuthStateChange picks up the new session and Landing re-renders
     // itself into the right place (coach desk, client app, or the "set up as coach" bootstrap step).
+  }
+
+  async function sendReset() {
+    setError(null);
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}${window.location.pathname}` });
+    setBusy(false);
+    if (error) setError(error.message);
+    else setResetSent(true);
   }
 
   function goToInvite() {
@@ -76,42 +130,55 @@ function SignIn() {
     <Hero>
       {!showInviteField ? (
         <>
-          <div className="field">
-            <label>Email</label>
-            <input className="input" style={{ height: 50, fontSize: 15 }} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
-          </div>
-          <div className="field">
-            <label>Password</label>
-            <input
-              className="input"
-              style={{ height: 50, fontSize: 15 }}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={mode === "signup" ? "At least 6 characters" : "••••••••"}
-              onKeyDown={(e) => e.key === "Enter" && email.trim() && password.length >= 6 && !busy && submit()}
-            />
-          </div>
-          {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-          <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
-            {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
-          </button>
-          <button
-            className="btn btn-ghost"
-            style={{ height: 34, fontSize: 12.5 }}
-            onClick={() => {
-              setMode((m) => (m === "signin" ? "signup" : "signin"));
-              setError(null);
-            }}
-          >
-            {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
-          </button>
+          {resetSent ? (
+            <InfoBanner icon="ph-envelope-simple-open" tone="accent">
+              Check {email} for a password reset link.
+            </InfoBanner>
+          ) : (
+            <>
+              <div className="field">
+                <label>Email</label>
+                <input className="input" style={{ height: 50, fontSize: 15 }} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
+              </div>
+              <div className="field">
+                <label>Password</label>
+                <input
+                  className="input"
+                  style={{ height: 50, fontSize: 15 }}
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={mode === "signup" ? "At least 6 characters" : "••••••••"}
+                  onKeyDown={(e) => e.key === "Enter" && email.trim() && password.length >= 6 && !busy && submit()}
+                />
+              </div>
+              {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+              <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
+                {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
+              </button>
+              <button
+                className="btn btn-ghost"
+                style={{ height: 34, fontSize: 12.5 }}
+                onClick={() => {
+                  setMode((m) => (m === "signin" ? "signup" : "signin"));
+                  setError(null);
+                }}
+              >
+                {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
+              </button>
+              {mode === "signin" && (
+                <button className="btn btn-ghost" style={{ height: 30, fontSize: 12 }} disabled={!email.trim() || busy} onClick={sendReset}>
+                  Forgot password?
+                </button>
+              )}
 
-          <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
+              <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
 
-          <button className="btn btn-ghost" style={{ height: 40, fontSize: 13 }} onClick={() => setShowInviteField(true)}>
-            Have an invite code instead?
-          </button>
+              <button className="btn btn-ghost" style={{ height: 40, fontSize: 13 }} onClick={() => setShowInviteField(true)}>
+                Have an invite code instead?
+              </button>
+            </>
+          )}
         </>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

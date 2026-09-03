@@ -17,6 +17,10 @@ interface AuthState {
   session: Session | null;
   /** Null while logged out, or logged in but not yet claimed an invite / bootstrapped as coach. */
   account: Account | null;
+  /** True right after clicking a "reset your password" email link — a real session, but the only thing
+   * it should be used for is setting a new password, not the normal signed-in app. */
+  recovering: boolean;
+  clearRecovering: () => void;
   refreshAccount: () => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -27,6 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
   const [account, setAccount] = useState<Account | null>(null);
+  const [recovering, setRecovering] = useState(false);
   // Tracks whose account is currently loaded, so a session change to a *different* user clears the
   // stale account synchronously — otherwise there's a window where `session` already reflects the new
   // person but `account` still shows the previous person's (e.g. the coach's), and anything reading both
@@ -49,7 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (active) setLoading(false);
     });
 
-    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+    const { data: sub } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      if (event === "PASSWORD_RECOVERY") setRecovering(true);
       const newUserId = newSession?.user.id ?? null;
       if (newUserId !== lastUserIdRef.current) setAccount(null);
       lastUserIdRef.current = newUserId;
@@ -73,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAccount(null);
   }
 
-  return <Ctx.Provider value={{ loading, session, account, refreshAccount, signOut }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ loading, session, account, recovering, clearRecovering: () => setRecovering(false), refreshAccount, signOut }}>{children}</Ctx.Provider>;
 }
 
 export function useAuth() {
