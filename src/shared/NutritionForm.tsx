@@ -24,7 +24,7 @@ function fmtQty(t: PortionTarget) {
 }
 
 export interface NutritionProtocolPatch {
-  weighInsPerWeek: number;
+  weighInsPerWeek: 0 | 3 | 5;
   weighInDays: string[];
   nutritionMode: NutritionMode;
   macroTargets: ClientProfile["macroTargets"];
