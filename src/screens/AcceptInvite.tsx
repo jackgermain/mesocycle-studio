@@ -110,7 +110,7 @@ function SignInStep({ code, invite }: { code: string; invite: PublicInvite }) {
             />
           </div>
           {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-          <button className="btn btn-primary btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && !busy ? 1 : 0.5 }} disabled={!email.trim() || busy} onClick={send}>
+          <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && !busy ? 1 : 0.5 }} disabled={!email.trim() || busy} onClick={send}>
             {busy ? "Sending…" : "Send sign-in link"}
           </button>
         </>
@@ -147,7 +147,7 @@ function ClaimStep({ code, invite, onClaimed }: { code: string; invite: PublicIn
         You're signed in as {invite.clientName} — finish setting up your account with {invite.coachName}.
       </p>
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-      <button className="btn btn-primary btn-block" style={{ height: 52, fontSize: 15, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={claim}>
+      <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={claim}>
         {busy ? "Setting up…" : "Create account & start"}
       </button>
     </Hero>

@@ -161,6 +161,39 @@ a { color: var(--color-accent); text-decoration: none; }
 .btn-icon { width: 36px; height: 36px; padding: 0; }
 .btn-block { width: 100%; }
 
+/* Bold, filled CTA — opt-in (doesn't change .btn-primary elsewhere) for moments that should pop: the
+   sign-in hero, a session-ending confirm. Solid accent fill with near-black text reads much louder than
+   the outlined default. */
+.btn-solid {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #0b1710;
+  font-weight: 700;
+  box-shadow: 0 10px 26px -10px rgba(76, 224, 143, 0.55);
+}
+.btn-solid:not(:disabled):hover { background: var(--color-accent-400); border-color: var(--color-accent-400); }
+.btn-solid:not(:disabled):active { background: var(--color-accent-500); border-color: var(--color-accent-500); transform: scale(0.99); }
+.btn-solid:disabled { box-shadow: none; }
+
+/* Bold pill selector — an unselected option still carries a soft tint (not just an outline) so the
+   whole control reads as colorful and tappable, then goes fully solid + high-contrast when picked. */
+.pill-opt {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-heading);
+  color: var(--color-accent-300);
+  background: var(--color-accent-900);
+  transition: transform 0.08s ease, background 0.12s ease, color 0.12s ease;
+}
+.pill-opt:active { transform: scale(0.97); }
+.pill-opt.on {
+  background: var(--color-accent);
+  color: #0b1710;
+  font-weight: 700;
+}
+
 /* — form controls — */
 .field label { display: block; font-size: 12px; margin-bottom: 5px; color: var(--color-neutral-400); }
 .input {
