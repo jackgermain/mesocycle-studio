@@ -44,7 +44,9 @@ export default function Clients() {
 
   // The roster list above is just a local cache — the real relationship is accounts.coach_id. Self-heal
   // against it: anyone with a real account pointing at this coach but missing from the cached roster
-  // (however that happened — a reset, a race, testing) gets added back rather than silently disappearing.
+  // (however that happened — a reset, a race, testing) gets linked back rather than silently disappearing.
+  // Prefer merging into a stale "not accepted yet" placeholder with a matching name over adding a
+  // duplicate row — that placeholder is almost always the same person's earlier, never-linked invite.
   useEffect(() => {
     if (!account) return;
     supabase
@@ -55,6 +57,11 @@ export default function Clients() {
         if (!data) return;
         for (const row of data) {
           if (state.clients.some((c) => c.accountId === row.id)) continue;
+          const staleMatch = state.clients.find((c) => !c.accountId && c.name.trim().toLowerCase() === row.display_name.trim().toLowerCase());
+          if (staleMatch) {
+            dispatch({ type: "RECONCILE_CLIENT", clientId: staleMatch.id, accountId: row.id });
+            continue;
+          }
           const client: CoachClient = {
             id: row.id,
             name: row.display_name,

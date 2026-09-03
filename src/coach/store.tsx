@@ -23,6 +23,7 @@ type Action =
   | { type: "ADD_CLIENT"; client: CoachClient }
   | { type: "RECONCILE_CLIENT"; clientId: string; accountId: string }
   | { type: "SET_CLIENT_INVITE_CODE"; clientId: string; code: string }
+  | { type: "REMOVE_CLIENT"; clientId: string }
   | { type: "APPLY_FLAG"; clientId: string; flagId: string }
   | { type: "DISMISS_FLAG"; clientId: string; flagId: string }
   | { type: "PUBLISH_PROGRAM"; programId: string; visibility: "private" | "public" }
@@ -59,6 +60,9 @@ function reducer(state: CoachState, action: Action): CoachState {
     case "SET_CLIENT_INVITE_CODE": {
       const clients = state.clients.map((c) => (c.id === action.clientId ? { ...c, inviteCode: action.code } : c));
       return { ...state, clients };
+    }
+    case "REMOVE_CLIENT": {
+      return { ...state, clients: state.clients.filter((c) => c.id !== action.clientId) };
     }
     case "APPLY_FLAG":
     case "DISMISS_FLAG": {

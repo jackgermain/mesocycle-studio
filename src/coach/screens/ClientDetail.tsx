@@ -137,6 +137,19 @@ export default function ClientDetail() {
                 </div>
               </div>
             )}
+
+            <button
+              className="btn btn-secondary btn-block"
+              style={{ height: 40, color: "var(--color-neutral-400)" }}
+              onClick={() => {
+                if (window.confirm(`Remove ${client.name} from your roster? This just removes them from your list — it doesn't delete anything if they've already signed up under a different entry.`)) {
+                  dispatch({ type: "REMOVE_CLIENT", clientId: client.id });
+                  nav("/coach/clients", { replace: true });
+                }
+              }}
+            >
+              Remove from roster
+            </button>
           </>
         ) : (
           <>
