@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCoachStore } from "../store";
-import { BackHeader, Seg } from "../../components/UI";
-import { getSharedProtocol, setSharedProtocol } from "../../shared/nutritionSettings";
+import { StoreProvider, useStore } from "../../state/store";
+import { useAuth } from "../../lib/auth";
+import { BackHeader, InfoBanner, Seg } from "../../components/UI";
 import { defaultPortionTargets } from "../../data/mockData";
-import type { NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../../data/types";
+import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../../data/types";
 
 type Cadence = "off" | "3x" | "5x";
 const DAY_KEYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -26,29 +27,67 @@ function fmtQty(t: PortionTarget) {
   return `${t.qty} ${t.unit}${t.qty === 1 ? "" : "s"}`;
 }
 
+/** Wraps the client's own store — keyed by their account id — so what the coach saves here writes
+ * straight into the exact same profile fields the client's own Nutrition tab reads, same shared row a
+ * program edit would use. */
 export default function NutritionProtocol() {
   const { clientId = "" } = useParams();
-  const { state, dispatch } = useCoachStore();
+  const { state: coachState } = useCoachStore();
+  const { account } = useAuth();
   const nav = useNavigate();
-  const client = state.clients.find((c) => c.id === clientId);
-  const existing = getSharedProtocol(clientId);
+  const client = coachState.clients.find((c) => c.id === clientId);
 
-  const [mode, setMode] = useState<NutritionMode>(existing?.nutritionMode ?? "macros");
-  const [cadence, setCadence] = useState<Cadence>(existing ? (existing.weighInsPerWeek === 0 ? "off" : existing.weighInsPerWeek === 3 ? "3x" : "5x") : "5x");
-  const [days, setDays] = useState<boolean[]>(() => DAY_KEYS.map((k) => (existing ? existing.weighInDays.includes(k) : ["Mon", "Tue", "Wed", "Thu", "Fri"].includes(k))));
-  const [kcal, setKcal] = useState(existing?.macroTargets.kcal ?? 2500);
-  const [protein, setProtein] = useState(existing?.macroTargets.protein ?? 200);
-  const [carbs, setCarbs] = useState(existing?.macroTargets.carbs ?? 300);
-  const [fat, setFat] = useState(existing?.macroTargets.fat ?? 70);
-  const [carbBonus, setCarbBonus] = useState(existing?.macroTargets.trainingDayCarbBonus ?? 40);
-  const [rate, setRate] = useState(existing?.rateTargetLabel ?? "-0.6 kg / wk");
-  const [portions, setPortions] = useState<PortionTarget[]>(existing?.portionTargets ?? defaultPortionTargets);
+  if (!client) return <div className="screen-scroll">Not found.</div>;
+
+  if (!client.accountId) {
+    return (
+      <div className="screen">
+        <BackHeader kicker={client.name} title="Nutrition protocol" />
+        <div className="screen-scroll">
+          <InfoBanner icon="ph-hourglass">{client.name.split(" ")[0]} hasn't accepted their invite yet — nutrition protocol will be available once they do.</InfoBanner>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <StoreProvider accountId={client.accountId} ownerName={client.name} coachName={account?.display_name ?? "Coach"}>
+      <NutritionProtocolGate clientName={client.name} onDone={() => nav(-1)} />
+    </StoreProvider>
+  );
+}
+
+function NutritionProtocolGate({ clientName, onDone }: { clientName: string; onDone: () => void }) {
+  const { state, ready } = useStore();
+  if (!ready) {
+    return (
+      <div className="screen">
+        <BackHeader kicker={clientName} title="Nutrition protocol" />
+        <div className="screen-scroll">Loading…</div>
+      </div>
+    );
+  }
+  return <NutritionForm clientName={clientName} profile={state.profile} onDone={onDone} />;
+}
+
+function NutritionForm({ clientName, profile, onDone }: { clientName: string; profile: ClientProfile; onDone: () => void }) {
+  const { dispatch } = useStore();
+  const { dispatch: coachDispatch } = useCoachStore();
+
+  const [mode, setMode] = useState<NutritionMode>(profile.nutritionMode);
+  const [cadence, setCadence] = useState<Cadence>(profile.weighInsPerWeek === 0 ? "off" : profile.weighInsPerWeek === 3 ? "3x" : "5x");
+  const [days, setDays] = useState<boolean[]>(() => DAY_KEYS.map((k) => profile.weighInDays.includes(k)));
+  const [kcal, setKcal] = useState(profile.macroTargets.kcal);
+  const [protein, setProtein] = useState(profile.macroTargets.protein);
+  const [carbs, setCarbs] = useState(profile.macroTargets.carbs);
+  const [fat, setFat] = useState(profile.macroTargets.fat);
+  const [carbBonus, setCarbBonus] = useState(profile.macroTargets.trainingDayCarbBonus);
+  const [rate, setRate] = useState(profile.rateTargetLabel);
+  const [portions, setPortions] = useState<PortionTarget[]>(profile.portionTargets.length ? profile.portionTargets : defaultPortionTargets);
   const [calcBw, setCalcBw] = useState(200);
   const [calcBf, setCalcBf] = useState(20);
   const [ratePct, setRatePct] = useState(-0.5);
-  const [maintenance, setMaintenance] = useState(existing?.macroTargets.kcal ?? 2500);
-
-  if (!client) return <div className="screen-scroll">Not found.</div>;
+  const [maintenance, setMaintenance] = useState(profile.macroTargets.kcal);
 
   const lbm = Math.round(calcBw * (1 - calcBf / 100));
   const suggestedProtein = lbm;
@@ -82,25 +121,28 @@ export default function NutritionProtocol() {
   }
 
   function save() {
-    setSharedProtocol(clientId, {
-      weighInsPerWeek: cadence === "off" ? 0 : cadence === "3x" ? 3 : 5,
-      weighInDays: DAY_KEYS.filter((_, i) => days[i]),
-      nutritionMode: mode,
-      macroTargets: { kcal, protein, carbs, fat, trainingDayCarbBonus: carbBonus },
-      portionTargets: portions,
-      rateTargetLabel: rate,
+    dispatch({
+      type: "SET_NUTRITION_PROTOCOL",
+      protocol: {
+        weighInsPerWeek: cadence === "off" ? 0 : cadence === "3x" ? 3 : 5,
+        weighInDays: DAY_KEYS.filter((_, i) => days[i]),
+        nutritionMode: mode,
+        macroTargets: { kcal, protein, carbs, fat, trainingDayCarbBonus: carbBonus },
+        portionTargets: portions,
+        rateTargetLabel: rate,
+      },
     });
-    dispatch({ type: "SHOW_TOAST", message: `Nutrition protocol saved for ${client!.name} — synced to their app.` });
-    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
-    nav(-1);
+    coachDispatch({ type: "SHOW_TOAST", message: `Nutrition protocol saved for ${clientName} — synced to their app.` });
+    setTimeout(() => coachDispatch({ type: "CLEAR_TOAST" }), 2800);
+    onDone();
   }
 
   return (
     <div className="screen">
-      <BackHeader kicker={`${client.name} · nutrition protocol`} title="Nutrition protocol" />
+      <BackHeader kicker={`${clientName} · nutrition protocol`} title="Nutrition protocol" />
       <div className="screen-scroll">
         <div>
-          <div className="sh">How should {client.name.split(" ")[0]} track food?</div>
+          <div className="sh">How should {clientName.split(" ")[0]} track food?</div>
           <Seg
             value={mode}
             onChange={setMode}
@@ -303,13 +345,13 @@ export default function NutritionProtocol() {
               ))}
             </div>
             <div className="mu" style={{ marginTop: 8, lineHeight: 1.5 }}>
-              E.g. Protein = 1 palm, Carbs = 1/3 plate. {client.name.split(" ")[0]} just checks off each one per meal — no numbers.
+              E.g. Protein = 1 palm, Carbs = 1/3 plate. {clientName.split(" ")[0]} just checks off each one per meal — no numbers.
             </div>
           </div>
         )}
 
         <div className="mu" style={{ lineHeight: 1.55 }}>
-          Set once per client and it drives {client.name.split(" ")[0]}'s Nutrition tab, the missed-weigh-in flag on the Desk, and the trend line on Body.
+          Set once per client and it drives {clientName.split(" ")[0]}'s Nutrition tab, the missed-weigh-in flag on the Desk, and the trend line on Body.
         </div>
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useCoachStore } from "../store";
+import { useAuth } from "../../lib/auth";
 import { BackHeader, InfoBanner, Seg } from "../../components/UI";
 import { createInvite } from "../../shared/invites";
 import type { InviteRole } from "../../shared/invites";
@@ -19,34 +20,42 @@ const ROLE_COPY: Record<InviteRole, string> = {
 
 export default function InviteRoster() {
   const { dispatch } = useCoachStore();
+  const { account } = useAuth();
   const [name, setName] = useState("");
   const [role, setRole] = useState<InviteRole>("client");
   const [sent, setSent] = useState<{ name: string; role: InviteRole; url: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  function send() {
+  async function send() {
     const trimmed = name.trim();
-    if (!trimmed) return;
-    const id = `${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${Math.random().toString(36).slice(2, 6)}`;
-    const client: CoachClient = {
-      id,
-      name: trimmed,
-      initials: initialsFor(trimmed),
-      status: "unassigned",
-      role,
-      programName: "—",
-      week: 0,
-      totalWeeks: 0,
-      adherencePct: 0,
-      flags: [],
-      loadHistory: [],
-      recentSessions: [],
-    };
-    dispatch({ type: "ADD_CLIENT", client });
-    const invite = createInvite(id, trimmed, role);
-    const url = `${window.location.origin}${window.location.pathname}#/invite/${invite.code}`;
-    setSent({ name: trimmed, role, url });
-    setName("");
+    if (!trimmed || !account) return;
+    setSending(true);
+    try {
+      const invite = await createInvite(account.id, trimmed, role);
+      const id = `${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${Math.random().toString(36).slice(2, 6)}`;
+      const client: CoachClient = {
+        id,
+        name: trimmed,
+        initials: initialsFor(trimmed),
+        status: "unassigned",
+        role,
+        inviteCode: invite.code,
+        programName: "—",
+        week: 0,
+        totalWeeks: 0,
+        adherencePct: 0,
+        flags: [],
+        loadHistory: [],
+        recentSessions: [],
+      };
+      dispatch({ type: "ADD_CLIENT", client });
+      const url = `${window.location.origin}${window.location.pathname}#/invite/${invite.code}`;
+      setSent({ name: trimmed, role, url });
+      setName("");
+    } finally {
+      setSending(false);
+    }
   }
 
   function copyLink() {
@@ -86,9 +95,9 @@ export default function InviteRoster() {
             </div>
 
             <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-              <button className="btn btn-primary btn-block" style={{ height: 46, opacity: name.trim() ? 1 : 0.5 }} disabled={!name.trim()} onClick={send}>
+              <button className="btn btn-primary btn-block" style={{ height: 46, opacity: name.trim() && !sending ? 1 : 0.5 }} disabled={!name.trim() || sending} onClick={send}>
                 <i className="ph ph-paper-plane-tilt" style={{ fontSize: 15 }} />
-                Generate invite link
+                {sending ? "Sending…" : "Generate invite link"}
               </button>
             </div>
           </>

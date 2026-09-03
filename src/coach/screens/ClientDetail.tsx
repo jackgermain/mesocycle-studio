@@ -2,29 +2,37 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { StoreProvider, useStore } from "../../state/store";
+import { useAuth } from "../../lib/auth";
 import { BackHeader, InfoBanner, StatCell } from "../../components/UI";
-import { createInvite, findInviteForClient } from "../../shared/invites";
+import { createInvite } from "../../shared/invites";
 import type { TrainingDay } from "../../data/types";
 import type { ClientFlag } from "../types";
 
 export default function ClientDetail() {
   const { clientId = "" } = useParams();
   const { state, dispatch } = useCoachStore();
+  const { account } = useAuth();
   const nav = useNavigate();
-  const [invite, setInvite] = useState(() => findInviteForClient(clientId));
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
   const found = state.clients.find((c) => c.id === clientId);
   if (!found) return <div className="screen-scroll">Not found.</div>;
   const client = found;
 
-  function sendInvite() {
-    const created = createInvite(client.id, client.name);
-    setInvite(created);
+  async function sendInvite() {
+    if (!account) return;
+    setSending(true);
+    try {
+      const invite = await createInvite(account.id, client.name, client.role ?? "client");
+      dispatch({ type: "SET_CLIENT_INVITE_CODE", clientId: client.id, code: invite.code });
+    } finally {
+      setSending(false);
+    }
   }
 
   function copyLink() {
-    if (!invite) return;
-    const url = `${window.location.origin}${window.location.pathname}#/invite/${invite.code}`;
+    if (!client.inviteCode) return;
+    const url = `${window.location.origin}${window.location.pathname}#/invite/${client.inviteCode}`;
     navigator.clipboard?.writeText(url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -58,36 +66,41 @@ export default function ClientDetail() {
     return () => applyFlag(f.id, f.tagLabel);
   }
 
+  const accepted = !!client.accountId;
+
   return (
     <div className="screen">
-      <BackHeader kicker={client.status === "unassigned" ? "Not assigned" : `${client.programName} · week ${client.week} of ${client.totalWeeks}`} title={client.name} />
+      <BackHeader kicker={accepted ? `${client.programName} · week ${client.week} of ${client.totalWeeks}` : "Not accepted yet"} title={client.name} />
       <div className="screen-scroll">
-        {client.status === "unassigned" ? (
+        {!accepted ? (
           <>
-            <InfoBanner icon="ph-user-plus">This client hasn't been assigned a program yet.</InfoBanner>
+            <InfoBanner icon="ph-user-plus">
+              {client.role === "friend" ? "This friend/family invite hasn't been accepted yet." : "This client hasn't accepted their invite yet."}
+            </InfoBanner>
 
-            {!invite && (
-              <button className="btn btn-primary btn-block" style={{ height: 46 }} onClick={sendInvite}>
+            {!client.inviteCode && (
+              <button className="btn btn-primary btn-block" style={{ height: 46, opacity: sending ? 0.6 : 1 }} disabled={sending} onClick={sendInvite}>
                 <i className="ph ph-paper-plane-tilt" style={{ fontSize: 15 }} />
-                Invite {client.name.split(" ")[0]} to the app
+                {sending ? "Sending…" : `Invite ${client.name.split(" ")[0]} to the app`}
               </button>
             )}
 
-            {invite && (
+            {client.inviteCode && (
               <div className="cell" style={{ padding: 12 }}>
                 <div className="row" style={{ marginBottom: 8 }}>
                   <span style={{ flex: 1, fontSize: 13, fontFamily: "var(--font-heading)" }}>Invite link</span>
-                  <span className={`tag ${invite.usedAt ? "tag-accent" : "tag-neutral"}`}>{invite.usedAt ? "Accepted" : "Pending"}</span>
+                  <span className="tag tag-neutral">Pending</span>
                 </div>
                 <div className="mu trunc" style={{ padding: "8px 10px", background: "var(--color-neutral-900)", borderRadius: 7, fontFamily: "monospace" }}>
                   {window.location.origin}
-                  {window.location.pathname}#/invite/{invite.code}
+                  {window.location.pathname}#/invite/{client.inviteCode}
                 </div>
                 <button className="btn btn-secondary btn-block" style={{ height: 40, marginTop: 8, fontSize: 12.5 }} onClick={copyLink}>
                   {copied ? "Copied" : "Copy link to send yourself"}
                 </button>
                 <div className="mu" style={{ marginTop: 8, lineHeight: 1.6 }}>
-                  Prototype note: nothing is emailed automatically — copy this and send it however you'd reach {client.name.split(" ")[0]} (email, text). Opening it walks them through creating their own account, and from then on they only see the program you build for them.
+                  Send this however you'd reach {client.name.split(" ")[0]} (email, text). Opening it walks them through a real sign-in — from then on
+                  {client.role === "friend" ? " they can build or clone their own programs, and you can still view and edit anything they set up." : " they only see the program you build for them."}
                 </div>
               </div>
             )}
@@ -142,7 +155,7 @@ export default function ClientDetail() {
               </div>
             </div>
 
-            <NotLoggedSection clientId={client.id} clientName={client.name} />
+            <NotLoggedSection accountId={client.accountId!} clientName={client.name} coachName={account?.display_name ?? "Coach"} />
 
             {client.recentSessions.length > 0 && (
               <div>
@@ -160,13 +173,13 @@ export default function ClientDetail() {
           </>
         )}
 
-        {client.status !== "unassigned" && (
+        {accepted && (
           <button className="btn btn-primary btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/clients/${client.id}/log`)}>
             <i className="ph ph-pencil-simple-line" style={{ fontSize: 15 }} />
             Log a session in person
           </button>
         )}
-        {client.status !== "unassigned" && (
+        {accepted && (
           <button className="btn btn-secondary btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/clients/${client.id}/nutrition`)}>
             <i className="ph ph-fork-knife" style={{ fontSize: 15 }} />
             Nutrition protocol
@@ -183,10 +196,11 @@ export default function ClientDetail() {
 
 type NotLoggedItem = { exercise: string; logged: number; total: number };
 
-/** Every client has their own linked program store now (keyed by their client id), so this is always computed live. */
-function NotLoggedSection({ clientId, clientName }: { clientId: string; clientName: string }) {
+/** Every accepted client has their own linked account now, so this is always computed live from their
+ * real client_state. */
+function NotLoggedSection({ accountId, clientName, coachName }: { accountId: string; clientName: string; coachName: string }) {
   return (
-    <StoreProvider profileId={clientId}>
+    <StoreProvider accountId={accountId} ownerName={clientName} coachName={coachName}>
       <LiveNotLoggedList clientName={clientName} />
     </StoreProvider>
   );

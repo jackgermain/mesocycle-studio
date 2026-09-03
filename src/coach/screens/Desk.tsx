@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
-import { coachName } from "../mockData";
+import { useAuth } from "../../lib/auth";
 import { CoachTabBar } from "../components/CoachTabBar";
 import type { ClientStatus } from "../types";
 
@@ -22,6 +22,8 @@ const STATUS_LABEL: Record<ClientStatus, string> = {
 
 export default function Desk() {
   const { state, dispatch } = useCoachStore();
+  const { account } = useAuth();
+  const coachName = account?.display_name ?? "Coach";
   const nav = useNavigate();
 
   const allFlags = useMemo(() => state.clients.flatMap((c) => c.flags.map((f) => ({ client: c, flag: f }))), [state.clients]);

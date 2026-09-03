@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { StoreProvider, useStore } from "../../state/store";
 import { useCoachStore } from "../store";
+import { useAuth } from "../../lib/auth";
 import { BackHeader, InfoBanner } from "../../components/UI";
 import { dayDisplayTitle } from "../../data/dayNumbering";
 import { phaseLabelForWeek } from "../../data/phaseLabels";
@@ -12,18 +13,30 @@ import type { Program, TrainingDay } from "../../data/types";
 import type { LibraryExercise } from "../types";
 
 /** Coach-side "I trained them in person today" logger. Wraps the client's own store — keyed by their
- * client id — so a set logged here writes to the exact same place their own app reads from, same as
- * if they'd logged it themselves. Works for any client on the roster, not just one hardcoded id. */
+ * real account id — so a set logged here writes to the exact same place their own app reads from, same
+ * as if they'd logged it themselves. Works for any client on the roster, not just one hardcoded id. */
 export default function LogSession() {
   const { clientId = "" } = useParams();
   const { state: coachState } = useCoachStore();
+  const { account } = useAuth();
   const client = coachState.clients.find((c) => c.id === clientId);
   const nav = useNavigate();
 
   if (!client) return <div className="screen-scroll">Not found.</div>;
 
+  if (!client.accountId) {
+    return (
+      <div className="screen">
+        <BackHeader kicker={client.name} title="Log a session" />
+        <div className="screen-scroll">
+          <InfoBanner icon="ph-hourglass">{client.name.split(" ")[0]} hasn't accepted their invite yet — you can log for them once they have.</InfoBanner>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <StoreProvider profileId={clientId}>
+    <StoreProvider accountId={client.accountId} ownerName={client.name} coachName={account?.display_name ?? "Coach"}>
       <LogSessionInner clientName={client.name} onDone={() => nav(`/coach/clients/${clientId}`)} />
     </StoreProvider>
   );

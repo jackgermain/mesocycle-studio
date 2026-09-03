@@ -18,6 +18,11 @@ export interface CoachClient {
    * self-directed friend-or-family account: they build or clone their own programs, but you can still
    * view and edit anything they set up. */
   role?: "client" | "friend";
+  /** The invite code sent to this person, before they've accepted it. */
+  inviteCode?: string;
+  /** Set once this person has actually claimed their invite — their real Supabase account id, and the key
+   * to load their live client_state. Undefined (status stays "unassigned") until then. */
+  accountId?: string;
   programName: string;
   week: number;
   totalWeeks: number;

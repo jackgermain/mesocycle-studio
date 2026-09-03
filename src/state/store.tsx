@@ -1,16 +1,9 @@
-import React, { createContext, useContext, useEffect, useMemo, useReducer } from "react";
-import { buildInitialProgram, clientProfile, buildInitialMeals, buildInitialWeighIns, buildSelfProfile } from "../data/mockData";
+import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { buildSelfProfile } from "../data/mockData";
 import type { ClientProfile, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, WeighIn, WorkSet } from "../data/types";
 import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
-import { findInviteForClient } from "../shared/invites";
-
-/** The one client with a full mock training history baked in. Every other profile id (e.g. a coach training themself) starts blank. */
-export const DEFAULT_PROFILE_ID = "marcus";
-
-function storageKeyFor(profileId: string): string {
-  return profileId === DEFAULT_PROFILE_ID ? "mesocycle-client-state-v4" : `mesocycle-client-state-v4-${profileId}`;
-}
+import { supabase } from "../lib/supabase";
 
 export interface AppState {
   onboarded: boolean;
@@ -22,36 +15,13 @@ export interface AppState {
   toast: string | null;
 }
 
-function defaultStateFor(profileId: string): AppState {
-  if (profileId === DEFAULT_PROFILE_ID) {
-    return {
-      onboarded: false,
-      profile: clientProfile,
-      program: buildInitialProgram(),
-      removals: [],
-      meals: buildInitialMeals(),
-      weighIns: buildInitialWeighIns(),
-      toast: null,
-    };
-  }
-  const profile = buildSelfProfile(profileId);
-  if (findInviteForClient(profileId)) {
-    // A real client invited by their coach — nothing prescribed for them yet, unlike the
-    // "train yourself" starter below. The coach builds this from the Programs tab.
-    return {
-      onboarded: false,
-      profile,
-      program: { name: "Your program", totalWeeks: 0, coachName: "Dana", weeks: [] },
-      removals: [],
-      meals: [],
-      weighIns: [],
-      toast: null,
-    };
-  }
+/** A brand-new account's starting state — nothing prescribed yet, waiting on either the coach to build a
+ * program or (for a friend/family account) the person to build/clone their own from /build. */
+function buildBlankState(ownerName: string, coachName: string): AppState {
   return {
     onboarded: false,
-    profile,
-    program: buildInitialProgram({ name: "My Training", coachName: profile.name }),
+    profile: buildSelfProfile(ownerName),
+    program: { name: "Your program", totalWeeks: 0, coachName, weeks: [] },
     removals: [],
     meals: [],
     weighIns: [],
@@ -59,19 +29,11 @@ function defaultStateFor(profileId: string): AppState {
   };
 }
 
-function loadInitial(profileId: string): AppState {
-  try {
-    const raw = localStorage.getItem(storageKeyFor(profileId));
-    if (raw) return JSON.parse(raw);
-  } catch {
-    // ignore corrupt storage
-  }
-  return defaultStateFor(profileId);
-}
-
 type Action =
+  | { type: "HYDRATE"; state: AppState }
   | { type: "ONBOARD"; profile: Partial<ClientProfile> }
   | { type: "SET_PROGRAM"; program: Program }
+  | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel"> }
   | { type: "TICK_SET"; dayId: string; exerciseId: string; setId: string; actual: { reps: number; load: number | null; clusterBlocks?: number[]; assistanceSplit?: { unassisted: number; assisted: number } } }
   | { type: "EDIT_SET_TARGET"; dayId: string; exerciseId: string; setId: string; reps?: number; load?: number }
   | { type: "SET_CHECKED"; dayId: string; exerciseId: string; setId: string; checked: boolean }
@@ -87,15 +49,18 @@ type Action =
   | { type: "LOG_WEIGHIN"; date: string; weight: number }
   | { type: "TOGGLE_PORTION"; mealId: string; category: import("../data/types").PortionCategory }
   | { type: "SHOW_TOAST"; message: string }
-  | { type: "CLEAR_TOAST" }
-  | { type: "RESET" };
+  | { type: "CLEAR_TOAST" };
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
+    case "HYDRATE":
+      return action.state;
     case "ONBOARD":
       return { ...state, onboarded: true, profile: { ...state.profile, ...action.profile } };
     case "SET_PROGRAM":
       return { ...state, program: action.program };
+    case "SET_NUTRITION_PROTOCOL":
+      return { ...state, profile: { ...state.profile, ...action.protocol } };
     case "TICK_SET": {
       const program = structuredClone(state.program);
       for (const week of program.weeks) {
@@ -304,8 +269,6 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, toast: action.message };
     case "CLEAR_TOAST":
       return { ...state, toast: null };
-    case "RESET":
-      return { onboarded: false, profile: clientProfile, program: buildInitialProgram(), removals: [], meals: buildInitialMeals(), weighIns: buildInitialWeighIns(), toast: null };
     default:
       return state;
   }
@@ -314,24 +277,71 @@ function reducer(state: AppState, action: Action): AppState {
 interface StoreCtx {
   state: AppState;
   dispatch: React.Dispatch<Action>;
+  /** False until the initial fetch from Supabase has resolved (either hydrated with real data or confirmed blank). */
+  ready: boolean;
 }
 
 const Ctx = createContext<StoreCtx | null>(null);
-const ProfileIdCtx = createContext<string>(DEFAULT_PROFILE_ID);
+const AccountIdCtx = createContext<string>("");
 
-/** Which profile's data this StoreProvider is backed by — "marcus" (the seeded demo client) by default, or any other id for a separate, independently-stored identity (e.g. the coach training themself). */
-export function StoreProvider({ children, profileId = DEFAULT_PROFILE_ID }: { children: React.ReactNode; profileId?: string }) {
-  const [state, dispatch] = useReducer(reducer, profileId, loadInitial);
+/** Backs the client app with a specific account's real, cross-device data in Supabase — the account being
+ * viewed (yourself, or a specific client when the coach is looking at their page) rather than a
+ * localStorage key. `ownerName`/`coachName` only matter the very first time this account is opened, to
+ * seed a sensible blank starting state. */
+export function StoreProvider({
+  children,
+  accountId,
+  ownerName,
+  coachName,
+}: {
+  children: React.ReactNode;
+  accountId: string;
+  ownerName: string;
+  coachName: string;
+}) {
+  const [state, dispatch] = useReducer(reducer, undefined, () => buildBlankState(ownerName, coachName));
+  const [ready, setReady] = useState(false);
+  const readyRef = useRef(false);
 
   useEffect(() => {
-    localStorage.setItem(storageKeyFor(profileId), JSON.stringify(state));
-  }, [state, profileId]);
+    let active = true;
+    setReady(false);
+    readyRef.current = false;
+    supabase
+      .from("client_state")
+      .select("data")
+      .eq("account_id", accountId)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!active) return;
+        const remote = data?.data as Partial<AppState> | undefined;
+        if (remote && remote.profile && remote.program) {
+          dispatch({ type: "HYDRATE", state: remote as AppState });
+        }
+        readyRef.current = true;
+        setReady(true);
+      });
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountId]);
 
-  const value = useMemo(() => ({ state, dispatch }), [state]);
+  useEffect(() => {
+    if (!readyRef.current) return;
+    supabase
+      .from("client_state")
+      .upsert({ account_id: accountId, data: state, updated_at: new Date().toISOString() })
+      .then(({ error }) => {
+        if (error) console.error("Failed to save client_state", error);
+      });
+  }, [state, accountId]);
+
+  const value = useMemo(() => ({ state, dispatch, ready }), [state, ready]);
   return (
-    <ProfileIdCtx.Provider value={profileId}>
+    <AccountIdCtx.Provider value={accountId}>
       <Ctx.Provider value={value}>{children}</Ctx.Provider>
-    </ProfileIdCtx.Provider>
+    </AccountIdCtx.Provider>
   );
 }
 
@@ -341,9 +351,9 @@ export function useStore() {
   return ctx;
 }
 
-/** The id of whichever profile the enclosing StoreProvider is backed by. */
+/** The account id of whichever person the enclosing StoreProvider is backed by. */
 export function useProfileId() {
-  return useContext(ProfileIdCtx);
+  return useContext(AccountIdCtx);
 }
 
 export function findDay(program: Program, dayId: string) {

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { HashRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { StoreProvider, useStore } from "./state/store";
-import { getActiveProfileId } from "./state/activeProfile";
+import { AuthProvider, useAuth } from "./lib/auth";
 import { Toast } from "./components/UI";
 import Landing from "./screens/Landing";
 import AcceptInvite from "./screens/AcceptInvite";
@@ -33,6 +33,29 @@ import ImportProgram from "./coach/screens/ImportProgram";
 import LogSession from "./coach/screens/LogSession";
 import InviteRoster from "./coach/screens/InviteRoster";
 
+function LoadingShell() {
+  return (
+    <div className="app-shell">
+      <div className="screen">
+        <div className="hdr" style={{ paddingBottom: 8 }}>
+          <div className="h1">Loading…</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Blocks a route tree until we know who's signed in and which app they belong in — a client/friend
+ * never sees the coach app and vice versa. */
+function RequireRole({ role, children }: { role: "coach" | "member"; children: React.ReactNode }) {
+  const { loading, account } = useAuth();
+  if (loading) return <LoadingShell />;
+  if (!account) return <Navigate to="/" replace />;
+  if (role === "coach" && account.role !== "coach") return <Navigate to="/" replace />;
+  if (role === "member" && account.role === "coach") return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
 function Gate({ children }: { children: React.ReactNode }) {
   const { state } = useStore();
   if (!state.onboarded) return <Navigate to="/onboarding" replace />;
@@ -50,9 +73,10 @@ function ClientLayout() {
 }
 
 function ClientProviders() {
-  const [profileId] = useState(getActiveProfileId);
+  const { account } = useAuth();
+  if (!account) return null; // RequireRole already guarantees this, just satisfying TS
   return (
-    <StoreProvider profileId={profileId}>
+    <StoreProvider accountId={account.id} ownerName={account.display_name} coachName="your coach">
       <ClientLayout />
     </StoreProvider>
   );
@@ -86,49 +110,51 @@ function LandingShell() {
 
 export default function App() {
   return (
-    <HashRouter>
-      <div className="app-root">
-        <Routes>
-          <Route path="/" element={<LandingShell />} />
-          <Route path="/invite/:code" element={<div className="app-shell"><AcceptInvite /></div>} />
+    <AuthProvider>
+      <HashRouter>
+        <div className="app-root">
+          <Routes>
+            <Route path="/" element={<LandingShell />} />
+            <Route path="/invite/:code" element={<div className="app-shell"><AcceptInvite /></div>} />
 
-          <Route element={<ClientProviders />}>
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/block" element={<Gate><TodayRedirect /></Gate>} />
-            <Route path="/block/calendar" element={<Gate><AllDaysCalendar /></Gate>} />
-            <Route path="/block/day/:dayId" element={<Gate><DayDetail /></Gate>} />
-            <Route path="/block/day/:dayId/exercise/:exerciseId/live/:setId" element={<Gate><LiveSet /></Gate>} />
-            <Route path="/block/day/:dayId/exercise/:exerciseId/remove/:setId" element={<Gate><RemoveSet /></Gate>} />
-            <Route path="/block/day/:dayId/reorder" element={<Gate><Reorder /></Gate>} />
-            <Route path="/block/day/:dayId/finish" element={<Gate><Feedback /></Gate>} />
-            <Route path="/progress" element={<Gate><Progress /></Gate>} />
-            <Route path="/progress/lifts" element={<Gate><AllLifts /></Gate>} />
-            <Route path="/progress/lifts/:name" element={<Gate><LiftDetail /></Gate>} />
-            <Route path="/nutrition" element={<Gate><Nutrition /></Gate>} />
-            <Route path="/inbox" element={<Gate><Inbox /></Gate>} />
-            <Route path="/inbox/:threadId" element={<Gate><Thread /></Gate>} />
-            <Route path="/build" element={<Gate><BuildProgram /></Gate>} />
-          </Route>
+            <Route element={<RequireRole role="member"><ClientProviders /></RequireRole>}>
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/block" element={<Gate><TodayRedirect /></Gate>} />
+              <Route path="/block/calendar" element={<Gate><AllDaysCalendar /></Gate>} />
+              <Route path="/block/day/:dayId" element={<Gate><DayDetail /></Gate>} />
+              <Route path="/block/day/:dayId/exercise/:exerciseId/live/:setId" element={<Gate><LiveSet /></Gate>} />
+              <Route path="/block/day/:dayId/exercise/:exerciseId/remove/:setId" element={<Gate><RemoveSet /></Gate>} />
+              <Route path="/block/day/:dayId/reorder" element={<Gate><Reorder /></Gate>} />
+              <Route path="/block/day/:dayId/finish" element={<Gate><Feedback /></Gate>} />
+              <Route path="/progress" element={<Gate><Progress /></Gate>} />
+              <Route path="/progress/lifts" element={<Gate><AllLifts /></Gate>} />
+              <Route path="/progress/lifts/:name" element={<Gate><LiftDetail /></Gate>} />
+              <Route path="/nutrition" element={<Gate><Nutrition /></Gate>} />
+              <Route path="/inbox" element={<Gate><Inbox /></Gate>} />
+              <Route path="/inbox/:threadId" element={<Gate><Thread /></Gate>} />
+              <Route path="/build" element={<Gate><BuildProgram /></Gate>} />
+            </Route>
 
-          <Route element={<CoachProviders />}>
-            <Route path="/coach" element={<Navigate to="/coach/desk" replace />} />
-            <Route path="/coach/desk" element={<Desk />} />
-            <Route path="/coach/clients" element={<Clients />} />
-            <Route path="/coach/invite" element={<InviteRoster />} />
-            <Route path="/coach/clients/:clientId" element={<ClientDetail />} />
-            <Route path="/coach/clients/:clientId/nutrition" element={<NutritionProtocol />} />
-            <Route path="/coach/clients/:clientId/log" element={<LogSession />} />
-            <Route path="/coach/programs" element={<Programs />} />
-            <Route path="/coach/programs/import" element={<ImportProgram />} />
-            <Route path="/coach/programs/:programId" element={<ProgramDetail />} />
-            <Route path="/coach/messages" element={<Messages />} />
-            <Route path="/coach/messages/:threadId" element={<CoachThread />} />
-            <Route path="/coach/library" element={<Library />} />
-          </Route>
+            <Route element={<RequireRole role="coach"><CoachProviders /></RequireRole>}>
+              <Route path="/coach" element={<Navigate to="/coach/desk" replace />} />
+              <Route path="/coach/desk" element={<Desk />} />
+              <Route path="/coach/clients" element={<Clients />} />
+              <Route path="/coach/invite" element={<InviteRoster />} />
+              <Route path="/coach/clients/:clientId" element={<ClientDetail />} />
+              <Route path="/coach/clients/:clientId/nutrition" element={<NutritionProtocol />} />
+              <Route path="/coach/clients/:clientId/log" element={<LogSession />} />
+              <Route path="/coach/programs" element={<Programs />} />
+              <Route path="/coach/programs/import" element={<ImportProgram />} />
+              <Route path="/coach/programs/:programId" element={<ProgramDetail />} />
+              <Route path="/coach/messages" element={<Messages />} />
+              <Route path="/coach/messages/:threadId" element={<CoachThread />} />
+              <Route path="/coach/library" element={<Library />} />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </HashRouter>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </HashRouter>
+    </AuthProvider>
   );
 }

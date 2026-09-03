@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
+import { useAuth } from "../../lib/auth";
+import { listClaimedInvites } from "../../shared/invites";
 import { CoachTabBar } from "../components/CoachTabBar";
 import type { ClientStatus } from "../types";
 
@@ -15,9 +17,24 @@ const STATUS_DOT: Record<ClientStatus, string> = {
 type Filter = "review" | "all" | "at-risk";
 
 export default function Clients() {
-  const { state } = useCoachStore();
+  const { state, dispatch } = useCoachStore();
+  const { account } = useAuth();
   const nav = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
+
+  // Pick up any invites that were claimed since we last looked, and attach the real account id to the
+  // matching roster placeholder so the coach can immediately open their live program/nutrition/log.
+  useEffect(() => {
+    if (!account) return;
+    listClaimedInvites(account.id).then((claimed) => {
+      for (const c of state.clients) {
+        if (c.accountId || !c.inviteCode) continue;
+        const match = claimed.find((k) => k.code === c.inviteCode);
+        if (match) dispatch({ type: "RECONCILE_CLIENT", clientId: c.id, accountId: match.accountId });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account]);
 
   const needsReviewCount = state.clients.filter((c) => c.flags.length > 0).length;
 
@@ -68,7 +85,9 @@ export default function Clients() {
                 <div style={{ fontSize: 14, fontFamily: "var(--font-heading)", fontWeight: 500 }} className="trunc">{c.name}</div>
                 <div className="mu trunc" style={{ marginTop: 1 }}>
                   {c.status === "unassigned"
-                    ? "Not assigned"
+                    ? c.accountId
+                      ? "Accepted — build their program"
+                      : "Not accepted yet"
                     : c.status === "paused"
                     ? "Paused"
                     : `${c.programName} · wk ${c.week}${c.flags.length ? ` · ${c.flags.length} flag${c.flags.length > 1 ? "s" : ""}` : ""}`}
@@ -76,7 +95,7 @@ export default function Clients() {
               </div>
               {c.role === "friend" && <span className="tag tag-outline" style={{ flex: "none" }}>Friend</span>}
               {c.status === "unassigned" ? (
-                <span style={{ fontSize: 12, color: "var(--color-accent)", flex: "none" }}>Assign</span>
+                <span style={{ fontSize: 12, color: "var(--color-accent)", flex: "none" }}>{c.accountId ? "Open" : "Invite"}</span>
               ) : c.status === "paused" ? null : (
                 <div style={{ textAlign: "right", flex: "none" }}>
                   <div style={{ fontSize: 13, fontFamily: "var(--font-heading)", color: c.adherencePct >= 85 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>{c.adherencePct}%</div>

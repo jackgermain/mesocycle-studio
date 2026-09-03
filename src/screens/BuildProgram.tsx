@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
 import { BackHeader, InfoBanner } from "../components/UI";
@@ -68,13 +68,22 @@ export default function BuildProgram() {
 }
 
 function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack: () => void; onUse: (p: ReturnType<typeof expandCoachProgramToProgram>) => void }) {
-  const templates = useMemo(() => listCoachTemplates(), []);
+  const [templates, setTemplates] = useState<Awaited<ReturnType<typeof listCoachTemplates>> | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    listCoachTemplates().then((t) => active && setTemplates(t));
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <div className="screen">
       <SubHeader title="Saved templates" onBack={onBack} />
       <div className="screen-scroll">
-        {templates.length === 0 && <InfoBanner icon="ph-tray">{coachName} hasn't saved any templates yet.</InfoBanner>}
-        {templates.map((t) => (
+        {templates?.length === 0 && <InfoBanner icon="ph-tray">{coachName} hasn't saved any templates yet.</InfoBanner>}
+        {(templates ?? []).map((t) => (
           <div key={t.id} className="cell" style={{ padding: 12 }}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{t.name}</div>
             <div className="mu" style={{ marginTop: 2 }}>{t.weeks} weeks · {t.daysPerWeek} days/week</div>

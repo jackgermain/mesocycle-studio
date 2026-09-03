@@ -1,11 +1,10 @@
-import React, { createContext, useContext, useEffect, useMemo, useReducer } from "react";
-import { clients as initialClients, programs as initialPrograms, threads as initialThreads } from "./mockData";
+import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { CoachClient, CoachProgram, CoachThread, ExerciseKind, LibraryExercise, LoadMode } from "./types";
 import { LOAD_DEFAULT } from "./loadMode";
 import { CARDIO_DEFAULT } from "./cardio";
 import { defaultRestSec } from "./rest";
-
-const STORAGE_KEY = "mesocycle-coach-state-v6";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../lib/auth";
 
 export interface CoachState {
   clients: CoachClient[];
@@ -15,18 +14,15 @@ export interface CoachState {
   toast: string | null;
 }
 
-function loadInitial(): CoachState {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {
-    // ignore corrupt storage
-  }
-  return { clients: initialClients, programs: initialPrograms, threads: initialThreads, customExercises: [], toast: null };
+function blankState(): CoachState {
+  return { clients: [], programs: [], threads: [], customExercises: [], toast: null };
 }
 
 type Action =
+  | { type: "HYDRATE"; state: CoachState }
   | { type: "ADD_CLIENT"; client: CoachClient }
+  | { type: "RECONCILE_CLIENT"; clientId: string; accountId: string }
+  | { type: "SET_CLIENT_INVITE_CODE"; clientId: string; code: string }
   | { type: "APPLY_FLAG"; clientId: string; flagId: string }
   | { type: "DISMISS_FLAG"; clientId: string; flagId: string }
   | { type: "PUBLISH_PROGRAM"; programId: string; visibility: "private" | "public" }
@@ -52,8 +48,18 @@ type Action =
 
 function reducer(state: CoachState, action: Action): CoachState {
   switch (action.type) {
+    case "HYDRATE":
+      return action.state;
     case "ADD_CLIENT":
       return { ...state, clients: [action.client, ...state.clients] };
+    case "RECONCILE_CLIENT": {
+      const clients = state.clients.map((c) => (c.id === action.clientId ? { ...c, accountId: action.accountId, status: "unassigned" as const } : c));
+      return { ...state, clients };
+    }
+    case "SET_CLIENT_INVITE_CODE": {
+      const clients = state.clients.map((c) => (c.id === action.clientId ? { ...c, inviteCode: action.code } : c));
+      return { ...state, clients };
+    }
     case "APPLY_FLAG":
     case "DISMISS_FLAG": {
       const clients = state.clients.map((c) => (c.id === action.clientId ? { ...c, flags: c.flags.filter((f) => f.id !== action.flagId) } : c));
@@ -223,16 +229,51 @@ function reducer(state: CoachState, action: Action): CoachState {
 interface StoreCtx {
   state: CoachState;
   dispatch: React.Dispatch<Action>;
+  ready: boolean;
 }
 
 const Ctx = createContext<StoreCtx | null>(null);
 
 export function CoachStoreProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, undefined, loadInitial);
+  const { account } = useAuth();
+  const accountId = account?.id ?? "";
+  const [state, dispatch] = useReducer(reducer, undefined, blankState);
+  const [ready, setReady] = useState(false);
+  const readyRef = useRef(false);
+
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
-  const value = useMemo(() => ({ state, dispatch }), [state]);
+    if (!accountId) return;
+    let active = true;
+    setReady(false);
+    readyRef.current = false;
+    supabase
+      .from("coach_state")
+      .select("data")
+      .eq("account_id", accountId)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!active) return;
+        const remote = data?.data as Partial<CoachState> | undefined;
+        if (remote && remote.clients) dispatch({ type: "HYDRATE", state: remote as CoachState });
+        readyRef.current = true;
+        setReady(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [accountId]);
+
+  useEffect(() => {
+    if (!readyRef.current || !accountId) return;
+    supabase
+      .from("coach_state")
+      .upsert({ account_id: accountId, data: state, updated_at: new Date().toISOString() })
+      .then(({ error }) => {
+        if (error) console.error("Failed to save coach_state", error);
+      });
+  }, [state, accountId]);
+
+  const value = useMemo(() => ({ state, dispatch, ready }), [state, ready]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

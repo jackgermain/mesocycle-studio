@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useStore, useProfileId } from "../state/store";
+import { useStore } from "../state/store";
+import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner } from "../components/UI";
 import { canSelfBuildProgram } from "../shared/canBuild";
@@ -8,13 +9,13 @@ import { canSelfBuildProgram } from "../shared/canBuild";
 /** The "Train" tab's landing spot — always today's lift, no overview page in between. */
 export default function TodayRedirect() {
   const { state } = useStore();
-  const profileId = useProfileId();
+  const { account } = useAuth();
   const nav = useNavigate();
   const allDays = state.program.weeks.flatMap((w) => w.days);
   const target = allDays.find((d) => d.status === "today") ?? allDays.find((d) => d.status !== "done") ?? allDays[0];
 
   if (!target) {
-    const canBuild = canSelfBuildProgram(profileId);
+    const canBuild = canSelfBuildProgram(account?.role);
     return (
       <div className="screen">
         <div className="hdr" style={{ paddingBottom: 8 }}>

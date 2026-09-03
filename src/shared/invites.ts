@@ -1,65 +1,50 @@
-/**
- * A coach-generated invite link, shared between the two apps the same way nutrition settings are —
- * one localStorage key both sides agree on, since there's no real backend to send an email through
- * or a server to hand out session tokens from. In a real product this would be a server-issued,
- * single-use, expiring token verified over the network; here it's a plain code anyone with the
- * browser's storage can read, so treat this as a UX simulation, not real access control.
- */
+import { supabase } from "../lib/supabase";
 
-/** "client" is fully coach-prescribed, same as the existing demo flow. "friend" is self-directed — they
- * build or clone their own programs and still get nutrition tracking, but can't onboard anyone else and
- * can only message this coach. */
+/** "client" is fully coach-prescribed. "friend" is self-directed — they build or clone their own
+ * programs and still get nutrition tracking, but can't onboard anyone else and can only message this
+ * coach. */
 export type InviteRole = "client" | "friend";
 
 export interface ClientInvite {
   code: string;
-  clientId: string;
+  coachId: string;
   clientName: string;
   role: InviteRole;
-  createdAt: string;
-  usedAt?: string;
 }
 
-const KEY = "mesocycle-invites";
-
-function readAll(): Record<string, ClientInvite> {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(KEY) ?? "{}");
-    for (const invite of Object.values(parsed) as ClientInvite[]) {
-      if (!invite.role) invite.role = "client";
-    }
-    return parsed;
-  } catch {
-    return {};
-  }
+function randomCode(): string {
+  return Math.random().toString(36).slice(2, 8).toUpperCase();
 }
 
-function writeAll(all: Record<string, ClientInvite>) {
-  localStorage.setItem(KEY, JSON.stringify(all));
+/** Creates a real, database-backed invite — the only way a "client"/"friend" account can ever come into
+ * existence (see claim_invite in the Supabase migration). */
+export async function createInvite(coachId: string, clientName: string, role: InviteRole): Promise<ClientInvite> {
+  const code = randomCode();
+  const { error } = await supabase.from("invites").insert({ code, coach_id: coachId, role, client_name: clientName });
+  if (error) throw error;
+  return { code, coachId, clientName, role };
 }
 
-export function createInvite(clientId: string, clientName: string, role: InviteRole = "client"): ClientInvite {
-  const all = readAll();
-  const code = Math.random().toString(36).slice(2, 8).toUpperCase();
-  const invite: ClientInvite = { code, clientId, clientName, role, createdAt: new Date().toISOString() };
-  all[code] = invite;
-  writeAll(all);
-  return invite;
+export interface PublicInvite {
+  code: string;
+  role: InviteRole;
+  clientName: string;
+  usedAt: string | null;
+  coachName: string;
 }
 
-export function getInvite(code: string): ClientInvite | null {
-  return readAll()[code.toUpperCase().trim()] ?? null;
+/** Safe-fields-only lookup, callable before the visitor has signed in. */
+export async function getInvite(code: string): Promise<PublicInvite | null> {
+  const { data, error } = await supabase.rpc("get_invite", { p_code: code });
+  if (error || !data || data.length === 0) return null;
+  const row = data[0] as { code: string; role: InviteRole; client_name: string; used_at: string | null; coach_name: string };
+  return { code: row.code, role: row.role, clientName: row.client_name, usedAt: row.used_at, coachName: row.coach_name };
 }
 
-export function markInviteUsed(code: string) {
-  const all = readAll();
-  const invite = all[code.toUpperCase().trim()];
-  if (invite) {
-    invite.usedAt = new Date().toISOString();
-    writeAll(all);
-  }
-}
-
-export function findInviteForClient(clientId: string): ClientInvite | null {
-  return Object.values(readAll()).find((i) => i.clientId === clientId) ?? null;
+/** Invites this coach has sent that have since been claimed — used to reconcile a roster placeholder
+ * with the real account id the person ended up with. */
+export async function listClaimedInvites(coachId: string): Promise<{ code: string; accountId: string }[]> {
+  const { data, error } = await supabase.from("invites").select("code, claimed_by").eq("coach_id", coachId).not("claimed_by", "is", null);
+  if (error || !data) return [];
+  return data.map((r) => ({ code: r.code as string, accountId: r.claimed_by as string }));
 }
