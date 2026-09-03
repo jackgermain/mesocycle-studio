@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
 import { BackHeader, InfoBanner } from "../components/UI";
@@ -7,8 +7,10 @@ import type { LibraryExercise } from "../coach/types";
 import { listCoachTemplates } from "../shared/templates";
 import { buildProgramFromDraft, expandCoachProgramToProgram } from "../shared/programConvert";
 import type { DraftDay } from "../shared/programConvert";
+import { parseCsvToDraftDays } from "../coach/csvProgram";
+import type { Program } from "../data/types";
 
-type Mode = "choose" | "scratch" | "templates";
+type Mode = "choose" | "scratch" | "templates" | "csv";
 
 /** BackHeader's own back button always pops browser history, which would leave this screen entirely from
  * a sub-step reached by local state (not a route) — this small header calls back into that state instead. */
@@ -55,6 +57,15 @@ export default function BuildProgram() {
             </div>
             <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
           </button>
+
+          <button className="cell row" style={{ padding: "14px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setMode("csv")}>
+            <i className="ph ph-file-arrow-up" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Import from a spreadsheet</div>
+              <div className="mu" style={{ marginTop: 2 }}>Upload a CSV of days and exercises and we'll convert it for you.</div>
+            </div>
+            <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
+          </button>
         </div>
       </div>
     );
@@ -62,6 +73,10 @@ export default function BuildProgram() {
 
   if (mode === "templates") {
     return <TemplatesStep coachName={state.program.coachName} onBack={() => setMode("choose")} onUse={(program) => { dispatch({ type: "SET_PROGRAM", program }); nav("/block"); }} />;
+  }
+
+  if (mode === "csv") {
+    return <CsvStep ownerName={state.profile.name} onBack={() => setMode("choose")} onCreate={(program) => { dispatch({ type: "SET_PROGRAM", program }); nav("/block"); }} />;
   }
 
   return <ScratchStep ownerName={state.profile.name} onBack={() => setMode("choose")} onCreate={(program) => { dispatch({ type: "SET_PROGRAM", program }); nav("/block"); }} />;
@@ -196,6 +211,96 @@ function ScratchStep({ ownerName, onBack, onCreate }: { ownerName: string; onBac
       {pickerDay !== null && (
         <SimpleExercisePicker onPick={(ex) => addExercise(pickerDay, ex)} onClose={() => setPickerDay(null)} />
       )}
+    </div>
+  );
+}
+
+function CsvStep({ ownerName, onBack, onCreate }: { ownerName: string; onBack: () => void; onCreate: (p: Program) => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [parsed, setParsed] = useState<ReturnType<typeof parseCsvToDraftDays> | null>(null);
+  const [name, setName] = useState("My Program");
+  const [weeksCount, setWeeksCount] = useState(6);
+
+  function handleFile(file: File) {
+    setFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = () => setParsed(parseCsvToDraftDays(String(reader.result ?? "")));
+    reader.readAsText(file);
+  }
+
+  const totalExercises = parsed?.days.reduce((n, d) => n + d.exercises.length, 0) ?? 0;
+
+  return (
+    <div className="screen">
+      <SubHeader title="Import from a spreadsheet" onBack={onBack} />
+      <div className="screen-scroll">
+        <InfoBanner icon="ph-info">
+          Export a CSV with a header row: <strong>Day, Exercise, Muscle, Sets, Reps, Load</strong>. Sets/Reps/Load are optional per row — anything left blank starts at a plain 3×10.
+        </InfoBanner>
+
+        <input ref={fileRef} type="file" accept=".csv,text/csv" style={{ display: "none" }} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
+        <button className="cell row" style={{ padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => fileRef.current?.click()}>
+          <i className="ph ph-file-arrow-up" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{fileName ?? "Choose a CSV file"}</div>
+            <div className="mu" style={{ marginTop: 2 }}>{fileName ? "Tap to choose a different file" : "From Excel, Google Sheets, or Numbers — export as CSV first"}</div>
+          </div>
+        </button>
+
+        {parsed && parsed.errors.length > 0 && (
+          <InfoBanner icon="ph-warning">
+            {parsed.errors.length} row{parsed.errors.length > 1 ? "s" : ""} skipped: {parsed.errors.slice(0, 4).join(" ")}
+            {parsed.errors.length > 4 ? ` …and ${parsed.errors.length - 4} more.` : ""}
+          </InfoBanner>
+        )}
+
+        {parsed && parsed.days.length > 0 && (
+          <>
+            <div className="field">
+              <label>Program name</label>
+              <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div className="cell" style={{ padding: 9 }}>
+              <div className="scr">Weeks (repeats this template)</div>
+              <div className="row" style={{ marginTop: 3, gap: 8, justifyContent: "center" }}>
+                <button onClick={() => setWeeksCount((v) => Math.max(1, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
+                  <i className="ph ph-minus" style={{ fontSize: 13 }} />
+                </button>
+                <span style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{weeksCount}</span>
+                <button onClick={() => setWeeksCount((v) => Math.min(16, v + 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
+                  <i className="ph ph-plus" style={{ fontSize: 13 }} />
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <div className="sh">Parsed from your file · {parsed.rowCount} rows</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                {parsed.days.map((d, i) => (
+                  <div key={i} className="cell" style={{ padding: 11 }}>
+                    <div style={{ fontFamily: "var(--font-heading)", fontSize: 13.5 }}>{d.name}</div>
+                    <div className="mu" style={{ marginTop: 4, lineHeight: 1.6 }}>
+                      {d.exercises.map((e) => `${e.name}${e.sets ? ` (${e.sets}×${e.reps ?? 10})` : ""}`).join(" · ")}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        <div style={{ marginTop: "auto", paddingBottom: 8 }}>
+          <button
+            className="btn btn-primary btn-block"
+            style={{ height: 46, opacity: totalExercises > 0 ? 1 : 0.5 }}
+            disabled={totalExercises === 0}
+            onClick={() => parsed && onCreate(buildProgramFromDraft(name || "My Program", parsed.days, weeksCount, ownerName))}
+          >
+            Start this program
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

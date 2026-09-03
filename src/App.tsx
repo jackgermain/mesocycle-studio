@@ -63,8 +63,14 @@ function RequireRole({ role, children }: { role: "coach" | "member"; children: R
   return <>{children}</>;
 }
 
+/** Guards every real training route behind onboarding -- but the client's real state loads
+ * asynchronously (see StoreProvider's hydrate effect), so reading state.onboarded before that resolves
+ * always sees the blank default (onboarded: false) and redirects to onboarding regardless of what's
+ * actually saved. Waiting for `ready` fixes that: a real "already onboarded" account lands straight on
+ * its real dashboard on a fresh load instead of being bounced back through onboarding every time. */
 function Gate({ children }: { children: React.ReactNode }) {
-  const { state } = useStore();
+  const { state, ready } = useStore();
+  if (!ready) return <LoadingShell />;
   if (!state.onboarded) return <Navigate to="/onboarding" replace />;
   return <>{children}</>;
 }
