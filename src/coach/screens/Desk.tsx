@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
@@ -26,6 +26,7 @@ export default function Desk() {
   const { account } = useAuth();
   const coachName = account?.display_name ?? "Coach";
   const nav = useNavigate();
+  const [showAccount, setShowAccount] = useState(false);
 
   const allFlags = useMemo(() => state.clients.flatMap((c) => c.flags.map((f) => ({ client: c, flag: f }))), [state.clients]);
   const counts = {
@@ -60,9 +61,14 @@ export default function Desk() {
         kicker={dateLabel}
         title={`Good morning, ${coachName}`}
         right={
-          <div className="avatar" style={{ width: 38, height: 38, boxShadow: "0 0 0 1px var(--color-accent-700)" }}>
+          <button
+            className="avatar"
+            style={{ width: 38, height: 38, boxShadow: "0 0 0 1px var(--color-accent-700)", border: "none", cursor: "pointer" }}
+            aria-label="Account"
+            onClick={() => setShowAccount(true)}
+          >
             {coachName.slice(0, 2).toUpperCase()}
-          </div>
+          </button>
         }
       >
         <HeroStat value={allFlags.length} label={<>decisions<br />waiting</>}>
@@ -157,29 +163,37 @@ export default function Desk() {
 
         <div>
           <div className="sh">Quick actions</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <button className="cell" style={{ gap: 7, padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => nav("/coach/programs/import")}>
-              <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 2 }}>
-                <i className="ph-fill ph-file-arrow-up" style={{ fontSize: 17, color: "var(--color-accent)" }} />
-              </div>
-              <div style={{ fontSize: 13.5, fontFamily: "var(--font-heading)", fontWeight: 700 }}>Import a program</div>
-              <div className="mu">PDF or screenshots</div>
-            </button>
-            <button className="cell" style={{ gap: 7, padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => nav("/coach/clients")}>
-              <div style={{ width: 34, height: 34, borderRadius: 10, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 2 }}>
-                <i className="ph-fill ph-user-plus" style={{ fontSize: 17, color: "var(--color-accent)" }} />
-              </div>
+          <button className="cell row" style={{ gap: 10, padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => nav("/coach/clients")}>
+            <div style={{ width: 34, height: 34, flex: "none", borderRadius: 10, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <i className="ph-fill ph-user-plus" style={{ fontSize: 17, color: "var(--color-accent)" }} />
+            </div>
+            <div style={{ flex: 1 }}>
               <div style={{ fontSize: 13.5, fontFamily: "var(--font-heading)", fontWeight: 700 }}>Assign a client</div>
               <div className="mu">{state.clients.filter((c) => c.status === "unassigned").length} waiting</div>
-            </button>
-          </div>
+            </div>
+          </button>
         </div>
-
-        <SetPasswordCard />
-        <SignOutButton />
       </div>
 
       <CoachTabBar />
+
+      {showAccount && (
+        <div className="sheet-backdrop" onClick={() => setShowAccount(false)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="row" style={{ marginBottom: 4 }}>
+              <div style={{ flex: 1 }}>
+                <div className="scr">Signed in as</div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{coachName}</div>
+              </div>
+              <button onClick={() => setShowAccount(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
+                <i className="ph ph-x" style={{ fontSize: 18 }} />
+              </button>
+            </div>
+            <SetPasswordCard />
+            <SignOutButton />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
