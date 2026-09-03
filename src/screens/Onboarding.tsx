@@ -49,7 +49,7 @@ export default function Onboarding() {
               onClick={() => setUnits("lb")}
               style={{ position: "relative", height: 76, display: "flex", alignItems: "center", justifyContent: "center" }}
             >
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 28, fontWeight: 800 }}>lb</span>
+              <span style={{ fontFamily: "var(--font-heading)", fontSize: 16, fontWeight: 700 }}>lb</span>
               <span style={{ position: "absolute", top: 10, right: 10, display: "flex" }}>
                 {units === "lb" ? (
                   <i className="ph-fill ph-check-circle" style={{ fontSize: 16 }} />
@@ -63,7 +63,7 @@ export default function Onboarding() {
               onClick={() => setUnits("kg")}
               style={{ position: "relative", height: 76, display: "flex", alignItems: "center", justifyContent: "center" }}
             >
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 28, fontWeight: 800 }}>kg</span>
+              <span style={{ fontFamily: "var(--font-heading)", fontSize: 16, fontWeight: 700 }}>kg</span>
               <span style={{ position: "absolute", top: 10, right: 10, display: "flex" }}>
                 {units === "kg" ? (
                   <i className="ph-fill ph-check-circle" style={{ fontSize: 16 }} />

@@ -80,22 +80,25 @@ function PreviewBanner() {
         alignItems: "center",
         gap: 8,
         padding: "8px 12px",
+        // The status bar/notch sits right at the top of the screen on a real phone — without this, the
+        // banner (and the Exit button in it) renders partly or fully underneath it and can't be tapped.
+        paddingTop: "calc(8px + env(safe-area-inset-top))",
         background: "var(--color-accent)",
         color: "#0b1710",
         fontSize: 11.5,
         fontWeight: 700,
       }}
     >
-      <i className="ph-fill ph-eye" style={{ fontSize: 14 }} />
-      <span style={{ flex: 1 }}>Previewing as a client</span>
+      <i className="ph-fill ph-barbell" style={{ fontSize: 14 }} />
+      <span style={{ flex: 1 }}>Training as yourself</span>
       <button
         onClick={() => {
           exitClientPreview();
           nav("/coach/desk", { replace: true });
         }}
-        style={{ background: "#0b1710", color: "var(--color-accent)", border: "none", borderRadius: 6, padding: "4px 9px", fontWeight: 700, fontSize: 11, cursor: "pointer" }}
+        style={{ background: "#0b1710", color: "var(--color-accent)", border: "none", borderRadius: 6, padding: "5px 10px", fontWeight: 700, fontSize: 11, cursor: "pointer" }}
       >
-        Exit
+        Back to coaching
       </button>
     </div>
   );

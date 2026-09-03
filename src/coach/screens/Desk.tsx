@@ -6,11 +6,6 @@ import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, Acti
 import { CoachTabBar } from "../components/CoachTabBar";
 import type { ClientStatus } from "../types";
 
-/** Client preview (see the account sheet below) is a real feature exposed to real coach accounts once
- * this app has multiple coaches on it — restricted to this one account for now while it's still just
- * being tried out. */
-const PREVIEW_ENABLED_EMAIL = "jack.germain@hotmail.com";
-
 const STATUS_COLOR: Record<ClientStatus, string> = {
   "on-track": "var(--color-accent)",
   behind: "var(--color-accent-700)",
@@ -28,11 +23,10 @@ const STATUS_LABEL: Record<ClientStatus, string> = {
 
 export default function Desk() {
   const { state, dispatch } = useCoachStore();
-  const { account, session, enterClientPreview } = useAuth();
+  const { account, enterClientPreview } = useAuth();
   const coachName = account?.display_name ?? "Coach";
   const nav = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
-  const canPreviewAsClient = session?.user?.email === PREVIEW_ENABLED_EMAIL;
 
   const allFlags = useMemo(() => state.clients.flatMap((c) => c.flags.map((f) => ({ client: c, flag: f }))), [state.clients]);
   const counts = {
@@ -197,22 +191,20 @@ export default function Desk() {
                 <i className="ph ph-x" style={{ fontSize: 18 }} />
               </button>
             </div>
-            {canPreviewAsClient && (
-              <ActionGroup>
-                <ActionRow
-                  icon="ph-eye"
-                  iconBg="var(--color-accent-900)"
-                  iconColor="var(--color-accent)"
-                  label="View as a client"
-                  subtitle="See the real client app as yourself"
-                  onClick={() => {
-                    enterClientPreview();
-                    setShowAccount(false);
-                    nav("/block");
-                  }}
-                />
-              </ActionGroup>
-            )}
+            <ActionGroup>
+              <ActionRow
+                icon="ph-barbell"
+                iconBg="var(--color-accent-900)"
+                iconColor="var(--color-accent)"
+                label="Train as myself"
+                subtitle="Build your own program, log real workouts, see real progress"
+                onClick={() => {
+                  enterClientPreview();
+                  setShowAccount(false);
+                  nav("/block");
+                }}
+              />
+            </ActionGroup>
             <SetPasswordCard />
             <SignOutButton />
           </div>
