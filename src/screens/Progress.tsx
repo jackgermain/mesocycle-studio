@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
+import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
 import { Seg } from "../components/UI";
 
@@ -59,6 +60,8 @@ export default function Progress() {
         {tab === "strength" && <StrengthTab />}
         {tab === "body" && <BodyTab />}
         {tab === "volume" && <VolumeTab />}
+
+        <SignOutButton />
       </div>
       <TabBar />
     </div>
@@ -360,5 +363,20 @@ function VolumeTab() {
       </div>
       <div className="mu" style={{ marginTop: 10, lineHeight: 1.6 }}>The tick marks minimum effective volume; the bar fills toward your maximum recoverable volume. Dana adjusts next week's numbers — this is just the evidence.</div>
     </div>
+  );
+}
+
+function SignOutButton() {
+  const { signOut } = useAuth();
+  const nav = useNavigate();
+  async function handle() {
+    await signOut();
+    nav("/", { replace: true });
+  }
+  return (
+    <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 4 }} onClick={handle}>
+      <i className="ph ph-sign-out" style={{ fontSize: 15 }} />
+      Sign out
+    </button>
   );
 }

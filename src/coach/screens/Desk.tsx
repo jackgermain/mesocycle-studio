@@ -180,9 +180,26 @@ export default function Desk() {
             </button>
           </div>
         </div>
+
+        <SignOutButton />
       </div>
 
       <CoachTabBar />
     </div>
+  );
+}
+
+function SignOutButton() {
+  const { signOut } = useAuth();
+  const nav = useNavigate();
+  async function handle() {
+    await signOut();
+    nav("/", { replace: true });
+  }
+  return (
+    <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 4 }} onClick={handle}>
+      <i className="ph ph-sign-out" style={{ fontSize: 15 }} />
+      Sign out
+    </button>
   );
 }
