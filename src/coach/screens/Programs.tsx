@@ -19,7 +19,11 @@ export default function Programs() {
   const [naming, setNaming] = useState(false);
   const [newName, setNewName] = useState("");
 
-  const filtered = state.programs.filter((p) => (filter === "all" ? true : filter === "published" ? p.status === "published" : p.status === "draft"));
+  // Working copies built for one client's assignment stay hidden here until the coach explicitly saves
+  // one (checking "Save as a personal template") — otherwise every assign attempt would permanently
+  // clutter this list.
+  const visiblePrograms = state.programs.filter((p) => !p.pendingForClientId);
+  const filtered = visiblePrograms.filter((p) => (filter === "all" ? true : filter === "published" ? p.status === "published" : p.status === "draft"));
 
   function openPublish(p: CoachProgram) {
     setVisibility(p.visibility === "public" ? "public" : "private");
@@ -61,14 +65,14 @@ export default function Programs() {
           </div>
         }
       >
-        <HeroStat value={state.programs.length} label="programs">
+        <HeroStat value={visiblePrograms.length} label="programs">
           <div className="row" style={{ fontSize: 12 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Published</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{state.programs.filter((p) => p.status === "published").length}</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{visiblePrograms.filter((p) => p.status === "published").length}</span>
           </div>
           <div className="row" style={{ fontSize: 12 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Drafts</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.programs.filter((p) => p.status !== "published").length}</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{visiblePrograms.filter((p) => p.status !== "published").length}</span>
           </div>
         </HeroStat>
       </HeroHeader>

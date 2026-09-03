@@ -26,6 +26,12 @@ export interface CoachClient {
   programName: string;
   week: number;
   totalWeeks: number;
+  /** The CoachProgram currently backing their live assignment — lets "Edit their current program" reopen
+   * the exact same working copy instead of starting over or duplicating again. */
+  assignedProgramId?: string;
+  /** Set when a new program has been queued to start once their current one's block ends, rather than
+   * replacing it immediately. */
+  queuedProgramId?: string;
   adherencePct: number;
   flags: ClientFlag[];
   lastSessionSummary?: string;
@@ -81,6 +87,10 @@ export interface CoachProgram {
   isTemplate?: boolean;
   /** Templates are always "private"; a non-template can be published to a public listing. Defaults to "private" when absent. */
   visibility?: "private" | "public";
+  /** A working copy built for one specific client's assignment — hidden from the main Programs list so
+   * every assign attempt doesn't clutter your library. Cleared (and the program becomes a normal, visible
+   * saved program) the moment you check "Save as a personal template". */
+  pendingForClientId?: string;
 }
 
 export interface LibraryExercise {

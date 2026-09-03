@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
 import { useAuth } from "../lib/auth";
@@ -8,11 +8,19 @@ import { canSelfBuildProgram } from "../shared/canBuild";
 
 /** The "Train" tab's landing spot — always today's lift, no overview page in between. */
 export default function TodayRedirect() {
-  const { state } = useStore();
+  const { state, dispatch } = useStore();
   const { account } = useAuth();
   const nav = useNavigate();
   const allDays = state.program.weeks.flatMap((w) => w.days);
-  const target = allDays.find((d) => d.status === "today") ?? allDays.find((d) => d.status !== "done") ?? allDays[0];
+  const allDone = allDays.length > 0 && allDays.every((d) => d.status === "done");
+
+  // The current block is fully logged and a coach queued what comes next — start it automatically rather
+  // than leaving the client stuck on "nothing scheduled" until someone notices and reassigns by hand.
+  useEffect(() => {
+    if (allDone && state.nextProgram) dispatch({ type: "PROMOTE_NEXT_PROGRAM" });
+  }, [allDone, state.nextProgram, dispatch]);
+
+  const target = allDays.find((d) => d.status === "today") ?? allDays.find((d) => d.status !== "done") ?? (allDone && state.nextProgram ? undefined : allDays[0]);
 
   if (!target) {
     const canBuild = canSelfBuildProgram(account?.role);

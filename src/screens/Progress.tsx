@@ -51,6 +51,11 @@ export default function Progress() {
         </HeroStat>
       </HeroHeader>
       <div className="screen-scroll">
+        {state.nextProgram && (
+          <InfoBanner icon="ph-hourglass" tone="accent">
+            Up next: <strong>{state.nextProgram.name}</strong> — starts automatically once you finish this block.
+          </InfoBanner>
+        )}
         <Seg
           value={tab}
           onChange={setTab}

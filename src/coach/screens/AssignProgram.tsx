@@ -7,10 +7,10 @@ import { buildBlankProgram } from "../mockData";
 import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
 import { parseCsvToDraftDays } from "../csvProgram";
-import { writeProgramToClient } from "../assignProgram";
+import { writeProgramToClient, queueProgramForClient } from "../assignProgram";
 import type { CoachProgram } from "../types";
 
-type Mode = "choose" | "confirmExisting" | "pickToEdit" | "csv";
+type Mode = "editOrNew" | "choose" | "confirmExisting" | "pickToEdit" | "csv";
 
 export default function AssignProgram() {
   const { clientId = "" } = useParams();
@@ -19,11 +19,12 @@ export default function AssignProgram() {
   const { state, dispatch } = useCoachStore();
   const { account } = useAuth();
   const nav = useNavigate();
-  const [mode, setMode] = useState<Mode>(forcedProgramId ? "confirmExisting" : "choose");
+  const client = state.clients.find((c) => c.id === clientId);
+  const hasCurrentProgram = !!client?.assignedProgramId;
+  const [mode, setMode] = useState<Mode>(forcedProgramId ? "confirmExisting" : hasCurrentProgram ? "editOrNew" : "choose");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const client = state.clients.find((c) => c.id === clientId);
   const coachName = account?.display_name ?? "Coach";
 
   if (!client) return <div className="screen-scroll">Not found.</div>;
@@ -40,29 +41,56 @@ export default function AssignProgram() {
   const accountId = client.accountId;
   const clientId2 = client.id;
   const clientName = client.name;
+  const visiblePrograms = state.programs.filter((p) => !p.pendingForClientId);
 
-  /** Adds a fresh (or duplicated) program to the coach's library and opens the real builder to finish
-   * it — drag to reorder, edit sets/reps/load, everything ProgramDetail already does. Carries clientId
-   * along so ProgramDetail can offer a one-tap "finish assigning to them" once it's ready. */
+  /** Adds a fresh (or duplicated) program to the coach's library — hidden from the Programs list until
+   * explicitly saved — and opens the real builder to finish it: drag to reorder, edit sets/reps/load,
+   * everything ProgramDetail already does. Carries clientId along so ProgramDetail can offer a one-tap
+   * "finish assigning to them" once it's ready. */
   function createAndEdit(program: CoachProgram) {
-    dispatch({ type: "ADD_PROGRAM", program });
+    dispatch({ type: "ADD_PROGRAM", program: { ...program, pendingForClientId: clientId2 } });
     nav(`/coach/programs/${program.id}?assignTo=${clientId2}`);
   }
 
-  async function finishAssignExisting(cp: CoachProgram) {
+  async function finishAssign(cp: CoachProgram, timing: "now" | "queued", sourceProgramId?: string) {
     setBusy(true);
     setError(null);
     try {
       const program = expandCoachProgramToProgram(cp, coachName);
-      await writeProgramToClient(accountId, program);
-      dispatch({ type: "ASSIGN_PROGRAM", clientId: clientId2, programName: program.name, totalWeeks: program.totalWeeks, sourceProgramId: cp.id });
-      dispatch({ type: "SHOW_TOAST", message: `${program.name} assigned to ${clientName}.` });
-      setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+      if (timing === "now") await writeProgramToClient(accountId, program);
+      else await queueProgramForClient(accountId, program);
+      dispatch({ type: "ASSIGN_PROGRAM", clientId: clientId2, programId: cp.id, programName: program.name, totalWeeks: program.totalWeeks, mode: timing, sourceProgramId });
+      dispatch({
+        type: "SHOW_TOAST",
+        message: timing === "now" ? `${program.name} assigned to ${clientName}.` : `${program.name} queued — starts once ${clientName.split(" ")[0]} finishes their current block.`,
+      });
+      setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3500);
       nav(`/coach/clients/${clientId2}`, { replace: true });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't save this — try again.");
       setBusy(false);
     }
+  }
+
+  if (mode === "editOrNew") {
+    return (
+      <div className="screen">
+        <BackHeader kicker={client.name} title="Assign a program" />
+        <div className="screen-scroll">
+          <ActionGroup>
+            <ActionRow
+              icon="ph-pencil-simple-line"
+              iconBg="var(--color-accent-900)"
+              iconColor="var(--color-accent)"
+              label="Edit their current program"
+              subtitle={client.programName}
+              onClick={() => nav(`/coach/programs/${client.assignedProgramId}?assignTo=${clientId2}`)}
+            />
+            <ActionRow icon="ph-plus-circle" label="Start a new program" subtitle="From scratch, a saved program, or a spreadsheet" onClick={() => setMode("choose")} />
+          </ActionGroup>
+        </div>
+      </div>
+    );
   }
 
   if (mode === "choose") {
@@ -80,7 +108,7 @@ export default function AssignProgram() {
               subtitle="Opens the full builder — days, exercises, sets, everything"
               onClick={() => createAndEdit(buildBlankProgram(`${client.name.split(" ")[0]}'s Program`))}
             />
-            <ActionRow icon="ph-stack" label="Use one of your programs" subtitle={`${state.programs.length} saved — starts you a copy to edit for them`} onClick={() => setMode("pickToEdit")} />
+            <ActionRow icon="ph-stack" label="Use one of your programs" subtitle={`${visiblePrograms.length} saved — starts you a copy to edit for them`} onClick={() => setMode("pickToEdit")} />
             <ActionRow icon="ph-file-arrow-up" label="Import from a spreadsheet" subtitle="CSV: Day, Exercise, Muscle, Sets, Reps" onClick={() => setMode("csv")} />
           </ActionGroup>
         </div>
@@ -93,9 +121,9 @@ export default function AssignProgram() {
       <div className="screen">
         <BackHeader kicker={client.name} title="Use one of your programs" />
         <div className="screen-scroll">
-          {state.programs.length === 0 && <InfoBanner icon="ph-tray">No saved programs yet — build one from scratch instead.</InfoBanner>}
+          {visiblePrograms.length === 0 && <InfoBanner icon="ph-tray">No saved programs yet — build one from scratch instead.</InfoBanner>}
           <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-            {state.programs.map((p) => (
+            {visiblePrograms.map((p) => (
               <button key={p.id} className="link-row" style={{ padding: "11px 12px" }} onClick={() => createAndEdit(duplicateProgram(p, `${p.name} — ${client.name.split(" ")[0]}`))}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="trunc" style={{ fontSize: 13.5, fontFamily: "var(--font-heading)" }}>{p.name}</div>
@@ -113,30 +141,22 @@ export default function AssignProgram() {
   if (mode === "confirmExisting") {
     return (
       <ConfirmExistingStep
-        programs={state.programs}
+        allPrograms={state.programs}
         client={client}
         busy={busy}
         error={error}
         initialPickedId={forcedProgramId}
         onBack={() => nav(-1)}
-        onAssign={finishAssignExisting}
+        onAssign={(cp, timing) => finishAssign(cp, timing)}
       />
     );
   }
 
-  return (
-    <CsvStep
-      client={client}
-      busy={busy}
-      error={error}
-      onBack={() => setMode("choose")}
-      onCreate={(program) => createAndEdit(program)}
-    />
-  );
+  return <CsvStep client={client} busy={busy} error={error} onBack={() => setMode("choose")} onCreate={(program) => createAndEdit(program)} />;
 }
 
 function ConfirmExistingStep({
-  programs,
+  allPrograms,
   client,
   busy,
   error,
@@ -144,16 +164,19 @@ function ConfirmExistingStep({
   onBack,
   onAssign,
 }: {
-  programs: CoachProgram[];
-  client: { name: string };
+  allPrograms: CoachProgram[];
+  client: { name: string; assignedProgramId?: string };
   busy: boolean;
   error: string | null;
   initialPickedId?: string | null;
   onBack: () => void;
-  onAssign: (p: CoachProgram) => void;
+  onAssign: (p: CoachProgram, timing: "now" | "queued") => void;
 }) {
-  const picked = programs.find((p) => p.id === initialPickedId) ?? null;
+  const picked = allPrograms.find((p) => p.id === initialPickedId) ?? null;
   if (!picked) return <div className="screen-scroll">Not found.</div>;
+
+  const isEditingCurrent = picked.id === client.assignedProgramId;
+  const hasDifferentCurrent = !!client.assignedProgramId && !isEditingCurrent;
 
   return (
     <div className="screen">
@@ -172,12 +195,38 @@ function ConfirmExistingStep({
           <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{picked.name}</div>
           <div className="mu" style={{ marginTop: 4 }}>{picked.weeks} weeks · {picked.daysPerWeek} days/week · {picked.days.reduce((n, d) => n + d.exercises.length, 0)} exercises</div>
         </div>
-        <InfoBanner icon="ph-info">This starts {client.name.split(" ")[0]} at week 1, day 1 — their own copy, editable from here on without touching this saved program.</InfoBanner>
-        <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-          <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked)}>
-            {busy ? "Assigning…" : `Assign to ${client.name.split(" ")[0]}`}
-          </button>
-        </div>
+
+        {isEditingCurrent ? (
+          <>
+            <InfoBanner icon="ph-info">Updates what {client.name.split(" ")[0]} is already on — their in-progress logs for this block stay put.</InfoBanner>
+            <div style={{ marginTop: "auto", paddingBottom: 8 }}>
+              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now")}>
+                {busy ? "Saving…" : `Update ${client.name.split(" ")[0]}'s program`}
+              </button>
+            </div>
+          </>
+        ) : hasDifferentCurrent ? (
+          <>
+            <InfoBanner icon="ph-info">{client.name.split(" ")[0]} is already on a different program — choose how this one should take over.</InfoBanner>
+            <div style={{ marginTop: "auto", paddingBottom: 8, display: "flex", flexDirection: "column", gap: 8 }}>
+              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now")}>
+                {busy ? "Assigning…" : "Start now — ends their current program"}
+              </button>
+              <button className="btn btn-secondary btn-block" style={{ height: 44, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "queued")}>
+                Queue — starts once their current one ends
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <InfoBanner icon="ph-info">This starts {client.name.split(" ")[0]} at week 1, day 1 — their own copy, editable from here on without touching this saved program.</InfoBanner>
+            <div style={{ marginTop: "auto", paddingBottom: 8 }}>
+              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now")}>
+                {busy ? "Assigning…" : `Assign to ${client.name.split(" ")[0]}`}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

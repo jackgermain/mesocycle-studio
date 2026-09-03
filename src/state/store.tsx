@@ -9,6 +9,10 @@ export interface AppState {
   onboarded: boolean;
   profile: ClientProfile;
   program: Program;
+  /** Set by the coach when they queue a new program to start once the current one's block ends, instead
+   * of replacing it immediately. Promoted to `program` automatically once every day in the current one
+   * is done or removed — see PROMOTE_NEXT_PROGRAM. */
+  nextProgram: Program | null;
   removals: RemovalRecord[];
   meals: MealSection[];
   weighIns: WeighIn[];
@@ -22,6 +26,7 @@ function buildBlankState(ownerName: string, coachName: string): AppState {
     onboarded: false,
     profile: buildSelfProfile(ownerName),
     program: { name: "Your program", totalWeeks: 0, coachName, weeks: [] },
+    nextProgram: null,
     removals: [],
     meals: [],
     weighIns: [],
@@ -33,6 +38,7 @@ type Action =
   | { type: "HYDRATE"; state: AppState }
   | { type: "ONBOARD"; profile: Partial<ClientProfile> }
   | { type: "SET_PROGRAM"; program: Program }
+  | { type: "PROMOTE_NEXT_PROGRAM" }
   | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel"> }
   | { type: "TICK_SET"; dayId: string; exerciseId: string; setId: string; actual: { reps: number; load: number | null; clusterBlocks?: number[]; assistanceSplit?: { unassisted: number; assisted: number } } }
   | { type: "EDIT_SET_TARGET"; dayId: string; exerciseId: string; setId: string; reps?: number; load?: number }
@@ -59,6 +65,9 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, onboarded: true, profile: { ...state.profile, ...action.profile } };
     case "SET_PROGRAM":
       return { ...state, program: action.program };
+    case "PROMOTE_NEXT_PROGRAM":
+      if (!state.nextProgram) return state;
+      return { ...state, program: state.nextProgram, nextProgram: null };
     case "SET_NUTRITION_PROTOCOL":
       return { ...state, profile: { ...state.profile, ...action.protocol } };
     case "TICK_SET": {

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useCoachStore } from "../store";
-import { BackHeader, Seg, StatCell } from "../../components/UI";
+import { BackHeader, InfoBanner, Seg, StatCell } from "../../components/UI";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { LOAD_LABELS, LOAD_RANGE, clampLoadValue } from "../loadMode";
 import { CARDIO_DEFAULT, REST_STEP, formatDuration, workStep } from "../cardio";
@@ -56,6 +56,11 @@ export default function ProgramDetail() {
     <div className="screen">
       <BackHeader kicker={`${program.status} · ${program.isTemplate ? "template" : `${program.assignedCount} assigned`}`} title={program.name} />
       <div className="screen-scroll">
+        {program.pendingForClientId && (
+          <InfoBanner icon="ph-eye-slash">
+            Working copy — hidden from your Programs list until you check "Save as a personal template" below. Otherwise it's cleaned up automatically once you assign something else.
+          </InfoBanner>
+        )}
         <div className="cell" style={{ padding: "10px 12px" }}>
           <div className="scr" style={{ marginBottom: 5 }}>Program name</div>
           <input
