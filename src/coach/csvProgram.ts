@@ -56,9 +56,9 @@ const REQUIRED_HEADERS = ["day", "exercise", "muscle"];
 /** Turns "Day, Exercise, Muscle, Sets, Reps, Load" rows into the same DraftDay[] shape the from-scratch
  * builder uses, grouped by day in first-seen order. Sets/Reps/Load are optional per row -- missing ones
  * fall back to buildProgramFromDraft's plain 3×10 default. This is a real conversion, not a preview of
- * one: whatever's in the sheet becomes the actual program. */
-export function parseCsvToDraftDays(text: string): CsvParseResult {
-  const rows = parseCsv(text);
+ * one: whatever's in the sheet becomes the actual program. Shared by both the CSV and Excel parsers below,
+ * since both just need to get to a plain string[][] grid first. */
+export function rowsToDraftDays(rows: string[][]): CsvParseResult {
   const errors: string[] = [];
   if (rows.length === 0) return { days: [], rowCount: 0, errors: ["The file is empty."] };
 
@@ -112,4 +112,27 @@ export function parseCsvToDraftDays(text: string): CsvParseResult {
   }
 
   return { days: dayOrder.map((d) => byDay.get(d)!), rowCount, errors };
+}
+
+export function parseCsvToDraftDays(text: string): CsvParseResult {
+  return rowsToDraftDays(parseCsv(text));
+}
+
+declare const XLSX: {
+  read(data: ArrayBuffer, opts: { type: string }): { SheetNames: string[]; Sheets: Record<string, unknown> };
+  utils: { sheet_to_json(sheet: unknown, opts: { header: number; raw: boolean; defval: string }): unknown[][] };
+};
+
+/** Parses a real .xlsx/.xls workbook the same way parseCsvToDraftDays parses a CSV -- reads the first
+ * sheet as a plain grid and feeds it through the same row logic, so an uploaded Excel file (the format
+ * most coaches and clients actually have on hand, vs. remembering to export CSV first) produces an
+ * identical result. Uses the SheetJS `XLSX` global loaded via script tag in index.html rather than an npm
+ * dependency, since this environment has no npm registry access to install one. */
+export async function parseXlsxToDraftDays(file: File): Promise<CsvParseResult> {
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf, { type: "array" });
+  const sheet = wb.Sheets[wb.SheetNames[0]];
+  const raw = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: "" });
+  const rows = raw.map((r) => r.map((c) => String(c ?? "").trim()));
+  return rowsToDraftDays(rows);
 }

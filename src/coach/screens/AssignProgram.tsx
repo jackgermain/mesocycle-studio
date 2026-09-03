@@ -6,7 +6,8 @@ import { BackHeader, InfoBanner, ActionGroup, ActionRow } from "../../components
 import { buildBlankProgram } from "../mockData";
 import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
-import { parseCsvToDraftDays } from "../csvProgram";
+import { parseCsvToDraftDays, parseXlsxToDraftDays } from "../csvProgram";
+import type { CsvParseResult } from "../csvProgram";
 import { writeProgramToClient, queueProgramForClient } from "../assignProgram";
 import type { CoachProgram } from "../types";
 
@@ -112,7 +113,7 @@ export default function AssignProgram() {
               onClick={() => createAndEdit(buildBlankProgram(`${client.name.split(" ")[0]}'s Program`))}
             />
             <ActionRow icon="ph-stack" label="Use one of your programs" subtitle={`${visiblePrograms.length} template${visiblePrograms.length === 1 ? "" : "s"} — starts you a copy to edit for them`} onClick={() => setMode("pickToEdit")} />
-            <ActionRow icon="ph-file-arrow-up" label="Import from a spreadsheet" subtitle="CSV: Day, Exercise, Muscle, Sets, Reps" onClick={() => setMode("csv")} />
+            <ActionRow icon="ph-file-arrow-up" label="Import from a spreadsheet" subtitle="Excel or CSV: Day, Exercise, Muscle, Sets, Reps" onClick={() => setMode("csv")} />
           </ActionGroup>
         </div>
       </div>
@@ -250,12 +251,16 @@ function CsvStep({
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [parsed, setParsed] = useState<ReturnType<typeof parseCsvToDraftDays> | null>(null);
+  const [parsed, setParsed] = useState<CsvParseResult | null>(null);
   const [programName, setProgramName] = useState(`${client.name.split(" ")[0]}'s Program`);
   const [weeksCount, setWeeksCount] = useState(6);
 
   function handleFile(file: File) {
     setFileName(file.name);
+    if (/\.(xlsx|xls)$/i.test(file.name)) {
+      parseXlsxToDraftDays(file).then(setParsed);
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => setParsed(parseCsvToDraftDays(String(reader.result ?? "")));
     reader.readAsText(file);
@@ -277,15 +282,15 @@ function CsvStep({
       <div className="screen-scroll">
         {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
         <InfoBanner icon="ph-info">
-          Export a CSV with a header row: <strong>Day, Exercise, Muscle, Sets, Reps, Load</strong>. Sets/Reps/Load are optional per row — anything left blank starts at a plain 3×10. You'll get a chance to fix anything in the full builder afterward.
+          Upload an Excel (.xlsx) or CSV file with a header row: <strong>Day, Exercise, Muscle, Sets, Reps, Load</strong>. Sets/Reps/Load are optional per row — anything left blank starts at a plain 3×10. You'll get a chance to fix anything in the full builder afterward.
         </InfoBanner>
 
-        <input ref={fileRef} type="file" accept=".csv,text/csv" style={{ display: "none" }} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
+        <input ref={fileRef} type="file" accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style={{ display: "none" }} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
         <button className="cell row" style={{ padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => fileRef.current?.click()}>
           <i className="ph ph-file-arrow-up" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{fileName ?? "Choose a CSV file"}</div>
-            <div className="mu" style={{ marginTop: 2 }}>{fileName ? "Tap to choose a different file" : "From Excel, Google Sheets, or Numbers — export as CSV first"}</div>
+            <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{fileName ?? "Choose a file"}</div>
+            <div className="mu" style={{ marginTop: 2 }}>{fileName ? "Tap to choose a different file" : "Excel or CSV, from Excel, Google Sheets, or Numbers"}</div>
           </div>
         </button>
 
