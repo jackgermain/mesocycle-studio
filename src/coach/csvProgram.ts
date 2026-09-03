@@ -267,6 +267,23 @@ declare const XLSX: {
   utils: { sheet_to_json(sheet: unknown, opts: { header: number; raw: boolean; defval: string }): unknown[][] };
 };
 
+function sheetRows(wb: { Sheets: Record<string, unknown> }, name: string): string[][] {
+  const raw = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, raw: false, defval: "" });
+  return raw.map((r) => r.map((c) => String(c ?? "").trim()));
+}
+
+/** Tries the plain "Day, Exercise, Muscle…" header format first (the common case for a simple export); if
+ * the sheet isn't laid out that way, falls back to the day-block grid layout above rather than just
+ * failing, since a coach uploading their actual program spreadsheet is far more likely to have that than a
+ * hand-typed flat table. */
+function resolveDraftDays(rows: string[][]): CsvParseResult {
+  const flat = rowsToDraftDays(rows);
+  if (flat.days.length > 0) return flat;
+  const grid = parseGridLayoutToDraftDays(rows);
+  if (grid.days.length > 0) return grid;
+  return flat;
+}
+
 /** Every sheet in a workbook, in order -- used to let the user pick which one to import when a file has
  * more than one (a periodized template often has one sheet per training phase). */
 export async function listXlsxSheetNames(file: File): Promise<string[]> {
@@ -275,23 +292,55 @@ export async function listXlsxSheetNames(file: File): Promise<string[]> {
   return wb.SheetNames;
 }
 
-/** Parses a real .xlsx/.xls workbook the same way parseCsvToDraftDays parses a CSV. Tries the plain
- * "Day, Exercise, Muscle…" header format first (the common case for a simple export); if that sheet isn't
- * laid out that way, falls back to the day-block grid layout above rather than just failing, since a coach
- * uploading their actual program spreadsheet is far more likely to have that than a hand-typed flat table.
- * Uses the SheetJS `XLSX` global loaded via script tag in index.html rather than an npm dependency, since
- * this environment has no npm registry access to install one. */
+/** Parses a real .xlsx/.xls workbook the same way parseCsvToDraftDays parses a CSV. Uses the SheetJS
+ * `XLSX` global loaded via script tag in index.html rather than an npm dependency, since this environment
+ * has no npm registry access to install one. */
 export async function parseXlsxToDraftDays(file: File, sheetName?: string): Promise<CsvParseResult> {
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: "array" });
-  const name = sheetName ?? wb.SheetNames[0];
-  const sheet = wb.Sheets[name];
-  const raw = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: "" });
-  const rows = raw.map((r) => r.map((c) => String(c ?? "").trim()));
+  return resolveDraftDays(sheetRows(wb, sheetName ?? wb.SheetNames[0]));
+}
 
-  const flat = rowsToDraftDays(rows);
-  if (flat.days.length > 0) return flat;
-  const grid = parseGridLayoutToDraftDays(rows);
-  if (grid.days.length > 0) return grid;
-  return flat;
+/** Converts a OneDrive/SharePoint "anyone with the link can view" sharing URL into the legacy OneDrive
+ * API's anonymous direct-download endpoint, so a linked spreadsheet can be re-fetched from the browser with
+ * no sign-in required -- the same technique a number of unofficial "OneDrive direct link" tools use
+ * client-side. Only works when the link is actually set to allow anonymous viewing; Microsoft Graph's
+ * modern /shares endpoint requires an auth token even for "anonymous" links, but this older API doesn't. */
+function oneDriveDownloadUrl(shareUrl: string): string {
+  const base64 = btoa(shareUrl.trim());
+  const encoded = "u!" + base64.replace(/=+$/, "").replace(/\//g, "_").replace(/\+/g, "-");
+  return `https://api.onedrive.com/v1.0/shares/${encoded}/root/content`;
+}
+
+function isOneDriveShareUrl(url: string): boolean {
+  return /^https:\/\/(1drv\.ms|[^/]*\.sharepoint\.com|onedrive\.live\.com)\//i.test(url.trim());
+}
+
+async function fetchWorkbookBuffer(url: string): Promise<ArrayBuffer> {
+  const fetchUrl = isOneDriveShareUrl(url) ? oneDriveDownloadUrl(url) : url;
+  let res: Response;
+  try {
+    res = await fetch(fetchUrl);
+  } catch {
+    throw new Error("Couldn't reach that link. Check it's set to \"Anyone with the link can view.\"");
+  }
+  if (!res.ok) {
+    throw new Error(`Couldn't download that file (${res.status}). Check it's set to "Anyone with the link can view."`);
+  }
+  return res.arrayBuffer();
+}
+
+/** Same as listXlsxSheetNames, but for a file reached by URL (a OneDrive/SharePoint share link, or any
+ * other directly-fetchable .xlsx URL) instead of a local upload -- lets a program stay linked to a
+ * spreadsheet that keeps changing, re-synced on demand rather than re-uploaded by hand each time. */
+export async function listXlsxSheetNamesFromUrl(url: string): Promise<string[]> {
+  const buf = await fetchWorkbookBuffer(url);
+  const wb = XLSX.read(buf, { type: "array" });
+  return wb.SheetNames;
+}
+
+export async function parseXlsxFromUrl(url: string, sheetName?: string): Promise<CsvParseResult> {
+  const buf = await fetchWorkbookBuffer(url);
+  const wb = XLSX.read(buf, { type: "array" });
+  return resolveDraftDays(sheetRows(wb, sheetName ?? wb.SheetNames[0]));
 }

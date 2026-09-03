@@ -6,7 +6,7 @@ import { BackHeader, InfoBanner, ActionGroup, ActionRow } from "../../components
 import { buildBlankProgram } from "../mockData";
 import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
-import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames } from "../csvProgram";
+import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../csvProgram";
 import type { CsvParseResult } from "../csvProgram";
 import { writeProgramToClient, queueProgramForClient } from "../assignProgram";
 import type { CoachProgram } from "../types";
@@ -252,15 +252,18 @@ function CsvStep({
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [parsed, setParsed] = useState<CsvParseResult | null>(null);
-  const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [source, setSource] = useState<{ type: "file"; file: File } | { type: "url"; url: string } | null>(null);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
   const [selectedSheet, setSelectedSheet] = useState<string | null>(null);
   const [programName, setProgramName] = useState(`${client.name.split(" ")[0]}'s Program`);
   const [weeksCount, setWeeksCount] = useState(6);
+  const [linkInput, setLinkInput] = useState("");
+  const [linkBusy, setLinkBusy] = useState(false);
+  const [linkError, setLinkError] = useState<string | null>(null);
 
   function handleFile(file: File) {
     setFileName(file.name);
-    setCurrentFile(file);
+    setSource({ type: "file", file });
     setSheetNames([]);
     setSelectedSheet(null);
     if (/\.(xlsx|xls)$/i.test(file.name)) {
@@ -276,9 +279,28 @@ function CsvStep({
     reader.readAsText(file);
   }
 
+  function handleLink() {
+    const url = linkInput.trim();
+    if (!url) return;
+    setLinkBusy(true);
+    setLinkError(null);
+    listXlsxSheetNamesFromUrl(url)
+      .then((names) => {
+        setFileName(url.length > 46 ? url.slice(0, 43) + "…" : url);
+        setSource({ type: "url", url });
+        setSheetNames(names);
+        setSelectedSheet(names[0]);
+        return parseXlsxFromUrl(url, names[0]).then(setParsed);
+      })
+      .catch((e) => setLinkError(e instanceof Error ? e.message : "Couldn't read that link."))
+      .finally(() => setLinkBusy(false));
+  }
+
   function pickSheet(sheetName: string) {
     setSelectedSheet(sheetName);
-    if (currentFile) parseXlsxToDraftDays(currentFile, sheetName).then(setParsed);
+    if (!source) return;
+    if (source.type === "file") parseXlsxToDraftDays(source.file, sheetName).then(setParsed);
+    else parseXlsxFromUrl(source.url, sheetName).then(setParsed);
   }
 
   const totalExercises = parsed?.days.reduce((n, d) => n + d.exercises.length, 0) ?? 0;
@@ -308,6 +330,32 @@ function CsvStep({
             <div className="mu" style={{ marginTop: 2 }}>{fileName ? "Tap to choose a different file" : "Excel or CSV, from Excel, Google Sheets, or Numbers"}</div>
           </div>
         </button>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "2px 2px" }}>
+          <div style={{ flex: 1, height: 1, background: "var(--color-neutral-800)" }} />
+          <span className="mu">or</span>
+          <div style={{ flex: 1, height: 1, background: "var(--color-neutral-800)" }} />
+        </div>
+
+        <div className="cell" style={{ padding: 12 }}>
+          <div className="scr" style={{ marginBottom: 6 }}>Link a OneDrive file</div>
+          <div className="row" style={{ gap: 8 }}>
+            <input
+              className="input"
+              style={{ flex: 1, height: 36, fontSize: 12.5 }}
+              placeholder="Paste a OneDrive share link"
+              value={linkInput}
+              onChange={(e) => setLinkInput(e.target.value)}
+            />
+            <button className="btn btn-secondary" style={{ height: 36, flex: "none", fontSize: 12.5, opacity: linkBusy ? 0.6 : 1 }} disabled={linkBusy} onClick={handleLink}>
+              {linkBusy ? "Fetching…" : "Fetch"}
+            </button>
+          </div>
+          <div className="mu" style={{ marginTop: 6 }}>
+            In OneDrive, set the file to share as "Anyone with the link can view," then paste that link here. Re-run this any time the sheet changes to pull the latest version — no re-uploading.
+          </div>
+        </div>
+        {linkError && <InfoBanner icon="ph-warning">{linkError}</InfoBanner>}
 
         {sheetNames.length > 1 && (
           <div>
