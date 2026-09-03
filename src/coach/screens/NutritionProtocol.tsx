@@ -51,7 +51,7 @@ function NutritionProtocolGate({ clientName, onDone }: { clientName: string; onD
 }
 
 function NutritionFormScreen({ clientName, profile, onDone }: { clientName: string; profile: ClientProfile; onDone: () => void }) {
-  const { dispatch } = useStore();
+  const { state, dispatch } = useStore();
   const { dispatch: coachDispatch } = useCoachStore();
 
   return (
@@ -62,6 +62,9 @@ function NutritionFormScreen({ clientName, profile, onDone }: { clientName: stri
         subjectFirstName={clientName.split(" ")[0]}
         onSave={(protocol) => {
           dispatch({ type: "SET_NUTRITION_PROTOCOL", protocol });
+          if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
+            for (const name of ["Breakfast", "Lunch", "Dinner"]) dispatch({ type: "ADD_MEAL", name });
+          }
           coachDispatch({ type: "SHOW_TOAST", message: `Nutrition protocol saved for ${clientName} — synced to their app.` });
           setTimeout(() => coachDispatch({ type: "CLEAR_TOAST" }), 2800);
           onDone();

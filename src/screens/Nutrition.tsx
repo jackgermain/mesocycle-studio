@@ -16,14 +16,6 @@ const PORTION_ICON: Record<PortionCategory, string> = {
   Fat: "ph-hand-pointing",
 };
 
-/** Rough hand-portion estimates, for people who'd rather eyeball a meal than search a food database. Always optional. */
-const QUICK_PORTIONS: { label: string; icon: string; kcal: number; protein: number; carbs: number; fat: number }[] = [
-  { label: "Palm of protein", icon: "ph-hand-palm", kcal: 120, protein: 25, carbs: 0, fat: 3 },
-  { label: "Cupped hand of carbs", icon: "ph-hand-deposit", kcal: 130, protein: 0, carbs: 30, fat: 0 },
-  { label: "Fist of veg", icon: "ph-hand-fist", kcal: 30, protein: 2, carbs: 6, fat: 0 },
-  { label: "Thumb of fat", icon: "ph-hand-pointing", kcal: 90, protein: 0, carbs: 0, fat: 10 },
-];
-
 const WEEK = [
   { d: "M", on: true },
   { d: "T", on: true },
@@ -63,6 +55,9 @@ export default function Nutrition() {
             profile={profile}
             onSave={(protocol) => {
               dispatch({ type: "SET_NUTRITION_PROTOCOL", protocol });
+              if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
+                for (const name of ["Breakfast", "Lunch", "Dinner"]) dispatch({ type: "ADD_MEAL", name });
+              }
               dispatch({ type: "SHOW_TOAST", message: "Nutrition tracking is on." });
               setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
               setSettingUp(false);
@@ -108,27 +103,9 @@ export default function Nutrition() {
     });
   }
 
-  function addPortionEstimate(mealId: string, portion: (typeof QUICK_PORTIONS)[number]) {
-    dispatch({
-      type: "ADD_FOOD_ITEM",
-      mealId,
-      item: {
-        id: `li-${Date.now()}`,
-        foodId: `portion-${portion.label}`,
-        name: portion.label,
-        servingLabel: "hand estimate",
-        servings: 1,
-        kcal: portion.kcal,
-        protein: portion.protein,
-        carbs: portion.carbs,
-        fat: portion.fat,
-      },
-    });
-  }
-
   function addMeal() {
     const existingNames = new Set(state.meals.map((m) => m.name));
-    const candidates = ["Dinner", "Snack 2", "Snack 3", "Late snack"];
+    const candidates = ["Breakfast", "Lunch", "Dinner", "Snack 1", "Snack 2", "Snack 3", "Late snack"];
     const name = candidates.find((c) => !existingNames.has(c)) ?? `Meal ${state.meals.length + 1}`;
     dispatch({ type: "ADD_MEAL", name });
   }
@@ -196,30 +173,6 @@ export default function Nutrition() {
                     </div>
                   </div>
                 ))}
-                <div className="row" style={{ gap: 5, flexWrap: "wrap" }}>
-                  {QUICK_PORTIONS.map((p) => (
-                    <button
-                      key={p.label}
-                      onClick={() => addPortionEstimate(meal.id, p)}
-                      title={`${p.label} · ~${p.kcal} kcal · ${p.protein}p ${p.carbs}c ${p.fat}f`}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 5,
-                        padding: "6px 10px",
-                        borderRadius: 999,
-                        fontSize: 11,
-                        cursor: "pointer",
-                        border: "1px solid var(--color-divider)",
-                        background: "transparent",
-                        color: "var(--color-neutral-400)",
-                      }}
-                    >
-                      <i className={`ph ${p.icon}`} style={{ fontSize: 13 }} />
-                      {p.label.split(" ")[0]}
-                    </button>
-                  ))}
-                </div>
                 <button
                   onClick={() => setAddingTo(meal.id)}
                   style={{ border: "1px dashed var(--color-neutral-700)", borderRadius: "var(--radius-md)", padding: 11, textAlign: "center", fontSize: 12.5, color: "var(--color-accent)", background: "none", cursor: "pointer" }}

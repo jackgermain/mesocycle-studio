@@ -254,7 +254,9 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, meals };
     }
     case "ADD_MEAL": {
-      const meals = [...state.meals, { id: `meal-${Date.now()}`, name: action.name, items: [] }];
+      // Date.now() alone collides when several ADD_MEAL actions dispatch in the same tick (e.g. seeding
+      // Breakfast/Lunch/Dinner at once on nutrition setup) -- both land in the same millisecond.
+      const meals = [...state.meals, { id: `meal-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: action.name, items: [] }];
       return { ...state, meals };
     }
     case "LOG_WEIGHIN": {

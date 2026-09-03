@@ -43,7 +43,9 @@ export default function UpcomingDay({ dayId }: { dayId: string }) {
       />
       <div className="screen-scroll">
         <InfoBanner icon="ph-eye">
-          {daysAway(day.date)} · {day.setCount} sets · {day.muscleSummary}. You can look ahead any time — this unlocks for logging on the day.
+          {day.setCount > 0
+            ? `${daysAway(day.date)} · ${day.setCount} sets${day.muscleSummary ? ` · ${day.muscleSummary}` : ""}. You can look ahead any time — this unlocks for logging on the day.`
+            : `${daysAway(day.date)} · nothing added to this day yet.`}
         </InfoBanner>
 
         {exIds.map((id) => {

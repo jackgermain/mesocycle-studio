@@ -1,12 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { foodDatabase, scaleFood, type FoodItem } from "../data/foodDatabase";
+
+type Unit = "g" | "oz" | "ml";
+const UNIT_TO_GRAMS: Record<Unit, number> = { g: 1, oz: 28.3495, ml: 1 };
+const UNIT_OPTIONS: { value: Unit; label: string }[] = [
+  { value: "g", label: "g" },
+  { value: "oz", label: "oz" },
+  { value: "ml", label: "ml" },
+];
+
+/** Pulls a base gram/ml amount out of a serving label like "100 g" or "1 scoop (32g)" so a typed amount
+ * can be converted to a servings multiplier -- e.g. typing 73 g against a "100 g" food is 0.73 servings.
+ * Returns null when the label has no parseable weight (e.g. "1 cup"), which falls back to a plain
+ * servings count instead. */
+function parseBaseGrams(servingLabel: string): number | null {
+  const m = servingLabel.match(/(\d+(?:\.\d+)?)\s*(g|ml)\b/i);
+  return m ? parseFloat(m[1]) : null;
+}
 
 export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName: string; onAdd: (food: FoodItem, servings: number) => void; onClose: () => void }) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<FoodItem | null>(null);
   const [servings, setServings] = useState(1);
+  const [unit, setUnit] = useState<Unit>("g");
+  const [amountText, setAmountText] = useState("");
 
   const results = foodDatabase.filter((f) => f.name.toLowerCase().includes(query.toLowerCase()) || f.brand?.toLowerCase().includes(query.toLowerCase()));
+  const baseGrams = selected ? parseBaseGrams(selected.servingLabel) : null;
+
+  useEffect(() => {
+    if (selected && baseGrams != null) {
+      setUnit("g");
+      setAmountText(String(baseGrams));
+      setServings(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
+
+  function commitAmount(text: string, u: Unit) {
+    if (baseGrams == null) return;
+    const n = parseFloat(text);
+    const grams = Number.isFinite(n) ? n * UNIT_TO_GRAMS[u] : 0;
+    setServings(grams / baseGrams);
+  }
 
   if (selected) {
     const scaled = scaleFood(selected, servings);
@@ -23,20 +59,68 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
             </div>
           </div>
 
-          <div className="cell" style={{ padding: 12 }}>
-            <div className="row" style={{ marginBottom: 10 }}>
-              <span className="scr" style={{ flex: 1 }}>Servings ({selected.servingLabel})</span>
+          {baseGrams != null ? (
+            <div className="cell" style={{ padding: 12 }}>
+              <div className="row" style={{ marginBottom: 10 }}>
+                <span className="scr" style={{ flex: 1 }}>Amount · 1 serving is {selected.servingLabel}</span>
+              </div>
+              <div className="row" style={{ justifyContent: "center", gap: 8 }}>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  value={amountText}
+                  onChange={(e) => {
+                    setAmountText(e.target.value);
+                    commitAmount(e.target.value, unit);
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  style={{ width: 72, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: 20, background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, padding: "7px 0", color: "inherit", outline: "none" }}
+                />
+                <div className="seg">
+                  {UNIT_OPTIONS.map((o) => (
+                    <button
+                      key={o.value}
+                      className={`seg-opt${o.value === unit ? " on" : ""}`}
+                      onClick={() => {
+                        setUnit(o.value);
+                        commitAmount(amountText, o.value);
+                      }}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mu" style={{ textAlign: "center", marginTop: 8 }}>
+                = {servings.toFixed(2)} serving{servings === 1 ? "" : "s"}
+              </div>
             </div>
-            <div className="row" style={{ justifyContent: "center", gap: 16 }}>
-              <button onClick={() => setServings((s) => Math.max(0.5, +(s - 0.5).toFixed(1)))} style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, width: 36, height: 36, color: "var(--color-neutral-300)", cursor: "pointer" }}>
-                <i className="ph ph-minus" style={{ fontSize: 14 }} />
-              </button>
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 20, minWidth: 40, textAlign: "center" }}>{servings}</span>
-              <button onClick={() => setServings((s) => +(s + 0.5).toFixed(1))} style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, width: 36, height: 36, color: "var(--color-neutral-300)", cursor: "pointer" }}>
-                <i className="ph ph-plus" style={{ fontSize: 14 }} />
-              </button>
+          ) : (
+            <div className="cell" style={{ padding: 12 }}>
+              <div className="row" style={{ marginBottom: 10 }}>
+                <span className="scr" style={{ flex: 1 }}>Servings ({selected.servingLabel})</span>
+              </div>
+              <div className="row" style={{ justifyContent: "center", gap: 8 }}>
+                <button onClick={() => setServings((s) => Math.max(0.1, +(s - 0.5).toFixed(2)))} style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, width: 36, height: 36, color: "var(--color-neutral-300)", cursor: "pointer", flex: "none" }}>
+                  <i className="ph ph-minus" style={{ fontSize: 14 }} />
+                </button>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  value={servings}
+                  onChange={(e) => {
+                    const n = parseFloat(e.target.value);
+                    setServings(Number.isFinite(n) ? Math.max(0, n) : 0);
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  style={{ width: 56, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: 20, background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, padding: "7px 0", color: "inherit", outline: "none" }}
+                />
+                <button onClick={() => setServings((s) => +(s + 0.5).toFixed(2))} style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, width: 36, height: 36, color: "var(--color-neutral-300)", cursor: "pointer", flex: "none" }}>
+                  <i className="ph ph-plus" style={{ fontSize: 14 }} />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="cell" style={{ padding: 12 }}>
             <div className="scr" style={{ marginBottom: 8 }}>Adds to {mealName}</div>
