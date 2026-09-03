@@ -40,6 +40,7 @@ export default function Nutrition() {
   const profile = useEffectiveProfile();
   const target = profile.macroTargets;
   const [addingTo, setAddingTo] = useState<string | null>(null);
+  const [showAddMenu, setShowAddMenu] = useState(false);
   const { account, previewingAsClient } = useAuth();
   const [settingUp, setSettingUp] = useState(false);
   // A coach training themselves has no external coach to turn nutrition tracking on for them — let them
@@ -56,7 +57,7 @@ export default function Nutrition() {
             onSave={(protocol) => {
               dispatch({ type: "SET_NUTRITION_PROTOCOL", protocol });
               if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
-                for (const name of ["Breakfast", "Lunch", "Dinner"]) dispatch({ type: "ADD_MEAL", name });
+                for (const name of ["Meal 1", "Meal 2", "Meal 3"]) dispatch({ type: "ADD_MEAL", name });
               }
               dispatch({ type: "SHOW_TOAST", message: "Nutrition tracking is on." });
               setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
@@ -103,11 +104,10 @@ export default function Nutrition() {
     });
   }
 
-  function addMeal() {
-    const existingNames = new Set(state.meals.map((m) => m.name));
-    const candidates = ["Breakfast", "Lunch", "Dinner", "Snack 1", "Snack 2", "Snack 3", "Late snack"];
-    const name = candidates.find((c) => !existingNames.has(c)) ?? `Meal ${state.meals.length + 1}`;
-    dispatch({ type: "ADD_MEAL", name });
+  function addSection(kind: "Meal" | "Snack") {
+    const count = state.meals.filter((m) => m.name.startsWith(kind)).length;
+    dispatch({ type: "ADD_MEAL", name: `${kind} ${count + 1}` });
+    setShowAddMenu(false);
   }
 
   const todayLabel = new Date().toLocaleDateString("en-US", { weekday: "long" });
@@ -119,12 +119,29 @@ export default function Nutrition() {
         kicker={`${todayLabel} · ${hasTrainingToday ? "training day" : "rest day"}`}
         title="Nutrition"
         right={
-          <button onClick={addMeal} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal">
-            <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
-          </button>
+          <div style={{ position: "relative" }}>
+            <button onClick={() => setShowAddMenu((v) => !v)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal or snack">
+              <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
+            </button>
+            {showAddMenu && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{ position: "absolute", top: 32, right: 0, zIndex: 10, width: 150, background: "var(--color-surface-raised)", border: "1px solid var(--color-divider)", borderRadius: 8, boxShadow: "var(--shadow-md)", overflow: "hidden" }}
+              >
+                <button className="link-row" style={{ padding: "9px 11px", borderRadius: 0 }} onClick={() => addSection("Meal")}>
+                  <i className="ph ph-fork-knife" style={{ fontSize: 14, color: "var(--color-accent)" }} />
+                  <span style={{ fontSize: 12.5 }}>Add a meal</span>
+                </button>
+                <button className="link-row" style={{ padding: "9px 11px", borderRadius: 0 }} onClick={() => addSection("Snack")}>
+                  <i className="ph ph-cookie" style={{ fontSize: 14, color: "var(--color-accent)" }} />
+                  <span style={{ fontSize: 12.5 }}>Add a snack</span>
+                </button>
+              </div>
+            )}
+          </div>
         }
       />
-      <div className="screen-scroll">
+      <div className="screen-scroll" onClick={() => showAddMenu && setShowAddMenu(false)}>
         <div className="cell elev-sm">
           <div className="row" style={{ alignItems: "baseline", marginBottom: 12 }}>
             <div style={{ flex: 1 }}>

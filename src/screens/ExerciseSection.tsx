@@ -9,7 +9,7 @@ import { isSpecialSet, specialSummary, stepLoad, typeLabel } from "./exerciseHel
  * keyboard on a desktop/web build. Keeps its own draft text while focused so a mid-edit "" or "1" isn't
  * immediately fought back to the last committed number; commits on blur/Enter, parseFloat-based like the
  * bodyweight input on the Progress tab already does. */
-function InlineNumberInput({ value, onCommit, placeholder, color }: { value: number | null; onCommit: (n: number) => void; placeholder?: string; color: string }) {
+function InlineNumberInput({ value, onCommit, placeholder, color, locked }: { value: number | null; onCommit: (n: number) => void; placeholder?: string; color: string; locked?: boolean }) {
   const [text, setText] = useState(value == null ? "" : String(value));
   useEffect(() => {
     setText(value == null ? "" : String(value));
@@ -27,6 +27,7 @@ function InlineNumberInput({ value, onCommit, placeholder, color }: { value: num
       inputMode="decimal"
       value={text}
       placeholder={placeholder}
+      readOnly={locked}
       onChange={(e) => setText(e.target.value)}
       onFocus={(e) => e.target.select()}
       onBlur={commit}
@@ -37,12 +38,20 @@ function InlineNumberInput({ value, onCommit, placeholder, color }: { value: num
         }
       }}
       onClick={(e) => e.stopPropagation()}
-      style={{ width: 38, textAlign: "center", background: "none", border: "none", outline: "none", fontSize: 14, fontFamily: "var(--font-heading)", color, padding: 0 }}
+      style={{ width: 38, textAlign: "center", background: "none", border: "none", outline: "none", fontSize: 14, fontFamily: "var(--font-heading)", color, padding: 0, cursor: locked ? "default" : "text" }}
     />
   );
 }
 
-/** The per-exercise weight/rep/checkbox editor used on both the client's own workout screen and the coach's in-person session logger — same component, same store, so a set logged from either side looks identical everywhere. */
+/** The per-exercise weight/rep/checkbox editor used on the client's own workout screen, the coach's
+ * in-person session logger, AND now every other day view too (a future day's preview, a past logged day)
+ * -- same component, same visual result everywhere, so a day doesn't suddenly look like a different, plainer
+ * app depending on when you view it. `readOnly="future"` disables only ticking a set done (you can't
+ * complete a workout that hasn't happened yet) -- weight/reps stay editable, since adjusting one day's
+ * target ahead of time is harmless. `readOnly="past"` locks everything, matching the existing "logged
+ * sessions are read-only after 24 hours" rule -- editing history isn't safe to allow here. Either way the
+ * set-count menu and "+Extra set" are hidden, since changing how many sets exist isn't a same-screen action
+ * for a day you're not actively logging. */
 export function ExerciseSection({
   index,
   dayId,
@@ -53,18 +62,21 @@ export function ExerciseSection({
   onAddWarmup,
   onRemoveSet,
   onSwap,
+  readOnly,
 }: {
   index: number;
   dayId: string;
   ex: WorkExercise;
-  menuOpen: boolean;
-  onToggleMenu: (e: React.MouseEvent) => void;
-  onAddSet: () => void;
-  onAddWarmup: () => void;
-  onRemoveSet: () => void;
+  menuOpen?: boolean;
+  onToggleMenu?: (e: React.MouseEvent) => void;
+  onAddSet?: () => void;
+  onAddWarmup?: () => void;
+  onRemoveSet?: () => void;
   /** Coach-only: swapping the exercise itself is a prescription change, so this is left undefined on the client's own workout screen and only wired up from the coach's session logger. */
   onSwap?: () => void;
+  readOnly?: "future" | "past";
 }) {
+  const locked = readOnly === "past";
   const { dispatch } = useStore();
   const nav = useNavigate();
   const doneCount = ex.sets.filter((s) => s.checked).length;
@@ -110,6 +122,7 @@ export function ExerciseSection({
           <div className="mu" style={{ marginTop: 1 }}>{ex.metaLine}</div>
         </div>
         {ex.hasVideo && <i className="ph-fill ph-play-circle" style={{ fontSize: 19, color: "var(--color-accent)", flex: "none", marginTop: 2 }} />}
+        {!readOnly && (
         <div style={{ position: "relative" }}>
           <button className="btn btn-secondary btn-icon" style={{ width: 30, height: 30 }} onClick={onToggleMenu} aria-label="Exercise options">
             <i className="ph ph-dots-three-vertical" style={{ fontSize: 16 }} />
@@ -140,6 +153,7 @@ export function ExerciseSection({
             </div>
           )}
         </div>
+        )}
       </div>
 
       <div className="scr" style={{ display: "grid", gridTemplateColumns: "16px 1fr 1fr 34px", gap: 8, alignItems: "center", padding: "6px 0" }}>
@@ -198,34 +212,45 @@ export function ExerciseSection({
           <div key={s.id} className="setrow" style={{ gridTemplateColumns: "22px 1fr 1fr 34px", background: rowBg, borderRadius: s.checked ? 8 : 0, padding: s.checked ? "0 6px" : 0, margin: s.checked ? "2px -6px" : 0 }}>
             <span style={{ fontSize: 11, color: numColor }}>{label}</span>
             <div className="row" style={{ justifyContent: "center", gap: 6, color: controlColor }}>
-              <button onClick={() => editLoad(s, -1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
-                <i className="ph ph-minus" style={{ fontSize: 12 }} />
-              </button>
+              {!locked && (
+                <button onClick={() => editLoad(s, -1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
+                  <i className="ph ph-minus" style={{ fontSize: 12 }} />
+                </button>
+              )}
               <InlineNumberInput
                 value={displayLoad ?? null}
                 placeholder="BW"
                 color={valueColor}
+                locked={locked}
                 onCommit={(n) => dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, load: n })}
               />
-              <button onClick={() => editLoad(s, 1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
-                <i className="ph ph-plus" style={{ fontSize: 12 }} />
-              </button>
+              {!locked && (
+                <button onClick={() => editLoad(s, 1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
+                  <i className="ph ph-plus" style={{ fontSize: 12 }} />
+                </button>
+              )}
             </div>
             <div className="row" style={{ justifyContent: "center", gap: 6, color: controlColor }}>
-              <button onClick={() => editReps(s, -1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
-                <i className="ph ph-minus" style={{ fontSize: 12 }} />
-              </button>
+              {!locked && (
+                <button onClick={() => editReps(s, -1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
+                  <i className="ph ph-minus" style={{ fontSize: 12 }} />
+                </button>
+              )}
               <InlineNumberInput
                 value={typeof displayReps === "number" ? displayReps : null}
                 color={valueColor}
+                locked={locked}
                 onCommit={(n) => dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, reps: Math.max(0, n) })}
               />
-              <button onClick={() => editReps(s, 1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
-                <i className="ph ph-plus" style={{ fontSize: 12 }} />
-              </button>
+              {!locked && (
+                <button onClick={() => editReps(s, 1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
+                  <i className="ph ph-plus" style={{ fontSize: 12 }} />
+                </button>
+              )}
             </div>
             <button
-              onClick={() => toggle(s)}
+              onClick={readOnly ? undefined : () => toggle(s)}
+              disabled={!!readOnly}
               style={{
                 width: 26,
                 height: 26,
@@ -236,7 +261,8 @@ export function ExerciseSection({
                 alignItems: "center",
                 justifyContent: "center",
                 justifySelf: "center",
-                cursor: "pointer",
+                cursor: readOnly ? "default" : "pointer",
+                opacity: readOnly ? 0.5 : 1,
               }}
               aria-label={`Tick set ${label}`}
             >
@@ -247,10 +273,12 @@ export function ExerciseSection({
       })}
 
       <div className="row" style={{ gap: 14, paddingTop: 9, borderTop: "1px solid var(--color-neutral-900)", marginTop: 4 }}>
-        <button onClick={onAddSet} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12.5, color: "var(--color-accent)", display: "flex", alignItems: "center", gap: 5, padding: 0 }}>
-          <i className="ph ph-plus-circle" style={{ fontSize: 14 }} />
-          Extra set
-        </button>
+        {!readOnly && (
+          <button onClick={onAddSet} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12.5, color: "var(--color-accent)", display: "flex", alignItems: "center", gap: 5, padding: 0 }}>
+            <i className="ph ph-plus-circle" style={{ fontSize: 14 }} />
+            Extra set
+          </button>
+        )}
         {ex.sets[0]?.prescribed.restSec ? (
           <span style={{ fontSize: 12.5, color: "var(--color-neutral-500)", display: "flex", alignItems: "center", gap: 5 }}>
             <i className="ph ph-timer" style={{ fontSize: 14 }} />

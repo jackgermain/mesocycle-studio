@@ -6,7 +6,7 @@ import { BackHeader, InfoBanner } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle } from "../data/dayNumbering";
-import { fmtLoad, typeLabel } from "./exerciseHelpers";
+import { ExerciseSection } from "./ExerciseSection";
 
 function friendlyDate(iso: string) {
   const d = new Date(iso + "T00:00:00");
@@ -23,6 +23,11 @@ function daysAway(iso: string) {
   return `In ${diff} days`;
 }
 
+/** Same exercise card component as today's workout screen (ExerciseSection, in read-only mode) -- a
+ * future day used to render its own plain read-only list here, so it looked like a different, simpler app
+ * depending on which arrow you tapped. Weight/reps stay editable (adjusting a specific day's target ahead
+ * of time is harmless); only ticking a set done is disabled, since you can't log a workout that hasn't
+ * happened yet. */
 export default function UpcomingDay({ dayId }: { dayId: string }) {
   const { state } = useStore();
   const nav = useNavigate();
@@ -48,31 +53,10 @@ export default function UpcomingDay({ dayId }: { dayId: string }) {
             : `${daysAway(day.date)} · nothing added to this day yet.`}
         </InfoBanner>
 
-        {exIds.map((id) => {
+        {exIds.map((id, i) => {
           const ex = day.exercises[id];
           if (!ex) return null;
-          return (
-            <div key={id} className="cell elev-sm" style={{ padding: "11px 12px 9px" }}>
-              <div className="row" style={{ marginBottom: 9 }}>
-                <div style={{ flex: 1 }}>
-                  <div className="name">{ex.name}</div>
-                  <div className="mu" style={{ marginTop: 2 }}>{ex.metaLine}</div>
-                </div>
-                {ex.hasVideo && <i className="ph-fill ph-play-circle" style={{ fontSize: 18, color: "var(--color-accent)" }} />}
-              </div>
-              {ex.sets.map((s) => (
-                <div key={s.id} className="row divider" style={{ height: 32, fontSize: 12.5 }}>
-                  <span className="mu" style={{ width: 14 }}>{s.index}</span>
-                  <span style={{ flex: 1, color: "var(--color-neutral-300)" }}>
-                    {s.prescribed.tempo || (s.prescribed.assistance && s.prescribed.assistance.type !== "none") || s.type === "cluster"
-                      ? typeLabel(s.type, s)
-                      : `${fmtLoad(s.prescribed.load, state.profile.units)} × ${s.prescribed.reps}`}
-                  </span>
-                  <span className="mu">{s.prescribed.effort.scale} {s.prescribed.effort.value}</span>
-                </div>
-              ))}
-            </div>
-          );
+          return <ExerciseSection key={id} index={i + 1} dayId={dayId} ex={ex} readOnly="future" />;
         })}
       </div>
       <TabBar />

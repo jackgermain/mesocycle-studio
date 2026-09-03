@@ -63,7 +63,7 @@ function NutritionFormScreen({ clientName, profile, onDone }: { clientName: stri
         onSave={(protocol) => {
           dispatch({ type: "SET_NUTRITION_PROTOCOL", protocol });
           if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
-            for (const name of ["Breakfast", "Lunch", "Dinner"]) dispatch({ type: "ADD_MEAL", name });
+            for (const name of ["Meal 1", "Meal 2", "Meal 3"]) dispatch({ type: "ADD_MEAL", name });
           }
           coachDispatch({ type: "SHOW_TOAST", message: `Nutrition protocol saved for ${clientName} — synced to their app.` });
           setTimeout(() => coachDispatch({ type: "CLEAR_TOAST" }), 2800);

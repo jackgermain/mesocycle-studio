@@ -8,6 +8,7 @@ import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import DayWorkout from "./DayWorkout";
 import UpcomingDay from "./UpcomingDay";
+import { ExerciseSection } from "./ExerciseSection";
 
 export default function DayDetail() {
   const { dayId = "" } = useParams();
@@ -47,36 +48,10 @@ function ReopenedDay({ dayId }: { dayId: string }) {
           <StatCell label="Pump" value={day.log?.pumpAvg ?? "—"} valueColor="var(--color-accent-300)" />
         </div>
 
-        {exIds.map((id) => {
+        {exIds.map((id, i) => {
           const ex = day.exercises[id];
           if (!ex) return null;
-          return (
-            <div key={id} className="cell elev-sm" style={{ padding: "11px 12px 9px" }}>
-              <div className="row" style={{ marginBottom: 9 }}>
-                <div style={{ flex: 1 }}>
-                  <div className="name">{ex.name}</div>
-                  <div className="mu" style={{ marginTop: 2 }}>{ex.metaLine}</div>
-                </div>
-              </div>
-              {ex.sets.map((s) => (
-                <div key={s.id} className="row divider" style={{ height: 34, fontSize: 12.5 }}>
-                  <span className="mu" style={{ width: 14 }}>{s.index}</span>
-                  {s.removed ? (
-                    <span style={{ flex: 1, color: "var(--color-neutral-500)" }}>Removed · {s.removed.reason}</span>
-                  ) : (
-                    <>
-                      <span style={{ flex: 1, color: "var(--color-neutral-300)" }}>
-                        {s.actual?.load ? `${s.actual.load} ${state.profile.units} × ${s.actual.reps}` : `${s.actual?.reps ?? "—"} reps`}
-                      </span>
-                      <span className="mu">
-                        {s.prescribed.effort.scale} {s.actual ? s.prescribed.effort.value : ""}
-                      </span>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          );
+          return <ExerciseSection key={id} index={i + 1} dayId={dayId} ex={ex} readOnly="past" />;
         })}
 
         <div>
