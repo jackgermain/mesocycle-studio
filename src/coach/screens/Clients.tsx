@@ -2,9 +2,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
+import { supabase } from "../../lib/supabase";
 import { listClaimedInvites } from "../../shared/invites";
 import { CoachTabBar } from "../components/CoachTabBar";
-import type { ClientStatus } from "../types";
+import type { ClientStatus, CoachClient } from "../types";
+
+function initialsFor(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "?";
+}
 
 const STATUS_DOT: Record<ClientStatus, string> = {
   "on-track": "var(--color-accent)",
@@ -33,6 +39,40 @@ export default function Clients() {
         if (match) dispatch({ type: "RECONCILE_CLIENT", clientId: c.id, accountId: match.accountId });
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account]);
+
+  // The roster list above is just a local cache — the real relationship is accounts.coach_id. Self-heal
+  // against it: anyone with a real account pointing at this coach but missing from the cached roster
+  // (however that happened — a reset, a race, testing) gets added back rather than silently disappearing.
+  useEffect(() => {
+    if (!account) return;
+    supabase
+      .from("accounts")
+      .select("id, role, display_name")
+      .eq("coach_id", account.id)
+      .then(({ data }) => {
+        if (!data) return;
+        for (const row of data) {
+          if (state.clients.some((c) => c.accountId === row.id)) continue;
+          const client: CoachClient = {
+            id: row.id,
+            name: row.display_name,
+            initials: initialsFor(row.display_name),
+            status: "unassigned",
+            role: row.role === "friend" ? "friend" : "client",
+            accountId: row.id,
+            programName: "—",
+            week: 0,
+            totalWeeks: 0,
+            adherencePct: 0,
+            flags: [],
+            loadHistory: [],
+            recentSessions: [],
+          };
+          dispatch({ type: "ADD_CLIENT", client });
+        }
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 
