@@ -25,9 +25,14 @@ export default function Inbox() {
   const [thread, setThread] = useState<Thread | "loading" | null>("loading");
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function refresh() {
-    const { data } = await supabase.rpc("get_my_thread");
+    const { data, error } = await supabase.rpc("get_my_thread");
+    if (error) {
+      setError(error.message);
+      return;
+    }
     setThread((data as Thread | null) ?? null);
   }
 
@@ -40,10 +45,15 @@ export default function Inbox() {
     const text = draft.trim();
     if (!text) return;
     setSending(true);
-    setDraft("");
+    setError(null);
     const { error } = await supabase.rpc("send_client_message", { p_text: text });
     setSending(false);
-    if (!error) await refresh();
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setDraft("");
+    await refresh();
   }
 
   const bubbles = thread === "loading" || thread === null ? [] : thread.bubbles;
@@ -89,6 +99,11 @@ export default function Inbox() {
         ))}
       </div>
       <div style={{ flex: "none", padding: "8px 12px 18px", background: "#1b1e2e", borderTop: "1px solid var(--color-neutral-900)" }}>
+        {error && (
+          <div style={{ marginBottom: 8 }}>
+            <InfoBanner icon="ph-warning">Couldn't send: {error}</InfoBanner>
+          </div>
+        )}
         <div className="row" style={{ gap: 8 }}>
           <input
             className="input"
