@@ -20,6 +20,15 @@ const STATUS_LABEL: Record<ClientStatus, string> = {
   paused: "paused",
   unassigned: "unassigned",
 };
+const STATUS_ORDER: ClientStatus[] = ["on-track", "behind", "at-risk", "paused"];
+
+/** A small, stable (not re-randomized every render) height variance per client so the roster bar reads as
+ * a real skyline rather than a flat block of color -- purely visual texture, not tied to any real metric. */
+function barHeightPct(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 100;
+  return 55 + (h % 46);
+}
 
 export default function Desk() {
   const { state, dispatch } = useCoachStore();
@@ -36,9 +45,10 @@ export default function Desk() {
   };
   const decideNow = allFlags.slice(0, 3);
   const assigned = state.clients.filter((c) => c.status !== "unassigned");
-  const rosterSegments: { status: ClientStatus; count: number }[] = (["on-track", "behind", "at-risk", "paused"] as ClientStatus[])
+  const rosterSegments: { status: ClientStatus; count: number }[] = STATUS_ORDER
     .map((status) => ({ status, count: assigned.filter((c) => c.status === status).length }))
     .filter((s) => s.count > 0);
+  const rosterBars = [...assigned].sort((a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status));
 
   function applyProposal(clientId: string, flagId: string, tagLabel: string) {
     dispatch({ type: "APPLY_FLAG", clientId, flagId });
@@ -93,9 +103,13 @@ export default function Desk() {
         <div>
           <div className="sh">Roster this week · {assigned.length} clients</div>
           <div className="cell" style={{ padding: 12 }}>
-            <div style={{ display: "flex", gap: 2, height: 14, borderRadius: 7, overflow: "hidden" }}>
-              {rosterSegments.map((s) => (
-                <div key={s.status} style={{ flex: s.count, background: STATUS_COLOR[s.status] }} title={`${s.count} ${STATUS_LABEL[s.status]}`} />
+            <div style={{ display: "flex", gap: 2, height: 32, alignItems: "flex-end" }}>
+              {rosterBars.map((c) => (
+                <div
+                  key={c.id}
+                  style={{ flex: 1, minWidth: 2, height: `${barHeightPct(c.id)}%`, borderRadius: 2, background: STATUS_COLOR[c.status] }}
+                  title={`${c.name} · ${STATUS_LABEL[c.status]}`}
+                />
               ))}
             </div>
             <div className="row" style={{ marginTop: 10, gap: 14, fontSize: 11, color: "var(--color-neutral-400)", flexWrap: "wrap" }}>
