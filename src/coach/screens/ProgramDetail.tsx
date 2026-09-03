@@ -35,6 +35,14 @@ export default function ProgramDetail() {
   const assignToClient = assignToId ? state.clients.find((c) => c.id === assignToId) : null;
   const [week, setWeek] = useState(1);
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() => (program?.days[0] ? { [program.days[0].id]: true } : {}));
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+
+  // A working copy that's never actually been assigned to anyone yet is genuinely ambiguous to just
+  // leave — deserves an explicit choice rather than silently sitting around forever. One that's already
+  // live for a client (or queued to be) isn't: backing that out here would break their real assignment,
+  // so leaving it alone is just the normal back button.
+  const isUnfinishedWorkingCopy =
+    !!program?.pendingForClientId && !state.clients.some((c) => c.assignedProgramId === program.id || c.queuedProgramId === program.id);
 
   const volumeByMuscle = useMemo(() => {
     if (!program) return [];
@@ -54,7 +62,11 @@ export default function ProgramDetail() {
 
   return (
     <div className="screen">
-      <BackHeader kicker={`${program.status} · ${program.isTemplate ? "template" : `${program.assignedCount} assigned`}`} title={program.name} />
+      <BackHeader
+        kicker={`${program.status} · ${program.isTemplate ? "template" : `${program.assignedCount} assigned`}`}
+        title={program.name}
+        onBack={isUnfinishedWorkingCopy ? () => setShowLeaveConfirm(true) : undefined}
+      />
       <div className="screen-scroll">
         {program.pendingForClientId && (
           <InfoBanner icon="ph-eye-slash">
@@ -215,6 +227,28 @@ export default function ProgramDetail() {
           </div>
         </div>
       </div>
+
+      {showLeaveConfirm && (
+        <div className="sheet-backdrop" onClick={() => setShowLeaveConfirm(false)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Leave this program?</div>
+            <div className="mu" style={{ lineHeight: 1.5 }}>It hasn't been assigned to anyone yet. Keep it to pick up later, or discard it.</div>
+            <button className="btn btn-solid btn-block" style={{ height: 46 }} onClick={() => nav(-1)}>
+              Save as draft
+            </button>
+            <button
+              className="btn btn-secondary btn-block"
+              style={{ height: 42, color: "var(--color-neutral-300)" }}
+              onClick={() => {
+                dispatch({ type: "REMOVE_PROGRAM", programId: program.id });
+                nav(-1);
+              }}
+            >
+              Discard
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
-export function BackHeader({ kicker, title, right }: { kicker: string; title: string; right?: React.ReactNode }) {
+export function BackHeader({ kicker, title, right, onBack }: { kicker: string; title: string; right?: React.ReactNode; onBack?: () => void }) {
   const nav = useNavigate();
   return (
     <div className="hdr">
-      <button className="back" onClick={() => nav(-1)} aria-label="Back">
+      <button className="back" onClick={onBack ?? (() => nav(-1))} aria-label="Back">
         <i className="ph ph-caret-left" />
       </button>
       <div style={{ flex: 1, minWidth: 0 }}>
