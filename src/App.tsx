@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HashRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { StoreProvider, useStore } from "./state/store";
 import { AuthProvider, useAuth } from "./lib/auth";
+import { supabase } from "./lib/supabase";
 import { Toast } from "./components/UI";
 import Landing from "./screens/Landing";
 import AcceptInvite from "./screens/AcceptInvite";
@@ -74,9 +75,33 @@ function ClientLayout() {
 
 function ClientProviders() {
   const { account } = useAuth();
+  const [coachName, setCoachName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!account?.coach_id) {
+      setCoachName(null);
+      return;
+    }
+    let active = true;
+    supabase
+      .from("accounts")
+      .select("display_name")
+      .eq("id", account.coach_id)
+      .maybeSingle()
+      .then(({ data }) => active && setCoachName((data?.display_name as string | undefined) ?? null));
+    return () => {
+      active = false;
+    };
+  }, [account?.coach_id]);
+
   if (!account) return null; // RequireRole already guarantees this, just satisfying TS
+  // Wait for the real coach name before mounting the store — it only matters the very first time this
+  // account is opened (seeding a blank state), but that value gets saved permanently, so a wrong
+  // placeholder here would otherwise stick forever.
+  if (account.coach_id && coachName === null) return null;
+
   return (
-    <StoreProvider accountId={account.id} ownerName={account.display_name} coachName="your coach">
+    <StoreProvider accountId={account.id} ownerName={account.display_name} coachName={coachName ?? account.display_name}>
       <ClientLayout />
     </StoreProvider>
   );

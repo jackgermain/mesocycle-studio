@@ -21,6 +21,10 @@ interface AuthState {
    * it should be used for is setting a new password, not the normal signed-in app. */
   recovering: boolean;
   clearRecovering: () => void;
+  /** True right after landing here because the account just loaded turned out to be revoked — shown once
+   * on the sign-in screen, then cleared. */
+  revoked: boolean;
+  clearRevoked: () => void;
   refreshAccount: () => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -32,6 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [account, setAccount] = useState<Account | null>(null);
   const [recovering, setRecovering] = useState(false);
+  const [revoked, setRevoked] = useState(false);
   // Tracks whose account is currently loaded, so a session change to a *different* user clears the
   // stale account synchronously — otherwise there's a window where `session` already reflects the new
   // person but `account` still shows the previous person's (e.g. the coach's), and anything reading both
@@ -40,8 +45,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const lastUserIdRef = useRef<string | null>(null);
 
   async function loadAccount(userId: string) {
-    const { data } = await supabase.from("accounts").select("id, role, display_name, coach_id").eq("id", userId).maybeSingle();
-    setAccount((data as Account | null) ?? null);
+    const { data } = await supabase.from("accounts").select("id, role, display_name, coach_id, active").eq("id", userId).maybeSingle();
+    const row = data as (Account & { active: boolean }) | null;
+    if (row && row.active === false) {
+      // Revoked — this session is no longer welcome. Sign out immediately rather than leaving them
+      // sitting on an authenticated-but-blocked screen.
+      setAccount(null);
+      setRevoked(true);
+      await supabase.auth.signOut();
+      return;
+    }
+    setAccount(row ? { id: row.id, role: row.role, display_name: row.display_name, coach_id: row.coach_id } : null);
   }
 
   useEffect(() => {
@@ -79,7 +93,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAccount(null);
   }
 
-  return <Ctx.Provider value={{ loading, session, account, recovering, clearRecovering: () => setRecovering(false), refreshAccount, signOut }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider
+      value={{ loading, session, account, recovering, clearRecovering: () => setRecovering(false), revoked, clearRevoked: () => setRevoked(false), refreshAccount, signOut }}
+    >
+      {children}
+    </Ctx.Provider>
+  );
 }
 
 export function useAuth() {

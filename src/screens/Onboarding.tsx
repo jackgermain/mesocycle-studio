@@ -42,55 +42,23 @@ export default function Onboarding() {
           Everything you see uses this — loads, plate maths, bodyweight and your history. Change it any time in settings.
         </p>
         <div style={{ display: "flex", gap: 9 }}>
-          <button
-            onClick={() => setUnits("lb")}
-            style={{
-              flex: 1,
-              padding: "18px 14px",
-              borderRadius: "var(--radius-md)",
-              border: `1px solid ${units === "lb" ? "var(--color-accent)" : "var(--color-divider)"}`,
-              background: units === "lb" ? "var(--color-accent-900)" : "transparent",
-              textAlign: "left",
-              cursor: "pointer",
-              color: "inherit",
-            }}
-          >
+          <button className={`pill-opt${units === "lb" ? " on" : ""}`} onClick={() => setUnits("lb")} style={{ padding: "18px 14px", textAlign: "left" }}>
             <div className="row" style={{ justifyContent: "space-between" }}>
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 24, color: units === "lb" ? "var(--color-accent-100)" : "var(--color-neutral-300)" }}>lb</span>
-              {units === "lb" ? (
-                <i className="ph-fill ph-check-circle" style={{ fontSize: 18, color: "var(--color-accent)" }} />
-              ) : (
-                <div style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid var(--color-divider)" }} />
-              )}
+              <span style={{ fontFamily: "var(--font-heading)", fontSize: 24, fontWeight: 800 }}>lb</span>
+              {units === "lb" ? <i className="ph-fill ph-check-circle" style={{ fontSize: 18 }} /> : <div style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid currentColor", opacity: 0.4 }} />}
             </div>
-            <div className="mu" style={{ marginTop: 8, lineHeight: 1.5, color: units === "lb" ? "var(--color-accent-300)" : undefined }}>
+            <div style={{ marginTop: 8, lineHeight: 1.5, fontSize: 11.5, opacity: 0.85 }}>
               Pounds · 5 lb jumps
               <br />
               198.4 lb · 200 lb × 6
             </div>
           </button>
-          <button
-            onClick={() => setUnits("kg")}
-            style={{
-              flex: 1,
-              padding: "18px 14px",
-              borderRadius: "var(--radius-md)",
-              border: `1px solid ${units === "kg" ? "var(--color-accent)" : "var(--color-divider)"}`,
-              background: units === "kg" ? "var(--color-accent-900)" : "transparent",
-              textAlign: "left",
-              cursor: "pointer",
-              color: "inherit",
-            }}
-          >
+          <button className={`pill-opt${units === "kg" ? " on" : ""}`} onClick={() => setUnits("kg")} style={{ padding: "18px 14px", textAlign: "left" }}>
             <div className="row" style={{ justifyContent: "space-between" }}>
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 24, color: units === "kg" ? "var(--color-accent-100)" : "var(--color-neutral-300)" }}>kg</span>
-              {units === "kg" ? (
-                <i className="ph-fill ph-check-circle" style={{ fontSize: 18, color: "var(--color-accent)" }} />
-              ) : (
-                <div style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid var(--color-divider)" }} />
-              )}
+              <span style={{ fontFamily: "var(--font-heading)", fontSize: 24, fontWeight: 800 }}>kg</span>
+              {units === "kg" ? <i className="ph-fill ph-check-circle" style={{ fontSize: 18 }} /> : <div style={{ width: 18, height: 18, borderRadius: "50%", border: "1.5px solid currentColor", opacity: 0.4 }} />}
             </div>
-            <div className="mu" style={{ marginTop: 8, lineHeight: 1.5, color: units === "kg" ? "var(--color-accent-300)" : undefined }}>
+            <div style={{ marginTop: 8, lineHeight: 1.5, fontSize: 11.5, opacity: 0.85 }}>
               Kilos · 2.5 kg jumps
               <br />
               90 kg · 90 kg × 6
@@ -113,7 +81,7 @@ export default function Onboarding() {
         </InfoBanner>
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-          <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={finish}>
+          <button className="btn btn-solid btn-block" style={{ height: 50 }} onClick={finish}>
             Continue
           </button>
         </div>

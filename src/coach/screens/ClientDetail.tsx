@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { StoreProvider, useStore } from "../../state/store";
 import { useAuth } from "../../lib/auth";
+import { supabase } from "../../lib/supabase";
 import { BackHeader, InfoBanner, StatCell } from "../../components/UI";
 import { createInvite } from "../../shared/invites";
 import type { TrainingDay } from "../../data/types";
@@ -67,11 +68,42 @@ export default function ClientDetail() {
   }
 
   const accepted = !!client.accountId;
+  const [accountActive, setAccountActive] = useState<boolean | null>(null);
+  const [revoking, setRevoking] = useState(false);
+
+  useEffect(() => {
+    if (!client.accountId) return;
+    let active = true;
+    supabase
+      .from("accounts")
+      .select("active")
+      .eq("id", client.accountId)
+      .maybeSingle()
+      .then(({ data }) => active && setAccountActive((data?.active as boolean | undefined) ?? true));
+    return () => {
+      active = false;
+    };
+  }, [client.accountId]);
+
+  async function toggleAccess() {
+    if (!client.accountId || accountActive === null) return;
+    setRevoking(true);
+    const next = !accountActive;
+    const { error } = await supabase.from("accounts").update({ active: next }).eq("id", client.accountId);
+    setRevoking(false);
+    if (!error) {
+      setAccountActive(next);
+      dispatch({ type: "SHOW_TOAST", message: next ? `${client.name}'s access restored.` : `${client.name}'s access revoked.` });
+      setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+    }
+  }
 
   return (
     <div className="screen">
       <BackHeader kicker={accepted ? `${client.programName} · week ${client.week} of ${client.totalWeeks}` : "Not accepted yet"} title={client.name} />
       <div className="screen-scroll">
+        {accepted && accountActive === false && <InfoBanner icon="ph-lock-simple">Access is revoked — {client.name.split(" ")[0]} can't sign in right now.</InfoBanner>}
+
         {!accepted ? (
           <>
             <InfoBanner icon="ph-user-plus">
@@ -189,6 +221,18 @@ export default function ClientDetail() {
           <i className="ph ph-chat-circle" style={{ fontSize: 15 }} />
           Message {client.name.split(" ")[0]}
         </button>
+
+        {accepted && accountActive !== null && (
+          <button
+            className="btn btn-secondary btn-block"
+            style={{ height: 44, color: accountActive ? "var(--color-neutral-400)" : "var(--color-accent)", opacity: revoking ? 0.6 : 1 }}
+            disabled={revoking}
+            onClick={toggleAccess}
+          >
+            <i className={`ph ${accountActive ? "ph-lock-simple" : "ph-lock-key-open"}`} style={{ fontSize: 15 }} />
+            {revoking ? "Working…" : accountActive ? `Revoke ${client.name.split(" ")[0]}'s access` : `Restore ${client.name.split(" ")[0]}'s access`}
+          </button>
+        )}
       </div>
     </div>
   );

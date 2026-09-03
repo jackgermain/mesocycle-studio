@@ -6,7 +6,7 @@ import { bootstrapCoach } from "../lib/accountSetup";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
 
 export default function Landing() {
-  const { loading, session, account, recovering, clearRecovering, refreshAccount } = useAuth();
+  const { loading, session, account, recovering, clearRecovering, revoked, clearRevoked, refreshAccount } = useAuth();
 
   // Coming back from a magic-link email sent from the invite-accept screen — forward to it (it handles
   // its own loading/auth state) rather than falling through to the plain sign-in form here.
@@ -25,6 +25,18 @@ export default function Landing() {
   // not for using the app, even though technically it's a real signed-in session.
   if (recovering) {
     return <ResetPassword onDone={clearRecovering} />;
+  }
+
+  if (revoked) {
+    return (
+      <Hero>
+        <div className="h1" style={{ textAlign: "center" }}>Access revoked</div>
+        <InfoBanner icon="ph-lock-simple">Your coach has revoked access to this account. Reach out to them if you think that's a mistake.</InfoBanner>
+        <button className="btn btn-secondary btn-block" style={{ height: 46 }} onClick={clearRevoked}>
+          Back to sign in
+        </button>
+      </Hero>
+    );
   }
 
   if (account) {
