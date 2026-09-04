@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { AiEditSheet } from "../components/AiEditSheet";
 import { useCoachStore } from "../store";
 import { BackHeader, InfoBanner, Seg, StatCell, Stepper } from "../../components/UI";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
@@ -37,6 +38,7 @@ export default function ProgramDetail() {
   const program = state.programs.find((p) => p.id === programId);
   const assignToClient = assignToId ? state.clients.find((c) => c.id === assignToId) : null;
   const [week, setWeek] = useState(1);
+  const [showAiEdit, setShowAiEdit] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() => (program?.days[0] ? { [program.days[0].id]: true } : {}));
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
@@ -163,6 +165,15 @@ export default function ProgramDetail() {
           ))}
         </div>
 
+        <button className="cell row" style={{ padding: "12px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setShowAiEdit(true)}>
+          <i className="ph ph-sparkle" style={{ fontSize: 18, color: "var(--color-accent-300)", marginRight: 4 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Edit with AI</div>
+            <div className="mu" style={{ marginTop: 2 }}>Say what you want changed — "make every exercise one set" — and check it before it saves</div>
+          </div>
+          <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
+        </button>
+
         <div className="cell" style={{ padding: "10px 12px" }}>
           <div className="mu" style={{ marginBottom: 7 }}>Load as — applies to every exercise in this program</div>
           <Seg<LoadMode>
@@ -286,6 +297,19 @@ export default function ProgramDetail() {
             </button>
           </div>
         </div>
+      )}
+
+      {showAiEdit && (
+        <AiEditSheet
+          program={program}
+          onClose={() => setShowAiEdit(false)}
+          onApply={(days) => {
+            dispatch({ type: "SET_PROGRAM_DAYS", programId: program.id, days });
+            dispatch({ type: "SHOW_TOAST", message: "Program updated." });
+            setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2600);
+            setShowAiEdit(false);
+          }}
+        />
       )}
     </div>
   );

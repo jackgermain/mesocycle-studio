@@ -77,6 +77,7 @@ Rules:
 - Return one entry in "days" per distinct training day in a SINGLE week. The app repeats that week for the requested number of weeks, so never repeat a week yourself.
 - If the user asks for a day to be trained more than once a week, emit it that many times as separate days (e.g. a 2-day plan asked to run 4x/week becomes four days: Upper, Lower, Upper, Lower). Give repeats distinct names like "Upper A" and "Upper B".
 - Read the actual numbers off the source. Do not invent sets, reps or loads that are not there -- leave the field out instead, and the app fills in its own default.
+- One exception, because the app's default is 3 sets: if the source lists a single prescription per exercise with no set count at all (e.g. just "20 reps", or a list of movements with one number each), that means ONE set. Say sets: 1 explicitly. Only omit "sets" when the source genuinely implies multiple and you can't tell how many.
 - "load" is only a weight when loadMode is "lb". Use "pct1rm" for percentages, "rpe" or "rir" when the source prescribes effort rather than weight.
 - Every exercise needs a primary muscle from the allowed list. Pick the closest one.
 - Keep the source's exercise names as written. Do not rename a movement to something you think is better.

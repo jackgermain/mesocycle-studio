@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import type { CoachClient, CoachProgram, CoachThread, ExerciseKind, LibraryExercise, LoadMode } from "./types";
+import type { BuilderDay, CoachClient, CoachProgram, CoachThread, ExerciseKind, LibraryExercise, LoadMode } from "./types";
 import { LOAD_DEFAULT } from "./loadMode";
 import { CARDIO_DEFAULT } from "./cardio";
 import { defaultRestSec } from "./rest";
@@ -40,6 +40,7 @@ type Action =
   | { type: "SET_DAYS_PER_WEEK"; programId: string; count: number }
   | { type: "SET_TRAINING_DOWS"; programId: string; dows: number[] }
   | { type: "RENAME_PROGRAM_DAY"; programId: string; dayId: string; name: string }
+  | { type: "SET_PROGRAM_DAYS"; programId: string; days: BuilderDay[] }
   | { type: "ADD_PROGRAM_EXERCISE"; programId: string; dayId: string; exercise: { name: string; muscle: string; kind?: ExerciseKind } }
   | { type: "REMOVE_PROGRAM_EXERCISE"; programId: string; dayId: string; exerciseId: string }
   | { type: "SET_PROGRAM_LOAD_MODE"; programId: string; loadMode: LoadMode }
@@ -194,6 +195,16 @@ function reducer(state: CoachState, action: Action): CoachState {
       }
       p.daysPerWeek = dows.length;
       p.trainingDows = dows;
+      return { ...state, programs };
+    }
+    case "SET_PROGRAM_DAYS": {
+      // Swaps in a whole edited week template in one go. Used by the AI editor, which produces its result
+      // by applying operations to a copy and having the coach approve the diff -- replaying that as dozens
+      // of individual actions would be slower, would land half-applied if one were rejected, and would
+      // make the approved preview and the saved result two different computations.
+      const programs = structuredClone(state.programs);
+      const program = programs.find((p) => p.id === action.programId);
+      if (program) program.days = structuredClone(action.days);
       return { ...state, programs };
     }
     case "RENAME_PROGRAM_DAY": {
