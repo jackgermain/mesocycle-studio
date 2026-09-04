@@ -5,6 +5,7 @@ import type { FoodItem } from "../data/foodDatabase";
 import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { supabase } from "../lib/supabase";
+import { withDerivedStatuses } from "../shared/dayStatus";
 
 export interface AppState {
   onboarded: boolean;
@@ -380,7 +381,11 @@ export function StoreProvider({
       });
   }, [state, accountId]);
 
-  const value = useMemo(() => ({ state, dispatch, ready }), [state, ready]);
+  // Day status is derived from the calendar on read rather than trusted from the stored blob -- see
+  // shared/dayStatus.ts. Done here so every consumer (TodayRedirect, DayDetail, Progress, the calendar,
+  // the nutrition tab's training-day check) sees the corrected program without each having to know.
+  const program = useMemo(() => withDerivedStatuses(state.program), [state.program]);
+  const value = useMemo(() => ({ state: { ...state, program }, dispatch, ready }), [state, program, ready]);
   return (
     <AccountIdCtx.Provider value={accountId}>
       <Ctx.Provider value={value}>{children}</Ctx.Provider>
