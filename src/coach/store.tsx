@@ -4,6 +4,7 @@ import { LOAD_DEFAULT } from "./loadMode";
 import { CARDIO_DEFAULT } from "./cardio";
 import { defaultRestSec } from "./rest";
 import { isPendingProgram } from "./programOps";
+import { resizeDows } from "../shared/trainingDays";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 
@@ -37,6 +38,7 @@ type Action =
   | { type: "MARK_READ"; threadId: string }
   | { type: "ADD_CUSTOM_EXERCISE"; exercise: LibraryExercise }
   | { type: "SET_DAYS_PER_WEEK"; programId: string; count: number }
+  | { type: "SET_TRAINING_DOWS"; programId: string; dows: number[] }
   | { type: "RENAME_PROGRAM_DAY"; programId: string; dayId: string; name: string }
   | { type: "ADD_PROGRAM_EXERCISE"; programId: string; dayId: string; exercise: { name: string; muscle: string; kind?: ExerciseKind } }
   | { type: "REMOVE_PROGRAM_EXERCISE"; programId: string; dayId: string; exerciseId: string }
@@ -172,6 +174,26 @@ function reducer(state: CoachState, action: Action): CoachState {
         p.days.length = count;
       }
       p.daysPerWeek = count;
+      // Only resize an explicit weekday choice; leaving it undefined keeps the even spread as the default.
+      if (p.trainingDows) p.trainingDows = resizeDows(p.trainingDows, count);
+      return { ...state, programs };
+    }
+    case "SET_TRAINING_DOWS": {
+      const programs = structuredClone(state.programs);
+      const p = programs.find((x) => x.id === action.programId);
+      if (!p) return state;
+      const dows = [...action.dows].sort((a, b) => a - b).slice(0, 7);
+      if (dows.length === 0) return state;
+      // The picked weekdays are the source of truth for how many sessions a week there are, so the day
+      // slots follow along -- otherwise you could pick four days on a five-day program and the fifth slot
+      // would silently share a date with another.
+      if (p.days.length < dows.length) {
+        for (let i = p.days.length; i < dows.length; i++) p.days.push({ id: `bday-${Date.now()}-${i}`, name: `Day ${i + 1}`, exercises: [] });
+      } else if (p.days.length > dows.length) {
+        p.days.length = dows.length;
+      }
+      p.daysPerWeek = dows.length;
+      p.trainingDows = dows;
       return { ...state, programs };
     }
     case "RENAME_PROGRAM_DAY": {

@@ -41,7 +41,11 @@ function loadModeFromScale(scale: EffortScale | undefined): LoadMode {
 
 /** Spreads N day slots evenly across a 7-day week, same placement rule the seed data uses for a 4-day
  * split (0, 1, 3, 5 → Mon/Tue/Thu/Sat). */
-function offsetForSlot(i: number, daysPerWeek: number): number {
+/** Which weekday (as an offset from Monday) a given day slot lands on. An explicit `dows` selection wins;
+ * without one, slots spread as evenly as 7 days allow, which is what every program did before picking
+ * training days was possible. */
+function offsetForSlot(i: number, daysPerWeek: number, dows?: number[]): number {
+  if (dows && dows.length) return dows[Math.min(i, dows.length - 1)];
   return Math.floor((i * 7) / Math.max(1, daysPerWeek));
 }
 
@@ -51,7 +55,7 @@ function offsetForSlot(i: number, daysPerWeek: number): number {
  * normally land on or after today (this week) run as a partial "week 0", reusing the exact same day
  * content week 1 will use for that slot. Someone starting on a Wednesday gets that pattern's Wednesday
  * slot today, plus anything later this week, instead of just waiting until Monday to begin. */
-function scheduleWeeks(daysPerWeek: number, totalWeeks: number): { weekNumber: number; slot: number; date: Date }[] {
+function scheduleWeeks(daysPerWeek: number, totalWeeks: number, dows?: number[]): { weekNumber: number; slot: number; date: Date }[] {
   const todayDow = TODAY.getDay(); // 0=Sun..6=Sat
   const daysToMonday = todayDow === 1 ? 0 : (8 - todayDow) % 7;
   const week1Monday = addDays(TODAY, daysToMonday);
@@ -60,14 +64,14 @@ function scheduleWeeks(daysPerWeek: number, totalWeeks: number): { weekNumber: n
   if (daysToMonday > 0) {
     const thisWeekMonday = addDays(week1Monday, -7);
     for (let i = 0; i < daysPerWeek; i++) {
-      const date = addDays(thisWeekMonday, offsetForSlot(i, daysPerWeek));
+      const date = addDays(thisWeekMonday, offsetForSlot(i, daysPerWeek, dows));
       if (date >= TODAY) schedule.push({ weekNumber: 0, slot: i, date });
     }
   }
 
   for (let weekNumber = 1; weekNumber <= totalWeeks; weekNumber++) {
     for (let i = 0; i < daysPerWeek; i++) {
-      schedule.push({ weekNumber, slot: i, date: addDays(week1Monday, (weekNumber - 1) * 7 + offsetForSlot(i, daysPerWeek)) });
+      schedule.push({ weekNumber, slot: i, date: addDays(week1Monday, (weekNumber - 1) * 7 + offsetForSlot(i, daysPerWeek, dows)) });
     }
   }
   return schedule;
@@ -81,7 +85,7 @@ export function expandCoachProgramToProgram(cp: CoachProgram, coachName: string)
   const todayIso = isoDate(TODAY);
   const weekMap = new Map<number, TrainingDay[]>();
 
-  for (const { weekNumber, slot: i, date } of scheduleWeeks(daysPerWeek, cp.weeks)) {
+  for (const { weekNumber, slot: i, date } of scheduleWeeks(daysPerWeek, cp.weeks, cp.trainingDows)) {
     const bd = cp.days[i];
     if (!bd) continue;
     const exercises: Record<string, WorkExercise> = {};
@@ -165,12 +169,12 @@ export interface DraftDay {
  * Program repeated across `weeks` weeks. Each exercise is seeded either with whatever sets/reps/load the
  * draft specified (the spreadsheet importer's case) or a plain 3×10 starting point the builder can then
  * edit like any other set. */
-export function buildProgramFromDraft(name: string, days: DraftDay[], weeksCount: number, ownerName: string): Program {
+export function buildProgramFromDraft(name: string, days: DraftDay[], weeksCount: number, ownerName: string, dows?: number[]): Program {
   const daysPerWeek = days.length || 1;
   const todayIso = isoDate(TODAY);
   const weekMap = new Map<number, TrainingDay[]>();
 
-  for (const { weekNumber, slot: i, date } of scheduleWeeks(daysPerWeek, weeksCount)) {
+  for (const { weekNumber, slot: i, date } of scheduleWeeks(daysPerWeek, weeksCount, dows)) {
     const dd = days[i];
     if (!dd) continue;
     const exercises: Record<string, WorkExercise> = {};

@@ -6,6 +6,8 @@ import { libraryExercises, MUSCLE_GROUPS } from "../coach/exerciseLibrary";
 import type { LibraryExercise, LoadMode } from "../coach/types";
 import { LOAD_LABELS, LOAD_RANGE, LOAD_DEFAULT, clampLoadValue } from "../coach/loadMode";
 import { listCoachTemplates } from "../shared/templates";
+import { DayOfWeekPicker } from "../shared/DayOfWeekPicker";
+import { defaultDows, resizeDows } from "../shared/trainingDays";
 import { buildProgramFromDraft, expandCoachProgramToProgram, draftDaysFromProgram, mergeEditedDraftIntoProgram } from "../shared/programConvert";
 import type { DraftDay, DraftExercise } from "../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../coach/csvProgram";
@@ -203,8 +205,8 @@ export default function BuildProgram() {
         setScratchSeed(null);
         setMode("choose");
       }}
-      onCreate={(name, days, weeksCount) => {
-        dispatch({ type: "SET_PROGRAM", program: buildProgramFromDraft(name, days, weeksCount, state.profile.name) });
+      onCreate={(name, days, weeksCount, dows) => {
+        dispatch({ type: "SET_PROGRAM", program: buildProgramFromDraft(name, days, weeksCount, state.profile.name, dows) });
         nav("/block");
       }}
     />
@@ -241,7 +243,7 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
   );
 }
 
-function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed | null; editMode?: boolean; onBack: () => void; onCreate: (name: string, days: DraftDay[], weeksCount: number) => void }) {
+function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed | null; editMode?: boolean; onBack: () => void; onCreate: (name: string, days: DraftDay[], weeksCount: number, dows: number[]) => void }) {
   const { account } = useAuth();
   const { dispatch: clientDispatch } = useStore();
   const [name, setName] = useState(seed?.name || "My Program");
@@ -249,6 +251,7 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
   const [days, setDays] = useState<DraftDay[]>(seed?.days.length ? seed.days : [{ name: "Day 1", exercises: [] }, { name: "Day 2", exercises: [] }, { name: "Day 3", exercises: [] }]);
   const [pickerDay, setPickerDay] = useState<number | null>(null);
   const [savingTemplate, setSavingTemplate] = useState(false);
+  const [dows, setDows] = useState<number[]>(() => defaultDows(seed?.days.length || 3));
 
   function saveAsTemplate() {
     if (!account) return;
@@ -275,6 +278,14 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
       while (next.length < count) next.push({ name: `Day ${next.length + 1}`, exercises: [] });
       return next;
     });
+    setDows((prev) => resizeDows(prev, count));
+  }
+
+  /** Picking weekdays is what decides how many sessions a week there are, so the day list follows the
+   * selection rather than the two drifting apart. */
+  function setTrainingDows(next: number[]) {
+    setDows(next);
+    setDaysCount(next.length);
   }
   function renameDay(i: number, dayName: string) {
     setDays((prev) => prev.map((d, idx) => (idx === i ? { ...d, name: dayName } : d)));
@@ -330,6 +341,13 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
           </div>
         )}
 
+        {!editMode && (
+          <div className="cell" style={{ padding: 11 }}>
+            <div className="scr" style={{ marginBottom: 7 }}>Training days</div>
+            <DayOfWeekPicker value={dows} onChange={setTrainingDows} />
+          </div>
+        )}
+
         {days.map((d, i) => (
           <div key={i} className="cell" style={{ padding: 11 }}>
             <input className="input" style={{ height: 34, fontSize: 13 }} value={d.name} onChange={(e) => renameDay(i, e.target.value)} />
@@ -350,7 +368,7 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
             className="btn btn-primary btn-block"
             style={{ height: 46, opacity: totalExercises > 0 ? 1 : 0.5 }}
             disabled={totalExercises === 0}
-            onClick={() => onCreate(name || "My Program", days, weeksCount)}
+            onClick={() => onCreate(name || "My Program", days, weeksCount, dows)}
           >
             {editMode ? "Save changes" : "Start this program"}
           </button>

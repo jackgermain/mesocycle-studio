@@ -4,6 +4,8 @@ import { useCoachStore } from "../store";
 import { BackHeader, InfoBanner, Seg, StatCell, Stepper } from "../../components/UI";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { LOAD_LABELS, LOAD_RANGE, clampLoadValue } from "../loadMode";
+import { DayOfWeekPicker } from "../../shared/DayOfWeekPicker";
+import { resizeDows } from "../../shared/trainingDays";
 import { CARDIO_DEFAULT, REST_STEP, formatDuration, workStep } from "../cardio";
 import { defaultRestSec } from "../rest";
 import { isPendingProgram } from "../programOps";
@@ -188,6 +190,14 @@ export default function ProgramDetail() {
               />
             </div>
           </div>
+
+          <div style={{ borderTop: "1px solid var(--color-neutral-800)", margin: "11px 0 9px" }} />
+
+          <div className="scr" style={{ marginBottom: 7 }}>Training days</div>
+          <DayOfWeekPicker
+            value={resizeDows(program.trainingDows, program.daysPerWeek)}
+            onChange={(dows) => dispatch({ type: "SET_TRAINING_DOWS", programId: program.id, dows })}
+          />
 
           <div style={{ borderTop: "1px solid var(--color-neutral-800)", margin: "11px 0 9px" }} />
 
