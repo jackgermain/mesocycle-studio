@@ -221,7 +221,14 @@ function LogSessionBody({
 
   return (
     <div className="screen">
-      <BackHeader kicker={`${clientName} · week ${week.number}`} title={dayDisplayTitle(day)} />
+      <BackHeader
+        kicker={`${clientName} · week ${week.number}`}
+        title={dayDisplayTitle(day)}
+        // Back goes up one level to the day list rather than straight out of the screen; from the list
+        // itself it falls through to normal history and leaves. Replaces a "Pick a different day" row
+        // that was doing the back button's job.
+        onBack={() => setSelectedId(null)}
+      />
       <div className="screen-scroll" onClick={() => openMenu && setOpenMenu(null)}>
         {signal ? (
           <div className="cell elev-sm" style={{ borderLeft: "2px solid var(--color-accent)", padding: 12 }}>
@@ -251,8 +258,9 @@ function LogSessionBody({
 
             {reportedDayGuessed && (
               <div className="mu" style={{ marginTop: 8, lineHeight: 1.5 }}>
-                The exact session isn't in {clientName.split(" ")[0]}'s program any more — it was rebuilt or reassigned
-                since it was filed. This is the closest match; use "Pick a different day" if it's the wrong one.
+                {clientName.split(" ")[0]} sent this on {new Date(signal.created_at).toLocaleDateString()}, but there's no
+                session in their program from that day — the program changed after they sent it. {dayDisplayTitle(day)} is
+                the closest one. Tap back to pick a different day.
               </div>
             )}
 
@@ -309,12 +317,6 @@ function LogSessionBody({
         ) : (
           <InfoBanner icon="ph-user-focus">Logging for {clientName}, in person — this writes straight to their app.</InfoBanner>
         )}
-
-        <button className="link-row" style={{ padding: "9px 12px", color: "var(--color-neutral-400)" }} onClick={() => setSelectedId(null)}>
-          <i className="ph ph-calendar" style={{ fontSize: 15 }} />
-          <span style={{ flex: 1, fontSize: 12.5 }}>Pick a different day</span>
-          <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
-        </button>
 
         {exIds.map((id, i) => {
           const ex = day.exercises[id];
