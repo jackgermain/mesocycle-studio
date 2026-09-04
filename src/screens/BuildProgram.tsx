@@ -46,6 +46,8 @@ export default function BuildProgram() {
   const [searchParams] = useSearchParams();
   const editRequested = searchParams.get("edit") === "1";
   const [mode, setMode] = useState<Mode>(editRequested && state.program.weeks.length > 0 ? "editMesocycle" : "choose");
+  const [renaming, setRenaming] = useState(false);
+  const [renameText, setRenameText] = useState("");
   const [scratchSeed, setScratchSeed] = useState<ScratchSeed | null>(
     editRequested && state.program.weeks.length > 0 ? { name: state.program.name, days: draftDaysFromProgram(state.program), weeks: state.program.totalWeeks } : null,
   );
@@ -58,14 +60,29 @@ export default function BuildProgram() {
         <div className="screen-scroll">
           {hasCurrentProgram && (
             <>
-              <button className="cell row" style={{ padding: "14px 12px", textAlign: "left", cursor: "pointer", borderColor: "var(--color-accent-700)" }} onClick={() => nav("/block")}>
+              <div className="cell row" style={{ padding: "14px 12px", cursor: "default", borderColor: "var(--color-accent-700)" }}>
                 <i className="ph-fill ph-calendar-check" style={{ fontSize: 20, color: "var(--color-accent)", marginRight: 4 }} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Current program</div>
-                  <div className="mu trunc" style={{ marginTop: 2 }}>{state.program.name} — jump back in and log today's lift.</div>
-                </div>
-                <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
-              </button>
+                <button
+                  onClick={() => nav("/block")}
+                  style={{ flex: 1, minWidth: 0, textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", color: "inherit" }}
+                >
+                  <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{state.program.name}</div>
+                  <div className="mu trunc" style={{ marginTop: 2 }}>Jump back in and log today's lift.</div>
+                </button>
+                <button
+                  onClick={() => {
+                    setRenameText(state.program.name);
+                    setRenaming(true);
+                  }}
+                  aria-label="Rename program"
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)", display: "flex", padding: 4, flex: "none" }}
+                >
+                  <i className="ph ph-pencil-simple" style={{ fontSize: 15 }} />
+                </button>
+                <button onClick={() => nav("/block")} aria-label="Open current program" style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flex: "none", padding: 0 }}>
+                  <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
+                </button>
+              </div>
               <div className="sh">Or start a new mesocycle</div>
             </>
           )}
@@ -99,6 +116,48 @@ export default function BuildProgram() {
             <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
           </button>
         </div>
+
+      {renaming && (
+        <div className="sheet-backdrop" onClick={() => setRenaming(false)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="row" style={{ marginBottom: 4 }}>
+              <div style={{ flex: 1 }}>
+                <div className="scr">Program</div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Rename</div>
+              </div>
+              <button onClick={() => setRenaming(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
+                <i className="ph ph-x" style={{ fontSize: 18 }} />
+              </button>
+            </div>
+            <div className="field">
+              <label>Name</label>
+              <input
+                className="input"
+                value={renameText}
+                onChange={(e) => setRenameText(e.target.value)}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && renameText.trim()) {
+                    dispatch({ type: "RENAME_PROGRAM", name: renameText.trim() });
+                    setRenaming(false);
+                  }
+                }}
+              />
+            </div>
+            <button
+              className="btn btn-primary btn-block"
+              style={{ height: 46, opacity: renameText.trim() ? 1 : 0.5 }}
+              disabled={!renameText.trim()}
+              onClick={() => {
+                dispatch({ type: "RENAME_PROGRAM", name: renameText.trim() });
+                setRenaming(false);
+              }}
+            >
+              Save name
+            </button>
+          </div>
+        </div>
+      )}
       </div>
     );
   }

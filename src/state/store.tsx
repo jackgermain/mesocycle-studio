@@ -44,6 +44,7 @@ type Action =
   | { type: "HYDRATE"; state: AppState }
   | { type: "ONBOARD"; profile: Partial<ClientProfile> }
   | { type: "SET_PROGRAM"; program: Program }
+  | { type: "RENAME_PROGRAM"; name: string }
   | { type: "PROMOTE_NEXT_PROGRAM" }
   | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel"> }
   | { type: "TICK_SET"; dayId: string; exerciseId: string; setId: string; actual: { reps: number; load: number | null; clusterBlocks?: number[]; assistanceSplit?: { unassisted: number; assisted: number } } }
@@ -75,6 +76,8 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, onboarded: true, profile: { ...state.profile, ...action.profile } };
     case "SET_PROGRAM":
       return { ...state, program: action.program };
+    case "RENAME_PROGRAM":
+      return { ...state, program: { ...state.program, name: action.name } };
     case "PROMOTE_NEXT_PROGRAM":
       if (!state.nextProgram) return state;
       return { ...state, program: state.nextProgram, nextProgram: null };

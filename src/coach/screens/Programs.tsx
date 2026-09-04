@@ -15,6 +15,8 @@ export default function Programs() {
   const [filter, setFilter] = useState<Filter>("templates");
   const [choosing, setChoosing] = useState(false);
   const [naming, setNaming] = useState(false);
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const [renameText, setRenameText] = useState("");
   const [newName, setNewName] = useState("");
 
   // Two buckets, no overlap: a program you've explicitly saved ("Save as a personal template") lives
@@ -94,6 +96,17 @@ export default function Programs() {
                     {p.weeks} weeks · {p.daysPerWeek} days · {LOAD_LABELS[p.effortScale]}
                   </div>
                 </div>
+                <button
+                  className="btn btn-icon"
+                  style={{ width: 32, height: 32, color: "var(--color-neutral-500)" }}
+                  aria-label={`Rename ${p.name}`}
+                  onClick={() => {
+                    setRenaming(p.id);
+                    setRenameText(p.name);
+                  }}
+                >
+                  <i className="ph ph-pencil-simple" style={{ fontSize: 15 }} />
+                </button>
                 <button className="btn btn-icon" style={{ width: 32, height: 32, color: "var(--color-neutral-500)" }} aria-label={`Delete ${p.name}`} onClick={() => deleteProgram(p)}>
                   <i className="ph ph-trash" style={{ fontSize: 15 }} />
                 </button>
@@ -118,6 +131,48 @@ export default function Programs() {
           {filtered.length === 0 && <div className="mu">No programs here yet.</div>}
         </div>
       </div>
+
+      {renaming && (
+        <div className="sheet-backdrop" onClick={() => setRenaming(null)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="row" style={{ marginBottom: 4 }}>
+              <div style={{ flex: 1 }}>
+                <div className="scr">Program</div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Rename</div>
+              </div>
+              <button onClick={() => setRenaming(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
+                <i className="ph ph-x" style={{ fontSize: 18 }} />
+              </button>
+            </div>
+            <div className="field">
+              <label>Name</label>
+              <input
+                className="input"
+                value={renameText}
+                onChange={(e) => setRenameText(e.target.value)}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && renameText.trim()) {
+                    dispatch({ type: "SET_PROGRAM_NAME", programId: renaming, name: renameText.trim() });
+                    setRenaming(null);
+                  }
+                }}
+              />
+            </div>
+            <button
+              className="btn btn-primary btn-block"
+              style={{ height: 46, opacity: renameText.trim() ? 1 : 0.5 }}
+              disabled={!renameText.trim()}
+              onClick={() => {
+                dispatch({ type: "SET_PROGRAM_NAME", programId: renaming, name: renameText.trim() });
+                setRenaming(null);
+              }}
+            >
+              Save name
+            </button>
+          </div>
+        </div>
+      )}
       <CoachTabBar />
 
       {choosing && (
