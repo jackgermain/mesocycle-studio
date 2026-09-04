@@ -122,7 +122,19 @@ export default async function handler(req: any, res: any) {
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    res.status(500).json({ error: "This app's AI import isn't configured yet — ANTHROPIC_API_KEY is missing." });
+    // Names only, never values. Setting this up by hand goes wrong in four ways that look identical from
+    // the outside -- a typo in the name, a stray space, saved to Preview but not Production, or saved but
+    // never redeployed -- and reporting which similarly-named variables *are* visible tells them apart
+    // immediately. A variable name is not a secret; the value never leaves the server.
+    const seen = Object.keys(process.env).filter((k) => /ANTHROPIC|CLAUDE/i.test(k));
+    res.status(500).json({
+      error: "This app's AI import isn't configured yet — ANTHROPIC_API_KEY is missing.",
+      diagnostic: {
+        environment: process.env.VERCEL_ENV ?? "unknown",
+        similarNamesVisible: seen,
+        supabaseVarsVisible: ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY"].filter((k) => !!process.env[k]),
+      },
+    });
     return;
   }
 
