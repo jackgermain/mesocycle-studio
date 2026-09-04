@@ -71,6 +71,18 @@ export default function ProgramDetail() {
         kicker={program.isTemplate ? (program.visibility === "public" ? "Public template" : "Private template") : "Draft"}
         title={program.name}
         onBack={isUnfinishedWorkingCopy ? () => setShowLeaveConfirm(true) : undefined}
+        // In the header rather than only inline, so it's reachable from anywhere in the builder --
+        // the header sits outside the scroll area, so it stays put however far down you are.
+        right={
+          <button
+            className="btn btn-secondary btn-icon"
+            style={{ width: 38, height: 38 }}
+            aria-label="Edit with AI"
+            onClick={() => setShowAiEdit(true)}
+          >
+            <i className="ph ph-sparkle" style={{ fontSize: 17, color: "var(--color-accent-300)" }} />
+          </button>
+        }
       />
       <div className="screen-scroll">
         {isPendingProgram(program) && (

@@ -180,6 +180,21 @@ function LogSessionBody({
   const painEx = painKey ? day.exercises[painKey] : null;
   const reportedDayGuessed = !!signal && !reported.exact;
 
+  /** The open report as a sentence, so an instruction like "swap this for something easier on his
+   * shoulder" resolves without the coach restating any of it. */
+  const painContext = signal
+    ? [
+        `${clientName.split(" ")[0]} reported ${signal.kind === "joint" ? "joint pain" : signal.kind === "soreness" ? "unrecovered soreness" : "a low pump"}`,
+        signal.note ? `at the ${signal.note}` : null,
+        signal.exercise ? `on ${signal.exercise}` : null,
+        `severity ${signal.severity}${signal.kind === "joint" ? ` of 4 (${jointReasonLabels[signal.severity - 1]})` : " of 5"}`,
+        signal.detail ? `— ${signal.detail}` : null,
+        `Reported ${new Date(signal.created_at).toLocaleDateString()}; you're looking at ${dayDisplayTitle(day)} of week ${week.number}.`,
+      ]
+        .filter(Boolean)
+        .join(" ")
+    : undefined;
+
   function toast(message: string) {
     dispatch({ type: "SHOW_TOAST", message });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
@@ -313,6 +328,10 @@ function LogSessionBody({
                   <i className="ph ph-thermometer-simple" style={{ fontSize: 14 }} />
                   Add a warm-up set to {painEx.name}
                 </button>
+                <button className="btn btn-secondary btn-block" style={{ height: 34, fontSize: 12.5, marginTop: 8 }} onClick={() => setShowAiEdit(true)}>
+                  <i className="ph ph-sparkle" style={{ fontSize: 14, color: "var(--color-accent-300)" }} />
+                  Or say what you want done
+                </button>
                 <div className="mu" style={{ marginTop: 8 }}>All three apply to the rest of the block. Sessions already logged stay as they were.</div>
               </>
             )}
@@ -405,7 +424,13 @@ function LogSessionBody({
       {showAiEdit && (
         <AiEditShell
           title={`${clientName} · ${state.program.name}`}
-          examples={["Add 5 reps to everything next week", "Add 10 lb to every lift next week", "Take next week's rest down to 60 seconds", "Make every exercise 1 set this week"]}
+          examples={
+            signal
+              ? ["Swap that exercise for something easier on the joint", "Add two warm-up sets to it", "Drop it for the rest of the block", "Cut its load by 20% for the next two weeks"]
+              : ["Add 5 reps to everything next week", "Add 10 lb to every lift next week", "Take next week's rest down to 60 seconds", "Make every exercise 1 set this week"]
+          }
+          context={painContext}
+          placeholder={signal ? "e.g. swap that for something that doesn't bother his shoulder" : undefined}
           buildPayload={() => summarizeProgramForAi(state.program, week.number)}
           applyOps={(ops) => applyOpsToProgram(state.program, ops)}
           diff={(next) => diffProgram(state.program, next)}

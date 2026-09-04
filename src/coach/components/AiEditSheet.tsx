@@ -73,6 +73,8 @@ export function AiEditShell<T>({
   diff,
   onApply,
   onClose,
+  context,
+  placeholder,
 }: {
   title: string;
   examples: string[];
@@ -81,6 +83,11 @@ export function AiEditShell<T>({
   diff: (next: T) => DiffLine[];
   onApply: (next: T) => void;
   onClose: () => void;
+  /** What the coach is looking at, in words -- an open pain report, say. Sent alongside the program so
+   * "swap this for something easier on his shoulder" resolves without them having to restate any of it.
+   * Availability is the easy half of making this useful; knowing what "this" refers to is the other half. */
+  context?: string;
+  placeholder?: string;
 }) {
   const [instruction, setInstruction] = useState("");
   const [busy, setBusy] = useState(false);
@@ -102,7 +109,7 @@ export function AiEditShell<T>({
       const res = await fetch("/api/edit-program", {
         method: "POST",
         headers: { "content-type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ instruction, program: buildPayload() }),
+        body: JSON.stringify({ instruction, program: buildPayload(), context }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
@@ -133,6 +140,13 @@ export function AiEditShell<T>({
 
         {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
 
+        {context && (
+          <div className="cell" style={{ padding: 11, borderLeft: "2px solid var(--color-accent)" }}>
+            <div className="scr" style={{ color: "var(--color-accent-300)", marginBottom: 3 }}>It knows about</div>
+            <div style={{ fontSize: 13, lineHeight: 1.5 }}>{context}</div>
+          </div>
+        )}
+
         <div className="field">
           <label>What would you like changed?</label>
           <textarea
@@ -140,7 +154,7 @@ export function AiEditShell<T>({
             style={{ minHeight: 78, lineHeight: 1.5 }}
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}
-            placeholder="e.g. make every exercise one set — or tap the mic and say it"
+            placeholder={placeholder ?? "e.g. make every exercise one set — or tap the mic and say it"}
             disabled={busy}
             autoFocus
           />

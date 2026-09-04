@@ -182,7 +182,7 @@ export default async function handler(req: any, res: any) {
         messages: [
           {
             role: "user",
-            content: `Here is the program:\n\n${JSON.stringify(body.program, null, 1)}\n\nWhat I want changed:\n\n${instruction}`,
+            content: `Here is the program:\n\n${JSON.stringify(body.program, null, 1)}${typeof body.context === "string" && body.context.trim() ? `\n\nWhat the coach is currently looking at:\n\n${body.context.trim()}` : ""}\n\nWhat I want changed:\n\n${instruction}`,
           },
         ],
       }),
