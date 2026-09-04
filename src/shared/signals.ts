@@ -13,6 +13,9 @@ export interface ClientSignal {
   day_label: string | null;
   created_at: string;
   acknowledged_at: string | null;
+  /** Both added in migration 0014, so signals recorded before it ran have neither. */
+  exercise?: string | null;
+  detail?: string | null;
 }
 
 /** What's worth a coach's attention, per the scales in data/mockData.ts:
@@ -48,6 +51,8 @@ interface NewSignal {
   severity: number;
   note?: string | null;
   dayLabel?: string | null;
+  exercise?: string | null;
+  detail?: string | null;
 }
 
 /** Sends session feedback to the client's own coach. Silently does nothing when there's no coach to send
@@ -56,7 +61,7 @@ interface NewSignal {
  * block finishing a workout, so a failure is logged and swallowed. */
 export async function sendSignals(clientId: string, coachId: string | null, signals: NewSignal[]): Promise<void> {
   if (!coachId || signals.length === 0) return;
-  const rows = signals.map((s) => ({
+  const base = signals.map((s) => ({
     client_id: clientId,
     coach_id: coachId,
     kind: s.kind,
@@ -65,8 +70,26 @@ export async function sendSignals(clientId: string, coachId: string | null, sign
     note: s.note ?? null,
     day_label: s.dayLabel ?? null,
   }));
+  const rows = base.map((r, i) => ({ ...r, exercise: signals[i].exercise ?? null, detail: signals[i].detail ?? null }));
+
   const { error } = await supabase.from("client_signals").insert(rows);
-  if (error) console.error("Failed to send client signals", error);
+  if (!error) return;
+
+  // Migrations here are applied by hand, so a deploy can briefly run ahead of the database. PostgREST
+  // rejects the whole insert when a column it doesn't know about is named -- which would mean no coach
+  // gets notified of anything until someone runs the SQL. Retry without the new columns instead, folding
+  // the detail into the note so the words at least survive; the exercise name is the part that's lost.
+  if (error.code === "PGRST204") {
+    console.warn("client_signals is missing the 0014 columns -- run supabase/migrations/0014_signal_exercise_detail.sql");
+    const legacy = base.map((r, i) => {
+      const extra = [signals[i].exercise, signals[i].detail].filter(Boolean).join(" · ");
+      return { ...r, note: [r.note, extra].filter(Boolean).join(" · ") || null };
+    });
+    const retry = await supabase.from("client_signals").insert(legacy);
+    if (retry.error) console.error("Failed to send client signals", retry.error);
+    return;
+  }
+  console.error("Failed to send client signals", error);
 }
 
 /** Recent history for this coach's clients, cleared or not. The open ones are what needs action; the

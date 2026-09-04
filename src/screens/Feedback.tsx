@@ -9,6 +9,13 @@ import { isJointAlerting, isJointUrgent, isPumpAlerting, sendSignals } from "../
 
 const COMMON_AREAS = ["R shoulder", "L shoulder", "Elbow", "Wrist", "Lower back", "Knee", "Hip"];
 
+// Where in the range of motion, and on which sets. Both are the questions a coach asks next anyway, and
+// both change the answer: pain in the stretch on warm-ups is usually a warm-up problem, pain at lockout on
+// every working set usually isn't. Offered as chips because this gets answered standing in a gym.
+const REP_MOMENTS = ["Stretch / bottom", "Mid-rep", "Lockout / top", "All the way through"];
+const SET_SCOPES = ["Warm-ups only", "Working sets only", "Every set", "Got worse as it went"];
+const NOT_ONE_EXERCISE = "Not one exercise";
+
 export default function Feedback() {
   const { dayId = "" } = useParams();
   const { state, dispatch } = useStore();
@@ -31,19 +38,38 @@ export default function Feedback() {
     return Array.from(set.entries());
   }, [day]);
 
+  // What they actually trained today, in the order they did it -- the candidate causes of any pain.
+  const exerciseNames = useMemo(() => {
+    if (!day) return [];
+    const names = day.order.map((id) => day.exercises[id]?.name).filter((n): n is string => !!n);
+    return Array.from(new Set(names));
+  }, [day]);
+
   const [step, setStep] = useState<"pump" | "joint">("pump");
   const [pump, setPump] = useState<Record<string, number>>({});
   const [jointYes, setJointYes] = useState<boolean | null>(null);
   const [jointSeverity, setJointSeverity] = useState<number | null>(null);
   const [jointLocation, setJointLocation] = useState("");
+  const [jointExercise, setJointExercise] = useState("");
+  const [repMoment, setRepMoment] = useState("");
+  const [setScope, setSetScope] = useState("");
+  const [jointDetail, setJointDetail] = useState("");
 
   if (!day) return <div className="screen-scroll">Not found.</div>;
 
   const pumpDone = muscles.every(([m]) => pump[m] !== undefined);
   const jointGateAnswered = jointYes !== null;
   const jointDetailNeeded = jointYes === true;
-  const jointDetailDone = !jointDetailNeeded || (jointSeverity !== null && (jointSeverity < 2 || jointLocation.trim().length > 0));
+  // Anything at 2 or above reaches the coach, so that's where it's worth insisting on enough to act on:
+  // the body area and which movement caused it. A 1 is noted and needs nothing.
+  const jointDetailDone =
+    !jointDetailNeeded ||
+    (jointSeverity !== null &&
+      (jointSeverity < 2 || (jointLocation.trim().length > 0 && (exerciseNames.length === 0 || jointExercise.length > 0))));
   const canFinish = jointGateAnswered && jointDetailDone;
+
+  // The free-form half of the report, assembled from the chips and whatever they typed.
+  const composedDetail = [repMoment, setScope, jointDetail.trim()].filter(Boolean).join(" · ");
 
   function finish() {
     dispatch({ type: "SET_FEEDBACK_DONE", dayId });
@@ -60,7 +86,11 @@ export default function Feedback() {
             kind: "joint" as const,
             muscle: null,
             severity: jointSeverity,
+            // note stays the body area alone, which is what recurrence is matched on -- the detail below
+            // varies session to session and would hide a repeat of the same complaint.
             note: jointLocation.trim() || jointReasonLabels[jointSeverity - 1] || null,
+            exercise: jointExercise && jointExercise !== NOT_ONE_EXERCISE ? jointExercise : null,
+            detail: composedDetail || null,
             dayLabel,
           }]
         : []),
@@ -195,6 +225,57 @@ export default function Feedback() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {exerciseNames.length > 0 && (
+              <div>
+                <div className="sh">Which exercise?</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {exerciseNames.map((n) => (
+                    <button key={n} className={`chip${jointExercise === n ? " on" : ""}`} onClick={() => setJointExercise(n)}>
+                      {n}
+                    </button>
+                  ))}
+                  <button className={`chip${jointExercise === NOT_ONE_EXERCISE ? " on" : ""}`} onClick={() => setJointExercise(NOT_ONE_EXERCISE)}>
+                    {NOT_ONE_EXERCISE}
+                  </button>
+                </div>
+                <div className="mu" style={{ marginTop: 6 }}>Required when pain is 2 or higher — it's what lets your coach change the movement.</div>
+              </div>
+            )}
+
+            <div>
+              <div className="sh">When in the rep?</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {REP_MOMENTS.map((m) => (
+                  <button key={m} className={`chip${repMoment === m ? " on" : ""}`} onClick={() => setRepMoment(repMoment === m ? "" : m)}>
+                    {m}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="sh">Which sets?</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {SET_SCOPES.map((s) => (
+                  <button key={s} className={`chip${setScope === s ? " on" : ""}`} onClick={() => setSetScope(setScope === s ? "" : s)}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="field">
+              <label>Anything else worth knowing?</label>
+              <textarea
+                className="input"
+                style={{ minHeight: 76, lineHeight: 1.5 }}
+                value={jointDetail}
+                onChange={(e) => setJointDetail(e.target.value)}
+                placeholder="e.g. only once I got past 185, fine again after I dropped the weight"
+              />
+              <div className="mu" style={{ marginTop: 6 }}>Optional.</div>
             </div>
 
           </>

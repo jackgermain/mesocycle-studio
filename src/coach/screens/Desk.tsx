@@ -5,6 +5,7 @@ import { useAuth } from "../../lib/auth";
 import { acknowledgeSignal, isJointUrgent, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
+import { SignalActionSheet } from "../components/SignalActionSheet";
 import type { ClientStatus } from "../types";
 
 const STATUS_COLOR: Record<ClientStatus, string> = {
@@ -38,6 +39,7 @@ export default function Desk() {
   const nav = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
   const [allSignals, setAllSignals] = useState<ClientSignal[]>([]);
+  const [actingOn, setActingOn] = useState<ClientSignal | null>(null);
 
   // Real client-reported feedback (pump, joint pain, unhealed soreness), as opposed to the demo flags
   // below it. Loaded straight from the database rather than coach_state, since a client writes these
@@ -64,7 +66,7 @@ export default function Desk() {
   }
 
   function signalText(s: ClientSignal): string {
-    if (s.kind === "joint") return `Joint pain${s.note ? ` — ${s.note}` : ""}`;
+    if (s.kind === "joint") return `Joint pain${s.note ? ` — ${s.note}` : ""}${s.exercise ? ` on ${s.exercise}` : ""}`;
     if (s.kind === "soreness") return `${s.muscle} still sore${s.note ? ` — ${s.note.toLowerCase()}` : ""}`;
     return `${s.muscle} pump was low`;
   }
@@ -184,14 +186,7 @@ export default function Desk() {
                       </div>
                     </div>
                     <div className="row" style={{ gap: 8, marginTop: 9 }}>
-                      <button
-                        className="btn btn-solid"
-                        style={{ flex: 1, height: 34, fontSize: 12.5 }}
-                        onClick={() => {
-                          const c = state.clients.find((x) => x.accountId === s.client_id);
-                          if (c) nav(`/coach/clients/${c.id}/log`);
-                        }}
-                      >
+                      <button className="btn btn-solid" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => setActingOn(s)}>
                         Attention
                       </button>
                       <button className="btn btn-secondary" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => clearSignal(s.id)}>
@@ -316,6 +311,27 @@ export default function Desk() {
             <SignOutButton />
           </div>
         </div>
+      )}
+
+      {actingOn && (
+        <SignalActionSheet
+          signal={actingOn}
+          clientName={signalClientName(actingOn)}
+          onClose={() => setActingOn(null)}
+          onOpenSession={() => {
+            const c = state.clients.find((x) => x.accountId === actingOn.client_id);
+            setActingOn(null);
+            if (c) nav(`/coach/clients/${c.id}/log`);
+          }}
+          onApplied={(message) => {
+            // Acted on, so it comes off the open list -- but stays in allSignals, still counting toward
+            // whether this is a recurring complaint.
+            void clearSignal(actingOn.id);
+            setActingOn(null);
+            dispatch({ type: "SHOW_TOAST", message });
+            setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 4000);
+          }}
+        />
       )}
     </div>
   );

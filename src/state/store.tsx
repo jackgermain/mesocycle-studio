@@ -6,6 +6,7 @@ import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { supabase } from "../lib/supabase";
 import { withDerivedStatuses } from "../shared/dayStatus";
+import { insertWarmupSet } from "../shared/programEdits";
 
 export interface AppState {
   onboarded: boolean;
@@ -176,30 +177,7 @@ function reducer(state: AppState, action: Action): AppState {
         if (!ex || ex.sets.length === 0) continue;
 
         if (action.warmup) {
-          const firstWork = ex.sets.find((s) => !s.isWarmup) ?? ex.sets[0];
-          const workLoad = firstWork.actual?.load ?? firstWork.prescribed.load;
-          const warmupLoad = workLoad === null ? null : nearestValidLoad(ex, workLoad * 0.5);
-          const warmupSet: WorkSet = {
-            ...structuredClone(firstWork),
-            id: `${ex.id}-warmup-${Date.now()}`,
-            index: 0,
-            type: "straight",
-            checked: false,
-            actual: null,
-            removed: undefined,
-            isWarmup: true,
-            lastWeek: undefined,
-            prescribed: {
-              ...structuredClone(firstWork.prescribed),
-              reps: typeof firstWork.prescribed.reps === "number" ? Math.max(5, firstWork.prescribed.reps) : 10,
-              load: warmupLoad,
-              effort: { scale: firstWork.prescribed.effort.scale, value: "warm-up" },
-              tempo: undefined,
-              cluster: undefined,
-            },
-          };
-          const insertAt = ex.sets.findIndex((s) => !s.isWarmup);
-          ex.sets.splice(insertAt === -1 ? ex.sets.length : insertAt, 0, warmupSet);
+          insertWarmupSet(ex, String(Date.now()));
         } else {
           const last = ex.sets[ex.sets.length - 1];
           const lastLoad = last.actual?.load ?? last.prescribed.load;
