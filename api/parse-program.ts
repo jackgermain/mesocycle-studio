@@ -120,7 +120,9 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  // Trimmed: copying a key out of a console and pasting it into a dashboard field very often brings a
+  // trailing newline or space with it, and the API rejects that as an invalid key with no hint why.
+  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) {
     // Names only, never values. Setting this up by hand goes wrong in four ways that look identical from
     // the outside -- a typo in the name, a stray space, saved to Preview but not Production, or saved but
@@ -205,7 +207,16 @@ export default async function handler(req: any, res: any) {
     if (/credit balance|insufficient|billing/i.test(detail)) {
       error = "The Anthropic account is out of credits — top it up at console.anthropic.com and try again.";
     } else if (response.status === 401 || response.status === 403) {
-      error = "The AI service rejected this app's API key — it may have been revoked or mistyped.";
+      // The shape of the stored key, never the key. Everything here is either public format (every
+      // Anthropic key starts "sk-ant-") or a count, and each one names a different mistake: a wrong
+      // prefix means something other than the key got pasted, a short length means it was truncated,
+      // and raw !== trimmed means whitespace came along for the ride.
+      const raw = process.env.ANTHROPIC_API_KEY ?? "";
+      error =
+        `The AI service rejected this app's API key. Stored key: ${apiKey.length} chars, ` +
+        `starts "${apiKey.slice(0, 7)}"${raw !== apiKey ? ", had surrounding whitespace" : ""}. ` +
+        `A real key is ~100 chars and starts "sk-ant-". If that looks wrong, re-paste it in Vercel; ` +
+        `if it looks right, the key was probably revoked — make a new one.`;
     } else if (response.status === 429) {
       error = "The AI service is rate limited right now — give it a minute.";
     } else if (/model/i.test(detail) && response.status === 404) {
