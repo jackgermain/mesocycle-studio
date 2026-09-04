@@ -46,6 +46,10 @@ Variables, since `.env` is never committed. Changing one in Vercel requires a re
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY` — publishable/anon key, not a secret; RLS is the real boundary
 - `VITE_USDA_API_KEY` — USDA FoodData Central key (falls back to the rate-limited `DEMO_KEY` if absent)
+- `ANTHROPIC_API_KEY` — **server-side only, deliberately no `VITE_` prefix.** Read by `api/parse-program.ts`
+  and never bundled. Anything with a `VITE_` prefix ends up in the public JS, which for a billable key
+  means anyone who opens devtools can spend against it. Vercel exposes *all* env vars to serverless
+  functions regardless of prefix, which is why that function reads the `VITE_SUPABASE_*` ones too.
 
 ---
 
@@ -184,6 +188,18 @@ sends no CORS headers**). Both sources are filtered by a plausibility check that
 protein + carbs + fat outweigh the serving itself; USDA's branded data contains real manufacturer
 data-entry errors and this catches the worst of them. Users can also create custom foods, stored per
 account in `customFoods`.
+
+**AI program import.** `api/parse-program.ts` is the project's only serverless function — a Vercel Node
+function, outside `tsconfig.app.json`'s `include: ["src"]`, so `tsc -b` never sees it and Vercel compiles
+it separately. It takes a photo/screenshot/PDF plus a plain-English instruction ("run these two days twice
+a week each") and returns the same `DraftDay[]` the spreadsheet importer produces, so both land in the
+same review screen and nothing is written until the coach accepts it. Claude reads PDFs and images
+natively, so there is no pdf.js or OCR dependency — and no npm dependency at all, since it calls both
+Anthropic and Supabase with plain `fetch` (this environment has no npm registry access; see the SheetJS
+note below). It verifies the caller's Supabase token and their `role` server-side and refuses anything
+that isn't a `coach` or `friend` — a hidden button is not access control, and the endpoint costs money.
+Images are downscaled to 1600px in the browser first (`src/shared/aiImport.ts`): a phone photo alone
+exceeds the serverless request body limit before base64 inflates it by a third.
 
 **Barcode scanning.** Uses `@zxing/browser`, **not** the native `BarcodeDetector` API. That API is
 Chromium-only; Safari has never shipped it, and this app's real target is an installed iOS PWA. This was

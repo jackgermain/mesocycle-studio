@@ -7,6 +7,8 @@ import { buildBlankProgram } from "../mockData";
 import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../csvProgram";
+import { AiImportSheet } from "../../shared/AiImportSheet";
+import type { AiProgramResult } from "../../shared/aiImport";
 import type { CsvParseResult } from "../csvProgram";
 import { writeProgramToClient, queueProgramForClient } from "../assignProgram";
 import type { CoachProgram } from "../types";
@@ -113,7 +115,7 @@ export default function AssignProgram() {
               onClick={() => createAndEdit(buildBlankProgram(`${client.name.split(" ")[0]}'s Program`))}
             />
             <ActionRow icon="ph-stack" label="Use one of your programs" subtitle={`${visiblePrograms.length} template${visiblePrograms.length === 1 ? "" : "s"} — starts you a copy to edit for them`} onClick={() => setMode("pickToEdit")} />
-            <ActionRow icon="ph-file-arrow-up" label="Import from a spreadsheet" subtitle="Excel or CSV: Day, Exercise, Muscle, Sets, Reps" onClick={() => setMode("csv")} />
+            <ActionRow icon="ph-file-arrow-up" label="Import a program" subtitle="Excel or CSV, or a photo or PDF of a written program" onClick={() => setMode("csv")} />
           </ActionGroup>
         </div>
       </div>
@@ -260,8 +262,26 @@ function CsvStep({
   const [linkInput, setLinkInput] = useState("");
   const [linkBusy, setLinkBusy] = useState(false);
   const [linkError, setLinkError] = useState<string | null>(null);
+  const [showAi, setShowAi] = useState(false);
+  const [aiNotes, setAiNotes] = useState<string[]>([]);
+
+  /** Same landing spot as a spreadsheet import: the parsed days fill the preview below and nothing is
+   * assigned until the button at the bottom. Notes are kept apart from `errors` -- "I guessed this" is a
+   * different thing from "this row was unusable". */
+  function applyAi(result: AiProgramResult) {
+    setShowAi(false);
+    setSource(null);
+    setSheetNames([]);
+    setSelectedSheet(null);
+    setFileName("From a photo or PDF");
+    setParsed({ days: result.days, rowCount: result.days.reduce((n, d) => n + d.exercises.length, 0), errors: [] });
+    setAiNotes(result.notes ?? []);
+    if (result.name) setProgramName(result.name);
+    if (result.weeks) setWeeksCount(Math.max(1, Math.min(16, result.weeks)));
+  }
 
   function handleFile(file: File) {
+    setAiNotes([]);
     setFileName(file.name);
     setSource({ type: "file", file });
     setSheetNames([]);
@@ -313,7 +333,7 @@ function CsvStep({
         </button>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="k">{client.name}</div>
-          <div className="h1 trunc">Import from a spreadsheet</div>
+          <div className="h1 trunc">Import a program</div>
         </div>
       </div>
       <div className="screen-scroll">
@@ -328,6 +348,20 @@ function CsvStep({
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{fileName ?? "Choose a file"}</div>
             <div className="mu" style={{ marginTop: 2 }}>{fileName ? "Tap to choose a different file" : "Excel or CSV, from Excel, Google Sheets, or Numbers"}</div>
+          </div>
+        </button>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "2px 2px" }}>
+          <div style={{ flex: 1, height: 1, background: "var(--color-neutral-800)" }} />
+          <span className="mu">or</span>
+          <div style={{ flex: 1, height: 1, background: "var(--color-neutral-800)" }} />
+        </div>
+
+        <button className="cell row" style={{ padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => setShowAi(true)}>
+          <i className="ph ph-sparkle" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>From a photo or PDF</div>
+            <div className="mu" style={{ marginTop: 2 }}>Snap a written program or pick one from your camera roll, and say how you want it built</div>
           </div>
         </button>
 
@@ -356,6 +390,8 @@ function CsvStep({
           </div>
         </div>
         {linkError && <InfoBanner icon="ph-warning">{linkError}</InfoBanner>}
+
+        {aiNotes.length > 0 && <InfoBanner icon="ph-eyes">Check these before you assign: {aiNotes.join(" · ")}</InfoBanner>}
 
         {sheetNames.length > 1 && (
           <div>
@@ -417,6 +453,7 @@ function CsvStep({
           </button>
         </div>
       </div>
+      {showAi && <AiImportSheet onParsed={applyAi} onClose={() => setShowAi(false)} />}
     </div>
   );
 }
