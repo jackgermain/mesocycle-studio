@@ -9,11 +9,17 @@ import { isJointAlerting, isJointUrgent, isPumpAlerting, sendSignals } from "../
 
 const COMMON_AREAS = ["R shoulder", "L shoulder", "Elbow", "Wrist", "Lower back", "Knee", "Hip"];
 
-// Where in the range of motion, and on which sets. Both are the questions a coach asks next anyway, and
-// both change the answer: pain in the stretch on warm-ups is usually a warm-up problem, pain at lockout on
-// every working set usually isn't. Offered as chips because this gets answered standing in a gym.
-const REP_MOMENTS = ["Stretch / bottom", "Mid-rep", "Lockout / top", "All the way through"];
-const SET_SCOPES = ["Warm-ups only", "Working sets only", "Every set", "Got worse as it went"];
+// The three things a coach asks next anyway, and each one changes the answer.
+//
+// Which sets: pain that only shows up in warm-ups is usually a warm-up problem, not a movement problem.
+// Where in the lift: pain in the stretch and pain at lockout point at different things entirely.
+// How it progressed: this is the one that decides whether to keep training it at all. Pain that warms up
+// and fades is a very different animal from pain that builds set over set, even at the same severity.
+//
+// All offered as chips, because this is answered standing in a gym with a phone in one hand.
+const SET_SCOPES = ["Warm-ups only", "Warm-ups and working sets", "Working sets only", "Every set"];
+const REP_MOMENTS = ["Bottom / stretch", "Middle of the rep", "Top / lockout", "Lowering it", "All the way through"];
+const PROGRESSIONS = ["Warmed up and faded", "Stayed the same", "Built up each set", "Worse after I finished"];
 const NOT_ONE_EXERCISE = "Not one exercise";
 
 export default function Feedback() {
@@ -51,8 +57,9 @@ export default function Feedback() {
   const [jointSeverity, setJointSeverity] = useState<number | null>(null);
   const [jointLocation, setJointLocation] = useState("");
   const [jointExercise, setJointExercise] = useState("");
-  const [repMoment, setRepMoment] = useState("");
   const [setScope, setSetScope] = useState("");
+  const [repMoment, setRepMoment] = useState("");
+  const [progression, setProgression] = useState("");
   const [jointDetail, setJointDetail] = useState("");
 
   if (!day) return <div className="screen-scroll">Not found.</div>;
@@ -60,16 +67,22 @@ export default function Feedback() {
   const pumpDone = muscles.every(([m]) => pump[m] !== undefined);
   const jointGateAnswered = jointYes !== null;
   const jointDetailNeeded = jointYes === true;
-  // Anything at 2 or above reaches the coach, so that's where it's worth insisting on enough to act on:
-  // the body area and which movement caused it. A 1 is noted and needs nothing.
+  // Anything at 2 or above reaches the coach, so that's where it's worth insisting on enough to act on.
+  // Each of these is a single tap and only ever asked of someone who just said they're in pain; a half
+  // answered report is what made these useless to act on before. A 1 is noted and needs nothing.
   const jointDetailDone =
     !jointDetailNeeded ||
     (jointSeverity !== null &&
-      (jointSeverity < 2 || (jointLocation.trim().length > 0 && (exerciseNames.length === 0 || jointExercise.length > 0))));
+      (jointSeverity < 2 ||
+        (jointLocation.trim().length > 0 &&
+          (exerciseNames.length === 0 || jointExercise.length > 0) &&
+          setScope.length > 0 &&
+          repMoment.length > 0 &&
+          progression.length > 0)));
   const canFinish = jointGateAnswered && jointDetailDone;
 
   // The free-form half of the report, assembled from the chips and whatever they typed.
-  const composedDetail = [repMoment, setScope, jointDetail.trim()].filter(Boolean).join(" · ");
+  const composedDetail = [setScope, repMoment, progression, jointDetail.trim()].filter(Boolean).join(" · ");
 
   function finish() {
     dispatch({ type: "SET_FEEDBACK_DONE", dayId });
@@ -246,25 +259,37 @@ export default function Feedback() {
             )}
 
             <div>
-              <div className="sh">When in the rep?</div>
+              <div className="sh">Which sets did it happen on?</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {REP_MOMENTS.map((m) => (
-                  <button key={m} className={`chip${repMoment === m ? " on" : ""}`} onClick={() => setRepMoment(repMoment === m ? "" : m)}>
-                    {m}
+                {SET_SCOPES.map((v) => (
+                  <button key={v} className={`chip${setScope === v ? " on" : ""}`} onClick={() => setSetScope(setScope === v ? "" : v)}>
+                    {v}
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-              <div className="sh">Which sets?</div>
+              <div className="sh">Where in the lift did it hurt?</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {SET_SCOPES.map((s) => (
-                  <button key={s} className={`chip${setScope === s ? " on" : ""}`} onClick={() => setSetScope(setScope === s ? "" : s)}>
-                    {s}
+                {REP_MOMENTS.map((v) => (
+                  <button key={v} className={`chip${repMoment === v ? " on" : ""}`} onClick={() => setRepMoment(repMoment === v ? "" : v)}>
+                    {v}
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <div className="sh">Did it settle as you went?</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {PROGRESSIONS.map((v) => (
+                  <button key={v} className={`chip${progression === v ? " on" : ""}`} onClick={() => setProgression(progression === v ? "" : v)}>
+                    {v}
+                  </button>
+                ))}
+              </div>
+              <div className="mu" style={{ marginTop: 6 }}>Pain that warms up and fades means something different from pain that builds.</div>
             </div>
 
             <div className="field">
