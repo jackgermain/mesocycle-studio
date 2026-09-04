@@ -45,69 +45,100 @@ function offsetForSlot(i: number, daysPerWeek: number): number {
   return Math.floor((i * 7) / Math.max(1, daysPerWeek));
 }
 
+/** Every program's weekly pattern is authored as if Day 1 (slot 0) always falls on a Monday. If today
+ * really is Monday, week 1 just starts today, same as always. Otherwise, week 1 doesn't start until the
+ * *next* Monday -- but rather than leaving the rest of this calendar week empty, whichever slots would
+ * normally land on or after today (this week) run as a partial "week 0", reusing the exact same day
+ * content week 1 will use for that slot. Someone starting on a Wednesday gets that pattern's Wednesday
+ * slot today, plus anything later this week, instead of just waiting until Monday to begin. */
+function scheduleWeeks(daysPerWeek: number, totalWeeks: number): { weekNumber: number; slot: number; date: Date }[] {
+  const todayDow = TODAY.getDay(); // 0=Sun..6=Sat
+  const daysToMonday = todayDow === 1 ? 0 : (8 - todayDow) % 7;
+  const week1Monday = addDays(TODAY, daysToMonday);
+  const schedule: { weekNumber: number; slot: number; date: Date }[] = [];
+
+  if (daysToMonday > 0) {
+    const thisWeekMonday = addDays(week1Monday, -7);
+    for (let i = 0; i < daysPerWeek; i++) {
+      const date = addDays(thisWeekMonday, offsetForSlot(i, daysPerWeek));
+      if (date >= TODAY) schedule.push({ weekNumber: 0, slot: i, date });
+    }
+  }
+
+  for (let weekNumber = 1; weekNumber <= totalWeeks; weekNumber++) {
+    for (let i = 0; i < daysPerWeek; i++) {
+      schedule.push({ weekNumber, slot: i, date: addDays(week1Monday, (weekNumber - 1) * 7 + offsetForSlot(i, daysPerWeek)) });
+    }
+  }
+  return schedule;
+}
+
 /** Expands a coach's builder program — one template week of days, repeated `weeks` times — into the
  * client app's live, per-week Program shape, with every set freshly unlogged. Cardio exercises aren't
  * represented in the client logging model yet, so they're skipped rather than mis-converted. */
 export function expandCoachProgramToProgram(cp: CoachProgram, coachName: string): Program {
   const daysPerWeek = cp.days.length || cp.daysPerWeek || 1;
-  const weeks: TrainingWeek[] = [];
+  const todayIso = isoDate(TODAY);
+  const weekMap = new Map<number, TrainingDay[]>();
 
-  for (let weekNumber = 1; weekNumber <= cp.weeks; weekNumber++) {
-    const days: TrainingDay[] = cp.days.map((bd, i) => {
-      const date = addDays(TODAY, (weekNumber - 1) * 7 + offsetForSlot(i, daysPerWeek));
-      const exercises: Record<string, WorkExercise> = {};
-      const order: string[] = [];
-      let setCount = 0;
-      const muscles = new Set<string>();
+  for (const { weekNumber, slot: i, date } of scheduleWeeks(daysPerWeek, cp.weeks)) {
+    const bd = cp.days[i];
+    if (!bd) continue;
+    const exercises: Record<string, WorkExercise> = {};
+    const order: string[] = [];
+    let setCount = 0;
+    const muscles = new Set<string>();
 
-      for (const bex of bd.exercises) {
-        if (bex.kind === "cardio") continue;
-        const loadMode = bex.loadModeOverride ?? cp.effortScale;
-        const sets: WorkSet[] = bex.sets.map((s, si) => ({
-          id: `${bex.id}-s${si + 1}`,
-          index: si + 1,
-          type: "straight",
-          prescribed: {
-            reps: s.reps,
-            load: loadForLoadMode(loadMode, s.loadValue),
-            effort: effortForLoadMode(loadMode, s.loadValue),
-            restSec: s.restSec ?? defaultRestSec(bex.name),
-          },
-          actual: null,
-          checked: false,
-          isWarmup: s.warmup,
-        }));
-        exercises[bex.id] = {
-          id: bex.id,
-          name: bex.name,
-          muscle: bex.muscle,
-          metaLine: `${sets.length} sets`,
-          hasVideo: false,
-          equipment: equipmentOf({ name: bex.name }),
-          sets,
-        };
-        order.push(bex.id);
-        setCount += sets.length;
-        muscles.add(bex.muscle.toLowerCase());
-      }
-
-      const day: TrainingDay = {
-        id: `w${weekNumber}-d${i + 1}`,
-        code: `D${i + 1}`,
-        label: bd.name,
-        dow: shortDow(date),
-        date: isoDate(date),
-        status: weekNumber === 1 && i === 0 ? "today" : "visible",
-        muscleSummary: Array.from(muscles).slice(0, 4).join(", "),
-        setCount,
-        order,
-        exercises,
+    for (const bex of bd.exercises) {
+      if (bex.kind === "cardio") continue;
+      const loadMode = bex.loadModeOverride ?? cp.effortScale;
+      const sets: WorkSet[] = bex.sets.map((s, si) => ({
+        id: `${bex.id}-s${si + 1}`,
+        index: si + 1,
+        type: "straight",
+        prescribed: {
+          reps: s.reps,
+          load: loadForLoadMode(loadMode, s.loadValue),
+          effort: effortForLoadMode(loadMode, s.loadValue),
+          restSec: s.restSec ?? defaultRestSec(bex.name),
+        },
+        actual: null,
+        checked: false,
+        isWarmup: s.warmup,
+      }));
+      exercises[bex.id] = {
+        id: bex.id,
+        name: bex.name,
+        muscle: bex.muscle,
+        metaLine: `${sets.length} sets`,
+        hasVideo: false,
+        equipment: equipmentOf({ name: bex.name }),
+        sets,
       };
-      return day;
-    });
+      order.push(bex.id);
+      setCount += sets.length;
+      muscles.add(bex.muscle.toLowerCase());
+    }
 
-    weeks.push({ number: weekNumber, phase: "accumulation", days });
+    const day: TrainingDay = {
+      id: `w${weekNumber}-d${i + 1}`,
+      code: `D${i + 1}`,
+      label: bd.name,
+      dow: shortDow(date),
+      date: isoDate(date),
+      status: isoDate(date) === todayIso ? "today" : "visible",
+      muscleSummary: Array.from(muscles).slice(0, 4).join(", "),
+      setCount,
+      order,
+      exercises,
+    };
+    if (!weekMap.has(weekNumber)) weekMap.set(weekNumber, []);
+    weekMap.get(weekNumber)!.push(day);
   }
+
+  const weeks: TrainingWeek[] = Array.from(weekMap.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([number, days]) => ({ number, phase: "accumulation", days }));
 
   return { name: cp.name, totalWeeks: cp.weeks, coachName, weeks };
 }
@@ -134,65 +165,68 @@ export interface DraftDay {
  * Program repeated across `weeks` weeks. Each exercise is seeded either with whatever sets/reps/load the
  * draft specified (the spreadsheet importer's case) or a plain 3×10 starting point the builder can then
  * edit like any other set. */
-export function buildProgramFromDraft(name: string, days: DraftDay[], weeks: number, ownerName: string): Program {
+export function buildProgramFromDraft(name: string, days: DraftDay[], weeksCount: number, ownerName: string): Program {
   const daysPerWeek = days.length || 1;
-  const outWeeks: TrainingWeek[] = [];
+  const todayIso = isoDate(TODAY);
+  const weekMap = new Map<number, TrainingDay[]>();
 
-  for (let weekNumber = 1; weekNumber <= weeks; weekNumber++) {
-    const outDays: TrainingDay[] = days.map((dd, i) => {
-      const date = addDays(TODAY, (weekNumber - 1) * 7 + offsetForSlot(i, daysPerWeek));
-      const exercises: Record<string, WorkExercise> = {};
-      const order: string[] = [];
-      let setCount = 0;
-      const muscles = new Set<string>();
+  for (const { weekNumber, slot: i, date } of scheduleWeeks(daysPerWeek, weeksCount)) {
+    const dd = days[i];
+    if (!dd) continue;
+    const exercises: Record<string, WorkExercise> = {};
+    const order: string[] = [];
+    let setCount = 0;
+    const muscles = new Set<string>();
 
-      dd.exercises.forEach((de, ei) => {
-        const id = `w${weekNumber}-d${i + 1}-e${ei + 1}`;
-        const restSec = defaultRestSec(de.name);
-        const setCountForEx = Math.max(1, de.sets ?? 3);
-        const loadMode = de.loadMode ?? "lb";
-        const loadValue = de.load ?? (loadMode === "lb" ? 0 : LOAD_DEFAULT[loadMode]);
-        const sets: WorkSet[] = Array.from({ length: setCountForEx }, (_, si) => si + 1).map((setIndex) => ({
-          id: `${id}-s${setIndex}`,
-          index: setIndex,
-          type: "straight",
-          prescribed: { reps: de.reps ?? 10, load: loadForLoadMode(loadMode, loadValue), effort: effortForLoadMode(loadMode, loadValue), restSec },
-          actual: null,
-          checked: false,
-        }));
-        exercises[id] = {
-          id,
-          name: de.name,
-          muscle: de.muscle,
-          metaLine: `${sets.length} sets`,
-          hasVideo: false,
-          equipment: equipmentOf({ name: de.name }),
-          sets,
-        };
-        order.push(id);
-        setCount += sets.length;
-        muscles.add(de.muscle.toLowerCase());
-      });
-
-      const day: TrainingDay = {
-        id: `w${weekNumber}-d${i + 1}`,
-        code: `D${i + 1}`,
-        label: dd.name,
-        dow: shortDow(date),
-        date: isoDate(date),
-        status: weekNumber === 1 && i === 0 ? "today" : "visible",
-        muscleSummary: Array.from(muscles).slice(0, 4).join(", "),
-        setCount,
-        order,
-        exercises,
+    dd.exercises.forEach((de, ei) => {
+      const id = `w${weekNumber}-d${i + 1}-e${ei + 1}`;
+      const restSec = defaultRestSec(de.name);
+      const setCountForEx = Math.max(1, de.sets ?? 3);
+      const loadMode = de.loadMode ?? "lb";
+      const loadValue = de.load ?? (loadMode === "lb" ? 0 : LOAD_DEFAULT[loadMode]);
+      const sets: WorkSet[] = Array.from({ length: setCountForEx }, (_, si) => si + 1).map((setIndex) => ({
+        id: `${id}-s${setIndex}`,
+        index: setIndex,
+        type: "straight",
+        prescribed: { reps: de.reps ?? 10, load: loadForLoadMode(loadMode, loadValue), effort: effortForLoadMode(loadMode, loadValue), restSec },
+        actual: null,
+        checked: false,
+      }));
+      exercises[id] = {
+        id,
+        name: de.name,
+        muscle: de.muscle,
+        metaLine: `${sets.length} sets`,
+        hasVideo: false,
+        equipment: equipmentOf({ name: de.name }),
+        sets,
       };
-      return day;
+      order.push(id);
+      setCount += sets.length;
+      muscles.add(de.muscle.toLowerCase());
     });
 
-    outWeeks.push({ number: weekNumber, phase: "accumulation", days: outDays });
+    const day: TrainingDay = {
+      id: `w${weekNumber}-d${i + 1}`,
+      code: `D${i + 1}`,
+      label: dd.name,
+      dow: shortDow(date),
+      date: isoDate(date),
+      status: isoDate(date) === todayIso ? "today" : "visible",
+      muscleSummary: Array.from(muscles).slice(0, 4).join(", "),
+      setCount,
+      order,
+      exercises,
+    };
+    if (!weekMap.has(weekNumber)) weekMap.set(weekNumber, []);
+    weekMap.get(weekNumber)!.push(day);
   }
 
-  return { name, totalWeeks: weeks, coachName: ownerName, weeks: outWeeks };
+  const outWeeks: TrainingWeek[] = Array.from(weekMap.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([number, outDays]) => ({ number, phase: "accumulation", days: outDays }));
+
+  return { name, totalWeeks: weeksCount, coachName: ownerName, weeks: outWeeks };
 }
 
 /** One DraftDay per day-of-week slot in a running program, built from the first not-yet-done occurrence of
