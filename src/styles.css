@@ -127,13 +127,15 @@ a { color: var(--color-accent); text-decoration: none; }
 .tb {
   flex: none;
   display: flex;
-  padding: 6px 4px calc(18px + env(safe-area-inset-bottom));
-  /* The safe-area padding above pushes this box's own background all the way to the real bottom edge of
-     the screen -- so that painted color has to be *exactly* var(--color-bg), the same literal the rest of
-     the app (and html/body underneath) use, not a close-but-different hardcoded navy. Any mismatch here is
-     a visible seam right at the page boundary, which is exactly where it'd read as "unfilled space". */
-  background: linear-gradient(transparent, var(--color-bg) 45%);
-  border-top: 1px solid var(--color-neutral-900);
+  padding: 10px 4px calc(16px + env(safe-area-inset-bottom));
+  /* A distinct raised surface (the same shade .card/.cell use elsewhere) rather than a plain fade into the
+     page background -- that made the icon row look like it was floating over leftover empty space, since
+     the safe-area padding below the icons was the exact same color as the page above them, with nothing
+     visually tying the two together. Giving the whole bar (icons *and* the safe-area padding beneath them)
+     one raised surface with rounded top corners reads as a single deliberate card instead. */
+  background: var(--color-surface);
+  border-radius: 16px 16px 0 0;
+  box-shadow: var(--shadow-md);
 }
 .tbi {
   flex: 1;
