@@ -93,6 +93,11 @@ export function ExerciseSection({
     const next = stepLoad(ex, current, direction);
     dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, load: next });
   }
+  function editRest(delta: number) {
+    const current = ex.sets[0]?.prescribed.restSec ?? 0;
+    const next = Math.max(15, current + delta);
+    dispatch({ type: "SET_EXERCISE_REST", dayId, exerciseId: ex.id, restSec: next });
+  }
 
   let workCounter = 0;
   let warmCounter = 0;
@@ -280,9 +285,19 @@ export function ExerciseSection({
           </button>
         )}
         {ex.sets[0]?.prescribed.restSec ? (
-          <span style={{ fontSize: 12.5, color: "var(--color-neutral-500)", display: "flex", alignItems: "center", gap: 5 }}>
+          <span style={{ fontSize: 12.5, color: "var(--color-neutral-500)", display: "flex", alignItems: "center", gap: readOnly ? 5 : 2 }}>
             <i className="ph ph-timer" style={{ fontSize: 14 }} />
+            {!readOnly && (
+              <button onClick={() => editRest(-15)} aria-label="Decrease rest time" style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", display: "flex", padding: 3 }}>
+                <i className="ph ph-minus" style={{ fontSize: 11 }} />
+              </button>
+            )}
             Rest {Math.floor((ex.sets[0].prescribed.restSec ?? 0) / 60)}:{String((ex.sets[0].prescribed.restSec ?? 0) % 60).padStart(2, "0")}
+            {!readOnly && (
+              <button onClick={() => editRest(15)} aria-label="Increase rest time" style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", display: "flex", padding: 3 }}>
+                <i className="ph ph-plus" style={{ fontSize: 11 }} />
+              </button>
+            )}
           </span>
         ) : null}
       </div>

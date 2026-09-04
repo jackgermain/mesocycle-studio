@@ -113,9 +113,10 @@ function PreviewBanner() {
 function ClientLayout() {
   const { state } = useStore();
   const { account, previewingAsClient } = useAuth();
+  const showingPreviewBanner = account?.role === "coach" && previewingAsClient;
   return (
-    <div className="app-shell">
-      {account?.role === "coach" && previewingAsClient && <PreviewBanner />}
+    <div className={`app-shell${showingPreviewBanner ? " has-preview-banner" : ""}`}>
+      {showingPreviewBanner && <PreviewBanner />}
       <Outlet />
       {state.toast && <Toast message={state.toast} />}
     </div>

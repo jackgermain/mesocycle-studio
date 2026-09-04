@@ -42,6 +42,7 @@ type Action =
   | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel"> }
   | { type: "TICK_SET"; dayId: string; exerciseId: string; setId: string; actual: { reps: number; load: number | null; clusterBlocks?: number[]; assistanceSplit?: { unassisted: number; assisted: number } } }
   | { type: "EDIT_SET_TARGET"; dayId: string; exerciseId: string; setId: string; reps?: number; load?: number }
+  | { type: "SET_EXERCISE_REST"; dayId: string; exerciseId: string; restSec: number }
   | { type: "SET_CHECKED"; dayId: string; exerciseId: string; setId: string; checked: boolean }
   | { type: "REMOVE_SET"; dayId: string; exerciseId: string; setId: string; reason: string }
   | { type: "REORDER_EXERCISES"; dayId: string; order: string[] }
@@ -104,6 +105,17 @@ function reducer(state: AppState, action: Action): AppState {
             load: action.load ?? set.prescribed.load,
           };
         }
+      }
+      return { ...state, program };
+    }
+    case "SET_EXERCISE_REST": {
+      const program = structuredClone(state.program);
+      for (const week of program.weeks) {
+        const day = week.days.find((d) => d.id === action.dayId);
+        if (!day) continue;
+        const ex = day.exercises[action.exerciseId];
+        if (!ex) continue;
+        for (const set of ex.sets) set.prescribed.restSec = action.restSec;
       }
       return { ...state, program };
     }

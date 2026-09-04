@@ -115,6 +115,13 @@ a { color: var(--color-accent); text-decoration: none; }
   flex-direction: column;
   align-items: stretch;
 }
+/* The preview banner ("Training as yourself") already clears the notch/status-bar safe area on its own
+   top padding -- when it's present above a screen's header, that header's usual env(safe-area-inset-top)
+   would double it up, leaving a large dead gap between the banner and the header text. */
+.has-preview-banner .hdr,
+.has-preview-banner .hdr.hero {
+  padding-top: 12px;
+}
 .hdr .back { font-size: 20px; color: var(--color-accent); flex: none; cursor: pointer; background: none; border: none; padding: 4px; display: flex; }
 .k { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); }
 .h1 { font-family: var(--font-heading); font-weight: 500; font-size: 21px; line-height: 1.15; }
