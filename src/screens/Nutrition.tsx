@@ -41,6 +41,7 @@ export default function Nutrition() {
   const target = profile.macroTargets;
   const [addingTo, setAddingTo] = useState<string | null>(null);
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showNutritionOptions, setShowNutritionOptions] = useState(false);
   const { account, previewingAsClient } = useAuth();
   const [settingUp, setSettingUp] = useState(false);
   const [editingTargets, setEditingTargets] = useState(false);
@@ -146,21 +147,24 @@ export default function Nutrition() {
         }
       />
       <div className="screen-scroll" onClick={() => showAddMenu && setShowAddMenu(false)}>
-        <div className="cell elev-sm">
+        <div className="cell elev-sm" style={{ position: "relative" }}>
+          {canSelfServe && (
+            <button
+              onClick={() => setShowNutritionOptions(true)}
+              aria-label="Nutrition options"
+              style={{ position: "absolute", top: 10, right: 10, background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)", display: "flex", padding: 4 }}
+            >
+              <i className="ph ph-dots-three-vertical" style={{ fontSize: 16 }} />
+            </button>
+          )}
           <div className="row" style={{ alignItems: "baseline", marginBottom: 12 }}>
             <div style={{ flex: 1 }}>
               <div className="scr">Calories left</div>
               <div style={{ fontFamily: "var(--font-heading)", fontSize: 28, lineHeight: 1.1, marginTop: 3 }}>{left}</div>
             </div>
-            <div style={{ textAlign: "right" }}>
+            <div style={{ textAlign: "right", paddingRight: canSelfServe ? 20 : 0 }}>
               <div className="mu">{totals.kcal.toLocaleString()} of {kcalTarget.toLocaleString()}</div>
-              {canSelfServe ? (
-                <button onClick={() => setEditingTargets(true)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-accent)", fontSize: 11.5, padding: 0, marginTop: 2 }}>
-                  Edit your targets
-                </button>
-              ) : (
-                <div className="mu" style={{ marginTop: 2 }}>{state.program.coachName}'s target</div>
-              )}
+              <div className="mu" style={{ marginTop: 2 }}>{canSelfServe ? "Your target" : `${state.program.coachName}'s target`}</div>
             </div>
           </div>
           <Meter pct={(totals.kcal / kcalTarget) * 100} large />
@@ -249,6 +253,29 @@ export default function Nutrition() {
           onClose={() => setAddingTo(null)}
         />
       )}
+
+      {showNutritionOptions && (
+        <div className="sheet-backdrop" onClick={() => setShowNutritionOptions(false)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="row" style={{ marginBottom: 4 }}>
+              <div style={{ flex: 1 }}>
+                <div className="scr">Nutrition</div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Options</div>
+              </div>
+              <button onClick={() => setShowNutritionOptions(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
+                <i className="ph ph-x" style={{ fontSize: 18 }} />
+              </button>
+            </div>
+            <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => { setShowNutritionOptions(false); setEditingTargets(true); }}>
+              <i className="ph ph-pencil-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13 }}>Edit nutrition targets</div>
+                <div className="mu" style={{ marginTop: 1 }}>Change how you track and your calorie/macro goals.</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -266,6 +293,7 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
   const profile = useEffectiveProfile();
   const targets = profile.portionTargets;
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showNutritionOptions, setShowNutritionOptions] = useState(false);
 
   function addSection(kind: "Meal" | "Snack") {
     const count = state.meals.filter((m) => m.name.startsWith(kind)).length;
@@ -309,16 +337,19 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
       />
       <div className="screen-scroll" onClick={() => showAddMenu && setShowAddMenu(false)}>
         <InfoBanner icon="ph-hand-palm">
-          No calorie counting — just hit your portions each meal. {canSelfServe ? "You set these targets — " : `${state.program.coachName} set these targets for you`}
-          {canSelfServe && (
-            <button onClick={onEditTargets} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-accent)", fontSize: "inherit", padding: 0, textDecoration: "underline" }}>
-              edit them
-            </button>
-          )}
-          .
+          No calorie counting — just hit your portions each meal. {canSelfServe ? "You set these targets." : `${state.program.coachName} set these targets for you.`}
         </InfoBanner>
 
-        <div className="cell elev-sm">
+        <div className="cell elev-sm" style={{ position: "relative" }}>
+          {canSelfServe && (
+            <button
+              onClick={() => setShowNutritionOptions(true)}
+              aria-label="Nutrition options"
+              style={{ position: "absolute", top: 10, right: 10, background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)", display: "flex", padding: 4 }}
+            >
+              <i className="ph ph-dots-three-vertical" style={{ fontSize: 16 }} />
+            </button>
+          )}
           <div className="row" style={{ alignItems: "baseline", marginBottom: 10 }}>
             <div style={{ flex: 1 }}>
               <div className="scr">Portions today</div>
@@ -379,6 +410,29 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
         })}
       </div>
       <TabBar />
+
+      {showNutritionOptions && (
+        <div className="sheet-backdrop" onClick={() => setShowNutritionOptions(false)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="row" style={{ marginBottom: 4 }}>
+              <div style={{ flex: 1 }}>
+                <div className="scr">Nutrition</div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Options</div>
+              </div>
+              <button onClick={() => setShowNutritionOptions(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
+                <i className="ph ph-x" style={{ fontSize: 18 }} />
+              </button>
+            </div>
+            <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => { setShowNutritionOptions(false); onEditTargets(); }}>
+              <i className="ph ph-pencil-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13 }}>Edit nutrition targets</div>
+                <div className="mu" style={{ marginTop: 1 }}>Change how you track and your portion goals.</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
