@@ -48,7 +48,7 @@
 }
 
 * , *::before, *::after { box-sizing: border-box; }
-html, body, #root { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+html, body, #root { margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--color-bg); }
 body {
   background: var(--color-bg);
   color: var(--color-text);
@@ -128,7 +128,11 @@ a { color: var(--color-accent); text-decoration: none; }
   flex: none;
   display: flex;
   padding: 6px 4px calc(18px + env(safe-area-inset-bottom));
-  background: linear-gradient(transparent, #1b1e2e 45%);
+  /* The safe-area padding above pushes this box's own background all the way to the real bottom edge of
+     the screen -- so that painted color has to be *exactly* var(--color-bg), the same literal the rest of
+     the app (and html/body underneath) use, not a close-but-different hardcoded navy. Any mismatch here is
+     a visible seam right at the page boundary, which is exactly where it'd read as "unfilled space". */
+  background: linear-gradient(transparent, var(--color-bg) 45%);
   border-top: 1px solid var(--color-neutral-900);
 }
 .tbi {
