@@ -11,6 +11,7 @@ import UpcomingDay from "./UpcomingDay";
 import Soreness from "./Soreness";
 import { ExerciseSection } from "./ExerciseSection";
 import { computeSorenessDue } from "../shared/soreness";
+import { isoToday } from "../shared/dayStatus";
 
 export default function DayDetail() {
   const { dayId = "" } = useParams();
@@ -21,7 +22,12 @@ export default function DayDetail() {
 
   if (day.status === "done") return <ReopenedDay dayId={dayId} />;
   if (day.status === "today") {
-    if (!day.sorenessDone) {
+    // Only ask about recovery on the session's real calendar day. "today" status is broader than that --
+    // it also covers a session opened early (when today is a rest day, the next one opens so you can
+    // still train) and a missed day being caught up later. Asking "has this healed?" in either case
+    // answers for the wrong point in time: a day early the recovery window hasn't elapsed yet, and days
+    // late the answer no longer describes how the muscle felt going into that session.
+    if (!day.sorenessDone && day.date === isoToday()) {
       const due = computeSorenessDue(state.program, dayId);
       if (due.length > 0) return <Soreness dayId={dayId} due={due} />;
     }

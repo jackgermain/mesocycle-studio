@@ -14,7 +14,7 @@ import type { Program, TrainingDay } from "../data/types";
  * So it's derived here instead, on read. "done" is the one status that's a real persisted fact -- a
  * session actually happened -- so it always wins. */
 
-function isoToday(): string {
+export function isoToday(): string {
   const d = new Date();
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
