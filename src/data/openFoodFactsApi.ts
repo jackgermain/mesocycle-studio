@@ -48,6 +48,14 @@ function isPhysicallyPlausible(grams: number, protein: number, carbs: number, fa
   return protein + carbs + fat <= grams * 1.05;
 }
 
+/** Open Food Facts' serving_size is free text -- "1 portion (56 g)", "2 pancakes (150g)", "100 g" -- so a
+ * plain parseFloat() grabs the leading "1" or "2" instead of the actual gram weight in parentheses.
+ * Extracts the gram/ml figure specifically, wherever in the string it appears. */
+function extractGrams(servingSize: string): number | null {
+  const m = servingSize.match(/(\d+(?:\.\d+)?)\s*(?:g|ml)\b/i);
+  return m ? parseFloat(m[1]) : null;
+}
+
 function normalizeOffProduct(p: OffProduct): FoodItem | null {
   const name = p.product_name?.trim();
   const n = p.nutriments ?? {};
@@ -56,7 +64,7 @@ function normalizeOffProduct(p: OffProduct): FoodItem | null {
   const usingServing = n["energy-kcal_serving"] != null;
   const servingLabel = usingServing && p.serving_size ? p.serving_size : "100 g";
   const suffix = usingServing ? "_serving" : "_100g";
-  const grams = usingServing && p.serving_size ? parseFloat(p.serving_size) || 100 : 100;
+  const grams = (usingServing && p.serving_size ? extractGrams(p.serving_size) : null) ?? 100;
   const protein = Math.round((n[`proteins${suffix}`] ?? 0) * 10) / 10;
   const carbs = Math.round((n[`carbohydrates${suffix}`] ?? 0) * 10) / 10;
   const fat = Math.round((n[`fat${suffix}`] ?? 0) * 10) / 10;
@@ -71,6 +79,22 @@ function normalizeOffProduct(p: OffProduct): FoodItem | null {
     carbs,
     fat,
   };
+}
+
+interface OffProductResponse {
+  status?: number;
+  product?: OffProduct;
+}
+
+/** Direct lookup by barcode -- this is what a barcode scan actually resolves against, since Open Food
+ * Facts is fundamentally keyed by barcode (unlike USDA, whose branded database isn't reliably searchable
+ * by UPC/GTIN as plain query text). Returns null both when the barcode isn't in their database at all and
+ * when it is but fails the same physical-plausibility check searchOpenFoodFacts applies. */
+export async function lookupOffBarcode(code: string): Promise<FoodItem | null> {
+  const params = new URLSearchParams({ fields: "code,product_name,brands,serving_size,nutriments,status" });
+  const data = await jsonp<OffProductResponse>(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}.json?${params}`);
+  if (data.status !== 1 || !data.product) return null;
+  return normalizeOffProduct(data.product);
 }
 
 export async function searchOpenFoodFacts(query: string): Promise<FoodItem[]> {

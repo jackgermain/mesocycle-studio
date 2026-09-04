@@ -3,6 +3,7 @@ import { foodDatabase, scaleFood, type FoodItem } from "../data/foodDatabase";
 import { searchUsdaFoods } from "../data/usdaFoodApi";
 import { searchOpenFoodFacts } from "../data/openFoodFactsApi";
 import { useStore } from "../state/store";
+import BarcodeScanner from "./BarcodeScanner";
 
 type Unit = "g" | "oz" | "ml";
 const UNIT_TO_GRAMS: Record<Unit, number> = { g: 1, oz: 28.3495, ml: 1 };
@@ -26,6 +27,7 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<FoodItem | null>(null);
   const [creating, setCreating] = useState(false);
+  const [scanning, setScanning] = useState(false);
   const [servings, setServings] = useState(1);
   const [unit, setUnit] = useState<Unit>("g");
   const [amountText, setAmountText] = useState("");
@@ -89,6 +91,25 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
     const n = parseFloat(text);
     const grams = Number.isFinite(n) ? n * UNIT_TO_GRAMS[u] : 0;
     setServings(grams / baseGrams);
+  }
+
+  if (scanning) {
+    return (
+      <BarcodeScanner
+        onClose={() => setScanning(false)}
+        onFound={(food) => {
+          // A scanned product is a real branded food, not a one-off log entry -- save it the same way a
+          // manually-created custom food is, so it's already there next time without rescanning.
+          dispatch({ type: "ADD_CUSTOM_FOOD", food });
+          setScanning(false);
+          setSelected(food);
+        }}
+        onNotFound={() => {
+          setScanning(false);
+          setCreating(true);
+        }}
+      />
+    );
   }
 
   if (creating) {
@@ -229,10 +250,16 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
         <div className="mu" style={{ lineHeight: 1.5 }}>
           Searches this app's saved foods instantly, plus live results from USDA FoodData Central and Open Food Facts as you type.
         </div>
-        <button className="link-row" style={{ padding: "9px 11px" }} onClick={() => setCreating(true)}>
-          <i className="ph ph-plus-circle" style={{ fontSize: 15, color: "var(--color-accent)" }} />
-          <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>Create a custom food</span>
-        </button>
+        <div className="row" style={{ gap: 7 }}>
+          <button className="link-row" style={{ padding: "9px 11px", flex: 1 }} onClick={() => setScanning(true)}>
+            <i className="ph ph-barcode" style={{ fontSize: 15, color: "var(--color-accent)" }} />
+            <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>Scan a barcode</span>
+          </button>
+          <button className="link-row" style={{ padding: "9px 11px", flex: 1 }} onClick={() => setCreating(true)}>
+            <i className="ph ph-plus-circle" style={{ fontSize: 15, color: "var(--color-accent)" }} />
+            <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>Create a custom food</span>
+          </button>
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 7, overflowY: "auto" }}>
           {localResults.map((f) => (
             <FoodResultRow
