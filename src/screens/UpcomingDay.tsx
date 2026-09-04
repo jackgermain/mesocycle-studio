@@ -5,13 +5,8 @@ import { useAuth } from "../lib/auth";
 import { BackHeader, InfoBanner } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
-import { dayDisplayTitle } from "../data/dayNumbering";
+import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
 import { ExerciseSection } from "./ExerciseSection";
-
-function friendlyDate(iso: string) {
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-}
 
 function daysAway(iso: string) {
   const today = new Date();
@@ -41,7 +36,7 @@ export default function UpcomingDay({ dayId }: { dayId: string }) {
   return (
     <div className="screen">
       <BackHeader
-        kicker={`${friendlyDate(day.date)} · Week ${week.number}`}
+        kicker={dayKicker(day, week.number)}
         title={dayDisplayTitle(day)}
         right={<DayNavControls dayId={dayId} />}
         onBack={selfDirected ? () => nav("/build") : undefined}

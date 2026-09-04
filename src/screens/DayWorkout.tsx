@@ -5,7 +5,7 @@ import { useAuth } from "../lib/auth";
 import { BackHeader, InfoBanner } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
-import { dayDisplayTitle } from "../data/dayNumbering";
+import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
 import { ExerciseSection } from "./ExerciseSection";
 
 type ConfirmAction = "session" | "mesocycle" | null;
@@ -57,7 +57,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   return (
     <div className="screen">
       <BackHeader
-        kicker={`Week ${week.number} · ${doneSets} of ${totalSets} sets`}
+        kicker={dayKicker(day, week.number)}
         title={allResolved ? "Session complete" : dayDisplayTitle(day)}
         right={<DayNavControls dayId={dayId} />}
         onBack={selfDirected ? () => nav("/build") : undefined}

@@ -15,3 +15,16 @@ export function dayNumberInWeek(day: Pick<TrainingDay, "code">): number {
 export function dayDisplayTitle(day: Pick<TrainingDay, "code">): string {
   return `Day ${dayNumberInWeek(day)}`;
 }
+
+/** "Friday, September 4" -- the one date format every day view uses in its kicker, so today's session, an
+ * upcoming preview, and a logged day all read the same way. Today's used to show set progress here
+ * instead ("Week 1 · 0 of 15 sets"), which made it the odd one out; the remaining-set count is already
+ * shown above the Finish button where it's actually actionable. */
+export function friendlyDate(iso: string): string {
+  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+}
+
+/** The shared kicker for every day view: "Friday, September 4 · Week 1". */
+export function dayKicker(day: Pick<TrainingDay, "date">, weekNumber: number): string {
+  return `${friendlyDate(day.date)} · Week ${weekNumber}`;
+}

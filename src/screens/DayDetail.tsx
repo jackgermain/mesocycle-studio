@@ -5,7 +5,7 @@ import { useAuth } from "../lib/auth";
 import { BackHeader, InfoBanner, StatCell } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
-import { dayDisplayTitle } from "../data/dayNumbering";
+import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
 import DayWorkout from "./DayWorkout";
 import UpcomingDay from "./UpcomingDay";
 import Soreness from "./Soreness";
@@ -49,7 +49,7 @@ function ReopenedDay({ dayId }: { dayId: string }) {
   return (
     <div className="screen">
       <BackHeader
-        kicker={`Week ${week.number} · ${day.dow} · logged`}
+        kicker={`${dayKicker(day, week.number)} · logged`}
         title={dayDisplayTitle(day)}
         right={<DayNavControls dayId={dayId} />}
         onBack={selfDirected ? () => nav("/build") : undefined}
