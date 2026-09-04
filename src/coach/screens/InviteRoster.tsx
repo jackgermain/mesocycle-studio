@@ -11,23 +11,38 @@ function initialsFor(name: string): string {
   return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "?";
 }
 
-const ROLE_COPY: Record<InviteRole, string> = {
+type PickerRole = InviteRole | "coach";
+
+const ROLE_COPY: Record<PickerRole, string> = {
   client:
     "A fully prescribed client — you build every program and set their nutrition targets, same as the rest of your roster.",
   friend:
     "A self-directed friend/family account — they can build their own programs from scratch or clone one of your saved templates and modify it, and they get full nutrition tracking. They can't onboard anyone else, and can only message you in the app. You can still view and edit anything they set up.",
+  coach:
+    "A fully independent coach — they get their own separate roster, clients, and programs, completely walled off from yours. Not part of your roster at all; this is just a general signup link, so no name needed.",
 };
+
+const COACH_SIGNUP_URL = `${window.location.origin}${window.location.pathname}#/`;
 
 export default function InviteRoster() {
   const { dispatch } = useCoachStore();
   const { account } = useAuth();
   const [name, setName] = useState("");
-  const [role, setRole] = useState<InviteRole>("client");
+  const [role, setRole] = useState<PickerRole>("client");
   const [sent, setSent] = useState<{ name: string; role: InviteRole; url: string } | null>(null);
+  const [coachLinkCopied, setCoachLinkCopied] = useState(false);
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
 
+  function copyCoachLink() {
+    navigator.clipboard?.writeText(COACH_SIGNUP_URL).then(() => {
+      setCoachLinkCopied(true);
+      setTimeout(() => setCoachLinkCopied(false), 2000);
+    });
+  }
+
   async function send() {
+    if (role === "coach") return;
     const trimmed = name.trim();
     if (!trimmed || !account) return;
     setSending(true);
@@ -73,13 +88,10 @@ export default function InviteRoster() {
         {!sent ? (
           <>
             <InfoBanner icon="ph-info">
-              Prototype note: nothing is emailed automatically. This generates a link — copy it and send it however you'd reach them.
+              {role === "coach"
+                ? "Prototype note: nothing is emailed automatically. This is a plain signup link, not a personal invite — copy it and send it to whoever you want to bring on."
+                : "Prototype note: nothing is emailed automatically. This generates a link — copy it and send it however you'd reach them."}
             </InfoBanner>
-
-            <div className="field">
-              <label>Name</label>
-              <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Their name" autoFocus />
-            </div>
 
             <div>
               <div className="sh">Role</div>
@@ -89,17 +101,39 @@ export default function InviteRoster() {
                 options={[
                   { value: "client", label: "Client" },
                   { value: "friend", label: "Friend / family" },
+                  { value: "coach", label: "Coach" },
                 ]}
               />
               <div className="mu" style={{ marginTop: 8, lineHeight: 1.55 }}>{ROLE_COPY[role]}</div>
             </div>
 
-            <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-              <button className="btn btn-primary btn-block" style={{ height: 46, opacity: name.trim() && !sending ? 1 : 0.5 }} disabled={!name.trim() || sending} onClick={send}>
-                <i className="ph ph-paper-plane-tilt" style={{ fontSize: 15 }} />
-                {sending ? "Sending…" : "Generate invite link"}
-              </button>
-            </div>
+            {role === "coach" ? (
+              <div className="cell" style={{ padding: 12, marginTop: 4 }}>
+                <div className="row" style={{ marginBottom: 8 }}>
+                  <span style={{ flex: 1, fontSize: 13, fontFamily: "var(--font-heading)" }}>Coach signup link</span>
+                </div>
+                <div className="mu trunc" style={{ padding: "8px 10px", background: "var(--color-neutral-900)", borderRadius: 7, fontFamily: "monospace" }}>
+                  {COACH_SIGNUP_URL}
+                </div>
+                <button className="btn btn-secondary btn-block" style={{ height: 40, marginTop: 8, fontSize: 12.5 }} onClick={copyCoachLink}>
+                  {coachLinkCopied ? "Copied" : "Copy link"}
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="field">
+                  <label>Name</label>
+                  <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Their name" autoFocus />
+                </div>
+
+                <div style={{ marginTop: "auto", paddingBottom: 8 }}>
+                  <button className="btn btn-primary btn-block" style={{ height: 46, opacity: name.trim() && !sending ? 1 : 0.5 }} disabled={!name.trim() || sending} onClick={send}>
+                    <i className="ph ph-paper-plane-tilt" style={{ fontSize: 15 }} />
+                    {sending ? "Sending…" : "Generate invite link"}
+                  </button>
+                </div>
+              </>
+            )}
           </>
         ) : (
           <>

@@ -43,37 +43,41 @@ export default function Nutrition() {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const { account, previewingAsClient } = useAuth();
   const [settingUp, setSettingUp] = useState(false);
-  // A coach training themselves has no external coach to turn nutrition tracking on for them — let them
-  // set their own targets instead of just telling them to "ask their coach" (which would be themselves).
-  const canSelfServe = account?.role === "coach" && previewingAsClient;
+  const [editingTargets, setEditingTargets] = useState(false);
+  // A coach training themselves, or a self-directed friend/family account, has no external coach setting
+  // their nutrition for them — let them set (and later change) their own targets instead of just telling
+  // them to "ask their coach" (which would be themselves, for the train-yourself case).
+  const canSelfServe = (account?.role === "coach" && previewingAsClient) || account?.role === "friend";
+
+  if (settingUp || editingTargets) {
+    return (
+      <div className="screen">
+        <BackHeader kicker="Nutrition" title={editingTargets ? "Edit targets" : "Set up tracking"} onBack={() => { setSettingUp(false); setEditingTargets(false); }} />
+        <NutritionForm
+          profile={profile}
+          onSave={(protocol) => {
+            dispatch({ type: "SET_NUTRITION_PROTOCOL", protocol });
+            if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
+              for (const name of ["Meal 1", "Meal 2", "Meal 3"]) dispatch({ type: "ADD_MEAL", name });
+            }
+            dispatch({ type: "SHOW_TOAST", message: editingTargets ? "Nutrition targets updated." : "Nutrition tracking is on." });
+            setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
+            setSettingUp(false);
+            setEditingTargets(false);
+          }}
+        />
+      </div>
+    );
+  }
 
   if (profile.nutritionMode === "off") {
-    if (settingUp) {
-      return (
-        <div className="screen">
-          <BackHeader kicker="Nutrition" title="Set up tracking" onBack={() => setSettingUp(false)} />
-          <NutritionForm
-            profile={profile}
-            onSave={(protocol) => {
-              dispatch({ type: "SET_NUTRITION_PROTOCOL", protocol });
-              if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
-                for (const name of ["Meal 1", "Meal 2", "Meal 3"]) dispatch({ type: "ADD_MEAL", name });
-              }
-              dispatch({ type: "SHOW_TOAST", message: "Nutrition tracking is on." });
-              setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
-              setSettingUp(false);
-            }}
-          />
-        </div>
-      );
-    }
     return (
       <div className="screen">
         <HeroHeader kicker="Nutrition" title="Not turned on" />
         <div className="screen-scroll">
           <InfoBanner icon="ph-fork-knife">
             {canSelfServe
-              ? "Nothing set up yet — since you're training yourself, you can set your own tracking style and targets."
+              ? "Nothing set up yet — since you're self-directed, you can set your own tracking style and targets."
               : `${state.program.coachName} hasn't turned on food tracking for you yet. Ask them if you'd like to log meals and get targets.`}
           </InfoBanner>
           {canSelfServe && (
@@ -88,7 +92,7 @@ export default function Nutrition() {
   }
 
   if (profile.nutritionMode === "portions") {
-    return <PortionsNutrition />;
+    return <PortionsNutrition canSelfServe={canSelfServe} onEditTargets={() => setEditingTargets(true)} />;
   }
 
   const totals = totalsFor(state.meals.flatMap((m) => m.items));
@@ -150,7 +154,13 @@ export default function Nutrition() {
             </div>
             <div style={{ textAlign: "right" }}>
               <div className="mu">{totals.kcal.toLocaleString()} of {kcalTarget.toLocaleString()}</div>
-              <div className="mu" style={{ marginTop: 2 }}>{state.program.coachName}'s target</div>
+              {canSelfServe ? (
+                <button onClick={() => setEditingTargets(true)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-accent)", fontSize: 11.5, padding: 0, marginTop: 2 }}>
+                  Edit your targets
+                </button>
+              ) : (
+                <div className="mu" style={{ marginTop: 2 }}>{state.program.coachName}'s target</div>
+              )}
             </div>
           </div>
           <Meter pct={(totals.kcal / kcalTarget) * 100} large />
@@ -251,7 +261,7 @@ function fmtPortionQty(unit: string, qty: number) {
   return `${qty} ${unit}${qty === 1 ? "" : "s"}`;
 }
 
-function PortionsNutrition() {
+function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: boolean; onEditTargets: () => void }) {
   const { state, dispatch } = useStore();
   const profile = useEffectiveProfile();
   const targets = profile.portionTargets;
@@ -299,7 +309,13 @@ function PortionsNutrition() {
       />
       <div className="screen-scroll" onClick={() => showAddMenu && setShowAddMenu(false)}>
         <InfoBanner icon="ph-hand-palm">
-          No calorie counting — just hit your portions each meal. {state.program.coachName} set these targets for you.
+          No calorie counting — just hit your portions each meal. {canSelfServe ? "You set these targets — " : `${state.program.coachName} set these targets for you`}
+          {canSelfServe && (
+            <button onClick={onEditTargets} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-accent)", fontSize: "inherit", padding: 0, textDecoration: "underline" }}>
+              edit them
+            </button>
+          )}
+          .
         </InfoBanner>
 
         <div className="cell elev-sm">
