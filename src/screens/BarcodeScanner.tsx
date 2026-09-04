@@ -1,95 +1,79 @@
 import React, { useEffect, useRef, useState } from "react";
+import { BrowserMultiFormatReader, type IScannerControls } from "@zxing/browser";
+import { BarcodeFormat, DecodeHintType, NotFoundException } from "@zxing/library";
 import { lookupOffBarcode } from "../data/openFoodFactsApi";
 import type { FoodItem } from "../data/foodDatabase";
 import { InfoBanner } from "../components/UI";
 
 type ScanState = "starting" | "scanning" | "looking-up" | "not-found" | "error";
-type ErrorKind = "not-supported" | "permission-denied" | "no-camera" | "lookup-failed";
+type ErrorKind = "permission-denied" | "no-camera" | "lookup-failed";
 
-/** Native BarcodeDetector -- no library needed. Ships in Chrome/Edge/Android everywhere, and Safari 17+
- * (iOS 17+, macOS Sonoma+), which covers this app's real target (an installed iOS PWA) without adding a
- * decoding library to the bundle. Falls back to a plain "not supported, use search instead" message on
- * anything older. */
-declare global {
-  interface Window {
-    BarcodeDetector?: new (options?: { formats: string[] }) => {
-      detect: (source: CanvasImageSource) => Promise<{ rawValue: string }[]>;
-    };
-  }
-}
+/** A real decoding library (zxing), not the native BarcodeDetector API -- that API is Chromium-only
+ * (Chrome/Edge/Android WebView/Samsung Internet); Safari has never shipped it, on iOS or macOS, despite
+ * this file's earlier comment claiming otherwise. This app's real target is an installed iOS PWA, so a
+ * pure-JS decoder that works via canvas frame analysis (works in any browser with camera access) is the
+ * only option that actually functions there. */
+const HINTS = new Map();
+HINTS.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13, BarcodeFormat.EAN_8, BarcodeFormat.UPC_A, BarcodeFormat.UPC_E]);
 
 export default function BarcodeScanner({ onFound, onNotFound, onClose }: { onFound: (food: FoodItem) => void; onNotFound: (barcode: string) => void; onClose: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const controlsRef = useRef<IScannerControls | null>(null);
   const [state, setState] = useState<ScanState>("starting");
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null);
   const [lastCode, setLastCode] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
-    let intervalId: ReturnType<typeof setInterval> | null = null;
 
     function stopCamera() {
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-      if (intervalId) clearInterval(intervalId);
+      controlsRef.current?.stop();
+      controlsRef.current = null;
     }
 
     async function start() {
-      if (!window.BarcodeDetector) {
-        setErrorKind("not-supported");
-        setState("error");
-        return;
-      }
-      let stream: MediaStream;
+      const reader = new BrowserMultiFormatReader(HINTS);
+      let sawFirstFrame = false;
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-      } catch (e) {
-        if (!active) return;
-        setErrorKind(e instanceof Error && e.name === "NotAllowedError" ? "permission-denied" : "no-camera");
-        setState("error");
-        return;
-      }
-      if (!active) {
-        stream.getTracks().forEach((t) => t.stop());
-        return;
-      }
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play().catch(() => {});
-      }
-      setState("scanning");
-
-      const detector = new window.BarcodeDetector({ formats: ["ean_13", "ean_8", "upc_e", "upc_a"] });
-      intervalId = setInterval(async () => {
-        if (!videoRef.current || videoRef.current.readyState < 2) return;
-        try {
-          const codes = await detector.detect(videoRef.current);
-          const code = codes[0]?.rawValue;
-          if (code && active) {
-            if (intervalId) clearInterval(intervalId);
-            stopCamera();
-            setLastCode(code);
-            setState("looking-up");
-            try {
-              const food = await lookupOffBarcode(code);
+        const controls = await reader.decodeFromConstraints({ video: { facingMode: "environment" } }, videoRef.current!, (result, error) => {
+          if (!active) return;
+          if (!sawFirstFrame) {
+            sawFirstFrame = true;
+            setState("scanning");
+          }
+          if (!result) {
+            // NotFoundException fires on every frame with no decodable barcode in view -- completely
+            // normal while the camera's just pointed at a countertop, not a real error to surface.
+            if (error && !(error instanceof NotFoundException)) return;
+            return;
+          }
+          const code = result.getText();
+          stopCamera();
+          setLastCode(code);
+          setState("looking-up");
+          lookupOffBarcode(code)
+            .then((food) => {
               if (!active) return;
               if (food) onFound(food);
-              else {
-                setState("not-found");
-              }
-            } catch {
+              else setState("not-found");
+            })
+            .catch(() => {
               if (active) {
                 setErrorKind("lookup-failed");
                 setState("error");
               }
-            }
-          }
-        } catch {
-          // A mid-frame detect() failure (video not ready yet, tab backgrounded) -- just try again next tick.
+            });
+        });
+        if (!active) {
+          controls.stop();
+          return;
         }
-      }, 350);
+        controlsRef.current = controls;
+      } catch (e) {
+        if (!active) return;
+        setErrorKind(e instanceof Error && e.name === "NotAllowedError" ? "permission-denied" : "no-camera");
+        setState("error");
+      }
     }
 
     start();
@@ -101,7 +85,6 @@ export default function BarcodeScanner({ onFound, onNotFound, onClose }: { onFou
   }, []);
 
   const ERROR_COPY: Record<ErrorKind, string> = {
-    "not-supported": "Barcode scanning isn't supported in this browser. Search for the food by name instead.",
     "permission-denied": "Camera access was denied. Allow camera access in your browser settings to scan a barcode, or search by name instead.",
     "no-camera": "Couldn't access a camera on this device. Search by name instead.",
     "lookup-failed": "Couldn't look up that barcode — check your connection and try again.",
