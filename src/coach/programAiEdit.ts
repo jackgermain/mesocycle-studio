@@ -1,4 +1,5 @@
-import type { BuilderDay, BuilderExercise } from "./types";
+import type { BuilderDay, BuilderExercise, BuilderSet } from "./types";
+import { defaultRestSec } from "./rest";
 
 /** The edit vocabulary the AI is allowed to speak.
  *
@@ -20,7 +21,12 @@ export type EditOp =
   | { op: "set_rest"; exerciseIds: string[]; seconds: number }
   | { op: "rename_exercise"; exerciseIds: string[]; name: string }
   | { op: "remove_exercise"; exerciseIds: string[] }
-  | { op: "rename_day"; dayId: string; name: string };
+  | { op: "rename_day"; dayId: string; name: string }
+  | { op: "swap_exercise"; exerciseIds: string[]; name: string; muscle?: string }
+  | { op: "add_exercise"; dayIds: string[]; name: string; muscle: string; sets?: number; reps?: number; load?: number }
+  | { op: "reorder_day"; dayId: string; exerciseIds: string[] }
+  | { op: "set_warmup_count"; exerciseIds: string[]; count: number }
+  | { op: "set_reps_per_set"; exerciseIds: string[]; repsPerSet: number[] };
 
 export interface AiEditResult {
   ops: EditOp[];
@@ -70,6 +76,35 @@ export function applyOps(days: BuilderDay[], ops: EditOp[]): BuilderDay[] {
       for (const day of next) day.exercises = day.exercises.filter((ex) => !doomed.has(ex.id));
       continue;
     }
+    if (op.op === "add_exercise") {
+      for (const dayId of op.dayIds ?? []) {
+        const day = next.find((d) => d.id === dayId);
+        if (!day || !op.name.trim()) continue;
+        const id = `ai-${Math.random().toString(36).slice(2, 9)}`;
+        const count = Math.max(1, Math.min(MAX_SETS, op.sets ?? 3));
+        const sets: BuilderSet[] = Array.from({ length: count }, (_, i) => ({
+          id: `${id}-s${i + 1}`,
+          reps: Math.max(1, Math.round(op.reps ?? 10)),
+          loadValue: Math.max(0, op.load ?? 0),
+          warmup: false,
+          restSec: defaultRestSec(op.name),
+        }));
+        day.exercises.push({ id, name: op.name.trim(), muscle: op.muscle, kind: "strength", sets });
+        byId.set(id, day.exercises[day.exercises.length - 1]);
+      }
+      continue;
+    }
+    if (op.op === "reorder_day") {
+      const day = next.find((d) => d.id === op.dayId);
+      if (day) {
+        // Anything the model left out keeps its place at the end rather than vanishing -- a reorder
+        // should never be able to silently delete an exercise.
+        const wanted = op.exerciseIds.map((id) => day.exercises.find((ex) => ex.id === id)).filter((ex): ex is BuilderExercise => !!ex);
+        const rest = day.exercises.filter((ex) => !wanted.includes(ex));
+        day.exercises = [...wanted, ...rest];
+      }
+      continue;
+    }
 
     for (const id of op.exerciseIds ?? []) {
       const ex = byId.get(id);
@@ -96,6 +131,43 @@ export function applyOps(days: BuilderDay[], ops: EditOp[]): BuilderDay[] {
         case "rename_exercise":
           if (op.name.trim()) ex.name = op.name.trim();
           break;
+        case "swap_exercise":
+          // A swap keeps the prescription and changes the movement -- that's what makes it a swap rather
+          // than a delete plus an add, and it's why the sets are left exactly as they were.
+          if (op.name.trim()) {
+            ex.name = op.name.trim();
+            if (op.muscle) ex.muscle = op.muscle;
+            for (const s of ex.sets) s.restSec = defaultRestSec(ex.name);
+          }
+          break;
+        case "set_warmup_count": {
+          const target = Math.max(0, Math.min(6, op.count));
+          const working = ex.sets.filter((s) => !s.warmup);
+          const warmups = ex.sets.filter((s) => s.warmup);
+          if (working.length === 0) break;
+          while (warmups.length > target) warmups.pop();
+          while (warmups.length < target) {
+            const first = working[0];
+            warmups.push({
+              ...structuredClone(first),
+              id: `${ex.id}-w${warmups.length + 1}-${Math.random().toString(36).slice(2, 7)}`,
+              warmup: true,
+              loadValue: Math.round(first.loadValue * 0.5),
+            });
+          }
+          ex.sets = [...warmups, ...working];
+          break;
+        }
+        case "set_reps_per_set": {
+          // Per-set reps ("12/10/8") also fixes the number of working sets, since a rep for every set is
+          // exactly what was specified.
+          const wanted = (op.repsPerSet ?? []).filter((n) => Number.isFinite(n)).map((n) => Math.max(1, Math.round(n)));
+          if (wanted.length === 0) break;
+          resize(ex, wanted.length);
+          const working = ex.sets.filter((s) => !s.warmup);
+          working.forEach((s, i) => (s.reps = wanted[Math.min(i, wanted.length - 1)]));
+          break;
+        }
       }
     }
   }

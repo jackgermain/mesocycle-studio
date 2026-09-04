@@ -42,6 +42,11 @@ const EDIT_TOOL = {
                 "rename_exercise",
                 "remove_exercise",
                 "rename_day",
+                "swap_exercise",
+                "add_exercise",
+                "reorder_day",
+                "set_warmup_count",
+                "set_reps_per_set",
               ],
             },
             exerciseIds: TARGET,
@@ -51,7 +56,20 @@ const EDIT_TOOL = {
             delta: { type: "number", description: "For adjust_reps and adjust_load. Negative to decrease." },
             value: { type: "number", description: "For set_load, in the program's load unit." },
             seconds: { type: "integer", description: "For set_rest." },
-            name: { type: "string", description: "For rename_exercise and rename_day." },
+            name: { type: "string", description: "For rename_exercise, rename_day, swap_exercise and add_exercise." },
+            dayIds: { type: "array", items: { type: "string" }, description: "For add_exercise: which days to add it to." },
+            muscle: {
+              type: "string",
+              enum: [
+                "Abs", "Back", "Biceps", "Calves", "Chest", "Forearms", "Front delts", "Side delts",
+                "Rear delts", "Full body", "Glutes", "Hamstrings", "Adductors", "Obliques", "Quads",
+                "Traps", "Triceps",
+              ],
+              description: "For add_exercise (required) and swap_exercise (when the muscle changes).",
+            },
+            repsPerSet: { type: "array", items: { type: "integer" }, description: "For set_reps_per_set, e.g. [12,10,8]." },
+            load: { type: "number", description: "For add_exercise: starting load." },
+            sets: { type: "integer", description: "For add_exercise: how many sets." },
           },
           required: ["op"],
         },
@@ -71,6 +89,8 @@ const SYSTEM = `You edit strength training programs on behalf of a coach, by ret
 
 Rules:
 - Only use the operations available. If the coach asks for something outside them, do what you can and say plainly in "notes" what you couldn't do. Never pretend an unsupported change was made.
+- What the operations cover: how many sets, reps (uniform or per-set like 12/10/8), load, rest, warm-up count, renaming, removing, swapping one movement for another, adding a new movement to a day, and reordering a day. Between them that covers most of what a coach asks for. Resolve whatever the coach refers to yourself -- "the calf work", "the first exercise", "everything on Tuesday", "the pressing" -- using the names, muscles, day names and order you can see.
+- swap_exercise keeps the sets and reps and changes the movement. remove_exercise plus add_exercise is a different thing and loses the prescription; prefer a swap when they say "swap", "replace" or "change X to Y".
 - Target exercises by listing their ids explicitly. "Every exercise" means listing all of them.
 - You will be shown one of two shapes, and it changes what's possible:
   (a) A "days" list with no week numbers. That is ONE WEEK's template, repeated for the whole program, so week 2 cannot differ from week 1. If asked for a week-over-week change, return no ops for that part and say so in notes.

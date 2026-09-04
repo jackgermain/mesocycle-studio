@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { InfoBanner } from "../../components/UI";
 import { applyOps, diffDays, type AiEditResult, type DiffLine, type EditOp } from "../programAiEdit";
+import { useDictation } from "../../shared/useDictation";
 import type { BuilderDay, CoachProgram } from "../types";
 
 const EXAMPLES = [
@@ -85,6 +86,8 @@ export function AiEditShell<T>({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [proposal, setProposal] = useState<{ next: T; diff: DiffLine[]; result: AiEditResult } | null>(null);
+  // Appends rather than replaces, so several bursts of speech build one instruction.
+  const dictation = useDictation((text) => setInstruction((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text)));
 
   async function run() {
     if (!instruction.trim()) return;
@@ -137,10 +140,22 @@ export function AiEditShell<T>({
             style={{ minHeight: 78, lineHeight: 1.5 }}
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}
-            placeholder="e.g. make every exercise one set"
+            placeholder="e.g. make every exercise one set — or tap the mic and say it"
             disabled={busy}
             autoFocus
           />
+          {dictation.supported && (
+            <button
+              className={`btn ${dictation.listening ? "btn-solid" : "btn-secondary"}`}
+              style={{ height: 38, marginTop: 8, width: "100%" }}
+              disabled={busy}
+              onClick={dictation.toggle}
+            >
+              <i className={dictation.listening ? "ph-fill ph-microphone" : "ph ph-microphone"} style={{ fontSize: 15 }} />
+              {dictation.listening ? "Listening — tap when you're done" : "Say it instead"}
+            </button>
+          )}
+          {dictation.error && <div className="mu" style={{ marginTop: 6 }}>{dictation.error}</div>}
         </div>
 
         {!proposal && (

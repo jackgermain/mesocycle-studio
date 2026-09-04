@@ -1,4 +1,6 @@
 import type { Program, WorkExercise, WorkSet } from "../data/types";
+import { equipmentOf } from "../screens/exerciseHelpers";
+import { defaultRestSec } from "../coach/rest";
 import type { EditOp } from "../coach/programAiEdit";
 import type { DiffLine } from "../coach/programAiEdit";
 
@@ -94,7 +96,49 @@ export function applyOpsToProgram(program: Program, ops: EditOp[]): Program {
       continue;
     }
 
-    for (const id of op.exerciseIds ?? []) {
+    if (op.op === "add_exercise") {
+      for (const week of next.weeks) {
+        for (const day of week.days) {
+          if (day.status === "done" || !op.dayIds.includes(day.id) || !op.name.trim()) continue;
+          const key = `ai-${Math.random().toString(36).slice(2, 9)}`;
+          const count = Math.max(1, Math.min(MAX_SETS, op.sets ?? 3));
+          const rest = defaultRestSec(op.name);
+          const sets: WorkSet[] = Array.from({ length: count }, (_, i) => ({
+            id: `${key}-s${i + 1}`,
+            index: i + 1,
+            type: "straight",
+            prescribed: { reps: Math.max(1, Math.round(op.reps ?? 10)), load: op.load ?? null, effort: { scale: "RIR", value: "2" }, restSec: rest },
+            actual: null,
+            checked: false,
+          }));
+          day.exercises[key] = {
+            id: key,
+            name: op.name.trim(),
+            muscle: op.muscle,
+            metaLine: `${count} sets`,
+            hasVideo: false,
+            equipment: equipmentOf({ name: op.name }),
+            sets,
+          };
+          day.order.push(key);
+        }
+      }
+      continue;
+    }
+    if (op.op === "reorder_day") {
+      for (const week of next.weeks) {
+        for (const day of week.days) {
+          if (day.status === "done" || day.id !== op.dayId) continue;
+          // Anything left out keeps its place at the end -- a reorder must never silently drop an exercise.
+          const wanted = op.exerciseIds.filter((id) => !!day.exercises[id]);
+          day.order = [...wanted, ...day.order.filter((id) => !wanted.includes(id))];
+        }
+      }
+      continue;
+    }
+
+    const targets = "exerciseIds" in op ? op.exerciseIds : [];
+    for (const id of targets) {
       const found = byId.get(id);
       if (!found) continue;
       const ex = found.ex;
@@ -121,6 +165,49 @@ export function applyOpsToProgram(program: Program, ops: EditOp[]): Program {
         case "rename_exercise":
           if (op.name.trim()) ex.name = op.name.trim();
           break;
+        case "swap_exercise":
+          // Keeps the prescription and changes the movement -- that's what makes it a swap. Loads on
+          // unlogged sets are left as they are; the coach reviews them, and guessing a new weight for a
+          // different exercise would be inventing a prescription they didn't ask for.
+          if (op.name.trim()) {
+            ex.name = op.name.trim();
+            if (op.muscle) ex.muscle = op.muscle;
+            ex.equipment = equipmentOf({ name: ex.name });
+            for (const s of editableSets(ex)) s.prescribed.restSec = defaultRestSec(ex.name);
+          }
+          break;
+        case "set_warmup_count": {
+          const target = Math.max(0, Math.min(6, op.count));
+          const working = ex.sets.filter((s) => !s.isWarmup);
+          const warmups = ex.sets.filter((s) => s.isWarmup);
+          if (working.length === 0) break;
+          while (warmups.length > target && !warmups[warmups.length - 1].checked) warmups.pop();
+          while (warmups.length < target) {
+            const first = working[0];
+            warmups.push({
+              ...structuredClone(first),
+              id: `${ex.id}-w${warmups.length + 1}-${Math.random().toString(36).slice(2, 7)}`,
+              isWarmup: true,
+              checked: false,
+              actual: null,
+              removed: undefined,
+              prescribed: {
+                ...structuredClone(first.prescribed),
+                load: first.prescribed.load === null ? null : Math.round(first.prescribed.load * 0.5),
+                effort: { scale: first.prescribed.effort.scale, value: "warm-up" },
+              },
+            });
+          }
+          ex.sets = [...warmups, ...working];
+          break;
+        }
+        case "set_reps_per_set": {
+          const wanted = (op.repsPerSet ?? []).filter((n) => Number.isFinite(n)).map((n) => Math.max(1, Math.round(n)));
+          if (wanted.length === 0) break;
+          resize(ex, wanted.length);
+          ex.sets.filter((s) => !s.isWarmup && !s.checked).forEach((s, i) => (s.prescribed.reps = wanted[Math.min(i, wanted.length - 1)]));
+          break;
+        }
       }
       refreshMeta(ex);
     }
