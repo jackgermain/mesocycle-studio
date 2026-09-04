@@ -8,6 +8,7 @@ import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
 import { SimpleExercisePicker } from "../shared/SimpleExercisePicker";
 import { SwapScopeSheet } from "../shared/SwapScopeSheet";
+import { RemoveExerciseSheet } from "../shared/RemoveExerciseSheet";
 import { equipmentOf } from "./exerciseHelpers";
 import { ExerciseSection } from "./ExerciseSection";
 
@@ -25,6 +26,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
   const [swapKey, setSwapKey] = useState<string | null>(null);
   const [pendingSwap, setPendingSwap] = useState<{ name: string; muscle: string; hasVideo: boolean } | null>(null);
+  const [removeKey, setRemoveKey] = useState<string | null>(null);
   const [confirmText, setConfirmText] = useState("");
 
   const found = findDay(state.program, dayId);
@@ -138,8 +140,18 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                 dispatch({ type: "ADD_SET", dayId, exerciseId: id, warmup: true });
                 setOpenMenu(null);
               }}
+              // A prescribed client answers for a set they didn't do -- that reason is the whole point of
+              // the removal, it's what their coach reads. Someone training themselves is editing their own
+              // prescription, so there's nobody to explain it to: the set just goes, and stays gone for the
+              // rest of the block.
               onRemoveSet={() => {
                 setOpenMenu(null);
+                if (selfDirected) {
+                  dispatch({ type: "DROP_SET", exerciseKey: id, scope: "mesocycle", dayId });
+                  dispatch({ type: "SHOW_TOAST", message: `Dropped a set from ${ex.name} for the rest of the block.` });
+                  setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2600);
+                  return;
+                }
                 const target = ex.sets.find((s) => !s.checked) ?? ex.sets[ex.sets.length - 1];
                 nav(`/block/day/${dayId}/exercise/${id}/remove/${target.id}`);
               }}
@@ -148,6 +160,10 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
               onSwap={selfDirected ? () => {
                 setOpenMenu(null);
                 setSwapKey(id);
+              } : undefined}
+              onRemoveExercise={selfDirected ? () => {
+                setOpenMenu(null);
+                setRemoveKey(id);
               } : undefined}
             />
           );
@@ -179,6 +195,19 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
           toName={pendingSwap.name}
           onChoose={applySwap}
           onClose={() => setPendingSwap(null)}
+        />
+      )}
+      {removeKey && day.exercises[removeKey] && (
+        <RemoveExerciseSheet
+          name={day.exercises[removeKey].name}
+          onChoose={(scope) => {
+            const removed = day.exercises[removeKey].name;
+            dispatch({ type: "REMOVE_EXERCISE", exerciseKey: removeKey, scope, dayId });
+            dispatch({ type: "SHOW_TOAST", message: scope === "day" ? `Removed ${removed} for today.` : `Removed ${removed} from the rest of the block.` });
+            setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+            setRemoveKey(null);
+          }}
+          onClose={() => setRemoveKey(null)}
         />
       )}
 

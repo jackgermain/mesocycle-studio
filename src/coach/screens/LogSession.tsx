@@ -10,6 +10,7 @@ import { ExerciseSection } from "../../screens/ExerciseSection";
 import { equipmentOf } from "../../screens/exerciseHelpers";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { SwapScopeSheet } from "../../shared/SwapScopeSheet";
+import { RemoveExerciseSheet } from "../../shared/RemoveExerciseSheet";
 import { getSignal, type ClientSignal } from "../../shared/signals";
 import { jointReasonLabels } from "../../data/mockData";
 import type { Program, TrainingDay } from "../../data/types";
@@ -51,13 +52,26 @@ export default function LogSession() {
  * filed on catches the older ones, since feedback is answered at the end of the session it's about.
  * Returns null when the original session genuinely isn't in the program any more, which the screen says
  * out loud rather than quietly showing today's instead. */
-function resolveReportedDay(program: Program, signal: ClientSignal | null): string | null {
-  if (!signal) return null;
+function resolveReportedDay(program: Program, signal: ClientSignal | null): { dayId: string | null; exact: boolean } {
+  const miss = { dayId: null, exact: false };
+  if (!signal) return miss;
   const days = program.weeks.flatMap((w) => w.days);
-  if (signal.day_id && days.some((d) => d.id === signal.day_id)) return signal.day_id;
+  if (days.length === 0) return miss;
+
+  if (signal.day_id && days.some((d) => d.id === signal.day_id)) return { dayId: signal.day_id, exact: true };
+
   const filed = new Date(signal.created_at);
   const iso = `${filed.getFullYear()}-${String(filed.getMonth() + 1).padStart(2, "0")}-${String(filed.getDate()).padStart(2, "0")}`;
-  return days.find((d) => d.date === iso)?.id ?? null;
+  const sameDay = days.find((d) => d.date === iso);
+  if (sameDay) return { dayId: sameDay.id, exact: true };
+
+  // Nothing lines up by date, so the program was rebuilt after this was filed. The best remaining guess is
+  // the last session they actually trained on or before that date -- feedback is answered at the end of a
+  // session, so that's the one it describes. Landing on a near-miss beats dumping the coach into a
+  // thirty-row picker, which is where this used to end up -- but it is a guess, and the screen says so.
+  const before = days.filter((d) => d.date <= iso);
+  const trained = [...before].reverse().find((d) => Object.values(d.exercises).some((ex) => ex.sets.some((s) => s.checked)));
+  return { dayId: trained?.id ?? before[before.length - 1]?.id ?? days[0].id, exact: false };
 }
 
 /** Arriving from a pain report on the desk. The whole point is to land on the day it happened rather than
@@ -108,18 +122,20 @@ function LogSessionBody({
   const { state, dispatch } = useStore();
   const todayDay = state.program.weeks.flatMap((w) => w.days).find((d) => d.status === "today");
 
-  const reportedDayId = resolveReportedDay(state.program, signal);
-  const [selectedId, setSelectedId] = useState<string | null>(reportedDayId ?? requestedDay ?? todayDay?.id ?? null);
+  const reported = resolveReportedDay(state.program, signal);
+  const [selectedId, setSelectedId] = useState<string | null>(reported.dayId ?? requestedDay ?? todayDay?.id ?? null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [swapKey, setSwapKey] = useState<string | null>(requestedExercise);
   // A report from before the client was asked which exercise it was (or where they said it wasn't any
   // single one) still deserves to be actionable -- the coach usually knows, or can ask. Naming it here
   // unlocks the same swap/warm-up/remove actions as a report that came with one.
   const [manualExercise, setManualExercise] = useState<string | null>(null);
-  // Whether the swap in flight came from the pain card, which fixes its scope at the whole block rather
-  // than asking -- responding to pain is a decision about the movement, not about today.
+  // Whether the swap in flight came from the pain card. Only affects which muscle the picker opens
+  // filtered to -- the scope is always asked, because "just this session" and "for the rest of the block"
+  // are both real answers to pain and only the coach knows which one they mean.
   const [painScope, setPainScope] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
+  const [removeKey, setRemoveKey] = useState<string | null>(null);
   // Picking the replacement and deciding how far it reaches are two steps: the picked exercise is held
   // here until a scope is chosen, so nothing is written until the coach says how far it should go.
   // Declared up here with the rest, not down beside applySwap where it reads better -- everything below
@@ -159,7 +175,7 @@ function LogSessionBody({
     ? exIds.find((id) => day.exercises[id]?.name.trim().toLowerCase() === painName.trim().toLowerCase()) ?? null
     : null;
   const painEx = painKey ? day.exercises[painKey] : null;
-  const reportedDayMissing = !!signal && reportedDayId === null;
+  const reportedDayGuessed = !!signal && !reported.exact;
 
   function toast(message: string) {
     dispatch({ type: "SHOW_TOAST", message });
@@ -177,22 +193,6 @@ function LogSessionBody({
     });
     toast(scope === "day" ? `Swapped to ${pendingSwap.name} for today.` : `Swapped to ${pendingSwap.name} for the rest of the block.`);
     setPendingSwap(null);
-    setSwapKey(null);
-    setPainScope(false);
-  }
-
-  /** The pain card's swap: the scope is already decided (the rest of the block), so picking the
-   * replacement is the last step rather than the second-to-last. */
-  function applySwapTo(replacement: LibraryExercise) {
-    if (!swapKey) return;
-    dispatch({
-      type: "SWAP_EXERCISE",
-      exerciseKey: swapKey,
-      replacement: { name: replacement.name, muscle: replacement.muscle, equipment: equipmentOf({ name: replacement.name }), hasVideo: replacement.hasVideo },
-      scope: "mesocycle",
-      dayId: day.id,
-    });
-    toast(`Swapped to ${replacement.name} for the rest of the block.`);
     setSwapKey(null);
     setPainScope(false);
   }
@@ -229,7 +229,7 @@ function LogSessionBody({
               <div style={{ flex: 1, minWidth: 0 }}>
                 {/* Only claim "here" when this really is the session it came from. */}
                 <div className="scr" style={{ color: "var(--color-accent-300)" }}>
-                  {reportedDayId === day.id ? "Reported here" : `Reported ${new Date(signal.created_at).toLocaleDateString()}`}
+                  {reported.exact && reported.dayId === day.id ? "Reported here" : `Reported ${new Date(signal.created_at).toLocaleDateString()}`}
                 </div>
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, marginTop: 2 }}>
                   {signal.kind === "joint" ? "Joint pain" : signal.kind === "soreness" ? "Still sore" : "Low pump"}
@@ -249,10 +249,10 @@ function LogSessionBody({
               </div>
             )}
 
-            {reportedDayMissing && (
+            {reportedDayGuessed && (
               <div className="mu" style={{ marginTop: 8, lineHeight: 1.5 }}>
-                The session this came from isn't in {clientName.split(" ")[0]}'s program any more — it was rebuilt or
-                reassigned since. You're looking at {reportedDayId === day.id ? "it" : dayDisplayTitle(day)} instead.
+                The exact session isn't in {clientName.split(" ")[0]}'s program any more — it was rebuilt or reassigned
+                since it was filed. This is the closest match; use "Pick a different day" if it's the wrong one.
               </div>
             )}
 
@@ -338,14 +338,20 @@ function LogSessionBody({
                 dispatch({ type: "ADD_SET", dayId: day.id, exerciseId: id, warmup: true });
                 setOpenMenu(null);
               }}
+              // No reason asked here: a coach editing the prescription isn't explaining a missed set to
+              // themselves. The set goes, and stays gone for the rest of the block.
               onRemoveSet={() => {
                 setOpenMenu(null);
-                const target = ex.sets.find((s) => !s.checked) ?? ex.sets[ex.sets.length - 1];
-                nav(`/block/day/${day.id}/exercise/${id}/remove/${target.id}`);
+                dispatch({ type: "DROP_SET", exerciseKey: id, scope: "mesocycle", dayId: day.id });
+                toast(`Dropped a set from ${ex.name} for the rest of the block.`);
               }}
               onSwap={() => {
                 setOpenMenu(null);
                 setSwapKey(id);
+              }}
+              onRemoveExercise={() => {
+                setOpenMenu(null);
+                setRemoveKey(id);
               }}
             />
           );
@@ -369,7 +375,7 @@ function LogSessionBody({
           // Coming from a pain report, start filtered to the muscle being replaced -- the replacement has
           // to keep the same slot in the week, so the whole library isn't a useful starting point.
           initialMuscle={painScope ? swappingEx.muscle : undefined}
-          onPick={painScope ? (e) => applySwapTo(e) : setPendingSwap}
+          onPick={setPendingSwap}
           onClose={() => {
             setSwapKey(null);
             setPainScope(false);
@@ -378,6 +384,19 @@ function LogSessionBody({
       )}
       {swapKey && swappingEx && pendingSwap && (
         <SwapScopeSheet fromName={swappingEx.name} toName={pendingSwap.name} onChoose={applySwap} onClose={() => setPendingSwap(null)} />
+      )}
+
+      {removeKey && day.exercises[removeKey] && (
+        <RemoveExerciseSheet
+          name={day.exercises[removeKey].name}
+          onChoose={(scope) => {
+            const removed = day.exercises[removeKey].name;
+            dispatch({ type: "REMOVE_EXERCISE", exerciseKey: removeKey, scope, dayId: day.id });
+            toast(scope === "day" ? `Removed ${removed} for today.` : `Removed ${removed} from the rest of the block.`);
+            setRemoveKey(null);
+          }}
+          onClose={() => setRemoveKey(null)}
+        />
       )}
 
       {confirmRemove && painEx && (

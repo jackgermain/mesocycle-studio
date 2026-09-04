@@ -62,6 +62,7 @@ export function ExerciseSection({
   onAddWarmup,
   onRemoveSet,
   onSwap,
+  onRemoveExercise,
   readOnly,
 }: {
   index: number;
@@ -74,6 +75,9 @@ export function ExerciseSection({
   onRemoveSet?: () => void;
   /** Coach-only: swapping the exercise itself is a prescription change, so this is left undefined on the client's own workout screen and only wired up from the coach's session logger. */
   onSwap?: () => void;
+  /** Same rule as onSwap -- dropping a movement is a change to the prescription, so only whoever owns the
+   * program gets it: a coach, or someone training themselves. */
+  onRemoveExercise?: () => void;
   readOnly?: "future" | "past";
 }) {
   const locked = readOnly === "past";
@@ -153,6 +157,12 @@ export function ExerciseSection({
                 <button className="link-row" style={{ padding: "9px 11px", borderRadius: 0 }} onClick={onSwap}>
                   <i className="ph ph-arrows-left-right" style={{ fontSize: 14, color: "var(--color-accent)" }} />
                   <span style={{ fontSize: 12.5 }}>Swap exercise</span>
+                </button>
+              )}
+              {onRemoveExercise && (
+                <button className="link-row" style={{ padding: "9px 11px", borderRadius: 0, color: "var(--color-neutral-400)" }} onClick={onRemoveExercise}>
+                  <i className="ph ph-trash" style={{ fontSize: 14 }} />
+                  <span style={{ fontSize: 12.5 }}>Remove exercise</span>
                 </button>
               )}
             </div>

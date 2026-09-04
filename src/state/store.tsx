@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { buildSelfProfile } from "../data/mockData";
-import type { ClientProfile, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, WeighIn, WorkSet } from "../data/types";
+import type { ClientProfile, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, TrainingDay, WeighIn, WorkSet } from "../data/types";
 import type { FoodItem } from "../data/foodDatabase";
 import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
@@ -57,6 +57,7 @@ type Action =
   | { type: "ADD_SET"; dayId: string; exerciseId: string; warmup?: boolean }
   | { type: "SWAP_EXERCISE"; exerciseKey: string; replacement: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "REMOVE_EXERCISE"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
+  | { type: "DROP_SET"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "SET_FEEDBACK_DONE"; dayId: string }
   | { type: "SET_SORENESS_DONE"; dayId: string }
   | { type: "ADD_FOOD_ITEM"; mealId: string; item: LoggedFoodItem }
@@ -69,6 +70,50 @@ type Action =
   | { type: "TOGGLE_PORTION"; mealId: string; category: import("../data/types").PortionCategory }
   | { type: "SHOW_TOAST"; message: string }
   | { type: "CLEAR_TOAST" };
+
+/** Every place a change reaches, for an action scoped to one day or to the rest of the block.
+ *
+ * Matching on the exercise *name* rather than the key is the whole point. Two of the three ways a program
+ * gets built key their exercises by week (`w1-d1-e1`, `w2-d1-e1` — see programConvert.ts), so a key from
+ * week 1 exists in no other week, and a "rest of the mesocycle" change matched by key silently only ever
+ * touched the one day it started from. The name is what actually carries across weeks.
+ *
+ * Days already logged are never included: rewriting a session someone has trained would falsify it. */
+function targetExercises(
+  program: Program,
+  exerciseKey: string,
+  scope: "day" | "mesocycle",
+  dayId?: string,
+): { day: TrainingDay; key: string }[] {
+  let name: string | null = null;
+  for (const week of program.weeks) {
+    for (const day of week.days) {
+      if (dayId && day.id !== dayId) continue;
+      const ex = day.exercises[exerciseKey];
+      if (ex) {
+        name = ex.name;
+        break;
+      }
+    }
+    if (name) break;
+  }
+
+  const out: { day: TrainingDay; key: string }[] = [];
+  for (const week of program.weeks) {
+    for (const day of week.days) {
+      if (day.status === "done") continue;
+      if (scope === "day") {
+        if (dayId && day.id !== dayId) continue;
+        if (day.exercises[exerciseKey]) out.push({ day, key: exerciseKey });
+        continue;
+      }
+      for (const [key, ex] of Object.entries(day.exercises)) {
+        if (key === exerciseKey || (name && ex.name === name)) out.push({ day, key });
+      }
+    }
+  }
+  return out;
+}
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -197,26 +242,21 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, program };
     }
     case "SWAP_EXERCISE": {
+      // "day" swaps just this session and leaves the rest of the block on the original exercise -- the
+      // right call for a one-off (equipment taken, a tweak) as opposed to a lasting change.
       const program = structuredClone(state.program);
-      for (const week of program.weeks) {
-        for (const day of week.days) {
-          if (day.status === "done") continue; // never rewrite logged history
-          // "day" swaps just today's session and leaves the rest of the block on the original exercise --
-          // the right call for a one-off (equipment taken, a tweak) as opposed to a lasting change.
-          if (action.scope === "day" && day.id !== action.dayId) continue;
-          const ex = day.exercises[action.exerciseKey];
-          if (!ex) continue;
-          ex.name = action.replacement.name;
-          ex.muscle = action.replacement.muscle;
-          ex.equipment = action.replacement.equipment;
-          ex.hasVideo = action.replacement.hasVideo;
-          for (const set of ex.sets) {
-            if (set.checked) continue; // leave sets already logged this session alone
-            if (set.prescribed.load !== null) set.prescribed.load = nearestValidLoad(ex, set.prescribed.load);
-          }
-          const topLoad = ex.sets[0]?.prescribed.load;
-          ex.metaLine = `${ex.sets.length} sets · ${topLoad == null ? "bodyweight" : `${topLoad} lb`}`;
+      for (const { day, key } of targetExercises(program, action.exerciseKey, action.scope, action.dayId)) {
+        const ex = day.exercises[key];
+        ex.name = action.replacement.name;
+        ex.muscle = action.replacement.muscle;
+        ex.equipment = action.replacement.equipment;
+        ex.hasVideo = action.replacement.hasVideo;
+        for (const set of ex.sets) {
+          if (set.checked) continue; // leave sets already logged this session alone
+          if (set.prescribed.load !== null) set.prescribed.load = nearestValidLoad(ex, set.prescribed.load);
         }
+        const topLoad = ex.sets[0]?.prescribed.load;
+        ex.metaLine = `${ex.sets.length} sets · ${topLoad == null ? "bodyweight" : `${topLoad} lb`}`;
       }
       return { ...state, program };
     }
@@ -225,15 +265,30 @@ function reducer(state: AppState, action: Action): AppState {
       // and there's no good substitute. Same scoping and the same refusal to touch logged days as
       // SWAP_EXERCISE: history stays exactly as it was trained.
       const program = structuredClone(state.program);
-      for (const week of program.weeks) {
-        for (const day of week.days) {
-          if (day.status === "done") continue;
-          if (action.scope === "day" && day.id !== action.dayId) continue;
-          if (!day.exercises[action.exerciseKey]) continue;
-          delete day.exercises[action.exerciseKey];
-          day.order = day.order.filter((id) => id !== action.exerciseKey);
-          day.setCount = Object.values(day.exercises).reduce((n, ex) => n + ex.sets.length, 0);
-        }
+      for (const { day, key } of targetExercises(program, action.exerciseKey, action.scope, action.dayId)) {
+        delete day.exercises[key];
+        day.order = day.order.filter((id) => id !== key);
+        day.setCount = Object.values(day.exercises).reduce((n, ex) => n + ex.sets.length, 0);
+      }
+      return { ...state, program };
+    }
+    case "DROP_SET": {
+      // The quick path: no reason asked, the set is simply gone. A prescribed set that a coach decides
+      // against isn't a missed set with a story behind it, it's a change to the prescription -- which is
+      // why this deletes rather than marking `removed` the way the client-facing REMOVE_SET does.
+      const program = structuredClone(state.program);
+      for (const { day, key } of targetExercises(program, action.exerciseKey, action.scope, action.dayId)) {
+        const ex = day.exercises[key];
+        if (ex.sets.length <= 1) continue; // an exercise with no sets isn't an exercise -- remove it instead
+        const target = [...ex.sets].reverse().find((s) => !s.checked && !s.isWarmup) ?? [...ex.sets].reverse().find((s) => !s.checked);
+        if (!target) continue; // everything here is already logged; leave it alone
+        ex.sets = ex.sets.filter((s) => s.id !== target.id);
+        ex.sets.forEach((s, i) => {
+          if (!s.isWarmup) s.index = i + 1;
+        });
+        day.setCount = Object.values(day.exercises).reduce((n, e) => n + e.sets.length, 0);
+        const topLoad = ex.sets.find((s) => !s.isWarmup)?.prescribed.load ?? ex.sets[0]?.prescribed.load;
+        ex.metaLine = `${ex.sets.length} sets · ${topLoad == null ? "bodyweight" : `${topLoad} lb`}`;
       }
       return { ...state, program };
     }
