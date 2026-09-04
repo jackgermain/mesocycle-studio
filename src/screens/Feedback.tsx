@@ -5,7 +5,7 @@ import { InfoBanner } from "../components/UI";
 import { pumpWording, jointReasonLabels } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { useAuth } from "../lib/auth";
-import { isJointUrgent, isPumpAlerting, sendSignals } from "../shared/signals";
+import { isJointAlerting, isJointUrgent, isPumpAlerting, sendSignals } from "../shared/signals";
 
 const COMMON_AREAS = ["R shoulder", "L shoulder", "Elbow", "Wrist", "Lower back", "Knee", "Hip"];
 
@@ -55,7 +55,7 @@ export default function Feedback() {
         .map(([muscle]) => ({ muscle, severity: pump[muscle] }))
         .filter((p) => typeof p.severity === "number" && isPumpAlerting(p.severity))
         .map((p) => ({ kind: "pump" as const, muscle: p.muscle, severity: p.severity, dayLabel })),
-      ...(jointYes && jointSeverity !== null
+      ...(jointYes && jointSeverity !== null && isJointAlerting(jointSeverity)
         ? [{
             kind: "joint" as const,
             muscle: null,
@@ -197,7 +197,6 @@ export default function Feedback() {
               </div>
             </div>
 
-            <InfoBanner icon="ph-paper-plane-tilt">A 3 or 4 pings {state.program.coachName} straight away instead of waiting for the weekly review.</InfoBanner>
           </>
         )}
 

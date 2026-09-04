@@ -21,11 +21,12 @@ export interface ClientSignal {
  *  - soreness  1..5 as Very sore → Fully healed, low again meaning still wrecked. Under 3 is Very sore
  *              or Sore, i.e. showing up to train it again while it hasn't recovered.
  *  - joint     1..4 as "Noticed only" → "Stopped the set", and this one runs the *other* way: higher is
- *              worse. There's no harmless level here, so any reported joint pain is sent, with 3+
- *              ("Limited a set" / "Stopped the set") treated as urgent.
+ *              worse. 2 and up ("Mild, trained on" and worse) is sent; a 1 is something they noticed and
+ *              trained through, which isn't worth interrupting anyone over on its own. 3+ is urgent.
  */
 export const PUMP_ALERT_BELOW = 3;
 export const SORENESS_ALERT_BELOW = 3;
+export const JOINT_ALERT_AT_OR_ABOVE = 2;
 export const JOINT_URGENT_AT_OR_ABOVE = 3;
 
 export function isPumpAlerting(severity: number): boolean {
@@ -33,6 +34,9 @@ export function isPumpAlerting(severity: number): boolean {
 }
 export function isSorenessAlerting(severity: number): boolean {
   return severity < SORENESS_ALERT_BELOW;
+}
+export function isJointAlerting(severity: number): boolean {
+  return severity >= JOINT_ALERT_AT_OR_ABOVE;
 }
 export function isJointUrgent(severity: number): boolean {
   return severity >= JOINT_URGENT_AT_OR_ABOVE;
@@ -65,18 +69,28 @@ export async function sendSignals(clientId: string, coachId: string | null, sign
   if (error) console.error("Failed to send client signals", error);
 }
 
-/** Everything this coach's clients have reported and the coach hasn't cleared yet. */
-export async function listOpenSignals(): Promise<ClientSignal[]> {
+/** Recent history for this coach's clients, cleared or not. The open ones are what needs action; the
+ * cleared ones are what makes a repeat visible -- the same shoulder reported three weeks running matters
+ * far more than any single report, and that's invisible if you only ever look at what's currently open. */
+export async function listRecentSignals(days = 90): Promise<ClientSignal[]> {
+  const since = new Date(Date.now() - days * 86400000).toISOString();
   const { data, error } = await supabase
     .from("client_signals")
     .select("*")
-    .is("acknowledged_at", null)
+    .gte("created_at", since)
     .order("created_at", { ascending: false });
   if (error) {
     console.error("Failed to load client signals", error);
     return [];
   }
   return (data ?? []) as ClientSignal[];
+}
+
+/** How many times this client has raised this same thing before -- same kind, and same body area for
+ * joint pain or same muscle for soreness. Counts the whole recent history, not just what's still open. */
+export function recurrenceCount(all: ClientSignal[], s: ClientSignal): number {
+  const key = (x: ClientSignal) => `${x.client_id}|${x.kind}|${(x.note ?? x.muscle ?? "").toLowerCase()}`;
+  return all.filter((x) => key(x) === key(s)).length;
 }
 
 /** Same caveat as deleteFeedback: an update RLS refuses reports success with zero rows touched, so the

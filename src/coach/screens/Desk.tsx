@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
-import { acknowledgeSignal, isJointUrgent, listOpenSignals, type ClientSignal } from "../../shared/signals";
+import { acknowledgeSignal, isJointUrgent, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
 import type { ClientStatus } from "../types";
@@ -37,22 +37,26 @@ export default function Desk() {
   const coachName = account?.display_name ?? "Coach";
   const nav = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
-  const [signals, setSignals] = useState<ClientSignal[]>([]);
+  const [allSignals, setAllSignals] = useState<ClientSignal[]>([]);
 
   // Real client-reported feedback (pump, joint pain, unhealed soreness), as opposed to the demo flags
   // below it. Loaded straight from the database rather than coach_state, since a client writes these
   // into their own row of client_signals and the coach only reads them.
   useEffect(() => {
     let active = true;
-    listOpenSignals().then((rows) => active && setSignals(rows));
+    listRecentSignals().then((rows) => active && setAllSignals(rows));
     return () => {
       active = false;
     };
   }, []);
 
+  // Kept out of the open list once actioned, but still in allSignals so it keeps counting toward whether
+  // the same complaint is recurring.
+  const signals = useMemo(() => allSignals.filter((s) => !s.acknowledged_at), [allSignals]);
+
   async function clearSignal(id: string) {
     const ok = await acknowledgeSignal(id);
-    if (ok) setSignals((prev) => prev.filter((s) => s.id !== id));
+    if (ok) setAllSignals((prev) => prev.map((s) => (s.id === id ? { ...s, acknowledged_at: new Date().toISOString() } : s)));
   }
 
   function signalClientName(s: ClientSignal): string {
@@ -157,6 +161,7 @@ export default function Desk() {
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {signals.map((s) => {
                 const urgent = s.kind === "joint" && isJointUrgent(s.severity);
+                const times = recurrenceCount(allSignals, s);
                 return (
                   <div key={s.id} className="cell elev-sm" style={urgent ? { borderLeft: "2px solid var(--color-accent)" } : undefined}>
                     <div className="row">
@@ -167,9 +172,16 @@ export default function Desk() {
                           {s.day_label ? ` · ${s.day_label}` : ""}
                         </div>
                       </div>
-                      <span className={`tag ${urgent ? "tag-accent" : "tag-neutral"}`} style={{ flex: "none" }}>
-                        {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : "Pump"}
-                      </span>
+                      <div style={{ flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+                        <span className={`tag ${urgent ? "tag-accent" : "tag-neutral"}`}>
+                          {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : "Pump"}
+                        </span>
+                        {times > 1 && (
+                          <span className="tag tag-accent" title={`Reported ${times} times in the last 90 days`}>
+                            {times}× recurring
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <button className="btn btn-secondary btn-block" style={{ height: 34, fontSize: 12.5, marginTop: 9 }} onClick={() => clearSignal(s.id)}>
                       Mark as read
