@@ -29,9 +29,14 @@ design system in `src/styles.css` plus inline styles. No test suite.
 
 ```bash
 npm run dev      # vite dev server
-npm run build    # tsc -b && vite build  ← the real gate, see "Build verification" below
-npm run lint     # oxlint
+npm run build    # oxlint && tsc -b && vite build  ← the real gate, see "Build verification" below
+npm run lint     # oxlint on its own
 ```
+
+`oxlint` runs first in `build` deliberately. It only fails on rules configured as `error` in
+`.oxlintrc.json` — currently just `react/rules-of-hooks` — so warnings never block a deploy, but a
+conditionally-called hook does. That rule was configured for a long time and caught nothing, because lint
+wasn't wired into anything anyone ran; a React error #310 crash shipped to a real phone as a result.
 
 ### Environment variables
 
@@ -187,6 +192,20 @@ shipped wrong once and had to be redone — don't "simplify" it back to the nati
 **Viewport sizing.** `.app-root` uses `position: fixed; inset: 0` rather than any `vh`/`dvh`/`%` height.
 Every height-unit approach tried previously left a gap of background below the tab bar on real iOS. Don't
 reintroduce one.
+
+**Hooks and early returns.** Screens here look up their subject (`findDay`, `state.clients.find`,
+`state.threads.find`) and early-return "Not found" when it isn't there yet. Because every store hydrates
+asynchronously, that isn't a rare path — those components genuinely render once before their data arrives
+and again after. So **every hook must sit above that return**, or it runs on the second render and not the
+first, which is React error #310 and a full-screen crash. Five instances of this were fixed at once after
+one of them shipped. Where the state is *seeded* from the looked-up object (as in `Reorder`), hoisting the
+hook isn't enough — it would capture the empty value forever — so split the component in two and let the
+inner one mount only with real data.
+
+**Client-state writes race.** `StoreProvider` upserts the whole `client_state` blob on every change, and
+the coach writes into that same row (`assignProgram.ts`, `clientProgramEdits.ts`). A client with the app
+open holds a stale copy in memory and their next action overwrites whatever the coach just changed. There
+is no realtime subscription yet.
 
 ---
 
