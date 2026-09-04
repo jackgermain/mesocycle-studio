@@ -79,9 +79,19 @@ export async function listOpenSignals(): Promise<ClientSignal[]> {
   return (data ?? []) as ClientSignal[];
 }
 
-export async function acknowledgeSignal(id: string): Promise<void> {
-  const { error } = await supabase.from("client_signals").update({ acknowledged_at: new Date().toISOString() }).eq("id", id);
-  if (error) console.error("Failed to acknowledge signal", error);
+/** Same caveat as deleteFeedback: an update RLS refuses reports success with zero rows touched, so the
+ * affected rows are read back rather than trusting the absence of an error. */
+export async function acknowledgeSignal(id: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("client_signals")
+    .update({ acknowledged_at: new Date().toISOString() })
+    .eq("id", id)
+    .select("id");
+  if (error) {
+    console.error("Failed to acknowledge signal", error);
+    return false;
+  }
+  return !!data && data.length > 0;
 }
 
 export interface FeedbackNote {
@@ -96,6 +106,24 @@ export async function sendFeedback(authorId: string, body: string): Promise<bool
   const { error } = await supabase.from("feedback").insert({ author_id: authorId, body });
   if (error) {
     console.error("Failed to send feedback", error);
+    return false;
+  }
+  return true;
+}
+
+/** Deleting is how the platform owner clears a note they've dealt with -- which is also why the number of
+ * remaining notes is the badge count, with no separate read/unread state to keep in sync. */
+export async function deleteFeedback(id: string): Promise<boolean> {
+  // .select() matters here: a delete RLS refuses doesn't error, it just matches zero rows and reports
+  // success. Without asking for the deleted rows back there's no way to tell "removed" from "silently
+  // refused", and the UI would drop the note from the list while the database still had it.
+  const { data, error } = await supabase.from("feedback").delete().eq("id", id).select("id");
+  if (error) {
+    console.error("Failed to delete feedback", error);
+    return false;
+  }
+  if (!data || data.length === 0) {
+    console.error("Feedback delete affected no rows -- not permitted for this account");
     return false;
   }
   return true;

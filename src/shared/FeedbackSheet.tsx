@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../lib/auth";
 import { InfoBanner } from "../components/UI";
-import { listFeedbackForAdmin, sendFeedback, type FeedbackNote } from "../shared/signals";
+import { deleteFeedback, listFeedbackForAdmin, sendFeedback, type FeedbackNote } from "../shared/signals";
 
 /** App feedback and bug reports, from anyone using the app to whoever owns it. Deliberately separate from
  * coach<->client messaging: an independent coach isn't anyone's client, so there's no thread they could
@@ -81,15 +81,33 @@ export function FeedbackSheet({ onClose }: { onClose: () => void }) {
 }
 
 /** The receiving end, for the platform owner only. */
-export function FeedbackInbox({ onClose }: { onClose: () => void }) {
+export function FeedbackInbox({ onClose, onCountChange }: { onClose: () => void; onCountChange?: (n: number) => void }) {
   const [notes, setNotes] = useState<FeedbackNote[] | null>(null);
+  const [removing, setRemoving] = useState<string | null>(null);
+
+  async function remove(id: string) {
+    setRemoving(id);
+    const ok = await deleteFeedback(id);
+    setRemoving(null);
+    if (!ok) return;
+    setNotes((prev) => {
+      const next = (prev ?? []).filter((n) => n.id !== id);
+      onCountChange?.(next.length);
+      return next;
+    });
+  }
 
   useEffect(() => {
     let active = true;
-    listFeedbackForAdmin().then((rows) => active && setNotes(rows));
+    listFeedbackForAdmin().then((rows) => {
+      if (!active) return;
+      setNotes(rows);
+      onCountChange?.(rows.length);
+    });
     return () => {
       active = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -108,10 +126,18 @@ export function FeedbackInbox({ onClose }: { onClose: () => void }) {
           {notes === null && <div className="mu" style={{ textAlign: "center", padding: 20 }}>Loading…</div>}
           {notes?.length === 0 && <div className="mu" style={{ textAlign: "center", padding: 20 }}>No feedback yet.</div>}
           {notes?.map((n) => (
-            <div key={n.id} className="cell" style={{ padding: 12 }}>
+            <div key={n.id} className="cell" style={{ padding: 12, opacity: removing === n.id ? 0.5 : 1 }}>
               <div className="row" style={{ marginBottom: 5 }}>
                 <span style={{ flex: 1, fontSize: 13, fontFamily: "var(--font-heading)" }}>{n.author_name}</span>
                 <span className="mu">{new Date(n.created_at).toLocaleDateString()}</span>
+                <button
+                  onClick={() => remove(n.id)}
+                  disabled={removing === n.id}
+                  aria-label={`Delete feedback from ${n.author_name}`}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-600)", display: "flex", padding: 2, marginLeft: 8, flex: "none" }}
+                >
+                  <i className="ph ph-trash" style={{ fontSize: 14 }} />
+                </button>
               </div>
               <div style={{ fontSize: 13.5, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>{n.body}</div>
             </div>

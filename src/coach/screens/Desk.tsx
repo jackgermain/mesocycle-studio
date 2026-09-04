@@ -51,8 +51,8 @@ export default function Desk() {
   }, []);
 
   async function clearSignal(id: string) {
-    await acknowledgeSignal(id);
-    setSignals((prev) => prev.filter((s) => s.id !== id));
+    const ok = await acknowledgeSignal(id);
+    if (ok) setSignals((prev) => prev.filter((s) => s.id !== id));
   }
 
   function signalClientName(s: ClientSignal): string {

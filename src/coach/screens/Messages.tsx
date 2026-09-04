@@ -4,6 +4,7 @@ import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
 import { CoachTabBar } from "../components/CoachTabBar";
 import { FeedbackSheet, FeedbackInbox } from "../../shared/FeedbackSheet";
+import { listFeedbackForAdmin } from "../../shared/signals";
 import { BackHeader, HeroHeader, HeroStat } from "../../components/UI";
 import { formatMessageTime, formatThreadPreviewTime } from "../../shared/formatTime";
 
@@ -16,6 +17,18 @@ export default function Messages() {
   const { account } = useAuth();
   const [showFeedback, setShowFeedback] = useState(false);
   const [showFeedbackInbox, setShowFeedbackInbox] = useState(false);
+  const [feedbackCount, setFeedbackCount] = useState(0);
+
+  // Deleting a note is how it gets cleared, so the number still sitting there is the number still needing
+  // attention -- no separate unread flag to keep in sync.
+  useEffect(() => {
+    if (!account?.is_platform_admin) return;
+    let active = true;
+    listFeedbackForAdmin().then((rows) => active && setFeedbackCount(rows.length));
+    return () => {
+      active = false;
+    };
+  }, [account?.is_platform_admin]);
   const unreadCount = state.threads.filter((t) => t.unread).length;
 
   const filtered = state.threads.filter((t) => (filter === "unread" ? t.unread : filter === "flagged" ? t.context.toLowerCase().includes("flag") : true));
@@ -27,8 +40,36 @@ export default function Messages() {
         right={
           <div className="row" style={{ gap: 8 }}>
             {account?.is_platform_admin && (
-              <button className="btn btn-secondary btn-icon" aria-label="Feedback from users" onClick={() => setShowFeedbackInbox(true)}>
+              <button
+                className="btn btn-secondary btn-icon"
+                style={{ position: "relative" }}
+                aria-label={`Feedback from users${feedbackCount > 0 ? ` (${feedbackCount} new)` : ""}`}
+                onClick={() => setShowFeedbackInbox(true)}
+              >
                 <i className="ph ph-tray" style={{ fontSize: 16 }} />
+                {feedbackCount > 0 && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: -5,
+                      right: -5,
+                      minWidth: 17,
+                      height: 17,
+                      padding: "0 4px",
+                      borderRadius: 9,
+                      background: "var(--color-accent)",
+                      color: "#0b1710",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      fontFamily: "var(--font-heading)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {feedbackCount}
+                  </span>
+                )}
               </button>
             )}
             <button className="btn btn-secondary btn-icon" aria-label="Send feedback about the app" onClick={() => setShowFeedback(true)}>
@@ -78,7 +119,7 @@ export default function Messages() {
       </div>
       <CoachTabBar />
       {showFeedback && <FeedbackSheet onClose={() => setShowFeedback(false)} />}
-      {showFeedbackInbox && <FeedbackInbox onClose={() => setShowFeedbackInbox(false)} />}
+      {showFeedbackInbox && <FeedbackInbox onClose={() => setShowFeedbackInbox(false)} onCountChange={setFeedbackCount} />}
     </div>
   );
 }
