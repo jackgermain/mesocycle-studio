@@ -218,6 +218,17 @@ export default function Desk() {
                   nav("/block");
                 }}
               />
+              {account?.is_platform_admin && (
+                <ActionRow
+                  icon="ph-shield-check"
+                  label="Platform admin"
+                  subtitle="Revoke or restore any coach's access"
+                  onClick={() => {
+                    setShowAccount(false);
+                    nav("/coach/admin");
+                  }}
+                />
+              )}
             </ActionGroup>
             <SetPasswordCard />
             <SignOutButton />

@@ -31,6 +31,7 @@ import Programs from "./coach/screens/Programs";
 import ProgramDetail from "./coach/screens/ProgramDetail";
 import Messages, { CoachThread } from "./coach/screens/Messages";
 import Library from "./coach/screens/Library";
+import PlatformAdmin from "./coach/screens/PlatformAdmin";
 import NutritionProtocol from "./coach/screens/NutritionProtocol";
 import ImportProgram from "./coach/screens/ImportProgram";
 import LogSession from "./coach/screens/LogSession";
@@ -227,6 +228,7 @@ export default function App() {
               <Route path="/coach/messages" element={<Messages />} />
               <Route path="/coach/messages/:threadId" element={<CoachThread />} />
               <Route path="/coach/library" element={<Library />} />
+              <Route path="/coach/admin" element={<PlatformAdmin />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

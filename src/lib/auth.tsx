@@ -9,6 +9,11 @@ export interface Account {
   role: AccountRole;
   display_name: string;
   coach_id: string | null;
+  /** A platform-owner capability, entirely separate from the coach/client/friend roles that structure
+   * actual coaching relationships -- lets this account revoke/restore another independent coach's access
+   * without seeing anything else about their roster or data. Set directly in the database, not through any
+   * UI (see supabase/migrations/0010_platform_admin.sql). */
+  is_platform_admin?: boolean;
 }
 
 interface AuthState {
@@ -52,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const lastUserIdRef = useRef<string | null>(null);
 
   async function loadAccount(userId: string) {
-    const { data } = await supabase.from("accounts").select("id, role, display_name, coach_id, active").eq("id", userId).maybeSingle();
+    const { data } = await supabase.from("accounts").select("id, role, display_name, coach_id, active, is_platform_admin").eq("id", userId).maybeSingle();
     const row = data as (Account & { active: boolean }) | null;
     if (row && row.active === false) {
       // Revoked — this session is no longer welcome. Sign out immediately rather than leaving them
@@ -62,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await supabase.auth.signOut();
       return;
     }
-    setAccount(row ? { id: row.id, role: row.role, display_name: row.display_name, coach_id: row.coach_id } : null);
+    setAccount(row ? { id: row.id, role: row.role, display_name: row.display_name, coach_id: row.coach_id, is_platform_admin: row.is_platform_admin } : null);
   }
 
   useEffect(() => {
