@@ -6,6 +6,7 @@ import { useAuth } from "../../lib/auth";
 import { supabase } from "../../lib/supabase";
 import { ActionGroup, ActionRow, InfoBanner } from "../../components/UI";
 import { createInvite } from "../../shared/invites";
+import { shareBaseUrl } from "../../shared/appUrl";
 import type { TrainingDay } from "../../data/types";
 import type { ClientFlag } from "../types";
 
@@ -33,7 +34,7 @@ export default function ClientDetail() {
 
   function copyLink() {
     if (!client.inviteCode) return;
-    const url = `${window.location.origin}${window.location.pathname}#/invite/${client.inviteCode}`;
+    const url = `${shareBaseUrl()}#/invite/${client.inviteCode}`;
     navigator.clipboard?.writeText(url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -152,8 +153,7 @@ export default function ClientDetail() {
                   <span className="tag tag-neutral">Pending</span>
                 </div>
                 <div className="mu trunc" style={{ padding: "8px 10px", background: "var(--color-neutral-900)", borderRadius: 7, fontFamily: "monospace" }}>
-                  {window.location.origin}
-                  {window.location.pathname}#/invite/{client.inviteCode}
+                  {shareBaseUrl()}#/invite/{client.inviteCode}
                 </div>
                 <button className="btn btn-secondary btn-block" style={{ height: 40, marginTop: 8, fontSize: 12.5 }} onClick={copyLink}>
                   {copied ? "Copied" : "Copy link to send yourself"}

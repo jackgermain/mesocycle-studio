@@ -3,6 +3,7 @@ import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
 import { BackHeader, InfoBanner, Seg } from "../../components/UI";
 import { createInvite } from "../../shared/invites";
+import { shareBaseUrl } from "../../shared/appUrl";
 import type { InviteRole } from "../../shared/invites";
 import type { CoachClient } from "../types";
 
@@ -22,7 +23,7 @@ const ROLE_COPY: Record<PickerRole, string> = {
     "A fully independent coach — they get their own separate roster, clients, and programs, completely walled off from yours. Not part of your roster at all; this is just a general signup link, so no name needed.",
 };
 
-const COACH_SIGNUP_URL = `${window.location.origin}${window.location.pathname}#/`;
+const COACH_SIGNUP_URL = `${shareBaseUrl()}#/`;
 
 export default function InviteRoster() {
   const { dispatch } = useCoachStore();
@@ -65,7 +66,7 @@ export default function InviteRoster() {
         recentSessions: [],
       };
       dispatch({ type: "ADD_CLIENT", client });
-      const url = `${window.location.origin}${window.location.pathname}#/invite/${invite.code}`;
+      const url = `${shareBaseUrl()}#/invite/${invite.code}`;
       setSent({ name: trimmed, role, url });
       setName("");
     } finally {
