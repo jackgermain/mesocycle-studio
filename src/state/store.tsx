@@ -54,7 +54,7 @@ type Action =
   | { type: "REMOVE_SET"; dayId: string; exerciseId: string; setId: string; reason: string }
   | { type: "REORDER_EXERCISES"; dayId: string; order: string[] }
   | { type: "ADD_SET"; dayId: string; exerciseId: string; warmup?: boolean }
-  | { type: "SWAP_EXERCISE"; exerciseKey: string; replacement: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean } }
+  | { type: "SWAP_EXERCISE"; exerciseKey: string; replacement: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "SET_FEEDBACK_DONE"; dayId: string }
   | { type: "SET_SORENESS_DONE"; dayId: string }
   | { type: "ADD_FOOD_ITEM"; mealId: string; item: LoggedFoodItem }
@@ -222,6 +222,9 @@ function reducer(state: AppState, action: Action): AppState {
       for (const week of program.weeks) {
         for (const day of week.days) {
           if (day.status === "done") continue; // never rewrite logged history
+          // "day" swaps just today's session and leaves the rest of the block on the original exercise --
+          // the right call for a one-off (equipment taken, a tweak) as opposed to a lasting change.
+          if (action.scope === "day" && day.id !== action.dayId) continue;
           const ex = day.exercises[action.exerciseKey];
           if (!ex) continue;
           ex.name = action.replacement.name;

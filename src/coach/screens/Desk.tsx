@@ -183,9 +183,21 @@ export default function Desk() {
                         )}
                       </div>
                     </div>
-                    <button className="btn btn-secondary btn-block" style={{ height: 34, fontSize: 12.5, marginTop: 9 }} onClick={() => clearSignal(s.id)}>
-                      Mark as read
-                    </button>
+                    <div className="row" style={{ gap: 8, marginTop: 9 }}>
+                      <button
+                        className="btn btn-solid"
+                        style={{ flex: 1, height: 34, fontSize: 12.5 }}
+                        onClick={() => {
+                          const c = state.clients.find((x) => x.accountId === s.client_id);
+                          if (c) nav(`/coach/clients/${c.id}/log`);
+                        }}
+                      >
+                        Attention
+                      </button>
+                      <button className="btn btn-secondary" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => clearSignal(s.id)}>
+                        Ignore
+                      </button>
+                    </div>
                   </div>
                 );
               })}

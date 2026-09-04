@@ -6,6 +6,9 @@ import { BackHeader, InfoBanner } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
+import { SimpleExercisePicker } from "../shared/SimpleExercisePicker";
+import { SwapScopeSheet } from "../shared/SwapScopeSheet";
+import { equipmentOf } from "./exerciseHelpers";
 import { ExerciseSection } from "./ExerciseSection";
 
 type ConfirmAction = "session" | "mesocycle" | null;
@@ -26,6 +29,27 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [showOptions, setShowOptions] = useState(false);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+  const [swapKey, setSwapKey] = useState<string | null>(null);
+  const [pendingSwap, setPendingSwap] = useState<{ name: string; muscle: string; hasVideo: boolean } | null>(null);
+  const swappingEx = swapKey ? day.exercises[swapKey] : null;
+
+  function applySwap(scope: "day" | "mesocycle") {
+    if (!swapKey || !pendingSwap) return;
+    dispatch({
+      type: "SWAP_EXERCISE",
+      exerciseKey: swapKey,
+      replacement: { name: pendingSwap.name, muscle: pendingSwap.muscle, equipment: equipmentOf({ name: pendingSwap.name }), hasVideo: pendingSwap.hasVideo },
+      scope,
+      dayId,
+    });
+    dispatch({
+      type: "SHOW_TOAST",
+      message: scope === "day" ? `Swapped to ${pendingSwap.name} for today.` : `Swapped to ${pendingSwap.name} for the rest of the block.`,
+    });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+    setPendingSwap(null);
+    setSwapKey(null);
+  }
   const [confirmText, setConfirmText] = useState("");
 
   // Self-directed: a real client's mesocycle is authored and owned by their coach, so only someone
@@ -115,6 +139,12 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                 const target = ex.sets.find((s) => !s.checked) ?? ex.sets[ex.sets.length - 1];
                 nav(`/block/day/${dayId}/exercise/${id}/remove/${target.id}`);
               }}
+              // A prescribed client's program is their coach's to change; a self-directed account owns
+              // theirs, so only they get to swap out of it here.
+              onSwap={selfDirected ? () => {
+                setOpenMenu(null);
+                setSwapKey(id);
+              } : undefined}
             />
           );
         })}
@@ -132,6 +162,21 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
         </div>
       </div>
       <TabBar />
+
+      {swapKey && swappingEx && !pendingSwap && (
+        <SimpleExercisePicker
+          onPick={(picked) => setPendingSwap({ name: picked.name, muscle: picked.muscle, hasVideo: picked.hasVideo })}
+          onClose={() => setSwapKey(null)}
+        />
+      )}
+      {swapKey && swappingEx && pendingSwap && (
+        <SwapScopeSheet
+          fromName={swappingEx.name}
+          toName={pendingSwap.name}
+          onChoose={applySwap}
+          onClose={() => setPendingSwap(null)}
+        />
+      )}
 
       {showOptions && (
         <div className="sheet-backdrop" onClick={closeOptions}>

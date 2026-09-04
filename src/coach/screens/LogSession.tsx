@@ -9,6 +9,7 @@ import { phaseLabelForWeek } from "../../data/phaseLabels";
 import { ExerciseSection } from "../../screens/ExerciseSection";
 import { equipmentOf } from "../../screens/exerciseHelpers";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
+import { SwapScopeSheet } from "../../shared/SwapScopeSheet";
 import type { Program, TrainingDay } from "../../data/types";
 import type { LibraryExercise } from "../types";
 
@@ -76,15 +77,25 @@ function LogSessionInner({ clientName, onDone }: { clientName: string; onDone: (
   const exIds = day.order.length ? day.order : Object.keys(day.exercises);
   const swappingEx = swapKey ? day.exercises[swapKey] : null;
 
-  function swapTo(picked: LibraryExercise) {
-    if (!swapKey) return;
+  // Picking the replacement and deciding how far it reaches are two steps: the picked exercise is held
+  // here until a scope is chosen, so nothing is written until the coach says how far it should go.
+  const [pendingSwap, setPendingSwap] = useState<LibraryExercise | null>(null);
+
+  function applySwap(scope: "day" | "mesocycle") {
+    if (!swapKey || !pendingSwap) return;
     dispatch({
       type: "SWAP_EXERCISE",
       exerciseKey: swapKey,
-      replacement: { name: picked.name, muscle: picked.muscle, equipment: equipmentOf({ name: picked.name }), hasVideo: picked.hasVideo },
+      replacement: { name: pendingSwap.name, muscle: pendingSwap.muscle, equipment: equipmentOf({ name: pendingSwap.name }), hasVideo: pendingSwap.hasVideo },
+      scope,
+      dayId: day.id,
     });
-    dispatch({ type: "SHOW_TOAST", message: `Swapped to ${picked.name} — updated everywhere it appears from here on.` });
+    dispatch({
+      type: "SHOW_TOAST",
+      message: scope === "day" ? `Swapped to ${pendingSwap.name} for today.` : `Swapped to ${pendingSwap.name} for the rest of the block.`,
+    });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+    setPendingSwap(null);
     setSwapKey(null);
   }
 
@@ -145,7 +156,12 @@ function LogSessionInner({ clientName, onDone }: { clientName: string; onDone: (
         </div>
       </div>
 
-      {swapKey && swappingEx && <ExercisePickerSheet kicker="Swap" title={swappingEx.name} excludeName={swappingEx.name} onPick={swapTo} onClose={() => setSwapKey(null)} />}
+      {swapKey && swappingEx && !pendingSwap && (
+        <ExercisePickerSheet kicker="Swap" title={swappingEx.name} excludeName={swappingEx.name} onPick={setPendingSwap} onClose={() => setSwapKey(null)} />
+      )}
+      {swapKey && swappingEx && pendingSwap && (
+        <SwapScopeSheet fromName={swappingEx.name} toName={pendingSwap.name} onChoose={applySwap} onClose={() => setPendingSwap(null)} />
+      )}
     </div>
   );
 }
