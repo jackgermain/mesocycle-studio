@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { InfoBanner } from "../../components/UI";
-import { applyOps, diffDays, type AiEditResult, type DiffLine } from "../programAiEdit";
+import { applyOps, diffDays, type AiEditResult, type DiffLine, type EditOp } from "../programAiEdit";
 import type { BuilderDay, CoachProgram } from "../types";
 
 const EXAMPLES = [
@@ -49,10 +49,42 @@ export function AiEditSheet({
   onApply: (days: BuilderDay[]) => void;
   onClose: () => void;
 }) {
+  return (
+    <AiEditShell
+      title={program.name}
+      examples={EXAMPLES}
+      buildPayload={() => summarizeForAi(program)}
+      applyOps={(ops) => applyOps(program.days, ops)}
+      diff={(next) => diffDays(program.days, next)}
+      onApply={onApply}
+      onClose={onClose}
+    />
+  );
+}
+
+/** The shared shell. Both the week template and a client's live program are edited by the same loop --
+ * describe it, see a real diff, accept or discard -- and only the shapes differ, so those are props. */
+export function AiEditShell<T>({
+  title,
+  examples,
+  buildPayload,
+  applyOps: apply,
+  diff,
+  onApply,
+  onClose,
+}: {
+  title: string;
+  examples: string[];
+  buildPayload: () => unknown;
+  applyOps: (ops: EditOp[]) => T;
+  diff: (next: T) => DiffLine[];
+  onApply: (next: T) => void;
+  onClose: () => void;
+}) {
   const [instruction, setInstruction] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [proposal, setProposal] = useState<{ days: BuilderDay[]; diff: DiffLine[]; result: AiEditResult } | null>(null);
+  const [proposal, setProposal] = useState<{ next: T; diff: DiffLine[]; result: AiEditResult } | null>(null);
 
   async function run() {
     if (!instruction.trim()) return;
@@ -67,15 +99,15 @@ export function AiEditSheet({
       const res = await fetch("/api/edit-program", {
         method: "POST",
         headers: { "content-type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ instruction, program: summarizeForAi(program) }),
+        body: JSON.stringify({ instruction, program: buildPayload() }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         throw new Error(body?.error ?? "That didn't work. Try again.");
       }
       const result = (await res.json()) as AiEditResult;
-      const days = applyOps(program.days, result.ops ?? []);
-      setProposal({ days, diff: diffDays(program.days, days), result });
+      const next = apply(result.ops ?? []);
+      setProposal({ next, diff: diff(next), result });
     } catch (e) {
       setError(e instanceof Error ? e.message : "That didn't work. Try again.");
     } finally {
@@ -89,7 +121,7 @@ export function AiEditSheet({
         <div className="row" style={{ marginBottom: 4 }}>
           <div style={{ flex: 1 }}>
             <div className="scr">Edit with AI</div>
-            <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{program.name}</div>
+            <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{title}</div>
           </div>
           <button onClick={onClose} disabled={busy} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
             <i className="ph ph-x" style={{ fontSize: 18 }} />
@@ -115,7 +147,7 @@ export function AiEditSheet({
           <div>
             <div className="sh">Or tap an example</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {EXAMPLES.map((ex) => (
+              {examples.map((ex) => (
                 <button key={ex} className="chip" disabled={busy} onClick={() => setInstruction(ex)}>
                   {ex}
                 </button>
@@ -155,7 +187,7 @@ export function AiEditSheet({
                 <button className="btn btn-secondary" style={{ flex: 1, height: 46 }} onClick={() => setProposal(null)}>
                   Discard
                 </button>
-                <button className="btn btn-primary" style={{ flex: 1, height: 46 }} onClick={() => onApply(proposal.days)}>
+                <button className="btn btn-primary" style={{ flex: 1, height: 46 }} onClick={() => onApply(proposal.next)}>
                   Apply
                 </button>
               </div>

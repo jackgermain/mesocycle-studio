@@ -11,6 +11,8 @@ import { equipmentOf } from "../../screens/exerciseHelpers";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { SwapScopeSheet } from "../../shared/SwapScopeSheet";
 import { RemoveExerciseSheet } from "../../shared/RemoveExerciseSheet";
+import { AiEditShell } from "../components/AiEditSheet";
+import { applyOpsToProgram, diffProgram, summarizeProgramForAi } from "../../shared/liveProgramAiEdit";
 import { getSignal, type ClientSignal } from "../../shared/signals";
 import { jointReasonLabels } from "../../data/mockData";
 import type { Program, TrainingDay } from "../../data/types";
@@ -136,6 +138,7 @@ function LogSessionBody({
   const [painScope, setPainScope] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
   const [removeKey, setRemoveKey] = useState<string | null>(null);
+  const [showAiEdit, setShowAiEdit] = useState(false);
   // Picking the replacement and deciding how far it reaches are two steps: the picked exercise is held
   // here until a scope is chosen, so nothing is written until the coach says how far it should go.
   // Declared up here with the rest, not down beside applySwap where it reads better -- everything below
@@ -359,6 +362,17 @@ function LogSessionBody({
           );
         })}
 
+        <button className="cell row" style={{ padding: "12px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setShowAiEdit(true)}>
+          <i className="ph ph-sparkle" style={{ fontSize: 18, color: "var(--color-accent-300)", marginRight: 4 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Edit with AI</div>
+            <div className="mu" style={{ marginTop: 2 }}>
+              Change {clientName.split(" ")[0]}'s numbers by asking — "add 5 reps next week". You check it before it saves.
+            </div>
+          </div>
+          <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
+        </button>
+
         <div style={{ paddingBottom: 8 }}>
           <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={onDone}>
             Done — back to {clientName.split(" ")[0]}
@@ -386,6 +400,22 @@ function LogSessionBody({
       )}
       {swapKey && swappingEx && pendingSwap && (
         <SwapScopeSheet fromName={swappingEx.name} toName={pendingSwap.name} onChoose={applySwap} onClose={() => setPendingSwap(null)} />
+      )}
+
+      {showAiEdit && (
+        <AiEditShell
+          title={`${clientName} · ${state.program.name}`}
+          examples={["Add 5 reps to everything next week", "Add 10 lb to every lift next week", "Take next week's rest down to 60 seconds", "Make every exercise 1 set this week"]}
+          buildPayload={() => summarizeProgramForAi(state.program, week.number)}
+          applyOps={(ops) => applyOpsToProgram(state.program, ops)}
+          diff={(next) => diffProgram(state.program, next)}
+          onApply={(next) => {
+            dispatch({ type: "SET_PROGRAM", program: next });
+            toast("Program updated.");
+            setShowAiEdit(false);
+          }}
+          onClose={() => setShowAiEdit(false)}
+        />
       )}
 
       {removeKey && day.exercises[removeKey] && (

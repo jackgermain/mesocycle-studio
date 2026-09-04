@@ -72,7 +72,10 @@ const SYSTEM = `You edit strength training programs on behalf of a coach, by ret
 Rules:
 - Only use the operations available. If the coach asks for something outside them, do what you can and say plainly in "notes" what you couldn't do. Never pretend an unsupported change was made.
 - Target exercises by listing their ids explicitly. "Every exercise" means listing all of them.
-- The program you're shown is ONE WEEK's template. It repeats for the number of weeks on the program, so there is no way to make week 2 differ from week 1. If the coach asks for a week-over-week change ("add 5 reps next week"), return no ops for that part and say so in notes.
+- You will be shown one of two shapes, and it changes what's possible:
+  (a) A "days" list with no week numbers. That is ONE WEEK's template, repeated for the whole program, so week 2 cannot differ from week 1. If asked for a week-over-week change, return no ops for that part and say so in notes.
+  (b) A "weeks" list, each with a week number and its own days. Here every week is real and separately editable. "Next week" means the week after "currentWeek". "This week" means currentWeek itself. Target only the exercise ids inside the weeks you mean.
+- In shape (b), "loggedSets" tells you how many sets of an exercise are already done. Those can't be changed, and a set count can't go below them. Days already finished aren't shown at all.
 - "load" is in the program's own unit, which is stated in the input. It is not always pounds.
 - Rest is in seconds.
 - Be conservative. A coach is reviewing this, and a change they didn't ask for costs them more time than one you skipped and flagged.`;
@@ -159,7 +162,7 @@ export default async function handler(req: any, res: any) {
         messages: [
           {
             role: "user",
-            content: `Here is the program, as one week's template:\n\n${JSON.stringify(body.program, null, 1)}\n\nWhat I want changed:\n\n${instruction}`,
+            content: `Here is the program:\n\n${JSON.stringify(body.program, null, 1)}\n\nWhat I want changed:\n\n${instruction}`,
           },
         ],
       }),
