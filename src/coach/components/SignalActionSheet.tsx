@@ -82,7 +82,7 @@ export function SignalActionSheet({
             <div className="mu" style={{ marginTop: 1 }}>
               {exercise
                 ? `Goes straight to ${exercise} on the day it happened, where you can swap or drop it.`
-                : "See everything they logged and edit it by hand."}
+                : "Opens the day it was reported on, where you can say which exercise it was and act on it."}
             </div>
           </div>
         </button>
@@ -98,7 +98,7 @@ export function SignalActionSheet({
         ) : (
           <div className="mu" style={{ lineHeight: 1.55 }}>
             {signal.kind === "joint"
-              ? `${first} didn't tie this to a single exercise, so there's nothing to change automatically.`
+              ? `${first} didn't name an exercise, so there's nothing to add a warm-up to from here — open the session and you can pick which one it was.`
               : "Open the session to see what they logged."}
           </div>
         )}

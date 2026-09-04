@@ -45,6 +45,21 @@ export default function LogSession() {
   );
 }
 
+/** Which session a report came from. `day_id` is the reliable answer but only exists from migration 0015
+ * on, and even then the day can be gone -- reassigning or rebuilding a program replaces every day in it,
+ * so a report can outlive the session it describes. Falling back to the calendar date the report was
+ * filed on catches the older ones, since feedback is answered at the end of the session it's about.
+ * Returns null when the original session genuinely isn't in the program any more, which the screen says
+ * out loud rather than quietly showing today's instead. */
+function resolveReportedDay(program: Program, signal: ClientSignal | null): string | null {
+  if (!signal) return null;
+  const days = program.weeks.flatMap((w) => w.days);
+  if (signal.day_id && days.some((d) => d.id === signal.day_id)) return signal.day_id;
+  const filed = new Date(signal.created_at);
+  const iso = `${filed.getFullYear()}-${String(filed.getMonth() + 1).padStart(2, "0")}-${String(filed.getDate()).padStart(2, "0")}`;
+  return days.find((d) => d.date === iso)?.id ?? null;
+}
+
 /** Arriving from a pain report on the desk. The whole point is to land on the day it happened rather than
  * make the coach find it among thirty, so the report is resolved before the body mounts and the day
  * picker is skipped entirely. Split out for the same reason as Reorder: the selected day is *seeded* from
@@ -93,9 +108,14 @@ function LogSessionBody({
   const { state, dispatch } = useStore();
   const todayDay = state.program.weeks.flatMap((w) => w.days).find((d) => d.status === "today");
 
-  const [selectedId, setSelectedId] = useState<string | null>(signal?.day_id ?? requestedDay ?? todayDay?.id ?? null);
+  const reportedDayId = resolveReportedDay(state.program, signal);
+  const [selectedId, setSelectedId] = useState<string | null>(reportedDayId ?? requestedDay ?? todayDay?.id ?? null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [swapKey, setSwapKey] = useState<string | null>(requestedExercise);
+  // A report from before the client was asked which exercise it was (or where they said it wasn't any
+  // single one) still deserves to be actionable -- the coach usually knows, or can ask. Naming it here
+  // unlocks the same swap/warm-up/remove actions as a report that came with one.
+  const [manualExercise, setManualExercise] = useState<string | null>(null);
   // Whether the swap in flight came from the pain card, which fixes its scope at the whole block rather
   // than asking -- responding to pain is a decision about the movement, not about today.
   const [painScope, setPainScope] = useState(false);
@@ -134,10 +154,12 @@ function LogSessionBody({
   // The report names the exercise, not its key, so it's matched back by name within this day. It can come
   // up empty -- the movement may already have been swapped out since -- in which case the report is still
   // worth showing, just without the actions.
-  const painKey = signal?.exercise
-    ? exIds.find((id) => day.exercises[id]?.name.trim().toLowerCase() === signal.exercise!.trim().toLowerCase()) ?? null
+  const painName = signal?.exercise ?? manualExercise;
+  const painKey = painName
+    ? exIds.find((id) => day.exercises[id]?.name.trim().toLowerCase() === painName.trim().toLowerCase()) ?? null
     : null;
   const painEx = painKey ? day.exercises[painKey] : null;
+  const reportedDayMissing = !!signal && reportedDayId === null;
 
   function toast(message: string) {
     dispatch({ type: "SHOW_TOAST", message });
@@ -182,6 +204,21 @@ function LogSessionBody({
     setConfirmRemove(false);
   }
 
+  /** One warm-up added to every session this exercise still appears in -- same reach as the swap and the
+   * removal beside it, so all three answers to a pain report behave the same way. */
+  function addWarmupRestOfBlock() {
+    if (!painKey || !painEx) return;
+    let n = 0;
+    for (const week of state.program.weeks) {
+      for (const d of week.days) {
+        if (d.status === "done" || !d.exercises[painKey]) continue;
+        dispatch({ type: "ADD_SET", dayId: d.id, exerciseId: painKey, warmup: true });
+        n++;
+      }
+    }
+    toast(`Warm-up set added to ${painEx.name} — ${n} session${n === 1 ? "" : "s"} updated.`);
+  }
+
   return (
     <div className="screen">
       <BackHeader kicker={`${clientName} · week ${week.number}`} title={dayDisplayTitle(day)} />
@@ -190,10 +227,9 @@ function LogSessionBody({
           <div className="cell elev-sm" style={{ borderLeft: "2px solid var(--color-accent)", padding: 12 }}>
             <div className="row" style={{ marginBottom: 6 }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                {/* Only claim "here" when this really is the session it came from. A report predating
-                    migration 0015 has no day recorded, so the screen falls back to today's. */}
+                {/* Only claim "here" when this really is the session it came from. */}
                 <div className="scr" style={{ color: "var(--color-accent-300)" }}>
-                  {signal.day_id === day.id ? "Reported here" : `Reported on ${signal.day_label ?? "an earlier day"}`}
+                  {reportedDayId === day.id ? "Reported here" : `Reported ${new Date(signal.created_at).toLocaleDateString()}`}
                 </div>
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, marginTop: 2 }}>
                   {signal.kind === "joint" ? "Joint pain" : signal.kind === "soreness" ? "Still sore" : "Low pump"}
@@ -213,30 +249,62 @@ function LogSessionBody({
               </div>
             )}
 
-            {painEx ? (
-              <div className="row" style={{ gap: 8, marginTop: 10 }}>
-                <button
-                  className="btn btn-solid"
-                  style={{ flex: 1, height: 34, fontSize: 12.5 }}
-                  onClick={() => {
-                    setPainScope(true);
-                    setSwapKey(painKey);
-                  }}
-                >
-                  Swap it
-                </button>
-                <button className="btn btn-secondary" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => setConfirmRemove(true)}>
-                  Remove it
-                </button>
+            {reportedDayMissing && (
+              <div className="mu" style={{ marginTop: 8, lineHeight: 1.5 }}>
+                The session this came from isn't in {clientName.split(" ")[0]}'s program any more — it was rebuilt or
+                reassigned since. You're looking at {reportedDayId === day.id ? "it" : dayDisplayTitle(day)} instead.
               </div>
-            ) : (
-              signal.exercise && (
-                <div className="mu" style={{ marginTop: 8 }}>
-                  {signal.exercise} isn't in this session any more — it looks like it's already been changed.
-                </div>
-              )
             )}
-            {painEx && <div className="mu" style={{ marginTop: 6 }}>Either one applies to the rest of the block. Sessions already logged stay as they were.</div>}
+
+            {/* No exercise on the report -- either it predates the question or they said it wasn't any one
+                movement. The coach usually knows which it was, so let them say and act on it. */}
+            {!painEx && !painName && exIds.length > 0 && (
+              <div style={{ marginTop: 10 }}>
+                <div className="sh" style={{ marginTop: 0 }}>Which exercise was it?</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {exIds.map((id) => {
+                    const ex = day.exercises[id];
+                    if (!ex) return null;
+                    return (
+                      <button key={id} className="chip" onClick={() => setManualExercise(ex.name)}>
+                        {ex.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {!painEx && painName && (
+              <div className="mu" style={{ marginTop: 8 }}>
+                {painName} isn't in this session — it looks like it's already been changed.
+              </div>
+            )}
+
+            {painEx && (
+              <>
+                <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                  <button
+                    className="btn btn-solid"
+                    style={{ flex: 1, height: 34, fontSize: 12.5 }}
+                    onClick={() => {
+                      setPainScope(true);
+                      setSwapKey(painKey);
+                    }}
+                  >
+                    Swap it
+                  </button>
+                  <button className="btn btn-secondary" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => setConfirmRemove(true)}>
+                    Remove it
+                  </button>
+                </div>
+                <button className="btn btn-secondary btn-block" style={{ height: 34, fontSize: 12.5, marginTop: 8 }} onClick={addWarmupRestOfBlock}>
+                  <i className="ph ph-thermometer-simple" style={{ fontSize: 14 }} />
+                  Add a warm-up set to {painEx.name}
+                </button>
+                <div className="mu" style={{ marginTop: 8 }}>All three apply to the rest of the block. Sessions already logged stay as they were.</div>
+              </>
+            )}
           </div>
         ) : (
           <InfoBanner icon="ph-user-focus">Logging for {clientName}, in person — this writes straight to their app.</InfoBanner>
