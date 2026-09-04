@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Seg } from "../components/UI";
+import { Seg, Stepper } from "../components/UI";
 import { defaultPortionTargets } from "../data/mockData";
 import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../data/types";
 
@@ -173,15 +173,19 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
               Protein is set from lean body mass — around 1 g per lb LBM — not total bodyweight, so a higher body-fat person isn't over-prescribed. Fat and carbs fill in around it. Optional — you can still hand-edit anything below.
             </div>
-            <div className="row" style={{ gap: 7 }}>
-              <NumField label="Bodyweight (lb)" value={calcBw} onChange={setCalcBw} step={5} />
-              <NumField label="Body fat %" value={calcBf} onChange={setCalcBf} step={1} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={5} />
+              <CalcRow label="Body fat" unit="%" value={calcBf} onChange={setCalcBf} step={1} max={100} />
             </div>
-            <div className="row" style={{ marginTop: 9, fontSize: 12 }}>
-              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Lean mass ≈ {lbm} lb</span>
-              <span>
-                Suggested protein <b style={{ color: "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{suggestedProtein} g</b>
-              </span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12 }}>
+              <div className="row">
+                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Lean mass</span>
+                <span style={{ fontFamily: "var(--font-heading)" }}>{lbm} lb</span>
+              </div>
+              <div className="row">
+                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Suggested protein</span>
+                <span style={{ color: "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{suggestedProtein} g</span>
+              </div>
             </div>
             <button className="btn btn-block" style={{ marginTop: 9, height: 34, fontSize: 12 }} onClick={applySuggestion}>
               Apply to targets below
@@ -196,47 +200,44 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
               1 lb of tissue ≈ 3,500 kcal, so a steady daily surplus or deficit compounds into a weekly weight change. Set the rate as a % of bodyweight instead of guessing an absolute calorie number — negative loses, positive gains.
             </div>
-            <div className="row" style={{ gap: 7 }}>
-              <NumField label="Bodyweight (lb)" value={calcBw} onChange={setCalcBw} step={5} />
-              <PctField label="% BW / week" value={ratePct} onChange={setRatePct} step={0.1} />
-              <NumField label="Maintenance kcal" value={maintenance} onChange={setMaintenance} step={50} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={5} />
+              <CalcRow label="Rate" unit="% BW / wk" value={ratePct} onChange={setRatePct} step={0.1} min={-2} max={2} />
+              <CalcRow label="Maintenance" unit="kcal" value={maintenance} onChange={setMaintenance} step={50} />
             </div>
-            <div className="row" style={{ marginTop: 9, fontSize: 12 }}>
-              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>
-                ≈ {lbPerWeek > 0 ? "+" : ""}{lbPerWeek} lb/wk
-              </span>
-              <span>
-                {dailyKcalDelta >= 0 ? "+" : ""}
-                {dailyKcalDelta} kcal/day → <b style={{ color: "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{targetKcal} kcal</b>
-              </span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12 }}>
+              <div className="row">
+                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Weekly change</span>
+                <span style={{ fontFamily: "var(--font-heading)" }}>{lbPerWeek > 0 ? "+" : ""}{lbPerWeek} lb/wk</span>
+              </div>
+              <div className="row">
+                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Daily intake</span>
+                <span style={{ fontFamily: "var(--font-heading)" }}>
+                  {dailyKcalDelta >= 0 ? "+" : ""}{dailyKcalDelta} → <b style={{ color: "var(--color-accent-300)" }}>{targetKcal} kcal</b>
+                </span>
+              </div>
             </div>
             <button className="btn btn-block" style={{ marginTop: 9, height: 34, fontSize: 12 }} onClick={applyRate}>
               Apply — sets kcal target and rate label below
             </button>
           </div>
 
-          <div className="row" style={{ gap: 7 }}>
-            <NumField label="kcal" value={kcal} onChange={setKcal} step={50} />
-            <NumField label="Protein" value={protein} onChange={setProtein} step={5} />
-            <NumField label="Carbs" value={carbs} onChange={setCarbs} step={10} />
-            <NumField label="Fat" value={fat} onChange={setFat} step={5} />
+          <div className="cell" style={{ padding: 11 }}>
+            <CalcRow label="Calories" unit="kcal" value={kcal} onChange={setKcal} step={50} />
+            <CalcRow label="Protein" unit="g" value={protein} onChange={setProtein} step={5} />
+            <CalcRow label="Carbs" unit="g" value={carbs} onChange={setCarbs} step={10} />
+            <CalcRow label="Fat" unit="g" value={fat} onChange={setFat} step={5} />
           </div>
-          <div className="row" style={{ gap: 8, marginTop: 8 }}>
-            <div className="cell" style={{ flex: 1, padding: 9 }}>
-              <div className="scr">Training day</div>
-              <div className="row" style={{ marginTop: 3, gap: 6 }}>
-                <button onClick={() => setCarbBonus((v) => Math.max(0, v - 10))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                  <i className="ph ph-minus" style={{ fontSize: 12 }} />
-                </button>
-                <span style={{ fontSize: 12.5, color: "var(--color-accent-300)" }}>+{carbBonus} g carbs</span>
-                <button onClick={() => setCarbBonus((v) => v + 10)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                  <i className="ph ph-plus" style={{ fontSize: 12 }} />
-                </button>
-              </div>
-            </div>
-            <div className="cell" style={{ flex: 1, padding: 9 }}>
-              <div className="scr">Rate target</div>
-              <input className="input" style={{ marginTop: 3, height: 28, fontSize: 12.5 }} value={rate} onChange={(e) => setRate(e.target.value)} />
+          <div className="cell" style={{ padding: 11, marginTop: 8 }}>
+            <CalcRow label="Training day bonus" unit="g carbs" value={carbBonus} onChange={setCarbBonus} step={10} />
+            <div className="row" style={{ marginTop: 6 }}>
+              <span style={{ flex: 1, fontSize: 12.5 }}>Rate target</span>
+              <input
+                className="input"
+                style={{ width: 150, flex: "none", height: 30, fontSize: 12.5, textAlign: "center" }}
+                value={rate}
+                onChange={(e) => setRate(e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -331,47 +332,38 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
  * and type an exact value -- +/- alone was fine as a touch-only control, but this app needs to work with a
  * keyboard too. Keeps its own draft text while focused so a mid-edit "" or partial number isn't fought back
  * to the last committed value; commits on blur/Enter. */
-function NumField({ label, value, onChange, step }: { label: string; value: number; onChange: (v: number) => void; step: number }) {
-  const [text, setText] = useState(String(value));
-  useEffect(() => setText(String(value)), [value]);
-
-  function commit() {
-    const n = parseFloat(text);
-    if (Number.isFinite(n)) onChange(Math.max(0, n));
-    else setText(String(value));
-  }
-
+/** One calculator input: label on the left, stepper on the right, one per line. These used to sit side by
+ * side as equal-width cards, which fell apart as soon as a label wrapped -- "Maintenance kcal" went to two
+ * lines and dropped its number below the others, so the numbers no longer lined up with each other or with
+ * their labels. Stacked rows can't misalign no matter how long a label gets. */
+function CalcRow({
+  label,
+  unit,
+  value,
+  onChange,
+  step,
+  min = 0,
+  max,
+}: {
+  label: string;
+  unit?: string;
+  value: number;
+  onChange: (v: number) => void;
+  step: number;
+  min?: number;
+  max?: number;
+}) {
   return (
-    <div className="cell" style={{ flex: 1, padding: 9 }}>
-      <div className="scr">{label}</div>
-      <div className="row" style={{ marginTop: 3, gap: 4, justifyContent: "center" }}>
-        <button onClick={() => onChange(Math.max(0, value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
-          <i className="ph ph-minus" style={{ fontSize: 11 }} />
-        </button>
-        <input
-          type="number"
-          inputMode="decimal"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onFocus={(e) => e.target.select()}
-          onBlur={commit}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              commit();
-              e.currentTarget.blur();
-            }
-          }}
-          style={{ width: 44, flex: "none", textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 14, color: "inherit", padding: 0 }}
-        />
-        <button onClick={() => onChange(value + step)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
-          <i className="ph ph-plus" style={{ fontSize: 11 }} />
-        </button>
-      </div>
+    <div className="row" style={{ minHeight: 34 }}>
+      <span style={{ flex: 1, fontSize: 12.5 }}>
+        {label}
+        {unit ? <span style={{ color: "var(--color-neutral-500)", marginLeft: 4 }}>({unit})</span> : null}
+      </span>
+      <Stepper value={value} onChange={onChange} step={step} min={min} max={max} width={54} fontSize={14} />
     </div>
   );
 }
 
-/** Signed, decimal-friendly counterpart to NumField — for a rate that can go negative (losing) or positive (gaining), clamped to a sane weekly range. */
 function PctField({ label, value, onChange, step }: { label: string; value: number; onChange: (v: number) => void; step: number }) {
   const clamp = (v: number) => Math.round(Math.min(3, Math.max(-3, v)) * 10) / 10;
   const [text, setText] = useState(value.toFixed(1));
