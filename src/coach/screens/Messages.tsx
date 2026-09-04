@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCoachStore } from "../store";
+import { useAuth } from "../../lib/auth";
 import { CoachTabBar } from "../components/CoachTabBar";
+import { FeedbackSheet, FeedbackInbox } from "../../shared/FeedbackSheet";
 import { BackHeader, HeroHeader, HeroStat } from "../../components/UI";
 import { formatMessageTime, formatThreadPreviewTime } from "../../shared/formatTime";
 
@@ -11,6 +13,9 @@ export default function Messages() {
   const { state } = useCoachStore();
   const nav = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
+  const { account } = useAuth();
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [showFeedbackInbox, setShowFeedbackInbox] = useState(false);
   const unreadCount = state.threads.filter((t) => t.unread).length;
 
   const filtered = state.threads.filter((t) => (filter === "unread" ? t.unread : filter === "flagged" ? t.context.toLowerCase().includes("flag") : true));
@@ -20,9 +25,19 @@ export default function Messages() {
       <HeroHeader
         title="Messages"
         right={
-          <button className="btn btn-secondary btn-icon" aria-label="New message" onClick={() => nav("/coach/clients")}>
-            <i className="ph ph-pencil-simple-line" style={{ fontSize: 16 }} />
-          </button>
+          <div className="row" style={{ gap: 8 }}>
+            {account?.is_platform_admin && (
+              <button className="btn btn-secondary btn-icon" aria-label="Feedback from users" onClick={() => setShowFeedbackInbox(true)}>
+                <i className="ph ph-tray" style={{ fontSize: 16 }} />
+              </button>
+            )}
+            <button className="btn btn-secondary btn-icon" aria-label="Send feedback about the app" onClick={() => setShowFeedback(true)}>
+              <i className="ph ph-megaphone-simple" style={{ fontSize: 16 }} />
+            </button>
+            <button className="btn btn-secondary btn-icon" aria-label="New message" onClick={() => nav("/coach/clients")}>
+              <i className="ph ph-pencil-simple-line" style={{ fontSize: 16 }} />
+            </button>
+          </div>
         }
       >
         <HeroStat value={unreadCount} label="unread" valueColor={unreadCount > 0 ? "var(--color-accent)" : "var(--color-neutral-200)"}>
@@ -62,6 +77,8 @@ export default function Messages() {
         </div>
       </div>
       <CoachTabBar />
+      {showFeedback && <FeedbackSheet onClose={() => setShowFeedback(false)} />}
+      {showFeedbackInbox && <FeedbackInbox onClose={() => setShowFeedbackInbox(false)} />}
     </div>
   );
 }

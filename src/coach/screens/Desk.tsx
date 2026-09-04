@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
+import { acknowledgeSignal, isJointUrgent, listOpenSignals, type ClientSignal } from "../../shared/signals";
 import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
 import type { ClientStatus } from "../types";
@@ -36,6 +37,33 @@ export default function Desk() {
   const coachName = account?.display_name ?? "Coach";
   const nav = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
+  const [signals, setSignals] = useState<ClientSignal[]>([]);
+
+  // Real client-reported feedback (pump, joint pain, unhealed soreness), as opposed to the demo flags
+  // below it. Loaded straight from the database rather than coach_state, since a client writes these
+  // into their own row of client_signals and the coach only reads them.
+  useEffect(() => {
+    let active = true;
+    listOpenSignals().then((rows) => active && setSignals(rows));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function clearSignal(id: string) {
+    await acknowledgeSignal(id);
+    setSignals((prev) => prev.filter((s) => s.id !== id));
+  }
+
+  function signalClientName(s: ClientSignal): string {
+    return state.clients.find((c) => c.accountId === s.client_id)?.name ?? "A client";
+  }
+
+  function signalText(s: ClientSignal): string {
+    if (s.kind === "joint") return `Joint pain${s.note ? ` — ${s.note}` : ""}`;
+    if (s.kind === "soreness") return `${s.muscle} still sore${s.note ? ` — ${s.note.toLowerCase()}` : ""}`;
+    return `${s.muscle} pump was low`;
+  }
 
   const allFlags = useMemo(() => state.clients.flatMap((c) => c.flags.map((f) => ({ client: c, flag: f }))), [state.clients]);
   const counts = {
@@ -83,7 +111,7 @@ export default function Desk() {
           </button>
         }
       >
-        <HeroStat value={allFlags.length} label={<>decisions<br />waiting</>}>
+        <HeroStat value={allFlags.length + signals.length} label={<>decisions<br />waiting</>}>
           <div className="row" style={{ fontSize: 12 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
             <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{counts.volume}</span>
@@ -122,6 +150,36 @@ export default function Desk() {
             </div>
           </div>
         </div>
+
+        {signals.length > 0 && (
+          <div>
+            <div className="sh">From your clients · {signals.length}</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {signals.map((s) => {
+                const urgent = s.kind === "joint" && isJointUrgent(s.severity);
+                return (
+                  <div key={s.id} className="cell elev-sm" style={urgent ? { borderLeft: "2px solid var(--color-accent)" } : undefined}>
+                    <div className="row">
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="name">{signalClientName(s)}</div>
+                        <div className="mu" style={{ marginTop: 1 }}>
+                          {signalText(s)}
+                          {s.day_label ? ` · ${s.day_label}` : ""}
+                        </div>
+                      </div>
+                      <span className={`tag ${urgent ? "tag-accent" : "tag-neutral"}`} style={{ flex: "none" }}>
+                        {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : "Pump"}
+                      </span>
+                    </div>
+                    <button className="btn btn-secondary btn-block" style={{ height: 34, fontSize: 12.5, marginTop: 9 }} onClick={() => clearSignal(s.id)}>
+                      Mark as read
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div>
           <div className="row" style={{ marginBottom: 8 }}>

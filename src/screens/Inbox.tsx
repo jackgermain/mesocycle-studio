@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, HeroHeader, SetPasswordCard, SignOutButton } from "../components/UI";
+import { FeedbackSheet } from "../shared/FeedbackSheet";
 import { formatMessageTime } from "../shared/formatTime";
 
 interface Bubble {
@@ -30,6 +31,7 @@ export default function Inbox() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAccount, setShowAccount] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   async function refresh() {
     const { data, error } = await supabase.rpc("get_my_thread");
@@ -70,14 +72,19 @@ export default function Inbox() {
         kicker={coachName}
         title="Inbox"
         right={
-          <button
-            className="avatar"
-            style={{ width: 38, height: 38, boxShadow: "0 0 0 1px var(--color-accent-700)", border: "none", cursor: "pointer" }}
-            aria-label="Account"
-            onClick={() => setShowAccount(true)}
-          >
-            {myName.slice(0, 2).toUpperCase()}
-          </button>
+          <div className="row" style={{ gap: 8 }}>
+            <button className="btn btn-secondary btn-icon" aria-label="Send feedback about the app" onClick={() => setShowFeedback(true)}>
+              <i className="ph ph-megaphone-simple" style={{ fontSize: 16 }} />
+            </button>
+            <button
+              className="avatar"
+              style={{ width: 38, height: 38, boxShadow: "0 0 0 1px var(--color-accent-700)", border: "none", cursor: "pointer" }}
+              aria-label="Account"
+              onClick={() => setShowAccount(true)}
+            >
+              {myName.slice(0, 2).toUpperCase()}
+            </button>
+          </div>
         }
       />
       <div className="screen-scroll" style={{ justifyContent: bubbles.length ? "flex-end" : "flex-start", gap: 4 }}>
@@ -154,6 +161,7 @@ export default function Inbox() {
           </div>
         </div>
       )}
+      {showFeedback && <FeedbackSheet onClose={() => setShowFeedback(false)} />}
     </div>
   );
 }

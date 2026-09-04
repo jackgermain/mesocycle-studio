@@ -4,9 +4,12 @@ import { findDay, useStore } from "../state/store";
 import { InfoBanner } from "../components/UI";
 import { sorenessWording } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
+import { useAuth } from "../lib/auth";
+import { isSorenessAlerting, sendSignals } from "../shared/signals";
 
 export default function Soreness({ dayId, due }: { dayId: string; due: { muscle: string; lastTrainedDaysAgo: number }[] }) {
   const { state, dispatch } = useStore();
+  const { account } = useAuth();
   const nav = useNavigate();
   const found = findDay(state.program, dayId);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -16,6 +19,22 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
 
   function submit() {
     dispatch({ type: "SET_SORENESS_DONE", dayId });
+
+    // A muscle still sore on the day it's due to be trained again is the signal that its volume may be
+    // too high -- that's the whole reason this question is asked, so it has to reach the coach.
+    const dayLabel = found ? dayDisplayTitle(found.day) : null;
+    const sore = due
+      .map((m) => ({ muscle: m.muscle, severity: answers[m.muscle], daysAgo: m.lastTrainedDaysAgo }))
+      .filter((m) => typeof m.severity === "number" && isSorenessAlerting(m.severity))
+      .map((m) => ({
+        kind: "soreness" as const,
+        muscle: m.muscle,
+        severity: m.severity,
+        note: `Still sore ${m.daysAgo} day${m.daysAgo === 1 ? "" : "s"} after training it`,
+        dayLabel,
+      }));
+    if (account) void sendSignals(account.id, account.coach_id, sore);
+
     if (anyUnhealed) {
       dispatch({ type: "SHOW_TOAST", message: `Noted — those sets hold at last week's number, and ${state.program.coachName}'s flagged.` });
       setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);

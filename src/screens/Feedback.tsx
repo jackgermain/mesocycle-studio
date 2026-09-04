@@ -4,12 +4,15 @@ import { findDay, useStore } from "../state/store";
 import { InfoBanner } from "../components/UI";
 import { pumpWording, jointReasonLabels } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
+import { useAuth } from "../lib/auth";
+import { isJointUrgent, isPumpAlerting, sendSignals } from "../shared/signals";
 
 const COMMON_AREAS = ["R shoulder", "L shoulder", "Elbow", "Wrist", "Lower back", "Knee", "Hip"];
 
 export default function Feedback() {
   const { dayId = "" } = useParams();
   const { state, dispatch } = useStore();
+  const { account } = useAuth();
   const nav = useNavigate();
   const found = findDay(state.program, dayId);
   const day = found?.day;
@@ -44,8 +47,35 @@ export default function Feedback() {
 
   function finish() {
     dispatch({ type: "SET_FEEDBACK_DONE", dayId });
-    if (jointYes && (jointSeverity ?? 0) >= 3) {
-      dispatch({ type: "SHOW_TOAST", message: `${state.program.coachName} was notified about the joint pain right away.` });
+
+    // Only what the coach actually needs to act on gets sent -- a good pump on every muscle isn't news.
+    const dayLabel = day ? dayDisplayTitle(day) : null;
+    const signals = [
+      ...muscles
+        .map(([muscle]) => ({ muscle, severity: pump[muscle] }))
+        .filter((p) => typeof p.severity === "number" && isPumpAlerting(p.severity))
+        .map((p) => ({ kind: "pump" as const, muscle: p.muscle, severity: p.severity, dayLabel })),
+      ...(jointYes && jointSeverity !== null
+        ? [{
+            kind: "joint" as const,
+            muscle: null,
+            severity: jointSeverity,
+            note: jointLocation.trim() || jointReasonLabels[jointSeverity - 1] || null,
+            dayLabel,
+          }]
+        : []),
+    ];
+    if (account) void sendSignals(account.id, account.coach_id, signals);
+
+    const flagged = signals.length > 0;
+    if (flagged) {
+      const urgent = jointYes && isJointUrgent(jointSeverity ?? 0);
+      dispatch({
+        type: "SHOW_TOAST",
+        message: urgent
+          ? `${state.program.coachName} was notified about the joint pain right away.`
+          : `${state.program.coachName} will see this before your next session.`,
+      });
       setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
     }
     nav("/block", { replace: true });
