@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { buildSelfProfile } from "../data/mockData";
 import type { ClientProfile, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, WeighIn, WorkSet } from "../data/types";
+import type { FoodItem } from "../data/foodDatabase";
 import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { supabase } from "../lib/supabase";
@@ -16,6 +17,9 @@ export interface AppState {
   removals: RemovalRecord[];
   meals: MealSection[];
   weighIns: WeighIn[];
+  /** Foods this person has manually entered themselves (name + macros, no database match) -- searchable
+   * alongside the built-in list and live database results from then on. */
+  customFoods: FoodItem[];
   toast: string | null;
 }
 
@@ -30,6 +34,7 @@ function buildBlankState(ownerName: string, coachName: string): AppState {
     removals: [],
     meals: [],
     weighIns: [],
+    customFoods: [],
     toast: null,
   };
 }
@@ -54,6 +59,8 @@ type Action =
   | { type: "REMOVE_FOOD_ITEM"; mealId: string; itemId: string }
   | { type: "ADD_MEAL"; name: string }
   | { type: "REMOVE_MEAL"; mealId: string }
+  | { type: "ADD_CUSTOM_FOOD"; food: FoodItem }
+  | { type: "REMOVE_CUSTOM_FOOD"; foodId: string }
   | { type: "LOG_WEIGHIN"; date: string; weight: number }
   | { type: "TOGGLE_PORTION"; mealId: string; category: import("../data/types").PortionCategory }
   | { type: "SHOW_TOAST"; message: string }
@@ -275,6 +282,12 @@ function reducer(state: AppState, action: Action): AppState {
     case "REMOVE_MEAL": {
       const meals = state.meals.filter((m) => m.id !== action.mealId);
       return { ...state, meals };
+    }
+    case "ADD_CUSTOM_FOOD": {
+      return { ...state, customFoods: [action.food, ...state.customFoods] };
+    }
+    case "REMOVE_CUSTOM_FOOD": {
+      return { ...state, customFoods: state.customFoods.filter((f) => f.id !== action.foodId) };
     }
     case "LOG_WEIGHIN": {
       const existing = state.weighIns.find((w) => w.date === action.date);

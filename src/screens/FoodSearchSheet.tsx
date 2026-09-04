@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { foodDatabase, scaleFood, type FoodItem } from "../data/foodDatabase";
 import { searchUsdaFoods } from "../data/usdaFoodApi";
 import { searchOpenFoodFacts } from "../data/openFoodFactsApi";
+import { useStore } from "../state/store";
 
 type Unit = "g" | "oz" | "ml";
 const UNIT_TO_GRAMS: Record<Unit, number> = { g: 1, oz: 28.3495, ml: 1 };
@@ -21,8 +22,10 @@ function parseBaseGrams(servingLabel: string): number | null {
 }
 
 export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName: string; onAdd: (food: FoodItem, servings: number) => void; onClose: () => void }) {
+  const { state, dispatch } = useStore();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<FoodItem | null>(null);
+  const [creating, setCreating] = useState(false);
   const [servings, setServings] = useState(1);
   const [unit, setUnit] = useState<Unit>("g");
   const [amountText, setAmountText] = useState("");
@@ -30,7 +33,8 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState(false);
 
-  const localResults = foodDatabase.filter((f) => f.name.toLowerCase().includes(query.toLowerCase()) || f.brand?.toLowerCase().includes(query.toLowerCase()));
+  const allLocal = [...state.customFoods, ...foodDatabase];
+  const localResults = allLocal.filter((f) => f.name.toLowerCase().includes(query.toLowerCase()) || f.brand?.toLowerCase().includes(query.toLowerCase()));
   const baseGrams = selected ? parseBaseGrams(selected.servingLabel) : null;
 
   // Debounced live search against USDA FoodData Central (primary -- real branded/manufacturer nutrition
@@ -85,6 +89,19 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
     const n = parseFloat(text);
     const grams = Number.isFinite(n) ? n * UNIT_TO_GRAMS[u] : 0;
     setServings(grams / baseGrams);
+  }
+
+  if (creating) {
+    return (
+      <CustomFoodForm
+        onBack={() => setCreating(false)}
+        onSave={(food) => {
+          dispatch({ type: "ADD_CUSTOM_FOOD", food });
+          setCreating(false);
+          setSelected(food);
+        }}
+      />
+    );
   }
 
   if (selected) {
@@ -212,9 +229,18 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
         <div className="mu" style={{ lineHeight: 1.5 }}>
           Searches this app's saved foods instantly, plus live results from USDA FoodData Central and Open Food Facts as you type.
         </div>
+        <button className="link-row" style={{ padding: "9px 11px" }} onClick={() => setCreating(true)}>
+          <i className="ph ph-plus-circle" style={{ fontSize: 15, color: "var(--color-accent)" }} />
+          <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>Create a custom food</span>
+        </button>
         <div style={{ display: "flex", flexDirection: "column", gap: 7, overflowY: "auto" }}>
           {localResults.map((f) => (
-            <FoodResultRow key={f.id} food={f} onPick={() => setSelected(f)} />
+            <FoodResultRow
+              key={f.id}
+              food={f}
+              onPick={() => setSelected(f)}
+              onRemove={f.id.startsWith("custom-") ? () => dispatch({ type: "REMOVE_CUSTOM_FOOD", foodId: f.id }) : undefined}
+            />
           ))}
           {query.trim().length >= 2 && (
             <>
@@ -238,17 +264,115 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
   );
 }
 
-function FoodResultRow({ food, onPick }: { food: FoodItem; onPick: () => void }) {
+function FoodResultRow({ food, onPick, onRemove }: { food: FoodItem; onPick: () => void; onRemove?: () => void }) {
   return (
-    <button className="link-row" style={{ padding: "10px 11px" }} onClick={onPick}>
-      <div style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+    <div className="link-row" style={{ padding: "10px 11px", cursor: "default" }}>
+      <button onClick={onPick} style={{ flex: 1, minWidth: 0, textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", color: "inherit" }}>
         <div className="trunc" style={{ fontSize: 13.5 }}>{food.name}</div>
         <div className="mu" style={{ marginTop: 1 }}>
           {food.brand ? `${food.brand} · ` : ""}
           {food.servingLabel} · {food.kcal} kcal
         </div>
+      </button>
+      {onRemove && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          aria-label={`Remove ${food.name}`}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-600)", display: "flex", padding: 4, flex: "none" }}
+        >
+          <i className="ph ph-x" style={{ fontSize: 14 }} />
+        </button>
+      )}
+      <button onClick={onPick} aria-label={`Add ${food.name}`} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flex: "none", padding: 0 }}>
+        <i className="ph ph-plus-circle" style={{ fontSize: 18, color: "var(--color-accent)" }} />
+      </button>
+    </div>
+  );
+}
+
+function CustomFoodForm({ onBack, onSave }: { onBack: () => void; onSave: (food: FoodItem) => void }) {
+  const [name, setName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [servingLabel, setServingLabel] = useState("1 serving");
+  const [kcal, setKcal] = useState("");
+  const [protein, setProtein] = useState("");
+  const [carbs, setCarbs] = useState("");
+  const [fat, setFat] = useState("");
+
+  const canSave = name.trim().length > 0 && servingLabel.trim().length > 0 && kcal.trim().length > 0;
+
+  function save() {
+    if (!canSave) return;
+    const food: FoodItem = {
+      id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name: name.trim(),
+      brand: brand.trim() || undefined,
+      servingLabel: servingLabel.trim(),
+      kcal: Math.round(parseFloat(kcal) || 0),
+      protein: Math.round((parseFloat(protein) || 0) * 10) / 10,
+      carbs: Math.round((parseFloat(carbs) || 0) * 10) / 10,
+      fat: Math.round((parseFloat(fat) || 0) * 10) / 10,
+    };
+    onSave(food);
+  }
+
+  return (
+    <div className="sheet-backdrop" onClick={onBack}>
+      <div className="sheet" onClick={(e) => e.stopPropagation()}>
+        <div className="row">
+          <button onClick={onBack} style={{ background: "none", border: "none", color: "var(--color-accent)", cursor: "pointer", display: "flex" }}>
+            <i className="ph ph-caret-left" style={{ fontSize: 18 }} />
+          </button>
+          <div style={{ flex: 1, fontSize: 15, fontFamily: "var(--font-heading)" }}>Create a custom food</div>
+        </div>
+
+        <div className="field">
+          <label>Name</label>
+          <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Mom's protein pancakes" autoFocus />
+        </div>
+        <div className="field">
+          <label>Brand (optional)</label>
+          <input className="input" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. Homemade" />
+        </div>
+        <div className="field">
+          <label>Serving size</label>
+          <input className="input" value={servingLabel} onChange={(e) => setServingLabel(e.target.value)} placeholder="e.g. 1 serving, 100 g, 1 scoop (32g)" />
+        </div>
+
+        <div className="cell" style={{ padding: 12 }}>
+          <div className="scr" style={{ marginBottom: 8 }}>Macros per serving</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <NumberField label="Calories" value={kcal} onChange={setKcal} placeholder="0" />
+            <NumberField label="Protein (g)" value={protein} onChange={setProtein} placeholder="0" />
+            <NumberField label="Carbs (g)" value={carbs} onChange={setCarbs} placeholder="0" />
+            <NumberField label="Fat (g)" value={fat} onChange={setFat} placeholder="0" />
+          </div>
+        </div>
+
+        <button className="btn btn-primary btn-block" style={{ height: 46, opacity: canSave ? 1 : 0.5 }} disabled={!canSave} onClick={save}>
+          Save
+        </button>
       </div>
-      <i className="ph ph-plus-circle" style={{ fontSize: 18, color: "var(--color-accent)", flex: "none" }} />
-    </button>
+    </div>
+  );
+}
+
+function NumberField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+  return (
+    <div className="row">
+      <span style={{ flex: 1, fontSize: 13 }}>{label}</span>
+      <input
+        type="number"
+        inputMode="decimal"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={(e) => e.target.select()}
+        placeholder={placeholder}
+        style={{ width: 72, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: 16, background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, padding: "7px 0", color: "inherit", outline: "none" }}
+      />
+    </div>
   );
 }
