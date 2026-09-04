@@ -3,14 +3,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import { findDay, useStore } from "../state/store";
 import { CloseHeader, InfoBanner } from "../components/UI";
 import { dayDisplayTitle } from "../data/dayNumbering";
+import type { TrainingDay, TrainingWeek } from "../data/types";
 
+/** Split in two on purpose. The working order is seeded from the day, so the hook holding it can't simply
+ * move above the "not found" check the way it can elsewhere -- seeding it before the program has loaded
+ * would leave it stuck on an empty list. Doing the lookup in an outer component instead means the inner
+ * one only ever mounts with a real day, and mounts fresh if the day changes. */
 export default function Reorder() {
   const { dayId = "" } = useParams();
-  const { state, dispatch } = useStore();
-  const nav = useNavigate();
+  const { state } = useStore();
   const found = findDay(state.program, dayId);
   if (!found) return <div className="screen-scroll">Not found.</div>;
-  const { day, week } = found;
+  return <ReorderInner key={dayId} dayId={dayId} day={found.day} week={found.week} />;
+}
+
+function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; week: TrainingWeek }) {
+  const { state, dispatch } = useStore();
+  const nav = useNavigate();
   const initialOrder = day.order.length ? day.order : Object.keys(day.exercises);
   const [order, setOrder] = useState(initialOrder);
 

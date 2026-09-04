@@ -51,6 +51,11 @@ function LogSessionInner({ clientName, onDone }: { clientName: string; onDone: (
   const [selectedId, setSelectedId] = useState<string | null>(requestedDay ?? todayDay?.id ?? null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [swapKey, setSwapKey] = useState<string | null>(params.get("exercise"));
+  // Picking the replacement and deciding how far it reaches are two steps: the picked exercise is held
+  // here until a scope is chosen, so nothing is written until the coach says how far it should go.
+  // Declared up here with the rest, not down beside applySwap where it reads better -- everything below
+  // is past an early return, and a hook there only runs on some renders (React error #310).
+  const [pendingSwap, setPendingSwap] = useState<LibraryExercise | null>(null);
   const nav = useNavigate();
 
   if (!selectedId) {
@@ -76,10 +81,6 @@ function LogSessionInner({ clientName, onDone }: { clientName: string; onDone: (
   const { d: day, w: week } = found;
   const exIds = day.order.length ? day.order : Object.keys(day.exercises);
   const swappingEx = swapKey ? day.exercises[swapKey] : null;
-
-  // Picking the replacement and deciding how far it reaches are two steps: the picked exercise is held
-  // here until a scope is chosen, so nothing is written until the coach says how far it should go.
-  const [pendingSwap, setPendingSwap] = useState<LibraryExercise | null>(null);
 
   function applySwap(scope: "day" | "mesocycle") {
     if (!swapKey || !pendingSwap) return;

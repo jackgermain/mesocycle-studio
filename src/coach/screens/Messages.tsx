@@ -133,14 +133,18 @@ export function CoachThread() {
   // (and the first message sent creates the real thread).
   const rosterClient = !existingThread ? state.clients.find((c) => c.accountId === threadId) : null;
   const [draft, setDraft] = useState("");
-  if (!existingThread && !rosterClient) return <div className="screen-scroll">Not found.</div>;
 
-  const thread = existingThread ?? { id: threadId, clientId: threadId, clientName: rosterClient!.name, context: "", unread: false, time: "", preview: "", bubbles: [] as { from: "coach" | "client"; text: string; time: string; attached?: string; receipt?: string }[] };
-
+  // Above the "not found" return: threads load asynchronously, so this renders once with nothing found
+  // and again once the thread arrives, and a hook below the return would only run on the second of those
+  // (React error #310).
   useEffect(() => {
     if (existingThread?.unread) dispatch({ type: "MARK_READ", threadId: existingThread.id });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existingThread?.id, existingThread?.unread]);
+
+  if (!existingThread && !rosterClient) return <div className="screen-scroll">Not found.</div>;
+
+  const thread = existingThread ?? { id: threadId, clientId: threadId, clientName: rosterClient!.name, context: "", unread: false, time: "", preview: "", bubbles: [] as { from: "coach" | "client"; text: string; time: string; attached?: string; receipt?: string }[] };
 
   function send() {
     if (!draft.trim()) return;

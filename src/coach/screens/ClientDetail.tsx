@@ -18,6 +18,28 @@ export default function ClientDetail() {
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
   const found = state.clients.find((c) => c.id === clientId);
+
+  // Kept above the "not found" return with the rest of the hooks: the roster loads asynchronously, so
+  // this component renders once before the client exists and again after, and a hook below the return
+  // would run only on the second of those (React error #310).
+  const foundAccountId = found?.accountId;
+  const [accountActive, setAccountActive] = useState<boolean | null>(null);
+  const [revoking, setRevoking] = useState(false);
+
+  useEffect(() => {
+    if (!foundAccountId) return;
+    let active = true;
+    supabase
+      .from("accounts")
+      .select("active")
+      .eq("id", foundAccountId)
+      .maybeSingle()
+      .then(({ data }) => active && setAccountActive((data?.active as boolean | undefined) ?? true));
+    return () => {
+      active = false;
+    };
+  }, [foundAccountId]);
+
   if (!found) return <div className="screen-scroll">Not found.</div>;
   const client = found;
 
@@ -70,22 +92,6 @@ export default function ClientDetail() {
   }
 
   const accepted = !!client.accountId;
-  const [accountActive, setAccountActive] = useState<boolean | null>(null);
-  const [revoking, setRevoking] = useState(false);
-
-  useEffect(() => {
-    if (!client.accountId) return;
-    let active = true;
-    supabase
-      .from("accounts")
-      .select("active")
-      .eq("id", client.accountId)
-      .maybeSingle()
-      .then(({ data }) => active && setAccountActive((data?.active as boolean | undefined) ?? true));
-    return () => {
-      active = false;
-    };
-  }, [client.accountId]);
 
   async function toggleAccess() {
     if (!client.accountId || accountActive === null) return;

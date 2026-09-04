@@ -17,6 +17,16 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   const { state, dispatch } = useStore();
   const nav = useNavigate();
   const { account, previewingAsClient } = useAuth();
+  // Every hook stays above the "not found" return. The program arrives asynchronously, so this component
+  // really does render once with no matching day and again once there is one -- and a hook below the
+  // return would run on the second render but not the first, which is React error #310.
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [showOptions, setShowOptions] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+  const [swapKey, setSwapKey] = useState<string | null>(null);
+  const [pendingSwap, setPendingSwap] = useState<{ name: string; muscle: string; hasVideo: boolean } | null>(null);
+  const [confirmText, setConfirmText] = useState("");
+
   const found = findDay(state.program, dayId);
   if (!found) return <div className="screen-scroll">Not found.</div>;
   const { day, week } = found;
@@ -26,11 +36,6 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   const doneSets = exIds.reduce((n, id) => n + (day.exercises[id]?.sets.filter((s) => s.checked).length ?? 0), 0);
   const allResolved = totalSets > 0 && doneSets === totalSets;
 
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const [showOptions, setShowOptions] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
-  const [swapKey, setSwapKey] = useState<string | null>(null);
-  const [pendingSwap, setPendingSwap] = useState<{ name: string; muscle: string; hasVideo: boolean } | null>(null);
   const swappingEx = swapKey ? day.exercises[swapKey] : null;
 
   function applySwap(scope: "day" | "mesocycle") {
@@ -50,7 +55,6 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
     setPendingSwap(null);
     setSwapKey(null);
   }
-  const [confirmText, setConfirmText] = useState("");
 
   // Self-directed: a real client's mesocycle is authored and owned by their coach, so only someone
   // training themselves (a "friend" account, or a coach previewing as their own client) can end or
