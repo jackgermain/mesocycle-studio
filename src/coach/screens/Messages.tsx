@@ -33,6 +33,18 @@ export default function Messages() {
 
   const filtered = state.threads.filter((t) => (filter === "unread" ? t.unread : filter === "flagged" ? t.context.toLowerCase().includes("flag") : true));
 
+  // Coaching conversations and friend/family ones are different jobs and read differently -- a client's
+  // question is work, a friend's usually isn't -- so they're split rather than interleaved by recency.
+  // A thread's clientId is sometimes the roster id and sometimes the account id depending on which side
+  // opened it, hence matching on both. Broadcasts belong to neither group and lead.
+  const roleOf = (t: (typeof state.threads)[number]) =>
+    state.clients.find((c) => c.accountId === t.clientId || c.id === t.clientId)?.role ?? "client";
+  const groups: { key: string; label: string; threads: typeof filtered }[] = [
+    { key: "broadcast", label: "Everyone", threads: filtered.filter((t) => t.isBroadcast) },
+    { key: "clients", label: "My clients", threads: filtered.filter((t) => !t.isBroadcast && roleOf(t) !== "friend") },
+    { key: "friends", label: "Friends & family", threads: filtered.filter((t) => !t.isBroadcast && roleOf(t) === "friend") },
+  ].filter((g) => g.threads.length > 0);
+
   return (
     <div className="screen">
       <HeroHeader
@@ -99,23 +111,35 @@ export default function Messages() {
           <button className={`chip${filter === "flagged" ? " on" : ""}`} onClick={() => setFilter("flagged")}>Flagged</button>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-          {filtered.map((t) => (
-            <button key={t.id} className="link-row elev-sm" style={{ alignItems: "flex-start", padding: "11px 12px" }} onClick={() => nav(`/coach/messages/${t.id}`)}>
-              <div className="avatar" style={t.isBroadcast ? { background: "var(--color-accent-900)", color: "var(--color-accent-300)" } : undefined}>
-                {t.isBroadcast ? <i className="ph ph-megaphone" style={{ fontSize: 14 }} /> : t.clientName.slice(0, 2).toUpperCase()}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="row">
-                  <div className="name" style={{ flex: 1 }}>{t.clientName}</div>
-                  <span className="mu">{formatThreadPreviewTime(t.time)}</span>
-                </div>
-                <div className="mu trunc" style={{ marginTop: 3, color: t.unread ? "var(--color-neutral-200)" : undefined }}>{t.preview}</div>
-              </div>
-              {t.unread && <div style={{ width: 7, height: 7, flex: "none", borderRadius: "50%", background: "var(--color-accent)", marginTop: 6 }} />}
-            </button>
-          ))}
-        </div>
+        {groups.length === 0 && (
+          <div className="mu" style={{ textAlign: "center", padding: 20 }}>
+            {filter === "unread" ? "Nothing unread." : filter === "flagged" ? "Nothing flagged." : "No messages yet."}
+          </div>
+        )}
+        {groups.map((g) => (
+          <div key={g.key}>
+            <div className="sh">
+              {g.label} · {g.threads.length}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {g.threads.map((t) => (
+                <button key={t.id} className="link-row elev-sm" style={{ alignItems: "flex-start", padding: "11px 12px" }} onClick={() => nav(`/coach/messages/${t.id}`)}>
+                  <div className="avatar" style={t.isBroadcast ? { background: "var(--color-accent-900)", color: "var(--color-accent-300)" } : undefined}>
+                    {t.isBroadcast ? <i className="ph ph-megaphone" style={{ fontSize: 14 }} /> : t.clientName.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="row">
+                      <div className="name" style={{ flex: 1 }}>{t.clientName}</div>
+                      <span className="mu">{formatThreadPreviewTime(t.time)}</span>
+                    </div>
+                    <div className="mu trunc" style={{ marginTop: 3, color: t.unread ? "var(--color-neutral-200)" : undefined }}>{t.preview}</div>
+                  </div>
+                  {t.unread && <div style={{ width: 7, height: 7, flex: "none", borderRadius: "50%", background: "var(--color-accent)", marginTop: 6 }} />}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
       <CoachTabBar />
       {showFeedback && <FeedbackSheet onClose={() => setShowFeedback(false)} />}

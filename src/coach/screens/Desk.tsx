@@ -320,8 +320,11 @@ export default function Desk() {
           onClose={() => setActingOn(null)}
           onOpenSession={() => {
             const c = state.clients.find((x) => x.accountId === actingOn.client_id);
+            const signalId = actingOn.id;
             setActingOn(null);
-            if (c) nav(`/coach/clients/${c.id}/log`);
+            // The session reads the report back out of the database rather than taking the day and
+            // exercise through the URL -- it needs the body area and detail to show anyway.
+            if (c) nav(`/coach/clients/${c.id}/log?signal=${signalId}`);
           }}
           onApplied={(message) => {
             // Acted on, so it comes off the open list -- but stays in allSignals, still counting toward

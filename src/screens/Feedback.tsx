@@ -92,6 +92,7 @@ export default function Feedback() {
             exercise: jointExercise && jointExercise !== NOT_ONE_EXERCISE ? jointExercise : null,
             detail: composedDetail || null,
             dayLabel,
+            dayId,
           }]
         : []),
     ];

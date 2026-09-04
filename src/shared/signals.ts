@@ -13,9 +13,11 @@ export interface ClientSignal {
   day_label: string | null;
   created_at: string;
   acknowledged_at: string | null;
-  /** Both added in migration 0014, so signals recorded before it ran have neither. */
+  /** Added in migration 0014, so signals recorded before it ran have neither. */
   exercise?: string | null;
   detail?: string | null;
+  /** Added in 0015. The session this came from, as opposed to day_label's human "Day 1". */
+  day_id?: string | null;
 }
 
 /** What's worth a coach's attention, per the scales in data/mockData.ts:
@@ -53,6 +55,7 @@ interface NewSignal {
   dayLabel?: string | null;
   exercise?: string | null;
   detail?: string | null;
+  dayId?: string | null;
 }
 
 /** Sends session feedback to the client's own coach. Silently does nothing when there's no coach to send
@@ -70,7 +73,12 @@ export async function sendSignals(clientId: string, coachId: string | null, sign
     note: s.note ?? null,
     day_label: s.dayLabel ?? null,
   }));
-  const rows = base.map((r, i) => ({ ...r, exercise: signals[i].exercise ?? null, detail: signals[i].detail ?? null }));
+  const rows = base.map((r, i) => ({
+    ...r,
+    exercise: signals[i].exercise ?? null,
+    detail: signals[i].detail ?? null,
+    day_id: signals[i].dayId ?? null,
+  }));
 
   const { error } = await supabase.from("client_signals").insert(rows);
   if (!error) return;
@@ -80,7 +88,7 @@ export async function sendSignals(clientId: string, coachId: string | null, sign
   // gets notified of anything until someone runs the SQL. Retry without the new columns instead, folding
   // the detail into the note so the words at least survive; the exercise name is the part that's lost.
   if (error.code === "PGRST204") {
-    console.warn("client_signals is missing the 0014 columns -- run supabase/migrations/0014_signal_exercise_detail.sql");
+    console.warn("client_signals is missing columns from migration 0014 or 0015 -- run them in supabase/migrations/");
     const legacy = base.map((r, i) => {
       const extra = [signals[i].exercise, signals[i].detail].filter(Boolean).join(" · ");
       return { ...r, note: [r.note, extra].filter(Boolean).join(" · ") || null };
@@ -107,6 +115,17 @@ export async function listRecentSignals(days = 90): Promise<ClientSignal[]> {
     return [];
   }
   return (data ?? []) as ClientSignal[];
+}
+
+/** One signal, for acting on it after navigating away from the desk. RLS already limits this to the coach
+ * it was sent to and the client who sent it, so no extra guard is needed here. */
+export async function getSignal(id: string): Promise<ClientSignal | null> {
+  const { data, error } = await supabase.from("client_signals").select("*").eq("id", id).maybeSingle();
+  if (error) {
+    console.error("Failed to load signal", error);
+    return null;
+  }
+  return (data as ClientSignal | null) ?? null;
 }
 
 /** How many times this client has raised this same thing before -- same kind, and same body area for

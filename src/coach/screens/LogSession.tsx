@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { StoreProvider, useStore } from "../../state/store";
 import { useCoachStore } from "../store";
@@ -10,6 +10,8 @@ import { ExerciseSection } from "../../screens/ExerciseSection";
 import { equipmentOf } from "../../screens/exerciseHelpers";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { SwapScopeSheet } from "../../shared/SwapScopeSheet";
+import { getSignal, type ClientSignal } from "../../shared/signals";
+import { jointReasonLabels } from "../../data/mockData";
 import type { Program, TrainingDay } from "../../data/types";
 import type { LibraryExercise } from "../types";
 
@@ -43,14 +45,61 @@ export default function LogSession() {
   );
 }
 
+/** Arriving from a pain report on the desk. The whole point is to land on the day it happened rather than
+ * make the coach find it among thirty, so the report is resolved before the body mounts and the day
+ * picker is skipped entirely. Split out for the same reason as Reorder: the selected day is *seeded* from
+ * the report, so the hook holding it can't run until the report is in hand. */
 function LogSessionInner({ clientName, onDone }: { clientName: string; onDone: () => void }) {
-  const { state, dispatch } = useStore();
   const [params] = useSearchParams();
+  const signalId = params.get("signal");
+  const [signal, setSignal] = useState<ClientSignal | null | undefined>(signalId ? undefined : null);
+
+  useEffect(() => {
+    if (!signalId) return;
+    let active = true;
+    getSignal(signalId).then((s) => active && setSignal(s));
+    return () => {
+      active = false;
+    };
+  }, [signalId]);
+
+  if (signal === undefined) {
+    return (
+      <div className="screen">
+        <BackHeader kicker={clientName} title="Log a session" />
+        <div className="screen-scroll">
+          <div className="mu" style={{ textAlign: "center", padding: 24 }}>Loading…</div>
+        </div>
+      </div>
+    );
+  }
+
+  return <LogSessionBody clientName={clientName} onDone={onDone} signal={signal} requestedDay={params.get("day")} requestedExercise={params.get("exercise")} />;
+}
+
+function LogSessionBody({
+  clientName,
+  onDone,
+  signal,
+  requestedDay,
+  requestedExercise,
+}: {
+  clientName: string;
+  onDone: () => void;
+  signal: ClientSignal | null;
+  requestedDay: string | null;
+  requestedExercise: string | null;
+}) {
+  const { state, dispatch } = useStore();
   const todayDay = state.program.weeks.flatMap((w) => w.days).find((d) => d.status === "today");
-  const requestedDay = params.get("day");
-  const [selectedId, setSelectedId] = useState<string | null>(requestedDay ?? todayDay?.id ?? null);
+
+  const [selectedId, setSelectedId] = useState<string | null>(signal?.day_id ?? requestedDay ?? todayDay?.id ?? null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const [swapKey, setSwapKey] = useState<string | null>(params.get("exercise"));
+  const [swapKey, setSwapKey] = useState<string | null>(requestedExercise);
+  // Whether the swap in flight came from the pain card, which fixes its scope at the whole block rather
+  // than asking -- responding to pain is a decision about the movement, not about today.
+  const [painScope, setPainScope] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
   // Picking the replacement and deciding how far it reaches are two steps: the picked exercise is held
   // here until a scope is chosen, so nothing is written until the coach says how far it should go.
   // Declared up here with the rest, not down beside applySwap where it reads better -- everything below
@@ -82,6 +131,19 @@ function LogSessionInner({ clientName, onDone }: { clientName: string; onDone: (
   const exIds = day.order.length ? day.order : Object.keys(day.exercises);
   const swappingEx = swapKey ? day.exercises[swapKey] : null;
 
+  // The report names the exercise, not its key, so it's matched back by name within this day. It can come
+  // up empty -- the movement may already have been swapped out since -- in which case the report is still
+  // worth showing, just without the actions.
+  const painKey = signal?.exercise
+    ? exIds.find((id) => day.exercises[id]?.name.trim().toLowerCase() === signal.exercise!.trim().toLowerCase()) ?? null
+    : null;
+  const painEx = painKey ? day.exercises[painKey] : null;
+
+  function toast(message: string) {
+    dispatch({ type: "SHOW_TOAST", message });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+  }
+
   function applySwap(scope: "day" | "mesocycle") {
     if (!swapKey || !pendingSwap) return;
     dispatch({
@@ -91,20 +153,94 @@ function LogSessionInner({ clientName, onDone }: { clientName: string; onDone: (
       scope,
       dayId: day.id,
     });
-    dispatch({
-      type: "SHOW_TOAST",
-      message: scope === "day" ? `Swapped to ${pendingSwap.name} for today.` : `Swapped to ${pendingSwap.name} for the rest of the block.`,
-    });
-    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+    toast(scope === "day" ? `Swapped to ${pendingSwap.name} for today.` : `Swapped to ${pendingSwap.name} for the rest of the block.`);
     setPendingSwap(null);
     setSwapKey(null);
+    setPainScope(false);
+  }
+
+  /** The pain card's swap: the scope is already decided (the rest of the block), so picking the
+   * replacement is the last step rather than the second-to-last. */
+  function applySwapTo(replacement: LibraryExercise) {
+    if (!swapKey) return;
+    dispatch({
+      type: "SWAP_EXERCISE",
+      exerciseKey: swapKey,
+      replacement: { name: replacement.name, muscle: replacement.muscle, equipment: equipmentOf({ name: replacement.name }), hasVideo: replacement.hasVideo },
+      scope: "mesocycle",
+      dayId: day.id,
+    });
+    toast(`Swapped to ${replacement.name} for the rest of the block.`);
+    setSwapKey(null);
+    setPainScope(false);
+  }
+
+  function removePainExercise() {
+    if (!painKey || !painEx) return;
+    dispatch({ type: "REMOVE_EXERCISE", exerciseKey: painKey, scope: "mesocycle", dayId: day.id });
+    toast(`${painEx.name} removed from the rest of the block.`);
+    setConfirmRemove(false);
   }
 
   return (
     <div className="screen">
       <BackHeader kicker={`${clientName} · week ${week.number}`} title={dayDisplayTitle(day)} />
       <div className="screen-scroll" onClick={() => openMenu && setOpenMenu(null)}>
-        <InfoBanner icon="ph-user-focus">Logging for {clientName}, in person — this writes straight to their app.</InfoBanner>
+        {signal ? (
+          <div className="cell elev-sm" style={{ borderLeft: "2px solid var(--color-accent)", padding: 12 }}>
+            <div className="row" style={{ marginBottom: 6 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                {/* Only claim "here" when this really is the session it came from. A report predating
+                    migration 0015 has no day recorded, so the screen falls back to today's. */}
+                <div className="scr" style={{ color: "var(--color-accent-300)" }}>
+                  {signal.day_id === day.id ? "Reported here" : `Reported on ${signal.day_label ?? "an earlier day"}`}
+                </div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, marginTop: 2 }}>
+                  {signal.kind === "joint" ? "Joint pain" : signal.kind === "soreness" ? "Still sore" : "Low pump"}
+                  {signal.note ? ` — ${signal.note}` : ""}
+                </div>
+              </div>
+              <span className="tag tag-accent" style={{ flex: "none" }}>
+                {signal.severity}
+                {signal.kind === "joint" ? " of 4" : " of 5"}
+              </span>
+            </div>
+            {signal.kind === "joint" && (
+              <div className="mu" style={{ lineHeight: 1.5 }}>
+                {jointReasonLabels[signal.severity - 1]}
+                {signal.exercise ? ` · on ${signal.exercise}` : ""}
+                {signal.detail ? ` · ${signal.detail}` : ""}
+              </div>
+            )}
+
+            {painEx ? (
+              <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                <button
+                  className="btn btn-solid"
+                  style={{ flex: 1, height: 34, fontSize: 12.5 }}
+                  onClick={() => {
+                    setPainScope(true);
+                    setSwapKey(painKey);
+                  }}
+                >
+                  Swap it
+                </button>
+                <button className="btn btn-secondary" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => setConfirmRemove(true)}>
+                  Remove it
+                </button>
+              </div>
+            ) : (
+              signal.exercise && (
+                <div className="mu" style={{ marginTop: 8 }}>
+                  {signal.exercise} isn't in this session any more — it looks like it's already been changed.
+                </div>
+              )
+            )}
+            {painEx && <div className="mu" style={{ marginTop: 6 }}>Either one applies to the rest of the block. Sessions already logged stay as they were.</div>}
+          </div>
+        ) : (
+          <InfoBanner icon="ph-user-focus">Logging for {clientName}, in person — this writes straight to their app.</InfoBanner>
+        )}
 
         <button className="link-row" style={{ padding: "9px 12px", color: "var(--color-neutral-400)" }} onClick={() => setSelectedId(null)}>
           <i className="ph ph-calendar" style={{ fontSize: 15 }} />
@@ -158,10 +294,43 @@ function LogSessionInner({ clientName, onDone }: { clientName: string; onDone: (
       </div>
 
       {swapKey && swappingEx && !pendingSwap && (
-        <ExercisePickerSheet kicker="Swap" title={swappingEx.name} excludeName={swappingEx.name} onPick={setPendingSwap} onClose={() => setSwapKey(null)} />
+        <ExercisePickerSheet
+          kicker="Swap"
+          title={swappingEx.name}
+          excludeName={swappingEx.name}
+          // Coming from a pain report, start filtered to the muscle being replaced -- the replacement has
+          // to keep the same slot in the week, so the whole library isn't a useful starting point.
+          initialMuscle={painScope ? swappingEx.muscle : undefined}
+          onPick={painScope ? (e) => applySwapTo(e) : setPendingSwap}
+          onClose={() => {
+            setSwapKey(null);
+            setPainScope(false);
+          }}
+        />
       )}
       {swapKey && swappingEx && pendingSwap && (
         <SwapScopeSheet fromName={swappingEx.name} toName={pendingSwap.name} onChoose={applySwap} onClose={() => setPendingSwap(null)} />
+      )}
+
+      {confirmRemove && painEx && (
+        <div className="sheet-backdrop" onClick={() => setConfirmRemove(false)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="scr">Remove</div>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 16, marginBottom: 6 }}>Drop {painEx.name}?</div>
+            <div className="mu" style={{ lineHeight: 1.55 }}>
+              It comes out of every session left in the block, and nothing replaces it — that muscle loses those sets for
+              the rest of the mesocycle. Sessions already logged keep it.
+            </div>
+            <div className="row" style={{ gap: 8, marginTop: 12 }}>
+              <button className="btn btn-secondary" style={{ flex: 1, height: 42 }} onClick={() => setConfirmRemove(false)}>
+                Keep it
+              </button>
+              <button className="btn btn-solid" style={{ flex: 1, height: 42 }} onClick={removePainExercise}>
+                Remove it
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

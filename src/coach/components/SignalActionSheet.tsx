@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import type { ClientSignal } from "../../shared/signals";
-import { SimpleExercisePicker } from "../../shared/SimpleExercisePicker";
 import { InfoBanner } from "../../components/UI";
-import { addWarmupSetForClient, swapExerciseForClient } from "../clientProgramEdits";
-import type { LibraryExercise } from "../types";
+import { addWarmupSetForClient } from "../clientProgramEdits";
 
-/** What a coach can actually do about a report, without leaving the desk. The two responses to joint pain
- * that don't cost training volume are warming the movement up more and replacing it, so both are one tap
- * here -- but only when the client named the exercise (see migration 0014); a report from before that, or
- * one where they said it wasn't any single movement, can only be opened and read. */
+/** What a coach can do about a report without leaving the desk. Adding a warm-up set is the one response
+ * that's genuinely a single decision -- it costs no training volume and needs no choice about what to put
+ * in its place -- so it happens right here. Swapping or dropping the movement is a judgement call that
+ * wants the session in front of you, so it lives one tap away in the day itself, which "Open their
+ * session" now goes straight to. Both need the client to have named the exercise (migration 0014); an
+ * older report, or one where they said it wasn't any single movement, can only be opened and read. */
 export function SignalActionSheet({
   signal,
   clientName,
@@ -22,7 +22,6 @@ export function SignalActionSheet({
   onApplied: (message: string) => void;
   onClose: () => void;
 }) {
-  const [picking, setPicking] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
   const exercise = signal.exercise ?? null;
@@ -44,20 +43,6 @@ export function SignalActionSheet({
     if (touched === null || touched === 0) return setFailed(msg);
     onApplied(msg!);
   }
-
-  async function swap(replacement: LibraryExercise) {
-    if (!exercise) return;
-    setPicking(false);
-    setBusy("swap");
-    setFailed(null);
-    const touched = await swapExerciseForClient(signal.client_id, exercise, replacement);
-    setBusy(null);
-    const msg = describe(touched, `${exercise} → ${replacement.name}`);
-    if (touched === null || touched === 0) return setFailed(msg);
-    onApplied(msg!);
-  }
-
-  if (picking) return <SimpleExercisePicker onPick={swap} onClose={() => setPicking(false)} />;
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>
@@ -90,39 +75,33 @@ export function SignalActionSheet({
 
         {failed && <InfoBanner icon="ph-warning">{failed}</InfoBanner>}
 
-        {exercise ? (
-          <>
-            <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={addWarmup}>
-              <i className="ph ph-thermometer-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13 }}>{busy === "warmup" ? "Adding…" : "Add a warm-up set"}</div>
-                <div className="mu" style={{ marginTop: 1 }}>One more warm-up on {exercise}, every session that's left. Keeps the working volume.</div>
-              </div>
-            </button>
+        <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={onOpenSession}>
+          <i className="ph ph-arrow-square-out" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13 }}>Open their session</div>
+            <div className="mu" style={{ marginTop: 1 }}>
+              {exercise
+                ? `Goes straight to ${exercise} on the day it happened, where you can swap or drop it.`
+                : "See everything they logged and edit it by hand."}
+            </div>
+          </div>
+        </button>
 
-            <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={() => setPicking(true)}>
-              <i className="ph ph-arrows-clockwise" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13 }}>{busy === "swap" ? "Swapping…" : "Change the exercise"}</div>
-                <div className="mu" style={{ marginTop: 1 }}>Replaces {exercise} for the rest of the block. Logged sessions stay as they were.</div>
-              </div>
-            </button>
-          </>
+        {exercise ? (
+          <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={addWarmup}>
+            <i className="ph ph-thermometer-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13 }}>{busy === "warmup" ? "Adding…" : "Add a warm-up set"}</div>
+              <div className="mu" style={{ marginTop: 1 }}>One more warm-up on {exercise}, every session that's left. Keeps the working volume.</div>
+            </div>
+          </button>
         ) : (
           <div className="mu" style={{ lineHeight: 1.55 }}>
             {signal.kind === "joint"
-              ? `${first} didn't tie this to a single exercise, so there's nothing to swap automatically.`
+              ? `${first} didn't tie this to a single exercise, so there's nothing to change automatically.`
               : "Open the session to see what they logged."}
           </div>
         )}
-
-        <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={onOpenSession}>
-          <i className="ph ph-arrow-square-out" style={{ fontSize: 16, color: "var(--color-neutral-400)" }} />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13 }}>Open their session</div>
-            <div className="mu" style={{ marginTop: 1 }}>See everything they logged and edit it by hand.</div>
-          </div>
-        </button>
       </div>
     </div>
   );

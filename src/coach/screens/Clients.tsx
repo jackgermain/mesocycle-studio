@@ -157,7 +157,12 @@ export default function Clients() {
                     : `${c.programName} · wk ${c.week}${c.flags.length ? ` · ${c.flags.length} flag${c.flags.length > 1 ? "s" : ""}` : ""}`}
                 </div>
               </div>
-              {c.role === "friend" && <span className="tag tag-outline" style={{ flex: "none" }}>Friend</span>}
+              {/* Shown for everyone, not just friends. Which of the two someone is changes what you can
+                  expect of them -- a friend builds their own programs and sets their own macros -- so
+                  "no tag" being the answer for half the roster made it something you had to remember. */}
+              <span className={`tag ${c.role === "friend" ? "tag-outline" : "tag-neutral"}`} style={{ flex: "none" }}>
+                {c.role === "friend" ? "Friend" : "Client"}
+              </span>
               {c.status === "unassigned" ? (
                 <span style={{ fontSize: 12, color: "var(--color-accent)", flex: "none" }}>{c.accountId ? "Open" : "Invite"}</span>
               ) : c.status === "paused" ? null : (

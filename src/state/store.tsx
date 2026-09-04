@@ -56,6 +56,7 @@ type Action =
   | { type: "REORDER_EXERCISES"; dayId: string; order: string[] }
   | { type: "ADD_SET"; dayId: string; exerciseId: string; warmup?: boolean }
   | { type: "SWAP_EXERCISE"; exerciseKey: string; replacement: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle"; dayId?: string }
+  | { type: "REMOVE_EXERCISE"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "SET_FEEDBACK_DONE"; dayId: string }
   | { type: "SET_SORENESS_DONE"; dayId: string }
   | { type: "ADD_FOOD_ITEM"; mealId: string; item: LoggedFoodItem }
@@ -215,6 +216,23 @@ function reducer(state: AppState, action: Action): AppState {
           }
           const topLoad = ex.sets[0]?.prescribed.load;
           ex.metaLine = `${ex.sets.length} sets · ${topLoad == null ? "bodyweight" : `${topLoad} lb`}`;
+        }
+      }
+      return { ...state, program };
+    }
+    case "REMOVE_EXERCISE": {
+      // Dropping a movement outright, as opposed to swapping it -- the honest answer when something hurts
+      // and there's no good substitute. Same scoping and the same refusal to touch logged days as
+      // SWAP_EXERCISE: history stays exactly as it was trained.
+      const program = structuredClone(state.program);
+      for (const week of program.weeks) {
+        for (const day of week.days) {
+          if (day.status === "done") continue;
+          if (action.scope === "day" && day.id !== action.dayId) continue;
+          if (!day.exercises[action.exerciseKey]) continue;
+          delete day.exercises[action.exerciseKey];
+          day.order = day.order.filter((id) => id !== action.exerciseKey);
+          day.setCount = Object.values(day.exercises).reduce((n, ex) => n + ex.sets.length, 0);
         }
       }
       return { ...state, program };

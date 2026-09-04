@@ -8,18 +8,22 @@ export function ExercisePickerSheet({
   kicker,
   title,
   excludeName,
+  initialMuscle,
   onPick,
   onClose,
 }: {
   kicker: string;
   title: string;
   excludeName?: string;
+  /** Pre-selects a muscle filter. Used when replacing an exercise has to keep the same slot in the week,
+   * so the whole library isn't a useful starting point — the coach can still clear it. */
+  initialMuscle?: string;
   onPick: (e: LibraryExercise) => void;
   onClose: () => void;
 }) {
   const { state } = useCoachStore();
   const [query, setQuery] = useState("");
-  const [muscle, setMuscle] = useState<string | null>(null);
+  const [muscle, setMuscle] = useState<string | null>(initialMuscle ?? null);
 
   const options = useMemo(() => [...libraryExercises, ...state.customExercises], [state.customExercises]);
   const filtered = options.filter((e) => e.name !== excludeName && e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || e.muscle === muscle));
