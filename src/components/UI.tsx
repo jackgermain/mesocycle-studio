@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
@@ -55,18 +55,88 @@ export function Seg<T extends string>({ options, value, onChange }: { options: {
   );
 }
 
-export function Stepper({ value, onChange, step = 1, unitLabel, min = 0 }: { value: number; onChange: (v: number) => void; step?: number; unitLabel?: string; min?: number }) {
+/** A number with +/- buttons that can also just be typed into. The +/- alone is fine on a phone but
+ * miserable for going from 135 to 315, and worse with a keyboard on the web build. Keeps its own draft
+ * text while focused so a half-typed "" or "3" isn't immediately fought back to the last committed
+ * number; commits on blur or Enter, and falls back to the last good value if what's typed isn't a number.
+ * `width` is worth setting where the value can get long (loads) or is always short (days per week). */
+export function Stepper({
+  value,
+  onChange,
+  step = 1,
+  unitLabel,
+  min = 0,
+  max,
+  width = 46,
+  fontSize = 15,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  step?: number;
+  unitLabel?: string;
+  min?: number;
+  max?: number;
+  width?: number;
+  fontSize?: number;
+}) {
+  const [text, setText] = useState(String(value));
+  useEffect(() => {
+    setText(String(value));
+  }, [value]);
+
+  function clamp(n: number) {
+    return Math.min(max ?? Number.POSITIVE_INFINITY, Math.max(min, n));
+  }
+  // Takes the raw string off the event target rather than reading the `text` state, so a commit can never
+  // run against a stale closure if the blur lands in the same tick as the last keystroke.
+  function commit(raw: string) {
+    const n = parseFloat(raw);
+    if (Number.isFinite(n)) onChange(+clamp(n).toFixed(2));
+    else setText(String(value));
+  }
+
   return (
-    <div className="stepper">
-      <button onClick={() => onChange(Math.max(min, +(value - step).toFixed(2)))} aria-label="decrease">
-        <i className="ph ph-minus" style={{ fontSize: 13 }} />
+    <div className="row" style={{ gap: 4, justifyContent: "center" }}>
+      <button
+        onClick={() => onChange(+clamp(value - step).toFixed(2))}
+        aria-label="decrease"
+        style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex", padding: 4, flex: "none" }}
+      >
+        <i className="ph ph-minus" style={{ fontSize: 12 }} />
       </button>
-      <span className="val">
-        {value}
-        {unitLabel ? <span style={{ fontSize: 10, color: "var(--color-neutral-500)", marginLeft: 2 }}>{unitLabel}</span> : null}
-      </span>
-      <button onClick={() => onChange(+(value + step).toFixed(2))} aria-label="increase">
-        <i className="ph ph-plus" style={{ fontSize: 13 }} />
+      <input
+        type="number"
+        inputMode="decimal"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onFocus={(e) => e.target.select()}
+        onBlur={(e) => commit(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            commit((e.target as HTMLInputElement).value);
+            (e.target as HTMLInputElement).blur();
+          }
+        }}
+        style={{
+          width,
+          flex: "none",
+          textAlign: "center",
+          background: "none",
+          border: "none",
+          outline: "none",
+          fontFamily: "var(--font-heading)",
+          fontSize,
+          color: "inherit",
+          padding: 0,
+        }}
+      />
+      {unitLabel ? <span style={{ fontSize: 10, color: "var(--color-neutral-500)", marginLeft: -2 }}>{unitLabel}</span> : null}
+      <button
+        onClick={() => onChange(+clamp(value + step).toFixed(2))}
+        aria-label="increase"
+        style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex", padding: 4, flex: "none" }}
+      >
+        <i className="ph ph-plus" style={{ fontSize: 12 }} />
       </button>
     </div>
   );

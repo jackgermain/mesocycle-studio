@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useCoachStore } from "../store";
-import { BackHeader, InfoBanner, Seg, StatCell } from "../../components/UI";
+import { BackHeader, InfoBanner, Seg, StatCell, Stepper } from "../../components/UI";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { LOAD_LABELS, LOAD_RANGE, clampLoadValue } from "../loadMode";
 import { CARDIO_DEFAULT, REST_STEP, formatDuration, workStep } from "../cardio";
@@ -179,19 +179,13 @@ export default function ProgramDetail() {
           <div className="row">
             <span style={{ flex: 1, fontSize: 13 }}>Days per week</span>
             <div className="row" style={{ gap: 8 }}>
-              <button
-                onClick={() => dispatch({ type: "SET_DAYS_PER_WEEK", programId: program.id, count: program.daysPerWeek - 1 })}
-                style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 7, width: 28, height: 28, color: "var(--color-neutral-400)", cursor: "pointer" }}
-              >
-                <i className="ph ph-minus" style={{ fontSize: 12 }} />
-              </button>
-              <span style={{ fontFamily: "var(--font-heading)", fontSize: 15, minWidth: 16, textAlign: "center" }}>{program.daysPerWeek}</span>
-              <button
-                onClick={() => dispatch({ type: "SET_DAYS_PER_WEEK", programId: program.id, count: program.daysPerWeek + 1 })}
-                style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 7, width: 28, height: 28, color: "var(--color-neutral-400)", cursor: "pointer" }}
-              >
-                <i className="ph ph-plus" style={{ fontSize: 12 }} />
-              </button>
+              <Stepper
+                value={program.daysPerWeek}
+                onChange={(v) => dispatch({ type: "SET_DAYS_PER_WEEK", programId: program.id, count: v })}
+                min={1}
+                max={7}
+                width={30}
+              />
             </div>
           </div>
 
@@ -539,7 +533,7 @@ function BuilderExerciseCard({
 
 function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; dayId: string; ex: BuilderExercise; loadMode: LoadMode }) {
   const { dispatch } = useCoachStore();
-  const { step } = LOAD_RANGE[loadMode];
+  const { step, min: loadMin, max: loadMax } = LOAD_RANGE[loadMode];
   const restSec = ex.sets[0]?.restSec ?? defaultRestSec(ex.name);
 
   function editReps(s: BuilderSet, dir: 1 | -1) {
@@ -566,24 +560,25 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
         return (
           <div key={s.id} className="setrow" style={{ gridTemplateColumns: "22px 1fr 1fr 30px" }}>
             <span style={{ fontSize: 11, color: s.warmup ? "var(--color-neutral-400)" : "var(--color-neutral-500)" }}>{label}</span>
-            <div className="row" style={{ justifyContent: "center", gap: 6 }}>
-              <button onClick={() => editReps(s, -1)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}>
-                <i className="ph ph-minus" style={{ fontSize: 12 }} />
-              </button>
-              <span style={{ fontSize: 14, fontFamily: "var(--font-heading)" }}>{s.reps}</span>
-              <button onClick={() => editReps(s, 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}>
-                <i className="ph ph-plus" style={{ fontSize: 12 }} />
-              </button>
-            </div>
-            <div className="row" style={{ justifyContent: "center", gap: 6 }}>
-              <button onClick={() => editLoad(s, -1)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}>
-                <i className="ph ph-minus" style={{ fontSize: 12 }} />
-              </button>
-              <span style={{ fontSize: 14, fontFamily: "var(--font-heading)" }}>{s.loadValue}</span>
-              <button onClick={() => editLoad(s, 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}>
-                <i className="ph ph-plus" style={{ fontSize: 12 }} />
-              </button>
-            </div>
+            <Stepper
+              value={typeof s.reps === "number" ? s.reps : parseFloat(String(s.reps)) || 0}
+              onChange={(v) => dispatch({ type: "EDIT_PROGRAM_SET", programId, dayId, exerciseId: ex.id, setId: s.id, reps: v })}
+              min={1}
+              width={38}
+              fontSize={14}
+            />
+            {/* min/max keep a typed value inside the mode's real range (an RIR of 225 is nonsense), but
+                deliberately don't snap to `step` the way the +/- buttons do -- entering an exact weight
+                the 5 lb grid can't reach is the whole reason for typing it. */}
+            <Stepper
+              value={s.loadValue}
+              onChange={(v) => dispatch({ type: "EDIT_PROGRAM_SET", programId, dayId, exerciseId: ex.id, setId: s.id, loadValue: v })}
+              step={step}
+              min={loadMin}
+              max={loadMax}
+              width={52}
+              fontSize={14}
+            />
             <button
               onClick={() => dispatch({ type: "REMOVE_PROGRAM_SET", programId, dayId, exerciseId: ex.id, setId: s.id })}
               style={{ background: "none", border: "none", color: "var(--color-neutral-600)", cursor: "pointer", display: "flex", justifySelf: "center" }}

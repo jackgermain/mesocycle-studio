@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
-import { BackHeader, InfoBanner, ActionGroup, ActionRow } from "../../components/UI";
+import { BackHeader, InfoBanner, ActionGroup, ActionRow, Stepper } from "../../components/UI";
 import { buildBlankProgram } from "../mockData";
 import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
@@ -385,14 +385,8 @@ function CsvStep({
             </div>
             <div className="cell" style={{ padding: 9 }}>
               <div className="scr">Weeks (repeats this template)</div>
-              <div className="row" style={{ marginTop: 3, gap: 8, justifyContent: "center" }}>
-                <button onClick={() => setWeeksCount((v) => Math.max(1, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                  <i className="ph ph-minus" style={{ fontSize: 13 }} />
-                </button>
-                <span style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{weeksCount}</span>
-                <button onClick={() => setWeeksCount((v) => Math.min(16, v + 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                  <i className="ph ph-plus" style={{ fontSize: 13 }} />
-                </button>
+              <div className="row" style={{ marginTop: 3, justifyContent: "center" }}>
+                <Stepper value={weeksCount} onChange={setWeeksCount} min={1} max={16} width={34} fontSize={16} />
               </div>
             </div>
 

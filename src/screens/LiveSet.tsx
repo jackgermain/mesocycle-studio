@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { findDay, useStore } from "../state/store";
-import { CloseHeader } from "../components/UI";
+import { CloseHeader, Stepper } from "../components/UI";
 import { dayDisplayTitle } from "../data/dayNumbering";
 
 export default function LiveSet() {
@@ -256,25 +256,13 @@ function AssistedLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: st
               <div className="row" style={{ gap: 9 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ height: 46, borderRadius: 8, background: "var(--color-neutral-900)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                    <button onClick={() => setUnassisted((v) => Math.max(0, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                      <i className="ph ph-minus" />
-                    </button>
-                    <span style={{ fontFamily: "var(--font-heading)", fontSize: 18 }}>{unassisted}</span>
-                    <button onClick={() => setUnassisted((v) => v + 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                      <i className="ph ph-plus" />
-                    </button>
+                    <Stepper value={unassisted} onChange={setUnassisted} min={0} width={40} fontSize={18} />
                   </div>
                   <div className="mu" style={{ textAlign: "center", marginTop: 5, fontSize: 10.5 }}>unassisted</div>
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ height: 46, borderRadius: 8, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                    <button onClick={() => setAssisted((v) => Math.max(0, v - 1))} style={{ background: "none", border: "none", color: "var(--color-accent-300)", cursor: "pointer" }}>
-                      <i className="ph ph-minus" />
-                    </button>
-                    <span style={{ fontFamily: "var(--font-heading)", fontSize: 18, color: "var(--color-accent-100)" }}>{assisted}</span>
-                    <button onClick={() => setAssisted((v) => v + 1)} style={{ background: "none", border: "none", color: "var(--color-accent-300)", cursor: "pointer" }}>
-                      <i className="ph ph-plus" />
-                    </button>
+                    <Stepper value={assisted} onChange={setAssisted} min={0} width={40} fontSize={18} />
                   </div>
                   <div style={{ textAlign: "center", marginTop: 5, fontSize: 10.5, color: "var(--color-accent-300)" }}>assisted</div>
                 </div>
@@ -288,13 +276,7 @@ function AssistedLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: st
             <div className="row" style={{ gap: 9 }}>
               <div style={{ flex: 1 }}>
                 <div style={{ height: 46, borderRadius: 8, background: "var(--color-neutral-900)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                  <button onClick={() => setUnassisted((v) => Math.max(0, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                    <i className="ph ph-minus" />
-                  </button>
-                  <span style={{ fontFamily: "var(--font-heading)", fontSize: 18 }}>{unassisted}</span>
-                  <button onClick={() => setUnassisted((v) => v + 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                    <i className="ph ph-plus" />
-                  </button>
+                  <Stepper value={unassisted} onChange={setUnassisted} min={0} width={40} fontSize={18} />
                 </div>
                 <div className="mu" style={{ textAlign: "center", marginTop: 5, fontSize: 10.5 }}>reps</div>
               </div>

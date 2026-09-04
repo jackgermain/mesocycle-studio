@@ -18,6 +18,10 @@ export default function Feedback() {
     if (!day) return [];
     const set = new Map<string, number>();
     Object.values(day.exercises).forEach((ex) => {
+      // "Full body" is how the library tags the olympic lifts and kettlebell swings (and cardio) -- it's a
+      // movement classification, not a muscle, so "how was your Full body pump?" is a question with no
+      // real answer. Everything else here is already only what was actually trained today.
+      if (ex.muscle === "Full body") return;
       const sets = ex.sets.filter((s) => s.checked && !s.removed).length;
       if (sets > 0) set.set(ex.muscle, (set.get(ex.muscle) ?? 0) + sets);
     });
