@@ -8,7 +8,9 @@ import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import DayWorkout from "./DayWorkout";
 import UpcomingDay from "./UpcomingDay";
+import Soreness from "./Soreness";
 import { ExerciseSection } from "./ExerciseSection";
+import { computeSorenessDue } from "../shared/soreness";
 
 export default function DayDetail() {
   const { dayId = "" } = useParams();
@@ -18,7 +20,13 @@ export default function DayDetail() {
   const { day } = found;
 
   if (day.status === "done") return <ReopenedDay dayId={dayId} />;
-  if (day.status === "today") return <DayWorkout dayId={dayId} />;
+  if (day.status === "today") {
+    if (!day.sorenessDone) {
+      const due = computeSorenessDue(state.program, dayId);
+      if (due.length > 0) return <Soreness dayId={dayId} due={due} />;
+    }
+    return <DayWorkout dayId={dayId} />;
+  }
   return <UpcomingDay dayId={dayId} />;
 }
 

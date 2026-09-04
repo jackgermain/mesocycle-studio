@@ -97,7 +97,6 @@ export interface TrainingDay {
   exercises: Record<string, WorkExercise>;
   log?: DayLog;
   feedbackDone?: boolean;
-  sorenessDue?: { muscle: string; lastTrainedDaysAgo: number }[];
   sorenessDone?: boolean;
 }
 

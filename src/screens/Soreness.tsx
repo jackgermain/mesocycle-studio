@@ -5,11 +5,10 @@ import { InfoBanner } from "../components/UI";
 import { sorenessWording } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
 
-export default function Soreness({ dayId }: { dayId: string }) {
+export default function Soreness({ dayId, due }: { dayId: string; due: { muscle: string; lastTrainedDaysAgo: number }[] }) {
   const { state, dispatch } = useStore();
   const nav = useNavigate();
   const found = findDay(state.program, dayId);
-  const due = found?.day.sorenessDue ?? [];
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
   const allAnswered = due.every((m) => answers[m.muscle] !== undefined);
