@@ -198,12 +198,20 @@ export default async function handler(req: any, res: any) {
   if (!response.ok) {
     const detail = await response.text().catch(() => "");
     console.error("Anthropic error", response.status, detail.slice(0, 500));
-    res.status(502).json({
-      error:
-        response.status === 429
-          ? "The AI service is rate limited right now — give it a minute."
-          : "The AI service couldn't read that. Try a clearer photo, or a different file.",
-    });
+
+    // Billing and auth failures have nothing to do with the photo, and telling someone to try a clearer
+    // one sends them chasing a problem that isn't there. Say what actually needs doing.
+    let error = "The AI service couldn't read that. Try a clearer photo, or a different file.";
+    if (/credit balance|insufficient|billing/i.test(detail)) {
+      error = "The Anthropic account is out of credits — top it up at console.anthropic.com and try again.";
+    } else if (response.status === 401 || response.status === 403) {
+      error = "The AI service rejected this app's API key — it may have been revoked or mistyped.";
+    } else if (response.status === 429) {
+      error = "The AI service is rate limited right now — give it a minute.";
+    } else if (/model/i.test(detail) && response.status === 404) {
+      error = "This app is configured for a model the account can't use. That's a setup problem, not your file.";
+    }
+    res.status(502).json({ error });
     return;
   }
 
