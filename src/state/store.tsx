@@ -52,6 +52,7 @@ type Action =
   | { type: "ADD_FOOD_ITEM"; mealId: string; item: LoggedFoodItem }
   | { type: "REMOVE_FOOD_ITEM"; mealId: string; itemId: string }
   | { type: "ADD_MEAL"; name: string }
+  | { type: "REMOVE_MEAL"; mealId: string }
   | { type: "LOG_WEIGHIN"; date: string; weight: number }
   | { type: "TOGGLE_PORTION"; mealId: string; category: import("../data/types").PortionCategory }
   | { type: "SHOW_TOAST"; message: string }
@@ -257,6 +258,10 @@ function reducer(state: AppState, action: Action): AppState {
       // Date.now() alone collides when several ADD_MEAL actions dispatch in the same tick (e.g. seeding
       // Breakfast/Lunch/Dinner at once on nutrition setup) -- both land in the same millisecond.
       const meals = [...state.meals, { id: `meal-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: action.name, items: [] }];
+      return { ...state, meals };
+    }
+    case "REMOVE_MEAL": {
+      const meals = state.meals.filter((m) => m.id !== action.mealId);
       return { ...state, meals };
     }
     case "LOG_WEIGHIN": {

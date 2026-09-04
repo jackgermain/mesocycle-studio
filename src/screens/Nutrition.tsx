@@ -168,6 +168,13 @@ export default function Nutrition() {
               <div className="row" style={{ marginBottom: 6 }}>
                 <div className="sh" style={{ flex: 1, margin: 0 }}>{meal.name}</div>
                 {meal.items.length > 0 && <span className="mu">{mealTotals.kcal} kcal</span>}
+                <button
+                  onClick={() => dispatch({ type: "REMOVE_MEAL", mealId: meal.id })}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-600)", display: "flex", padding: 2, marginLeft: 6 }}
+                  aria-label={`Remove ${meal.name}`}
+                >
+                  <i className="ph ph-x" style={{ fontSize: 12 }} />
+                </button>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {meal.items.map((item) => (
@@ -248,12 +255,12 @@ function PortionsNutrition() {
   const { state, dispatch } = useStore();
   const profile = useEffectiveProfile();
   const targets = profile.portionTargets;
+  const [showAddMenu, setShowAddMenu] = useState(false);
 
-  function addMeal() {
-    const existingNames = new Set(state.meals.map((m) => m.name));
-    const candidates = ["Dinner", "Snack 2", "Snack 3", "Late snack"];
-    const name = candidates.find((c) => !existingNames.has(c)) ?? `Meal ${state.meals.length + 1}`;
-    dispatch({ type: "ADD_MEAL", name });
+  function addSection(kind: "Meal" | "Snack") {
+    const count = state.meals.filter((m) => m.name.startsWith(kind)).length;
+    dispatch({ type: "ADD_MEAL", name: `${kind} ${count + 1}` });
+    setShowAddMenu(false);
   }
 
   const totalSlots = state.meals.length * targets.length;
@@ -268,12 +275,29 @@ function PortionsNutrition() {
         kicker={`${todayLabel} · ${hasTrainingToday ? "training day" : "rest day"}`}
         title="Nutrition"
         right={
-          <button onClick={addMeal} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal">
-            <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
-          </button>
+          <div style={{ position: "relative" }}>
+            <button onClick={() => setShowAddMenu((v) => !v)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal or snack">
+              <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
+            </button>
+            {showAddMenu && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{ position: "absolute", top: 32, right: 0, zIndex: 10, width: 150, background: "var(--color-surface-raised)", border: "1px solid var(--color-divider)", borderRadius: 8, boxShadow: "var(--shadow-md)", overflow: "hidden" }}
+              >
+                <button className="link-row" style={{ padding: "9px 11px", borderRadius: 0 }} onClick={() => addSection("Meal")}>
+                  <i className="ph ph-fork-knife" style={{ fontSize: 14, color: "var(--color-accent)" }} />
+                  <span style={{ fontSize: 12.5 }}>Add a meal</span>
+                </button>
+                <button className="link-row" style={{ padding: "9px 11px", borderRadius: 0 }} onClick={() => addSection("Snack")}>
+                  <i className="ph ph-cookie" style={{ fontSize: 14, color: "var(--color-accent)" }} />
+                  <span style={{ fontSize: 12.5 }}>Add a snack</span>
+                </button>
+              </div>
+            )}
+          </div>
         }
       />
-      <div className="screen-scroll">
+      <div className="screen-scroll" onClick={() => showAddMenu && setShowAddMenu(false)}>
         <InfoBanner icon="ph-hand-palm">
           No calorie counting — just hit your portions each meal. {state.program.coachName} set these targets for you.
         </InfoBanner>
@@ -297,6 +321,13 @@ function PortionsNutrition() {
               <div className="row" style={{ marginBottom: 6 }}>
                 <div className="sh" style={{ flex: 1, margin: 0 }}>{meal.name}</div>
                 <span className="mu">{hit.length} of {targets.length}</span>
+                <button
+                  onClick={() => dispatch({ type: "REMOVE_MEAL", mealId: meal.id })}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-600)", display: "flex", padding: 2, marginLeft: 6 }}
+                  aria-label={`Remove ${meal.name}`}
+                >
+                  <i className="ph ph-x" style={{ fontSize: 12 }} />
+                </button>
               </div>
               <div className="cell" style={{ padding: 10 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
