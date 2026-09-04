@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { foodDatabase, scaleFood, type FoodItem } from "../data/foodDatabase";
+import { searchUsdaFoods } from "../data/usdaFoodApi";
+import { searchOpenFoodFacts } from "../data/openFoodFactsApi";
 
 type Unit = "g" | "oz" | "ml";
 const UNIT_TO_GRAMS: Record<Unit, number> = { g: 1, oz: 28.3495, ml: 1 };
@@ -24,9 +26,50 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
   const [servings, setServings] = useState(1);
   const [unit, setUnit] = useState<Unit>("g");
   const [amountText, setAmountText] = useState("");
+  const [remoteResults, setRemoteResults] = useState<FoodItem[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState(false);
 
-  const results = foodDatabase.filter((f) => f.name.toLowerCase().includes(query.toLowerCase()) || f.brand?.toLowerCase().includes(query.toLowerCase()));
+  const localResults = foodDatabase.filter((f) => f.name.toLowerCase().includes(query.toLowerCase()) || f.brand?.toLowerCase().includes(query.toLowerCase()));
   const baseGrams = selected ? parseBaseGrams(selected.servingLabel) : null;
+
+  // Debounced live search against USDA FoodData Central (primary -- real branded/manufacturer nutrition
+  // data, works with a plain fetch) and Open Food Facts (secondary -- broader/international coverage,
+  // crowdsourced so less consistent). Local matches above show instantly; these fill in below them once
+  // the network round-trip resolves, so typing doesn't feel laggy.
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setRemoteResults([]);
+      setSearching(false);
+      setSearchError(false);
+      return;
+    }
+    let active = true;
+    setSearching(true);
+    setSearchError(false);
+    const timer = setTimeout(() => {
+      Promise.allSettled([searchUsdaFoods(trimmed), searchOpenFoodFacts(trimmed)]).then(([usda, off]) => {
+        if (!active) return;
+        const combined = [...(usda.status === "fulfilled" ? usda.value : []), ...(off.status === "fulfilled" ? off.value : [])];
+        const seen = new Set(localResults.map((f) => `${f.name.toLowerCase()}|${f.brand?.toLowerCase() ?? ""}`));
+        const deduped = combined.filter((f) => {
+          const key = `${f.name.toLowerCase()}|${f.brand?.toLowerCase() ?? ""}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        setRemoteResults(deduped);
+        setSearching(false);
+        if (usda.status === "rejected" && off.status === "rejected") setSearchError(true);
+      });
+    }, 400);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   useEffect(() => {
     if (selected && baseGrams != null) {
@@ -167,24 +210,45 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
           />
         </div>
         <div className="mu" style={{ lineHeight: 1.5 }}>
-          Searches this app's local food list — a real build would connect a database like MyFitnessPal/Nutritionix or barcode and label scanning here.
+          Searches this app's saved foods instantly, plus live results from USDA FoodData Central and Open Food Facts as you type.
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 7, overflowY: "auto" }}>
-          {results.map((f) => (
-            <button key={f.id} className="link-row" style={{ padding: "10px 11px" }} onClick={() => setSelected(f)}>
-              <div style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
-                <div className="trunc" style={{ fontSize: 13.5 }}>{f.name}</div>
-                <div className="mu" style={{ marginTop: 1 }}>
-                  {f.brand ? `${f.brand} · ` : ""}
-                  {f.servingLabel} · {f.kcal} kcal
-                </div>
-              </div>
-              <i className="ph ph-plus-circle" style={{ fontSize: 18, color: "var(--color-accent)", flex: "none" }} />
-            </button>
+          {localResults.map((f) => (
+            <FoodResultRow key={f.id} food={f} onPick={() => setSelected(f)} />
           ))}
-          {results.length === 0 && <div className="mu" style={{ textAlign: "center", padding: 20 }}>No foods match &ldquo;{query}&rdquo;.</div>}
+          {query.trim().length >= 2 && (
+            <>
+              {(localResults.length > 0 || remoteResults.length > 0) && <div className="sh" style={{ marginTop: localResults.length ? 6 : 0 }}>Search results</div>}
+              {remoteResults.map((f) => (
+                <FoodResultRow key={f.id} food={f} onPick={() => setSelected(f)} />
+              ))}
+              {searching && <div className="mu" style={{ textAlign: "center", padding: 12 }}>Searching…</div>}
+              {!searching && searchError && <div className="mu" style={{ textAlign: "center", padding: 12 }}>Couldn't reach the food database — showing saved foods only.</div>}
+              {!searching && !searchError && remoteResults.length === 0 && localResults.length === 0 && (
+                <div className="mu" style={{ textAlign: "center", padding: 20 }}>No foods match &ldquo;{query}&rdquo;.</div>
+              )}
+            </>
+          )}
+          {query.trim().length < 2 && localResults.length === 0 && (
+            <div className="mu" style={{ textAlign: "center", padding: 20 }}>Type at least 2 letters to search.</div>
+          )}
         </div>
       </div>
     </div>
+  );
+}
+
+function FoodResultRow({ food, onPick }: { food: FoodItem; onPick: () => void }) {
+  return (
+    <button className="link-row" style={{ padding: "10px 11px" }} onClick={onPick}>
+      <div style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+        <div className="trunc" style={{ fontSize: 13.5 }}>{food.name}</div>
+        <div className="mu" style={{ marginTop: 1 }}>
+          {food.brand ? `${food.brand} · ` : ""}
+          {food.servingLabel} · {food.kcal} kcal
+        </div>
+      </div>
+      <i className="ph ph-plus-circle" style={{ fontSize: 18, color: "var(--color-accent)", flex: "none" }} />
+    </button>
   );
 }
