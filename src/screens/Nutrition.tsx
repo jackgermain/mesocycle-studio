@@ -247,7 +247,7 @@ export default function Nutrition() {
                 </div>
               ))}
             </div>
-            <div className="mu" style={{ marginTop: 10 }}>Within 100 kcal and 15 g protein counts as on target.</div>
+            <div className="mu" style={{ marginTop: 10 }}>Within <span className="mono">50</span> kcal and <span className="mono">10</span> g protein counts as on target.</div>
           </div>
         </div>
       </div>
