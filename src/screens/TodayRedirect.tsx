@@ -36,8 +36,8 @@ export default function TodayRedirect() {
           {canBuild ? (
             <>
               <InfoBanner icon="ph-hourglass">Nothing built yet — start your own program from scratch, or clone one of {state.program.coachName}'s templates.</InfoBanner>
-              <button className="btn btn-primary btn-block" style={{ height: 46 }} onClick={() => nav("/build")}>
-                <i className="ph ph-plus-circle" style={{ fontSize: 15 }} />
+              <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={() => nav("/build")}>
+                <i className="ph ph-plus-circle" style={{ fontSize: 14 }} />
                 Build your own program
               </button>
             </>

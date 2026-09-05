@@ -37,12 +37,12 @@ export function ExercisePickerSheet({
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{title}</div>
           </div>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
 
         <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)", flex: "none" }}>
-          <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
+          <i className="ph ph-magnifying-glass" style={{ fontSize: 14 }} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search exercises" style={{ flex: 1, background: "none", border: "none", outline: "none", color: "var(--color-text)", fontSize: 14 }} autoFocus />
         </div>
         <div className="row hscroll" style={{ gap: 6, marginTop: 8 }}>
@@ -56,7 +56,7 @@ export function ExercisePickerSheet({
           {filtered.map((e) => (
             <button key={e.id} className="cell row" style={{ padding: "10px 11px", textAlign: "left", cursor: "pointer" }} onClick={() => onPick(e)}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="trunc" style={{ fontSize: 13.5 }}>{e.name}</div>
+                <div className="trunc" style={{ fontSize: 12.5 }}>{e.name}</div>
                 <div className="mu" style={{ marginTop: 2 }}>
                   {e.muscle}
                   {e.kind === "cardio" ? " · cardio" : ""}

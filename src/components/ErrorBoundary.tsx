@@ -40,8 +40,8 @@ export class ErrorBoundary extends React.Component<Props, State> {
           color: "var(--color-text, #eee)",
         }}
       >
-        <i className="ph ph-warning-circle" style={{ fontSize: 40, color: "var(--color-accent-400, #f2a65a)" }} />
-        <div style={{ fontSize: 17, fontFamily: "var(--font-heading)", fontWeight: 600 }}>Something went wrong</div>
+        <i className="ph ph-warning-circle" style={{ fontSize: 20, color: "var(--color-accent-400, #f2a65a)" }} />
+        <div style={{ fontSize: 16, fontFamily: "var(--font-heading)", fontWeight: 600 }}>Something went wrong</div>
         <div
           style={{
             fontSize: 12.5,
@@ -59,7 +59,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
         </div>
         <button
           className="btn btn-primary"
-          style={{ marginTop: 6, height: 40, padding: "0 18px" }}
+          style={{ marginTop: 6, height: 36, padding: "0 18px" }}
           onClick={() => window.location.reload()}
         >
           Reload

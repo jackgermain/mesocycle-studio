@@ -95,11 +95,11 @@ export default function AllDaysCalendar() {
       <CloseHeader kicker={state.program.name} title="Whole mesocycle" />
       <div className="screen-scroll">
         <div className="row" style={{ justifyContent: "space-between" }}>
-          <button className="btn btn-secondary btn-icon" style={{ width: 30, height: 30 }} onClick={() => shiftMonth(-1)} aria-label="Previous month">
+          <button className="btn btn-secondary btn-icon" style={{ width: 34, height: 34 }} onClick={() => shiftMonth(-1)} aria-label="Previous month">
             <i className="ph ph-caret-left" style={{ fontSize: 14 }} />
           </button>
           <span style={{ fontSize: 14, fontFamily: "var(--font-heading)" }}>{monthLabel}</span>
-          <button className="btn btn-secondary btn-icon" style={{ width: 30, height: 30 }} onClick={() => shiftMonth(1)} aria-label="Next month">
+          <button className="btn btn-secondary btn-icon" style={{ width: 34, height: 34 }} onClick={() => shiftMonth(1)} aria-label="Next month">
             <i className="ph ph-caret-right" style={{ fontSize: 14 }} />
           </button>
         </div>
@@ -148,8 +148,8 @@ export default function AllDaysCalendar() {
                       padding: 0,
                     }}
                   >
-                    <span style={{ fontSize: 12, fontFamily: "var(--font-heading)", color: isToday ? "var(--color-accent-100)" : "var(--color-text)" }}>{d.getDate()}</span>
-                    <span style={{ fontSize: 8, color: "var(--color-neutral-500)" }}>D{dayNumberInWeek(entry.day)}</span>
+                    <span className="num" style={{ fontWeight: 700, fontSize: 12.5, color: isToday ? "var(--color-accent-100)" : "var(--color-text)" }}>{d.getDate()}</span>
+                    <span style={{ fontSize: 11, color: "var(--color-neutral-500)" }}>D{dayNumberInWeek(entry.day)}</span>
                     <span style={{ width: 4, height: 4, borderRadius: "50%", background: dotColor(entry.day.status) }} />
                   </button>
                 );

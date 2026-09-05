@@ -71,8 +71,8 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
                   </button>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="trunc" style={{ fontSize: 13.5, color: inProgress ? "var(--color-accent-100)" : "var(--color-text)" }}>{ex.name}</div>
-                  <div style={{ fontSize: 11.5, color: inProgress ? "var(--color-accent-300)" : "var(--color-neutral-500)", marginTop: 1 }}>
+                  <div className="trunc" style={{ fontSize: 12.5, color: inProgress ? "var(--color-accent-100)" : "var(--color-text)" }}>{ex.name}</div>
+                  <div style={{ fontSize: 11, color: inProgress ? "var(--color-accent-300)" : "var(--color-neutral-500)", marginTop: 1 }}>
                     {doneCount} of {ex.sets.length} sets{inProgress ? " · in progress" : ""}
                   </div>
                 </div>
@@ -93,8 +93,8 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
               .filter((id) => day.exercises[id] && day.exercises[id].sets.some((s) => s.checked) && day.exercises[id].sets.some((s) => !s.checked))
               .map((id) => (
                 <button key={id} className="link-row" style={{ padding: "11px 12px" }} onClick={() => moveToEnd(id)}>
-                  <div style={{ flex: 1, fontSize: 13.5 }}>Move {day.exercises[id].name} to the end</div>
-                  <i className="ph ph-caret-right" style={{ fontSize: 15, color: "var(--color-neutral-600)" }} />
+                  <div style={{ flex: 1, fontSize: 12.5 }}>Move {day.exercises[id].name} to the end</div>
+                  <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
                 </button>
               ))}
             {order.filter((id) => day.exercises[id] && day.exercises[id].sets.some((s) => s.checked) && day.exercises[id].sets.some((s) => !s.checked)).length === 0 && (
@@ -108,7 +108,7 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
         </InfoBanner>
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-          <button className="btn btn-primary btn-block" style={{ height: 46 }} onClick={save}>
+          <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={save}>
             Save this order
           </button>
         </div>

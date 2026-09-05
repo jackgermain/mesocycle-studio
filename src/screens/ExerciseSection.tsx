@@ -38,7 +38,8 @@ function InlineNumberInput({ value, onCommit, placeholder, color, locked }: { va
         }
       }}
       onClick={(e) => e.stopPropagation()}
-      style={{ width: 38, textAlign: "center", background: "none", border: "none", outline: "none", fontSize: 14, fontFamily: "var(--font-heading)", color, padding: 0, cursor: locked ? "default" : "text" }}
+      className="mono"
+      style={{ width: 44, textAlign: "center", background: "none", border: "none", outline: "none", fontSize: 18, fontWeight: 700, color, padding: 0, cursor: locked ? "default" : "text" }}
     />
   );
 }
@@ -107,7 +108,7 @@ export function ExerciseSection({
   let warmCounter = 0;
 
   return (
-    <div className="cell elev-sm" style={{ padding: "11px 12px 10px", position: "relative" }}>
+    <div className="cell elev-sm" style={{ position: "relative" }}>
       <div className="row" style={{ marginBottom: 8, alignItems: "flex-start" }}>
         <div
           style={{
@@ -120,20 +121,20 @@ export function ExerciseSection({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 12,
+            fontSize: 12.5,
             fontFamily: "var(--font-heading)",
           }}
         >
-          {allDone ? <i className="ph-fill ph-check" style={{ fontSize: 13 }} /> : index}
+          {allDone ? <i className="ph-fill ph-check" style={{ fontSize: 12 }} /> : index}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14.5, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{ex.name}</div>
+          <div style={{ fontSize: 14, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{ex.name}</div>
           <div className="mu" style={{ marginTop: 1 }}>{ex.metaLine}</div>
         </div>
-        {ex.hasVideo && <i className="ph-fill ph-play-circle" style={{ fontSize: 19, color: "var(--color-accent)", flex: "none", marginTop: 2 }} />}
+        {ex.hasVideo && <i className="ph-fill ph-play-circle" style={{ fontSize: 16, color: "var(--color-accent)", flex: "none", marginTop: 2 }} />}
         {!readOnly && (
         <div style={{ position: "relative" }}>
-          <button className="btn btn-secondary btn-icon" style={{ width: 30, height: 30 }} onClick={onToggleMenu} aria-label="Exercise options">
+          <button className="btn btn-secondary btn-icon" style={{ width: 34, height: 34 }} onClick={onToggleMenu} aria-label="Exercise options">
             <i className="ph ph-dots-three-vertical" style={{ fontSize: 16 }} />
           </button>
           {menuOpen && (
@@ -188,9 +189,9 @@ export function ExerciseSection({
         if (s.removed) {
           return (
             <div key={s.id} className="setrow" style={{ gridTemplateColumns: "16px 1fr 1fr 34px", opacity: 0.5 }}>
-              <span style={{ fontSize: 12, color: "var(--color-neutral-500)" }}>{label}</span>
-              <span style={{ gridColumn: "2 / span 2", fontSize: 12, color: "var(--color-neutral-500)" }}>Removed · {s.removed.reason}</span>
-              <i className="ph ph-x-circle" style={{ fontSize: 15, color: "var(--color-neutral-600)", justifySelf: "center" }} />
+              <span className="mono" style={{ fontSize: 12.5, color: "var(--color-neutral-500)" }}>{label}</span>
+              <span style={{ gridColumn: "2 / span 2", fontSize: 12.5, color: "var(--color-neutral-500)" }}>Removed · {s.removed.reason}</span>
+              <i className="ph ph-x-circle" style={{ fontSize: 14, color: "var(--color-neutral-600)", justifySelf: "center" }} />
             </div>
           );
         }
@@ -198,12 +199,12 @@ export function ExerciseSection({
         if (special) {
           return (
             <div key={s.id} className="setrow" style={{ gridTemplateColumns: "16px 1fr 34px" }}>
-              <span className="mu">{label}</span>
+              <span className="mu mono">{label}</span>
               <button className="link-row" style={{ padding: "8px 0", justifyContent: "space-between" }} onClick={() => nav(`/block/day/${dayId}/exercise/${ex.id}/live/${s.id}`)}>
-                <span style={{ fontSize: 12.5, color: s.checked ? "var(--color-neutral-300)" : "var(--color-neutral-400)" }}>
+                <span className={`tag ${s.type === "dropset" ? "tag-danger" : s.type === "cluster" ? "tag-purple" : s.type === "myo" ? "tag-warning" : s.type === "amrap" ? "tag-info" : "tag-neutral"}`}>
                   {s.checked ? specialSummary(s) : typeLabel(s.type, s)}
                 </span>
-                <span style={{ fontSize: 12, color: "var(--color-accent)" }}>{s.checked ? "Edit" : "Start"}</span>
+                <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>{s.checked ? "Edit" : "Start"}</span>
               </button>
               {s.checked ? (
                 <div style={{ width: 26, height: 26, borderRadius: 7, background: "var(--color-accent)", display: "flex", alignItems: "center", justifyContent: "center", justifySelf: "center" }}>
@@ -216,16 +217,16 @@ export function ExerciseSection({
           );
         }
 
-        const rowBg = s.checked ? (s.isWarmup ? "var(--color-neutral-800)" : "var(--color-accent-900)") : undefined;
+        const rowBg = s.checked ? (s.isWarmup ? "var(--color-neutral-800)" : "var(--color-accent-tint)") : undefined;
         const numColor = s.checked ? (s.isWarmup ? "var(--color-neutral-300)" : "var(--color-accent-300)") : warmupTint ? "var(--color-neutral-400)" : "var(--color-neutral-500)";
-        const valueColor = s.checked ? (s.isWarmup ? "var(--color-neutral-100)" : "var(--color-accent-100)") : "var(--color-text)";
+        const valueColor = s.checked ? (s.isWarmup ? "var(--color-neutral-100)" : "var(--color-neutral-300)") : "var(--color-text)";
         const controlColor = s.checked ? (s.isWarmup ? "var(--color-neutral-400)" : "var(--color-accent-400)") : "var(--color-neutral-500)";
         const checkboxBorder = s.checked ? "none" : warmupTint ? "1.5px solid var(--color-neutral-500)" : "1.5px solid var(--color-accent)";
         const checkboxBg = s.checked ? (s.isWarmup ? "var(--color-neutral-600)" : "var(--color-accent)") : "none";
 
         return (
           <div key={s.id} className="setrow" style={{ gridTemplateColumns: "22px 1fr 1fr 34px", background: rowBg, borderRadius: s.checked ? 8 : 0, padding: s.checked ? "0 6px" : 0, margin: s.checked ? "2px -6px" : 0 }}>
-            <span style={{ fontSize: 11, color: numColor }}>{label}</span>
+            <span className="mono" style={{ fontSize: 13, fontWeight: 700, color: numColor }}>{label}</span>
             <div className="row" style={{ justifyContent: "center", gap: 6, color: controlColor }}>
               {!locked && (
                 <button onClick={() => editLoad(s, -1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
@@ -295,17 +296,17 @@ export function ExerciseSection({
           </button>
         )}
         {ex.sets[0]?.prescribed.restSec ? (
-          <span style={{ fontSize: 12.5, color: "var(--color-neutral-500)", display: "flex", alignItems: "center", gap: readOnly ? 5 : 2 }}>
+          <span className="mono" style={{ fontSize: 12.5, color: "var(--color-neutral-500)", display: "flex", alignItems: "center", gap: readOnly ? 5 : 2 }}>
             <i className="ph ph-timer" style={{ fontSize: 14 }} />
             {!readOnly && (
               <button onClick={() => editRest(-15)} aria-label="Decrease rest time" style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", display: "flex", padding: 3 }}>
-                <i className="ph ph-minus" style={{ fontSize: 11 }} />
+                <i className="ph ph-minus" style={{ fontSize: 12 }} />
               </button>
             )}
             Rest {Math.floor((ex.sets[0].prescribed.restSec ?? 0) / 60)}:{String((ex.sets[0].prescribed.restSec ?? 0) % 60).padStart(2, "0")}
             {!readOnly && (
               <button onClick={() => editRest(15)} aria-label="Increase rest time" style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", display: "flex", padding: 3 }}>
-                <i className="ph ph-plus" style={{ fontSize: 11 }} />
+                <i className="ph ph-plus" style={{ fontSize: 12 }} />
               </button>
             )}
           </span>

@@ -106,17 +106,17 @@ export default function Clients() {
         }
       >
         <HeroStat value={state.clients.length} label="clients">
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Accepted</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{acceptedCount}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{acceptedCount}</span>
           </div>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Needs review</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{needsReviewCount}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{needsReviewCount}</span>
           </div>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>At risk</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{atRiskCount}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{atRiskCount}</span>
           </div>
         </HeroStat>
       </HeroHeader>
@@ -164,11 +164,11 @@ export default function Clients() {
                 {c.role === "friend" ? "Friend" : "Client"}
               </span>
               {c.status === "unassigned" ? (
-                <span style={{ fontSize: 12, color: "var(--color-accent)", flex: "none" }}>{c.accountId ? "Open" : "Invite"}</span>
+                <span style={{ fontSize: 12.5, color: "var(--color-accent)", flex: "none" }}>{c.accountId ? "Open" : "Invite"}</span>
               ) : c.status === "paused" ? null : (
                 <div style={{ textAlign: "right", flex: "none" }}>
-                  <div style={{ fontSize: 13, fontFamily: "var(--font-heading)", color: c.adherencePct >= 85 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>{c.adherencePct}%</div>
-                  <div className="mu" style={{ fontSize: 9.5 }}>adherence</div>
+                  <div className="num" style={{ fontWeight: 700, fontSize: 12.5, color: c.adherencePct >= 85 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>{c.adherencePct}%</div>
+                  <div className="mu" style={{ fontSize: 11 }}>adherence</div>
                 </div>
               )}
             </button>

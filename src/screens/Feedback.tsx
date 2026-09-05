@@ -157,8 +157,8 @@ export default function Feedback() {
                       onClick={() => setPump((p) => ({ ...p, [muscle]: v }))}
                       style={{ height: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2 }}
                     >
-                      <span style={{ fontSize: 15 }}>{v}</span>
-                      <span style={{ fontSize: 8.5, opacity: 0.85 }}>{label}</span>
+                      <span style={{ fontSize: 14 }}>{v}</span>
+                      <span style={{ fontSize: 11, opacity: 0.85 }}>{label}</span>
                     </button>
                   );
                 })}
@@ -167,7 +167,7 @@ export default function Feedback() {
           ))}
 
           <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-            <button className="btn btn-solid btn-block" style={{ height: 50, opacity: pumpDone ? 1 : 0.45, cursor: pumpDone ? "pointer" : "not-allowed" }} disabled={!pumpDone} onClick={() => setStep("joint")}>
+            <button className="btn btn-solid btn-block" style={{ height: 48, opacity: pumpDone ? 1 : 0.45, cursor: pumpDone ? "pointer" : "not-allowed" }} disabled={!pumpDone} onClick={() => setStep("joint")}>
               Next — joint check
             </button>
           </div>
@@ -192,10 +192,10 @@ export default function Feedback() {
         <p className="mu" style={{ lineHeight: 1.6, fontSize: 12.5 }}>Joint, tendon or connective tissue — not muscle soreness. Muscle soreness is asked next session.</p>
 
         <div style={{ display: "flex", gap: 8 }}>
-          <button className={`pill-opt${jointYes === false ? " on" : ""}`} onClick={() => setJointYes(false)} style={{ height: 52, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>
+          <button className={`pill-opt${jointYes === false ? " on" : ""}`} onClick={() => setJointYes(false)} style={{ height: 52, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
             No
           </button>
-          <button className={`pill-opt${jointYes === true ? " on" : ""}`} onClick={() => setJointYes(true)} style={{ height: 52, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, fontSize: 15 }}>
+          <button className={`pill-opt${jointYes === true ? " on" : ""}`} onClick={() => setJointYes(true)} style={{ height: 52, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, fontSize: 14 }}>
             {jointYes === true && <i className="ph-fill ph-check-circle" style={{ fontSize: 16 }} />}
             Yes
           </button>
@@ -217,7 +217,7 @@ export default function Feedback() {
                       style={{ height: 60, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3 }}
                     >
                       <span style={{ fontSize: 16 }}>{v}</span>
-                      <span style={{ fontSize: 8.5, opacity: 0.85, textAlign: "center", lineHeight: 1.2 }}>{label}</span>
+                      <span style={{ fontSize: 11, opacity: 0.85, textAlign: "center", lineHeight: 1.2 }}>{label}</span>
                     </button>
                   );
                 })}
@@ -308,7 +308,7 @@ export default function Feedback() {
         )}
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-          <button className="btn btn-solid btn-block" style={{ height: 50, opacity: canFinish ? 1 : 0.45, cursor: canFinish ? "pointer" : "not-allowed" }} disabled={!canFinish} onClick={finish}>
+          <button className="btn btn-solid btn-block" style={{ height: 48, opacity: canFinish ? 1 : 0.45, cursor: canFinish ? "pointer" : "not-allowed" }} disabled={!canFinish} onClick={finish}>
             Finish session
           </button>
         </div>

@@ -97,7 +97,7 @@ function PreviewBanner() {
         paddingTop: "calc(8px + env(safe-area-inset-top))",
         background: "var(--color-accent)",
         color: "#0b1710",
-        fontSize: 11.5,
+        fontSize: 11,
         fontWeight: 700,
       }}
     >

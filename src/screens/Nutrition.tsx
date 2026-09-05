@@ -82,7 +82,7 @@ export default function Nutrition() {
               : `${state.program.coachName} hasn't turned on food tracking for you yet. Ask them if you'd like to log meals and get targets.`}
           </InfoBanner>
           {canSelfServe && (
-            <button className="btn btn-primary btn-block" style={{ height: 46 }} onClick={() => setSettingUp(true)}>
+            <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={() => setSettingUp(true)}>
               Set up nutrition tracking
             </button>
           )}
@@ -126,7 +126,7 @@ export default function Nutrition() {
         right={
           <div style={{ position: "relative" }}>
             <button onClick={() => setShowAddMenu((v) => !v)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal or snack">
-              <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
+              <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-accent)" }} />
             </button>
             {showAddMenu && (
               <div
@@ -160,7 +160,7 @@ export default function Nutrition() {
           <div className="row" style={{ alignItems: "baseline", marginBottom: 12 }}>
             <div style={{ flex: 1 }}>
               <div className="scr">Calories left</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: 28, lineHeight: 1.1, marginTop: 3 }}>{left}</div>
+              <div className="num" style={{ fontSize: 21, lineHeight: 1.1, marginTop: 3 }}>{left}</div>
             </div>
             <div style={{ textAlign: "right", paddingRight: canSelfServe ? 20 : 0 }}>
               <div className="mu">{totals.kcal.toLocaleString()} of {kcalTarget.toLocaleString()}</div>
@@ -194,13 +194,13 @@ export default function Nutrition() {
                 {meal.items.map((item) => (
                   <div key={item.id} className="cell row" style={{ padding: "10px 12px" }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div className="trunc" style={{ fontSize: 13.5 }}>{item.name}</div>
+                      <div className="trunc" style={{ fontSize: 12.5 }}>{item.name}</div>
                       <div className="mu trunc" style={{ marginTop: 2 }}>
                         {item.servings}× {item.servingLabel} · {item.protein}p · {item.carbs}c · {item.fat}f
                       </div>
                     </div>
                     <div style={{ textAlign: "right", flex: "none", display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ fontSize: 13, fontFamily: "var(--font-heading)" }}>{item.kcal}</div>
+                      <div className="num" style={{ fontWeight: 700, fontSize: 12.5 }}>{item.kcal}</div>
                       <button
                         onClick={() => dispatch({ type: "REMOVE_FOOD_ITEM", mealId: meal.id, itemId: item.id })}
                         style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-600)", display: "flex" }}
@@ -263,13 +263,13 @@ export default function Nutrition() {
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Options</div>
               </div>
               <button onClick={() => setShowNutritionOptions(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                <i className="ph ph-x" style={{ fontSize: 18 }} />
+                <i className="ph ph-x" style={{ fontSize: 16 }} />
               </button>
             </div>
             <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => { setShowNutritionOptions(false); setEditingTargets(true); }}>
               <i className="ph ph-pencil-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13 }}>Edit nutrition targets</div>
+                <div style={{ fontSize: 12.5 }}>Edit nutrition targets</div>
                 <div className="mu" style={{ marginTop: 1 }}>Change how you track and your calorie/macro goals.</div>
               </div>
             </button>
@@ -315,7 +315,7 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
         right={
           <div style={{ position: "relative" }}>
             <button onClick={() => setShowAddMenu((v) => !v)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a meal or snack">
-              <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
+              <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-accent)" }} />
             </button>
             {showAddMenu && (
               <div
@@ -353,7 +353,7 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
           <div className="row" style={{ alignItems: "baseline", marginBottom: 10 }}>
             <div style={{ flex: 1 }}>
               <div className="scr">Portions today</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: 24, lineHeight: 1.1, marginTop: 3 }}>
+              <div className="num" style={{ fontWeight: 700, fontSize: 21, lineHeight: 1.1, marginTop: 3 }}>
                 {hitSlots} <span style={{ fontSize: 14, color: "var(--color-neutral-500)" }}>of {totalSlots || targets.length}</span>
               </div>
             </div>
@@ -394,9 +394,9 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
                           textAlign: "left",
                         }}
                       >
-                        <i className={`ph ${PORTION_ICON[t.category]}`} style={{ fontSize: 17, color: on ? "var(--color-accent-300)" : "var(--color-neutral-500)", marginRight: 10 }} />
+                        <i className={`ph ${PORTION_ICON[t.category]}`} style={{ fontSize: 16, color: on ? "var(--color-accent-300)" : "var(--color-neutral-500)", marginRight: 10 }} />
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 13.5, color: on ? "var(--color-accent-200)" : "var(--color-neutral-200)" }}>{t.category}</div>
+                          <div style={{ fontSize: 12.5, color: on ? "var(--color-accent-200)" : "var(--color-neutral-200)" }}>{t.category}</div>
                           <div className="mu" style={{ marginTop: 1 }}>{fmtPortionQty(t.unit, t.qty)}</div>
                         </div>
                         <i className={`ph ${on ? "ph-check-circle" : "ph-circle"}`} style={{ fontSize: 20, color: on ? "var(--color-accent)" : "var(--color-neutral-700)" }} />
@@ -420,13 +420,13 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Options</div>
               </div>
               <button onClick={() => setShowNutritionOptions(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                <i className="ph ph-x" style={{ fontSize: 18 }} />
+                <i className="ph ph-x" style={{ fontSize: 16 }} />
               </button>
             </div>
             <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => { setShowNutritionOptions(false); onEditTargets(); }}>
               <i className="ph ph-pencil-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13 }}>Edit nutrition targets</div>
+                <div style={{ fontSize: 12.5 }}>Edit nutrition targets</div>
                 <div className="mu" style={{ marginTop: 1 }}>Change how you track and your portion goals.</div>
               </div>
             </button>
@@ -440,12 +440,12 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
 function MacroCol({ label, value, target, color, valueColor }: { label: string; value: number; target: number; color: string; valueColor?: string }) {
   return (
     <div style={{ flex: 1 }}>
-      <div className="row" style={{ fontSize: 11.5, marginBottom: 5 }}>
+      <div className="row" style={{ fontSize: 11, marginBottom: 5 }}>
         <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>{label}</span>
-        <span style={{ fontFamily: "var(--font-heading)", color: valueColor ?? "var(--color-neutral-200)" }}>{value}</span>
+        <span className="num" style={{ fontWeight: 700, color: valueColor ?? "var(--color-neutral-200)" }}>{value}</span>
       </div>
       <Meter pct={(value / target) * 100} color={color} />
-      <div className="mu" style={{ marginTop: 4, fontSize: 10 }}>of {target} g</div>
+      <div className="mu" style={{ marginTop: 4, fontSize: 11 }}>of {target} g</div>
     </div>
   );
 }

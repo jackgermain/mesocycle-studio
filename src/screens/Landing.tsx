@@ -32,7 +32,7 @@ export default function Landing() {
       <Hero>
         <div className="h1" style={{ textAlign: "center" }}>Access revoked</div>
         <InfoBanner icon="ph-lock-simple">Your coach has revoked access to this account. Reach out to them if you think that's a mistake.</InfoBanner>
-        <button className="btn btn-secondary btn-block" style={{ height: 46 }} onClick={clearRevoked}>
+        <button className="btn btn-secondary btn-block" style={{ height: 44 }} onClick={clearRevoked}>
           Back to sign in
         </button>
       </Hero>
@@ -66,12 +66,12 @@ function ResetPassword({ onDone }: { onDone: () => void }) {
 
   return (
     <Hero>
-      <div className="h1" style={{ textAlign: "center", fontSize: 22 }}>Set a new password</div>
+      <div className="h1" style={{ textAlign: "center", fontSize: 21 }}>Set a new password</div>
       <div className="field">
         <label>New password</label>
         <input
           className="input"
-          style={{ height: 50, fontSize: 15 }}
+          style={{ height: 50, fontSize: 14 }}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -81,7 +81,7 @@ function ResetPassword({ onDone }: { onDone: () => void }) {
         />
       </div>
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-      <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: password.length >= 6 && !busy ? 1 : 0.5 }} disabled={password.length < 6 || busy} onClick={save}>
+      <button className="btn btn-solid btn-block" style={{ height: 54, fontSize: 14, opacity: password.length >= 6 && !busy ? 1 : 0.5 }} disabled={password.length < 6 || busy} onClick={save}>
         {busy ? "Saving…" : "Save password"}
       </button>
     </Hero>
@@ -127,11 +127,11 @@ function SignIn() {
   if (step === "welcome") {
     return (
       <Hero>
-        <div className="h1" style={{ textAlign: "center", fontSize: 22 }}>Welcome!</div>
+        <div className="h1" style={{ textAlign: "center", fontSize: 21 }}>Welcome!</div>
         <button className="btn btn-solid btn-block" style={{ height: 54, fontSize: 16, marginTop: 6 }} onClick={() => setStep("form")}>
           Sign in
         </button>
-        <button className="btn btn-ghost" style={{ height: 36, fontSize: 13 }} onClick={() => { setStep("form"); setShowInviteField(true); }}>
+        <button className="btn btn-ghost" style={{ fontSize: 12.5 }} onClick={() => { setStep("form"); setShowInviteField(true); }}>
           Have an invite code instead?
         </button>
       </Hero>
@@ -150,13 +150,13 @@ function SignIn() {
             <>
               <div className="field">
                 <label>Email</label>
-                <input className="input" style={{ height: 50, fontSize: 15 }} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
+                <input className="input" style={{ height: 50, fontSize: 14 }} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
               </div>
               <div className="field">
                 <label>Password</label>
                 <input
                   className="input"
-                  style={{ height: 50, fontSize: 15 }}
+                  style={{ height: 50, fontSize: 14 }}
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -165,12 +165,12 @@ function SignIn() {
                 />
               </div>
               {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-              <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
+              <button className="btn btn-solid btn-block" style={{ height: 54, fontSize: 14, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
                 {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
               </button>
               <button
                 className="btn btn-ghost"
-                style={{ height: 34, fontSize: 12.5 }}
+                style={{ fontSize: 12.5 }}
                 onClick={() => {
                   setMode((m) => (m === "signin" ? "signup" : "signin"));
                   setError(null);
@@ -179,14 +179,14 @@ function SignIn() {
                 {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
               </button>
               {mode === "signin" && (
-                <button className="btn btn-ghost" style={{ height: 30, fontSize: 12 }} disabled={!email.trim() || busy} onClick={sendReset}>
+                <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={!email.trim() || busy} onClick={sendReset}>
                   Forgot password?
                 </button>
               )}
 
               <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
 
-              <button className="btn btn-ghost" style={{ height: 40, fontSize: 13 }} onClick={() => setShowInviteField(true)}>
+              <button className="btn btn-ghost" style={{ fontSize: 12.5 }} onClick={() => setShowInviteField(true)}>
                 Have an invite code instead?
               </button>
             </>
@@ -198,7 +198,7 @@ function SignIn() {
             <label>Invite code</label>
             <input
               className="input"
-              style={{ height: 46, fontSize: 15, textTransform: "uppercase", letterSpacing: 1 }}
+              style={{ height: 46, fontSize: 14, textTransform: "uppercase", letterSpacing: 1 }}
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
               placeholder="ABC123"
@@ -206,10 +206,10 @@ function SignIn() {
               onKeyDown={(e) => e.key === "Enter" && goToInvite()}
             />
           </div>
-          <button className="btn btn-solid btn-block" style={{ height: 46, opacity: inviteCode.trim() ? 1 : 0.5 }} disabled={!inviteCode.trim()} onClick={goToInvite}>
+          <button className="btn btn-solid btn-block" style={{ height: 54, opacity: inviteCode.trim() ? 1 : 0.5 }} disabled={!inviteCode.trim()} onClick={goToInvite}>
             Continue with code
           </button>
-          <button className="btn btn-ghost" style={{ height: 36, fontSize: 13 }} onClick={() => setShowInviteField(false)}>
+          <button className="btn btn-ghost" style={{ fontSize: 12.5 }} onClick={() => setShowInviteField(false)}>
             Sign in with email instead
           </button>
         </div>
@@ -246,10 +246,10 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
       </p>
       <div className="field">
         <label>Your name</label>
-        <input className="input" style={{ height: 50, fontSize: 15 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" autoFocus onKeyDown={(e) => e.key === "Enter" && setUpAsCoach()} />
+        <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" autoFocus onKeyDown={(e) => e.key === "Enter" && setUpAsCoach()} />
       </div>
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-      <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={setUpAsCoach}>
+      <button className="btn btn-solid btn-block" style={{ height: 54, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={setUpAsCoach}>
         {busy ? "Setting up…" : "Set up as the coach"}
       </button>
     </Hero>

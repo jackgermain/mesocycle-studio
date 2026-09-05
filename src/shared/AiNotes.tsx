@@ -16,8 +16,8 @@ export function AiNotes({ notes, verb }: { notes: string[]; verb: string }) {
         style={{ background: "none", border: "none", padding: 0, width: "100%", cursor: "pointer", color: "inherit", textAlign: "left" }}
       >
         <div className="row" style={{ gap: 8 }}>
-          <i className="ph ph-eyes" style={{ fontSize: 15, color: "var(--color-accent-300)", flex: "none" }} />
-          <span style={{ flex: 1, fontSize: 13 }}>
+          <i className="ph ph-eyes" style={{ fontSize: 14, color: "var(--color-accent-300)", flex: "none" }} />
+          <span style={{ flex: 1, fontSize: 12.5 }}>
             {list.length} thing{list.length === 1 ? "" : "s"} to check before you {verb}
           </span>
           <i className={`ph ${open ? "ph-caret-up" : "ph-caret-down"}`} style={{ fontSize: 14, color: "var(--color-neutral-500)", flex: "none" }} />

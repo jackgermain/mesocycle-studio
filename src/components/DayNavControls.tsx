@@ -19,14 +19,14 @@ export function DayNavControls({ dayId }: { dayId: string }) {
         aria-label="Previous day"
         style={{ background: "none", border: "none", display: "flex", padding: 7, color: "var(--color-neutral-300)", cursor: prev ? "pointer" : "default", opacity: prev ? 1 : 0.3 }}
       >
-        <i className="ph ph-caret-left" style={{ fontSize: 17 }} />
+        <i className="ph ph-caret-left" style={{ fontSize: 16 }} />
       </button>
       <button
         onClick={() => nav("/block/calendar")}
         aria-label="Open calendar"
         style={{ background: "none", border: "none", display: "flex", padding: 7, color: "var(--color-neutral-300)", cursor: "pointer" }}
       >
-        <i className="ph ph-calendar" style={{ fontSize: 18 }} />
+        <i className="ph ph-calendar" style={{ fontSize: 16 }} />
       </button>
       <button
         onClick={() => next && nav(`/block/day/${next.id}`)}
@@ -34,7 +34,7 @@ export function DayNavControls({ dayId }: { dayId: string }) {
         aria-label="Next day"
         style={{ background: "none", border: "none", display: "flex", padding: 7, color: "var(--color-neutral-300)", cursor: next ? "pointer" : "default", opacity: next ? 1 : 0.3 }}
       >
-        <i className="ph ph-caret-right" style={{ fontSize: 17 }} />
+        <i className="ph ph-caret-right" style={{ fontSize: 16 }} />
       </button>
     </div>
   );

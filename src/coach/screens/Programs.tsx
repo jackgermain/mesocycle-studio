@@ -53,22 +53,22 @@ export default function Programs() {
         right={
           <div className="row" style={{ gap: 8, flex: "none" }}>
             <button className="btn btn-secondary btn-icon" aria-label="Browse the exercise library" onClick={() => nav("/coach/library")}>
-              <i className="ph ph-barbell" style={{ fontSize: 17 }} />
+              <i className="ph ph-barbell" style={{ fontSize: 16 }} />
             </button>
             <button className="btn btn-secondary btn-icon" aria-label="Add a program" onClick={() => setChoosing(true)}>
-              <i className="ph ph-plus" style={{ fontSize: 17 }} />
+              <i className="ph ph-plus" style={{ fontSize: 16 }} />
             </button>
           </div>
         }
       >
         <HeroStat value={state.programs.length} label="programs">
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Templates</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{templates.length}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{templates.length}</span>
           </div>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Drafts</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{drafts.length}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{drafts.length}</span>
           </div>
         </HeroStat>
       </HeroHeader>
@@ -84,10 +84,10 @@ export default function Programs() {
               <div className="row">
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="row" style={{ gap: 6 }}>
-                    <div style={{ fontSize: 15, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{p.name}</div>
+                    <div style={{ fontSize: 14, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{p.name}</div>
                     {p.isTemplate && (
                       <span className={`tag ${p.visibility === "public" ? "tag-accent" : "tag-outline"}`} style={{ flex: "none" }}>
-                        <i className={`ph ${p.visibility === "public" ? "ph-globe" : "ph-lock-simple"}`} style={{ fontSize: 10, marginRight: 3 }} />
+                        <i className={`ph ${p.visibility === "public" ? "ph-globe" : "ph-lock-simple"}`} style={{ fontSize: 12, marginRight: 3 }} />
                         {p.visibility === "public" ? "Public" : "Private"}
                       </span>
                     )}
@@ -98,17 +98,17 @@ export default function Programs() {
                 </div>
                 <button
                   className="btn btn-icon"
-                  style={{ width: 32, height: 32, color: "var(--color-neutral-500)" }}
+                  style={{ width: 34, height: 34, color: "var(--color-neutral-500)" }}
                   aria-label={`Rename ${p.name}`}
                   onClick={() => {
                     setRenaming(p.id);
                     setRenameText(p.name);
                   }}
                 >
-                  <i className="ph ph-pencil-simple" style={{ fontSize: 15 }} />
+                  <i className="ph ph-pencil-simple" style={{ fontSize: 14 }} />
                 </button>
-                <button className="btn btn-icon" style={{ width: 32, height: 32, color: "var(--color-neutral-500)" }} aria-label={`Delete ${p.name}`} onClick={() => deleteProgram(p)}>
-                  <i className="ph ph-trash" style={{ fontSize: 15 }} />
+                <button className="btn btn-icon" style={{ width: 34, height: 34, color: "var(--color-neutral-500)" }} aria-label={`Delete ${p.name}`} onClick={() => deleteProgram(p)}>
+                  <i className="ph ph-trash" style={{ fontSize: 14 }} />
                 </button>
               </div>
               <div className="row" style={{ gap: 3, marginTop: 11 }}>
@@ -119,11 +119,11 @@ export default function Programs() {
                   />
                 ))}
               </div>
-              <div className="row" style={{ marginTop: 10, fontSize: 11.5, color: "var(--color-neutral-500)" }}>
+              <div className="row" style={{ marginTop: 10, fontSize: 11, color: "var(--color-neutral-500)" }}>
                 <span>{p.isTemplate ? "Not assignable to a client — save a copy first" : `${p.assignedCount} assigned`}</span>
                 <span style={{ marginLeft: "auto" }}>{p.weeklySets} sets/wk</span>
               </div>
-              <button className="btn btn-secondary btn-block" style={{ height: 36, fontSize: 12.5, marginTop: 10 }} onClick={() => nav(`/coach/programs/${p.id}`)}>
+              <button className="btn btn-secondary btn-block" style={{ height: 44, fontSize: 12.5, marginTop: 10 }} onClick={() => nav(`/coach/programs/${p.id}`)}>
                 Open builder
               </button>
             </div>
@@ -141,7 +141,7 @@ export default function Programs() {
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Rename</div>
               </div>
               <button onClick={() => setRenaming(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                <i className="ph ph-x" style={{ fontSize: 18 }} />
+                <i className="ph ph-x" style={{ fontSize: 16 }} />
               </button>
             </div>
             <div className="field">
@@ -161,7 +161,7 @@ export default function Programs() {
             </div>
             <button
               className="btn btn-primary btn-block"
-              style={{ height: 46, opacity: renameText.trim() ? 1 : 0.5 }}
+              style={{ height: 48, opacity: renameText.trim() ? 1 : 0.5 }}
               disabled={!renameText.trim()}
               onClick={() => {
                 dispatch({ type: "SET_PROGRAM_NAME", programId: renaming, name: renameText.trim() });
@@ -178,7 +178,7 @@ export default function Programs() {
       {choosing && (
         <div className="sheet-backdrop" onClick={() => setChoosing(false)}>
           <div className="sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="h1" style={{ fontSize: 20, marginBottom: 4 }}>Add a program</div>
+            <div className="h1" style={{ fontSize: 21, marginBottom: 4 }}>Add a program</div>
             <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, marginBottom: 14 }}>Start from a PDF or screenshots you already have, or build one from a blank week right here.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <button
@@ -191,10 +191,10 @@ export default function Programs() {
               >
                 <i className="ph ph-file-arrow-up" style={{ fontSize: 20, color: "var(--color-accent)", flex: "none" }} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13.5, fontFamily: "var(--font-heading)" }}>Import a program</div>
+                  <div style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Import a program</div>
                   <div className="mu" style={{ marginTop: 1 }}>PDF or screenshots</div>
                 </div>
-                <i className="ph ph-caret-right" style={{ fontSize: 15, color: "var(--color-neutral-600)" }} />
+                <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
               </button>
               <button
                 className="cell row"
@@ -206,10 +206,10 @@ export default function Programs() {
               >
                 <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-accent)", flex: "none" }} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13.5, fontFamily: "var(--font-heading)" }}>Build from scratch</div>
+                  <div style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Build from scratch</div>
                   <div className="mu" style={{ marginTop: 1 }}>Start with a blank week and add exercises yourself</div>
                 </div>
-                <i className="ph ph-caret-right" style={{ fontSize: 15, color: "var(--color-neutral-600)" }} />
+                <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
               </button>
             </div>
           </div>
@@ -219,7 +219,7 @@ export default function Programs() {
       {naming && (
         <div className="sheet-backdrop" onClick={() => setNaming(false)}>
           <div className="sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="h1" style={{ fontSize: 20, marginBottom: 10 }}>Name the program</div>
+            <div className="h1" style={{ fontSize: 21, marginBottom: 10 }}>Name the program</div>
             <div className="field">
               <input className="input" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Off-Season Strength" autoFocus />
             </div>

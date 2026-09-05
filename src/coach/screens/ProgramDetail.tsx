@@ -119,11 +119,11 @@ export default function ProgramDetail() {
         right={
           <button
             className="btn btn-secondary btn-icon"
-            style={{ width: 38, height: 38 }}
+            style={{ width: 34, height: 34 }}
             aria-label="Edit with AI"
             onClick={() => setShowAiEdit(true)}
           >
-            <i className="ph ph-sparkle" style={{ fontSize: 17, color: "var(--color-accent-300)" }} />
+            <i className="ph ph-sparkle" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
           </button>
         }
       />
@@ -136,12 +136,12 @@ export default function ProgramDetail() {
               </div>
               <button
                 onClick={() => dispatch({ type: "CLEAR_AI_EDIT_MARK", programId: program.id })}
-                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11.5, color: "var(--color-neutral-500)", padding: 0 }}
+                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--color-neutral-500)", padding: 0 }}
               >
                 Dismiss
               </button>
             </div>
-            <div style={{ fontSize: 13, lineHeight: 1.5 }}>{program.lastAiEdit.summary}</div>
+            <div style={{ fontSize: 12.5, lineHeight: 1.5 }}>{program.lastAiEdit.summary}</div>
             <div className="mu" style={{ marginTop: 5 }}>
               {program.lastAiEdit.exerciseIds.length} exercise{program.lastAiEdit.exerciseIds.length === 1 ? "" : "s"} marked below. Dismiss once you've looked them over.
             </div>
@@ -172,7 +172,7 @@ export default function ProgramDetail() {
               style={{ width: 17, height: 17, flex: "none", accentColor: "var(--color-accent)" }}
             />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 13 }}>Save as a personal template</div>
+              <div style={{ fontSize: 12.5 }}>Save as a personal template</div>
               <div className="mu" style={{ marginTop: 1, lineHeight: 1.5 }}>Private by default — only you can see or prescribe it, unless you make it public below.</div>
             </div>
           </label>
@@ -186,7 +186,7 @@ export default function ProgramDetail() {
                 style={{ width: 17, height: 17, flex: "none", accentColor: "var(--color-accent)" }}
               />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13 }}>Make this template public</div>
+                <div style={{ fontSize: 12.5 }}>Make this template public</div>
                 <div className="mu" style={{ marginTop: 1, lineHeight: 1.5 }}>Off by default. Nothing you build is ever public unless you turn this on yourself.</div>
               </div>
             </label>
@@ -201,24 +201,24 @@ export default function ProgramDetail() {
 
         {assignToClient ? (
           <>
-            <button className="btn btn-solid btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/clients/${assignToClient.id}/assign?programId=${program.id}`)}>
-              <i className="ph ph-check-circle" style={{ fontSize: 15 }} />
+            <button className="btn btn-solid btn-block" style={{ height: 48 }} onClick={() => nav(`/coach/clients/${assignToClient.id}/assign?programId=${program.id}`)}>
+              <i className="ph ph-check-circle" style={{ fontSize: 14 }} />
               Finish assigning to {assignToClient.name.split(" ")[0]}
             </button>
-            <button className="btn btn-secondary btn-block" style={{ height: 38, fontSize: 12.5 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
+            <button className="btn btn-secondary btn-block" style={{ height: 44, fontSize: 12.5 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
               Assign to someone else instead
             </button>
           </>
         ) : (
-          <button className="btn btn-solid btn-block" style={{ height: 44 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
-            <i className="ph ph-user-plus" style={{ fontSize: 15 }} />
+          <button className="btn btn-solid btn-block" style={{ height: 48 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
+            <i className="ph ph-user-plus" style={{ fontSize: 14 }} />
             Assign to a client
           </button>
         )}
 
         <button
           className="btn btn-secondary btn-block"
-          style={{ height: 40, color: "var(--color-neutral-400)" }}
+          style={{ height: 44, color: "var(--color-neutral-400)" }}
           onClick={() => {
             const backing = state.clients.filter((c) => c.assignedProgramId === program.id || c.queuedProgramId === program.id);
             const warning = backing.length
@@ -230,7 +230,7 @@ export default function ProgramDetail() {
             }
           }}
         >
-          <i className="ph ph-trash" style={{ fontSize: 15 }} />
+          <i className="ph ph-trash" style={{ fontSize: 14 }} />
           Delete this program
         </button>
 
@@ -241,7 +241,7 @@ export default function ProgramDetail() {
         </div>
 
         <button className="cell row" style={{ padding: "12px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setShowAiEdit(true)}>
-          <i className="ph ph-sparkle" style={{ fontSize: 18, color: "var(--color-accent-300)", marginRight: 4 }} />
+          <i className="ph ph-sparkle" style={{ fontSize: 16, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Edit with AI</div>
             <div className="mu" style={{ marginTop: 2 }}>Say what you want changed — "make every exercise one set" — and check it before it saves</div>
@@ -265,7 +265,7 @@ export default function ProgramDetail() {
 
         <div className="cell" style={{ padding: "10px 12px" }}>
           <div className="row">
-            <span style={{ flex: 1, fontSize: 13 }}>Days per week</span>
+            <span style={{ flex: 1, fontSize: 12.5 }}>Days per week</span>
             <div className="row" style={{ gap: 8 }}>
               <Stepper
                 value={program.daysPerWeek}
@@ -301,8 +301,7 @@ export default function ProgramDetail() {
                   border: `1px solid ${w === week ? "var(--color-accent)" : "var(--color-divider)"}`,
                   background: w === week ? "var(--color-accent-900)" : "transparent",
                   color: w === week ? "var(--color-accent-200)" : "var(--color-text)",
-                  fontFamily: "var(--font-heading)",
-                  fontSize: 13,
+                  fontSize: 12.5,
                   cursor: "pointer",
                 }}
               >
@@ -338,7 +337,7 @@ export default function ProgramDetail() {
                 <div key={m.muscle}>
                   <div className="row" style={{ marginBottom: 5, fontSize: 12.5 }}>
                     <span style={{ flex: 1 }}>{m.muscle}</span>
-                    <span style={{ color: atCap ? "var(--color-neutral-300)" : "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{m.sets} sets</span>
+                    <span className="num" style={{ fontWeight: 700, color: atCap ? "var(--color-neutral-300)" : "var(--color-accent-300)" }}>{m.sets} sets</span>
                   </div>
                   <div className="meter" style={{ position: "relative" }}>
                     <div className="meter-fill" style={{ width: `${pct}%`, background: atCap ? "var(--color-neutral-400)" : "var(--color-accent)" }} />
@@ -357,12 +356,12 @@ export default function ProgramDetail() {
           <div className="sheet" onClick={(e) => e.stopPropagation()}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Leave this program?</div>
             <div className="mu" style={{ lineHeight: 1.5 }}>It hasn't been assigned to anyone yet. Keep it to pick up later, or discard it.</div>
-            <button className="btn btn-solid btn-block" style={{ height: 46 }} onClick={() => nav(-1)}>
+            <button className="btn btn-solid btn-block" style={{ height: 48 }} onClick={() => nav(-1)}>
               Save as draft
             </button>
             <button
               className="btn btn-secondary btn-block"
-              style={{ height: 42, color: "var(--color-neutral-300)" }}
+              style={{ height: 44, color: "var(--color-neutral-300)" }}
               onClick={() => {
                 dispatch({ type: "REMOVE_PROGRAM", programId: program.id });
                 nav(-1);
@@ -505,7 +504,7 @@ function DayBuilderCard({ program, day, expanded, onToggle }: { program: CoachPr
   return (
     <div className="cell elev-sm" style={{ padding: "11px 12px 10px" }}>
       <div className="row" style={{ cursor: "pointer" }} onClick={onToggle}>
-        <i className={`ph ${expanded ? "ph-caret-down" : "ph-caret-right"}`} style={{ fontSize: 13, color: "var(--color-neutral-500)", marginRight: 8 }} />
+        <i className={`ph ${expanded ? "ph-caret-down" : "ph-caret-right"}`} style={{ fontSize: 12, color: "var(--color-neutral-500)", marginRight: 8 }} />
         <input
           value={day.name}
           onClick={(e) => e.stopPropagation()}
@@ -598,7 +597,7 @@ function BuilderExerciseCard({
     >
       {aiChanged && (
         <div className="scr" style={{ color: "var(--color-accent-300)", marginBottom: 5 }}>
-          <i className="ph ph-sparkle" style={{ fontSize: 11, marginRight: 4 }} />
+          <i className="ph ph-sparkle" style={{ fontSize: 12, marginRight: 4 }} />
           Changed by AI
         </div>
       )}
@@ -608,10 +607,10 @@ function BuilderExerciseCard({
           aria-label={`Drag to reorder ${ex.name}`}
           style={{ display: "flex", alignItems: "center", flex: "none", padding: "4px 6px 4px 0", marginLeft: -4, color: "var(--color-neutral-600)", cursor: "grab", touchAction: "none" }}
         >
-          <i className="ph ph-dots-six-vertical" style={{ fontSize: 18 }} />
+          <i className="ph ph-dots-six-vertical" style={{ fontSize: 16 }} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="trunc" style={{ fontSize: 13.5 }}>{ex.name}</div>
+          <div className="trunc" style={{ fontSize: 12.5 }}>{ex.name}</div>
           <div className="mu" style={{ marginTop: 1 }}>{ex.muscle}{ex.kind === "cardio" ? " · cardio" : ""}</div>
         </div>
         {ex.kind !== "cardio" && (
@@ -620,7 +619,7 @@ function BuilderExerciseCard({
             aria-label={`Override load type for ${ex.name}`}
             style={{ background: "none", border: "none", cursor: "pointer", color: ex.loadModeOverride ? "var(--color-accent)" : "var(--color-neutral-500)", display: "flex" }}
           >
-            <i className="ph ph-sliders-horizontal" style={{ fontSize: 15 }} />
+            <i className="ph ph-sliders-horizontal" style={{ fontSize: 14 }} />
           </button>
         )}
         <button
@@ -628,7 +627,7 @@ function BuilderExerciseCard({
           style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)", display: "flex" }}
           aria-label={`Remove ${ex.name}`}
         >
-          <i className="ph ph-trash" style={{ fontSize: 15 }} />
+          <i className="ph ph-trash" style={{ fontSize: 14 }} />
         </button>
       </div>
 
@@ -717,7 +716,7 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
               style={{ background: "none", border: "none", color: "var(--color-neutral-600)", cursor: "pointer", display: "flex", justifySelf: "center" }}
               aria-label={`Remove set ${label}`}
             >
-              <i className="ph ph-x" style={{ fontSize: 13 }} />
+              <i className="ph ph-x" style={{ fontSize: 12 }} />
             </button>
           </div>
         );
@@ -726,16 +725,16 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
       <div className="row" style={{ gap: 14, paddingTop: 8, marginTop: 2 }}>
         <button
           onClick={() => dispatch({ type: "ADD_PROGRAM_SET", programId, dayId, exerciseId: ex.id })}
-          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "var(--color-accent)", display: "flex", alignItems: "center", gap: 5, padding: 0 }}
+          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12.5, color: "var(--color-accent)", display: "flex", alignItems: "center", gap: 5, padding: 0 }}
         >
-          <i className="ph ph-plus-circle" style={{ fontSize: 13 }} />
+          <i className="ph ph-plus-circle" style={{ fontSize: 12 }} />
           Add set
         </button>
         <button
           onClick={() => dispatch({ type: "ADD_PROGRAM_SET", programId, dayId, exerciseId: ex.id, warmup: true })}
-          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "var(--color-neutral-400)", display: "flex", alignItems: "center", gap: 5, padding: 0 }}
+          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12.5, color: "var(--color-neutral-400)", display: "flex", alignItems: "center", gap: 5, padding: 0 }}
         >
-          <i className="ph ph-flame" style={{ fontSize: 13 }} />
+          <i className="ph ph-flame" style={{ fontSize: 12 }} />
           Add warm-up
         </button>
       </div>
@@ -749,7 +748,7 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
           >
             <i className="ph ph-minus" style={{ fontSize: 12 }} />
           </button>
-          <span style={{ fontSize: 13, fontFamily: "var(--font-heading)", minWidth: 40, textAlign: "center" }}>{formatDuration(restSec)}</span>
+          <span className="num" style={{ fontWeight: 700, fontSize: 12.5, minWidth: 40, textAlign: "center" }}>{formatDuration(restSec)}</span>
           <button
             onClick={() => dispatch({ type: "SET_EXERCISE_REST", programId, dayId, exerciseId: ex.id, restSec: restSec + REST_STEP })}
             style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}
@@ -793,7 +792,7 @@ function CardioSets({ programId, dayId, ex }: { programId: string; dayId: string
             <button onClick={() => editWork(s, -1)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}>
               <i className="ph ph-minus" style={{ fontSize: 12 }} />
             </button>
-            <span style={{ fontSize: 14, fontFamily: "var(--font-heading)" }}>{formatDuration(s.workSec ?? CARDIO_DEFAULT.workSec)}</span>
+            <span className="num" style={{ fontWeight: 700, fontSize: 14 }}>{formatDuration(s.workSec ?? CARDIO_DEFAULT.workSec)}</span>
             <button onClick={() => editWork(s, 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}>
               <i className="ph ph-plus" style={{ fontSize: 12 }} />
             </button>
@@ -802,7 +801,7 @@ function CardioSets({ programId, dayId, ex }: { programId: string; dayId: string
             <button onClick={() => editRest(s, -1)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}>
               <i className="ph ph-minus" style={{ fontSize: 12 }} />
             </button>
-            <span style={{ fontSize: 14, fontFamily: "var(--font-heading)" }}>{(s.restSec ?? CARDIO_DEFAULT.restSec) === 0 ? "—" : formatDuration(s.restSec ?? 0)}</span>
+            <span className="num" style={{ fontWeight: 700, fontSize: 14 }}>{(s.restSec ?? CARDIO_DEFAULT.restSec) === 0 ? "—" : formatDuration(s.restSec ?? 0)}</span>
             <button onClick={() => editRest(s, 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }}>
               <i className="ph ph-plus" style={{ fontSize: 12 }} />
             </button>
@@ -813,7 +812,7 @@ function CardioSets({ programId, dayId, ex }: { programId: string; dayId: string
               style={{ background: "none", border: "none", color: "var(--color-neutral-600)", cursor: "pointer", display: "flex", justifySelf: "center" }}
               aria-label={`Remove interval ${i + 1}`}
             >
-              <i className="ph ph-x" style={{ fontSize: 13 }} />
+              <i className="ph ph-x" style={{ fontSize: 12 }} />
             </button>
           )}
         </div>
@@ -826,9 +825,9 @@ function CardioSets({ programId, dayId, ex }: { programId: string; dayId: string
       <div className="row" style={{ gap: 14, paddingTop: 8, marginTop: 6 }}>
         <button
           onClick={() => dispatch({ type: "ADD_PROGRAM_SET", programId, dayId, exerciseId: ex.id })}
-          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, color: "var(--color-accent)", display: "flex", alignItems: "center", gap: 5, padding: 0 }}
+          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12.5, color: "var(--color-accent)", display: "flex", alignItems: "center", gap: 5, padding: 0 }}
         >
-          <i className="ph ph-plus-circle" style={{ fontSize: 13 }} />
+          <i className="ph ph-plus-circle" style={{ fontSize: 12 }} />
           Add interval
         </button>
       </div>

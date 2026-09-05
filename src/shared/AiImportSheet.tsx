@@ -45,7 +45,7 @@ export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProg
             disabled={busy}
             style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}
           >
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
 
@@ -75,7 +75,7 @@ export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProg
         <button className="link-row" style={{ padding: "12px 12px" }} disabled={busy} onClick={() => fileRef.current?.click()}>
           <i className="ph ph-image" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13 }}>{picked.length === 0 ? "Choose photos or a PDF" : `${picked.length} file${picked.length === 1 ? "" : "s"} selected`}</div>
+            <div style={{ fontSize: 12.5 }}>{picked.length === 0 ? "Choose photos or a PDF" : `${picked.length} file${picked.length === 1 ? "" : "s"} selected`}</div>
             <div className="mu trunc" style={{ marginTop: 1 }}>
               {picked.length === 0 ? "Camera roll, files, or take a photo" : picked.map((f) => f.name).join(", ")}
             </div>
@@ -84,11 +84,11 @@ export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProg
 
         <button
           className="btn btn-primary btn-block"
-          style={{ height: 46, opacity: picked.length && !busy ? 1 : 0.5 }}
+          style={{ height: 48, opacity: picked.length && !busy ? 1 : 0.5 }}
           disabled={picked.length === 0 || busy}
           onClick={run}
         >
-          <i className={busy ? "ph ph-circle-notch" : "ph ph-sparkle"} style={{ fontSize: 15 }} />
+          <i className={busy ? "ph ph-circle-notch" : "ph ph-sparkle"} style={{ fontSize: 14 }} />
           {busy ? "Reading it…" : "Build the program"}
         </button>
         {busy && <div className="mu" style={{ textAlign: "center", marginTop: 8 }}>This can take up to a minute for a multi-page PDF.</div>}

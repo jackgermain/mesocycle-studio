@@ -15,17 +15,17 @@ export default function ImportProgram() {
             Drop in a coach's PDF, a spreadsheet export or phone screenshots. We read it into the builder so it can be edited, tracked and monitored like anything else here.
           </p>
           <div style={{ border: "1px dashed var(--color-accent-700)", borderRadius: "var(--radius-md)", padding: "26px 16px", textAlign: "center", background: "var(--color-accent-900)" }}>
-            <i className="ph ph-file-arrow-up" style={{ fontSize: 26, color: "var(--color-accent)" }} />
+            <i className="ph ph-file-arrow-up" style={{ fontSize: 20, color: "var(--color-accent)" }} />
             <div style={{ fontSize: 14, marginTop: 9, color: "var(--color-accent-100)" }}>Choose files</div>
-            <div style={{ fontSize: 11.5, marginTop: 4, color: "var(--color-accent-300)" }}>PDF, PNG, JPG, CSV · up to 20 pages</div>
+            <div style={{ fontSize: 11, marginTop: 4, color: "var(--color-accent-300)" }}>PDF, PNG, JPG, CSV · up to 20 pages</div>
           </div>
           <div className="row" style={{ gap: 8 }}>
             <button className="btn btn-secondary" style={{ flex: 1, height: 44, fontSize: 12.5 }}>
-              <i className="ph ph-camera" style={{ fontSize: 15 }} />
+              <i className="ph ph-camera" style={{ fontSize: 14 }} />
               Scan pages
             </button>
             <button className="btn btn-secondary" style={{ flex: 1, height: 44, fontSize: 12.5 }}>
-              <i className="ph ph-images" style={{ fontSize: 15 }} />
+              <i className="ph ph-images" style={{ fontSize: 14 }} />
               Photo library
             </button>
           </div>
@@ -72,7 +72,7 @@ export default function ImportProgram() {
             <div className="cell elev-sm">
               <div className="row">
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="trunc" style={{ fontSize: 13.5 }}>&ldquo;DB incl press (30&deg;)&rdquo;</div>
+                  <div className="trunc" style={{ fontSize: 12.5 }}>&ldquo;DB incl press (30&deg;)&rdquo;</div>
                   <div className="mu" style={{ marginTop: 2 }}>p.3 · row 4</div>
                 </div>
                 <span className="tag tag-outline">Match</span>
@@ -85,20 +85,20 @@ export default function ImportProgram() {
             </div>
             <div className="cell row" style={{ padding: "10px 11px" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="trunc" style={{ fontSize: 13.5 }}>&ldquo;Face pulls 100 reps&rdquo;</div>
+                <div className="trunc" style={{ fontSize: 12.5 }}>&ldquo;Face pulls 100 reps&rdquo;</div>
                 <div className="mu" style={{ marginTop: 2 }}>p.6 · no sets given</div>
               </div>
-              <span style={{ fontSize: 12, color: "var(--color-accent)" }}>Fix</span>
+              <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>Fix</span>
             </div>
           </div>
         </div>
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
           <div className="row" style={{ gap: 8 }}>
-            <button className="btn btn-secondary" style={{ flex: "none", height: 46 }} onClick={() => nav("/coach/programs")}>
+            <button className="btn btn-secondary" style={{ flex: "none", height: 44 }} onClick={() => nav("/coach/programs")}>
               Save draft
             </button>
-            <button className="btn btn-primary" style={{ flex: 1, height: 46 }} onClick={() => nav("/coach/programs")}>
+            <button className="btn btn-primary" style={{ flex: 1, height: 44 }} onClick={() => nav("/coach/programs")}>
               Open in builder
             </button>
           </div>
@@ -112,7 +112,7 @@ function StatCell({ label, value, valueColor }: { label: string; value: React.Re
   return (
     <div style={{ flex: 1 }}>
       <div className="scr">{label}</div>
-      <div style={{ fontFamily: "var(--font-heading)", fontSize: 16, marginTop: 2, color: valueColor }}>{value}</div>
+      <div className="num" style={{ fontWeight: 700, fontSize: 16, marginTop: 2, color: valueColor }}>{value}</div>
     </div>
   );
 }
@@ -121,16 +121,16 @@ function FileRow({ icon, name, note, ok }: { icon: string; name: string; note: s
   return (
     <div className="cell row" style={{ padding: "10px 11px" }}>
       <div style={{ width: 34, height: 42, flex: "none", borderRadius: 4, background: "var(--color-neutral-900)", border: "1px solid var(--color-neutral-800)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-neutral-500)" }}>
-        <i className={`ph ${icon}`} style={{ fontSize: 15 }} />
+        <i className={`ph ${icon}`} style={{ fontSize: 14 }} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div className="trunc" style={{ fontSize: 13.5 }}>{name}</div>
+        <div className="trunc" style={{ fontSize: 12.5 }}>{name}</div>
         <div className="mu" style={{ marginTop: 2 }}>{note}</div>
       </div>
       {ok ? (
-        <i className="ph-fill ph-check-circle" style={{ fontSize: 17, color: "var(--color-accent)" }} />
+        <i className="ph-fill ph-check-circle" style={{ fontSize: 16, color: "var(--color-accent)" }} />
       ) : (
-        <i className="ph ph-warning-circle" style={{ fontSize: 17, color: "var(--color-neutral-400)" }} />
+        <i className="ph ph-warning-circle" style={{ fontSize: 16, color: "var(--color-neutral-400)" }} />
       )}
     </div>
   );

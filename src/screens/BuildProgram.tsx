@@ -83,7 +83,7 @@ export default function BuildProgram() {
                   aria-label="Rename program"
                   style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)", display: "flex", padding: 4, flex: "none" }}
                 >
-                  <i className="ph ph-pencil-simple" style={{ fontSize: 15 }} />
+                  <i className="ph ph-pencil-simple" style={{ fontSize: 14 }} />
                 </button>
                 <button onClick={() => nav("/block")} aria-label="Open current program" style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flex: "none", padding: 0 }}>
                   <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
@@ -132,7 +132,7 @@ export default function BuildProgram() {
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Rename</div>
               </div>
               <button onClick={() => setRenaming(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                <i className="ph ph-x" style={{ fontSize: 18 }} />
+                <i className="ph ph-x" style={{ fontSize: 16 }} />
               </button>
             </div>
             <div className="field">
@@ -152,7 +152,7 @@ export default function BuildProgram() {
             </div>
             <button
               className="btn btn-primary btn-block"
-              style={{ height: 46, opacity: renameText.trim() ? 1 : 0.5 }}
+              style={{ height: 48, opacity: renameText.trim() ? 1 : 0.5 }}
               disabled={!renameText.trim()}
               onClick={() => {
                 dispatch({ type: "RENAME_PROGRAM", name: renameText.trim() });
@@ -237,7 +237,7 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
           <div key={t.id} className="cell" style={{ padding: 12 }}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{t.name}</div>
             <div className="mu" style={{ marginTop: 2 }}>{t.weeks} weeks · {t.daysPerWeek} days/week</div>
-            <button className="btn btn-primary btn-block" style={{ height: 38, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(expandCoachProgramToProgram(t, coachName))}>
+            <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(expandCoachProgramToProgram(t, coachName))}>
               Use this template
             </button>
           </div>
@@ -322,11 +322,11 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
               <div className="scr">Weeks</div>
               <div className="row" style={{ marginTop: 3, gap: 4 }}>
                 <button onClick={() => setWeeksCount((v) => Math.max(1, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
-                  <i className="ph ph-minus" style={{ fontSize: 11 }} />
+                  <i className="ph ph-minus" style={{ fontSize: 12 }} />
                 </button>
-                <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, flex: 1, textAlign: "center" }}>{weeksCount}</span>
+                <span className="num" style={{ fontWeight: 700, fontSize: 14, flex: 1, textAlign: "center" }}>{weeksCount}</span>
                 <button onClick={() => setWeeksCount((v) => Math.min(16, v + 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
-                  <i className="ph ph-plus" style={{ fontSize: 11 }} />
+                  <i className="ph ph-plus" style={{ fontSize: 12 }} />
                 </button>
               </div>
             </div>
@@ -334,11 +334,11 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
               <div className="scr">Days / week</div>
               <div className="row" style={{ marginTop: 3, gap: 4 }}>
                 <button onClick={() => setDaysCount(days.length - 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
-                  <i className="ph ph-minus" style={{ fontSize: 11 }} />
+                  <i className="ph ph-minus" style={{ fontSize: 12 }} />
                 </button>
-                <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, flex: 1, textAlign: "center" }}>{days.length}</span>
+                <span className="num" style={{ fontWeight: 700, fontSize: 14, flex: 1, textAlign: "center" }}>{days.length}</span>
                 <button onClick={() => setDaysCount(days.length + 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
-                  <i className="ph ph-plus" style={{ fontSize: 11 }} />
+                  <i className="ph ph-plus" style={{ fontSize: 12 }} />
                 </button>
               </div>
             </div>
@@ -354,13 +354,13 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
 
         {days.map((d, i) => (
           <div key={i} className="cell" style={{ padding: 11 }}>
-            <input className="input" style={{ height: 34, fontSize: 13 }} value={d.name} onChange={(e) => renameDay(i, e.target.value)} />
+            <input className="input" style={{ height: 34, fontSize: 12.5 }} value={d.name} onChange={(e) => renameDay(i, e.target.value)} />
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
               {d.exercises.map((ex, ei) => (
                 <DraftExerciseCard key={ei} ex={ex} onChange={(patch) => updateExercise(i, ei, patch)} onRemove={() => removeExercise(i, ei)} />
               ))}
             </div>
-            <button className="btn btn-secondary btn-block" style={{ height: 34, marginTop: 8, fontSize: 12 }} onClick={() => setPickerDay(i)}>
+            <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 8, fontSize: 12.5 }} onClick={() => setPickerDay(i)}>
               <i className="ph ph-plus" style={{ fontSize: 12 }} />
               Add exercise
             </button>
@@ -370,7 +370,7 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
           <button
             className="btn btn-primary btn-block"
-            style={{ height: 46, opacity: totalExercises > 0 ? 1 : 0.5 }}
+            style={{ height: 48, opacity: totalExercises > 0 ? 1 : 0.5 }}
             disabled={totalExercises === 0}
             onClick={() => onCreate(name || "My Program", days, weeksCount, dows)}
           >
@@ -379,7 +379,7 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
           {!editMode && account?.role === "coach" && (
             <button
               className="btn btn-secondary btn-block"
-              style={{ height: 40, marginTop: 8, fontSize: 12.5, opacity: totalExercises > 0 && !savingTemplate ? 1 : 0.5 }}
+              style={{ height: 44, marginTop: 8, fontSize: 12.5, opacity: totalExercises > 0 && !savingTemplate ? 1 : 0.5 }}
               disabled={totalExercises === 0 || savingTemplate}
               onClick={saveAsTemplate}
             >
@@ -561,11 +561,11 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
               <div className="scr">Weeks (repeats this template)</div>
               <div className="row" style={{ marginTop: 3, gap: 8, justifyContent: "center" }}>
                 <button onClick={() => setWeeksCount((v) => Math.max(1, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                  <i className="ph ph-minus" style={{ fontSize: 13 }} />
+                  <i className="ph ph-minus" style={{ fontSize: 12 }} />
                 </button>
-                <span style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{weeksCount}</span>
+                <span className="num" style={{ fontWeight: 700, fontSize: 16 }}>{weeksCount}</span>
                 <button onClick={() => setWeeksCount((v) => Math.min(16, v + 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
-                  <i className="ph ph-plus" style={{ fontSize: 13 }} />
+                  <i className="ph ph-plus" style={{ fontSize: 12 }} />
                 </button>
               </div>
             </div>
@@ -575,7 +575,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {parsed.days.map((d, i) => (
                   <div key={i} className="cell" style={{ padding: 11 }}>
-                    <div style={{ fontFamily: "var(--font-heading)", fontSize: 13.5 }}>{d.name}</div>
+                    <div style={{ fontFamily: "var(--font-heading)", fontSize: 12.5 }}>{d.name}</div>
                     <div className="mu" style={{ marginTop: 4, lineHeight: 1.6 }}>
                       {d.exercises.map((e) => `${e.name}${e.sets ? ` (${e.sets}×${e.reps ?? 10})` : ""}`).join(" · ")}
                     </div>
@@ -589,7 +589,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
           <button
             className="btn btn-primary btn-block"
-            style={{ height: 46, opacity: totalExercises > 0 ? 1 : 0.5 }}
+            style={{ height: 48, opacity: totalExercises > 0 ? 1 : 0.5 }}
             disabled={totalExercises === 0}
             onClick={() => parsed && onReview({ name: name || "My Program", days: parsed.days, weeks: weeksCount })}
           >
@@ -619,7 +619,7 @@ function MiniStepper({ value, onChange, step, min, max }: { value: number; onCha
   return (
     <div className="row" style={{ justifyContent: "center", gap: 4, flex: 1, minWidth: 0, border: "1px solid var(--color-divider)", borderRadius: 7, padding: "5px 2px" }}>
       <button onClick={() => onChange(clamp(+(value - step).toFixed(2)))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
-        <i className="ph ph-minus" style={{ fontSize: 11 }} />
+        <i className="ph ph-minus" style={{ fontSize: 12 }} />
       </button>
       <input
         type="number"
@@ -634,10 +634,10 @@ function MiniStepper({ value, onChange, step, min, max }: { value: number; onCha
             e.currentTarget.blur();
           }
         }}
-        style={{ width: 30, minWidth: 0, textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 13, color: "inherit", padding: 0 }}
+        style={{ width: 30, minWidth: 0, textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 12.5, color: "inherit", padding: 0 }}
       />
       <button onClick={() => onChange(clamp(+(value + step).toFixed(2)))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
-        <i className="ph ph-plus" style={{ fontSize: 11 }} />
+        <i className="ph ph-plus" style={{ fontSize: 12 }} />
       </button>
     </div>
   );
@@ -658,11 +658,11 @@ function DraftExerciseCard({ ex, onChange, onRemove }: { ex: DraftExercise; onCh
     <div className="cell" style={{ padding: "10px 11px", background: "var(--color-neutral-900)" }}>
       <div className="row" style={{ marginBottom: 8 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="trunc" style={{ fontSize: 13.5 }}>{ex.name}</div>
+          <div className="trunc" style={{ fontSize: 12.5 }}>{ex.name}</div>
           <div className="mu" style={{ marginTop: 1 }}>{ex.muscle}</div>
         </div>
         <button onClick={onRemove} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }} aria-label={`Remove ${ex.name}`}>
-          <i className="ph ph-trash" style={{ fontSize: 15 }} />
+          <i className="ph ph-trash" style={{ fontSize: 14 }} />
         </button>
       </div>
 

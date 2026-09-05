@@ -113,7 +113,7 @@ export default function ClientDetail() {
           <button className="back" onClick={() => nav(-1)} aria-label="Back">
             <i className="ph ph-caret-left" />
           </button>
-          <div className="avatar" style={{ width: 44, height: 44, fontSize: 15, boxShadow: "0 0 0 1px var(--color-accent-700)" }}>{client.initials}</div>
+          <div className="avatar" style={{ width: 44, height: 44, fontSize: 14, boxShadow: "0 0 0 1px var(--color-accent-700)" }}>{client.initials}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="k">{accepted ? `${client.programName} · week ${client.week} of ${client.totalWeeks}` : "Not accepted yet"}</div>
             <div style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 21, lineHeight: 1.15 }} className="trunc">{client.name}</div>
@@ -123,15 +123,15 @@ export default function ClientDetail() {
           <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
             <div style={{ flex: 1, paddingRight: 12, borderRight: "1px solid var(--color-neutral-800)" }}>
               <div className="scr">Adherence</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3, color: "var(--color-accent-300)" }}>{client.adherencePct}%</div>
+              <div className="num" style={{ fontWeight: 700, fontSize: 21, marginTop: 3, color: "var(--color-accent-300)" }}>{client.adherencePct}%</div>
             </div>
             <div style={{ flex: 1, padding: "0 12px", borderRight: "1px solid var(--color-neutral-800)" }}>
               <div className="scr">Week</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3 }}>{client.week} / {client.totalWeeks}</div>
+              <div className="num" style={{ fontWeight: 700, fontSize: 21, marginTop: 3 }}>{client.week} / {client.totalWeeks}</div>
             </div>
             <div style={{ flex: 1, paddingLeft: 12 }}>
               <div className="scr">Flags</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, marginTop: 3, color: client.flags.length ? "var(--color-neutral-200)" : undefined }}>{client.flags.length}</div>
+              <div className="num" style={{ fontWeight: 700, fontSize: 21, marginTop: 3, color: client.flags.length ? "var(--color-neutral-200)" : undefined }}>{client.flags.length}</div>
             </div>
           </div>
         )}
@@ -146,8 +146,8 @@ export default function ClientDetail() {
             </InfoBanner>
 
             {!client.inviteCode && (
-              <button className="btn btn-primary btn-block" style={{ height: 46, opacity: sending ? 0.6 : 1 }} disabled={sending} onClick={sendInvite}>
-                <i className="ph ph-paper-plane-tilt" style={{ fontSize: 15 }} />
+              <button className="btn btn-primary btn-block" style={{ height: 48, opacity: sending ? 0.6 : 1 }} disabled={sending} onClick={sendInvite}>
+                <i className="ph ph-paper-plane-tilt" style={{ fontSize: 14 }} />
                 {sending ? "Sending…" : `Invite ${client.name.split(" ")[0]} to the app`}
               </button>
             )}
@@ -155,13 +155,13 @@ export default function ClientDetail() {
             {client.inviteCode && (
               <div className="cell" style={{ padding: 12 }}>
                 <div className="row" style={{ marginBottom: 8 }}>
-                  <span style={{ flex: 1, fontSize: 13, fontFamily: "var(--font-heading)" }}>Invite link</span>
+                  <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Invite link</span>
                   <span className="tag tag-neutral">Pending</span>
                 </div>
                 <div className="mu trunc" style={{ padding: "8px 10px", background: "var(--color-neutral-900)", borderRadius: 7, fontFamily: "monospace" }}>
                   {shareBaseUrl()}#/invite/{client.inviteCode}
                 </div>
-                <button className="btn btn-secondary btn-block" style={{ height: 40, marginTop: 8, fontSize: 12.5 }} onClick={copyLink}>
+                <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 8, fontSize: 12.5 }} onClick={copyLink}>
                   {copied ? "Copied" : "Copy link to send yourself"}
                 </button>
                 <div className="mu" style={{ marginTop: 8, lineHeight: 1.6 }}>
@@ -199,9 +199,9 @@ export default function ClientDetail() {
                         <span className={`tag ${f.type === "volume-proposal" ? "tag-accent" : "tag-neutral"}`}>{f.type.replace("-", " ")}</span>
                         {f.tagLabel && <span className="tag tag-outline" style={{ marginLeft: 6 }}>{f.tagLabel}</span>}
                       </div>
-                      <div style={{ fontSize: 13, lineHeight: 1.5, marginTop: 8 }}>{f.note}</div>
+                      <div style={{ fontSize: 12.5, lineHeight: 1.5, marginTop: 8 }}>{f.note}</div>
                       {f.evidence && (
-                        <div style={{ marginTop: 8, padding: "9px 10px", borderRadius: 8, background: "var(--color-accent-900)", color: "var(--color-accent-200)", fontSize: 12, lineHeight: 1.5 }}>
+                        <div style={{ marginTop: 8, padding: "9px 10px", borderRadius: 8, background: "var(--color-accent-900)", color: "var(--color-accent-200)", fontSize: 12.5, lineHeight: 1.5 }}>
                           {f.evidence}
                         </div>
                       )}
@@ -221,7 +221,7 @@ export default function ClientDetail() {
 
             <div className="cell elev-sm">
               <div className="row" style={{ marginBottom: 9 }}>
-                <div style={{ flex: 1, fontSize: 13, fontFamily: "var(--font-heading)" }}>Load progression</div>
+                <div style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Load progression</div>
                 <span className="mu">7 weeks</span>
               </div>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 5, height: 60 }}>
@@ -239,7 +239,7 @@ export default function ClientDetail() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                   {client.recentSessions.map((s, i) => (
                     <div key={i} className="cell row" style={{ padding: "10px 12px" }}>
-                      <span style={{ flex: 1, fontSize: 13 }}>{s.label}</span>
+                      <span style={{ flex: 1, fontSize: 12.5 }}>{s.label}</span>
                       <span className={`tag ${s.status === "Complete" ? "tag-accent" : "tag-neutral"}`}>{s.status}</span>
                     </div>
                   ))}
@@ -315,12 +315,12 @@ function LiveWeightTrend() {
       <div className="row" style={{ alignItems: "baseline" }}>
         <div style={{ flex: 1 }}>
           <div className="scr">Trend weight</div>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: 20, lineHeight: 1.1, marginTop: 3 }}>
-            {latest.toFixed(1)} <span style={{ fontSize: 12, color: "var(--color-neutral-500)" }}>{p.units}</span>
+          <div className="num" style={{ fontWeight: 700, fontSize: 21, lineHeight: 1.1, marginTop: 3 }}>
+            {latest.toFixed(1)} <span style={{ fontSize: 12.5, color: "var(--color-neutral-500)" }}>{p.units}</span>
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 13, color: ratePerWeek <= 0 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>
+          <div style={{ fontSize: 12.5, color: ratePerWeek <= 0 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>
             {ratePerWeek > 0 ? "+" : ""}
             {ratePerWeek} {p.units}/wk
           </div>
@@ -362,7 +362,7 @@ function NotLoggedList({ items, clientName }: { items: NotLoggedItem[]; clientNa
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
         {items.map((it) => (
           <div key={it.exercise} className="cell row" style={{ padding: "10px 12px" }}>
-            <span style={{ flex: 1, fontSize: 13 }}>{it.exercise}</span>
+            <span style={{ flex: 1, fontSize: 12.5 }}>{it.exercise}</span>
             <span className="tag tag-neutral">
               {it.logged}/{it.total} sets
             </span>

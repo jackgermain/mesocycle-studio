@@ -172,7 +172,7 @@ export function CoachAiFab() {
                 </div>
               </div>
               <button onClick={reset} disabled={loading} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                <i className="ph ph-x" style={{ fontSize: 18 }} />
+                <i className="ph ph-x" style={{ fontSize: 16 }} />
               </button>
             </div>
 
@@ -188,13 +188,13 @@ export function CoachAiFab() {
                     <button key={`${t.kind}-${t.id}`} className="link-row" style={{ padding: "11px 12px" }} disabled={loading} onClick={() => go(t, instruction.trim())}>
                       <i className={t.kind === "client" ? "ph ph-user" : "ph ph-stack"} style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div className="trunc" style={{ fontSize: 13 }}>{t.name}</div>
+                        <div className="trunc" style={{ fontSize: 12.5 }}>{t.name}</div>
                         <div className="mu trunc" style={{ marginTop: 1 }}>{t.detail}</div>
                       </div>
                     </button>
                   ))}
                 </div>
-                <button className="btn btn-secondary btn-block" style={{ height: 42 }} disabled={loading} onClick={() => setChoices(null)}>
+                <button className="btn btn-secondary btn-block" style={{ height: 44 }} disabled={loading} onClick={() => setChoices(null)}>
                   Back
                 </button>
               </>
@@ -213,10 +213,10 @@ export function CoachAiFab() {
                   {dictation.supported && (
                     <button
                       className={`btn ${dictation.listening ? "btn-solid" : "btn-secondary"}`}
-                      style={{ height: 38, marginTop: 8, width: "100%" }}
+                      style={{ height: 36, marginTop: 8, width: "100%" }}
                       onClick={dictation.toggle}
                     >
-                      <i className={dictation.listening ? "ph-fill ph-microphone" : "ph ph-microphone"} style={{ fontSize: 15 }} />
+                      <i className={dictation.listening ? "ph-fill ph-microphone" : "ph ph-microphone"} style={{ fontSize: 14 }} />
                       {dictation.listening ? "Listening — tap when you're done" : "Say it instead"}
                     </button>
                   )}
@@ -225,11 +225,11 @@ export function CoachAiFab() {
 
                 <button
                   className="btn btn-primary btn-block"
-                  style={{ height: 46, opacity: instruction.trim() && !loading ? 1 : 0.5 }}
+                  style={{ height: 48, opacity: instruction.trim() && !loading ? 1 : 0.5 }}
                   disabled={!instruction.trim() || loading}
                   onClick={submit}
                 >
-                  <i className={loading ? "ph ph-circle-notch" : "ph ph-sparkle"} style={{ fontSize: 15 }} />
+                  <i className={loading ? "ph ph-circle-notch" : "ph ph-sparkle"} style={{ fontSize: 14 }} />
                   {loading ? "Opening…" : "Show me the change"}
                 </button>
                 <div className="mu" style={{ textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>

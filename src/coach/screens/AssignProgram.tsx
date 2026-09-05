@@ -133,7 +133,7 @@ export default function AssignProgram() {
             {visiblePrograms.map((p) => (
               <button key={p.id} className="link-row" style={{ padding: "11px 12px" }} onClick={() => createAndEdit(duplicateProgram(p, `${p.name} — ${client.name.split(" ")[0]}`))}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="trunc" style={{ fontSize: 13.5, fontFamily: "var(--font-heading)" }}>{p.name}</div>
+                  <div className="trunc" style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>{p.name}</div>
                   <div className="mu" style={{ marginTop: 2 }}>{p.weeks} weeks · {p.daysPerWeek} days/week{p.isTemplate ? " · template" : ""}</div>
                 </div>
                 <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
@@ -432,7 +432,7 @@ function CsvStep({
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {parsed.days.map((d, i) => (
                   <div key={i} className="cell" style={{ padding: 11 }}>
-                    <div style={{ fontFamily: "var(--font-heading)", fontSize: 13.5 }}>{d.name}</div>
+                    <div style={{ fontFamily: "var(--font-heading)", fontSize: 12.5 }}>{d.name}</div>
                     <div className="mu" style={{ marginTop: 4, lineHeight: 1.6 }}>
                       {d.exercises.map((e) => `${e.name}${e.sets ? ` (${e.sets}×${e.reps ?? 10})` : ""}`).join(" · ")}
                     </div>

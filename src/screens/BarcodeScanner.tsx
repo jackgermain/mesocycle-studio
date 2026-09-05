@@ -94,9 +94,9 @@ export default function BarcodeScanner({ onFound, onNotFound, onClose }: { onFou
     <div className="sheet-backdrop" onClick={onClose}>
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
         <div className="row">
-          <div style={{ flex: 1, fontSize: 15, fontFamily: "var(--font-heading)" }}>Scan a barcode</div>
+          <div style={{ flex: 1, fontSize: 14, fontFamily: "var(--font-heading)" }}>Scan a barcode</div>
           <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", display: "flex" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
 
@@ -126,7 +126,7 @@ export default function BarcodeScanner({ onFound, onNotFound, onClose }: { onFou
         {state === "not-found" && (
           <>
             <InfoBanner icon="ph-warning">No product found for barcode {lastCode}.</InfoBanner>
-            <button className="btn btn-primary btn-block" style={{ height: 46 }} onClick={() => onNotFound(lastCode ?? "")}>
+            <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={() => onNotFound(lastCode ?? "")}>
               Enter it manually
             </button>
           </>

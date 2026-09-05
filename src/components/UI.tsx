@@ -24,7 +24,7 @@ export function CloseHeader({ kicker, title, right, onClose }: { kicker: string;
   return (
     <div className="hdr">
       <button className="back" style={{ color: "var(--color-neutral-400)" }} onClick={() => (onClose ? onClose() : nav(-1))} aria-label="Close">
-        <i className="ph ph-x" style={{ fontSize: 19 }} />
+        <i className="ph ph-x" style={{ fontSize: 16 }} />
       </button>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="k">{kicker}</div>
@@ -130,7 +130,7 @@ export function Stepper({
           padding: 0,
         }}
       />
-      {unitLabel ? <span style={{ fontSize: 10, color: "var(--color-neutral-500)", marginLeft: -2 }}>{unitLabel}</span> : null}
+      {unitLabel ? <span style={{ fontSize: 11, color: "var(--color-neutral-500)", marginLeft: -2 }}>{unitLabel}</span> : null}
       <button
         onClick={() => onChange(+clamp(value + step).toFixed(2))}
         aria-label="increase"
@@ -159,8 +159,8 @@ export function InfoBanner({ icon, tone = "neutral", children }: { icon: string;
   const iconColor = tone === "accent" ? "var(--color-accent)" : "var(--color-neutral-400)";
   return (
     <div className="row" style={{ gap: 8, padding: "10px 11px", borderRadius: 8, background: bg, alignItems: "flex-start" }}>
-      <i className={`ph ${icon}`} style={{ fontSize: 15, color: iconColor, flex: "none", marginTop: 1 }} />
-      <div style={{ fontSize: 12, lineHeight: 1.5, color }}>{children}</div>
+      <i className={`ph ${icon}`} style={{ fontSize: 14, color: iconColor, flex: "none", marginTop: 1 }} />
+      <div style={{ fontSize: 12.5, lineHeight: 1.5, color }}>{children}</div>
     </div>
   );
 }
@@ -196,8 +196,8 @@ export function AuthHero({ children }: { children: React.ReactNode }) {
       <div className="screen-scroll" style={{ gap: 0, padding: "24px 24px calc(24px + env(safe-area-inset-bottom))" }}>
         <div style={{ margin: "auto 0", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Logomark size={120} />
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: 42, fontWeight: 800, letterSpacing: "0.01em", lineHeight: 1, marginTop: 20, textTransform: "uppercase" }}>Jacked</div>
-          <div className="mu" style={{ marginTop: 14, fontSize: 13 }}>Coach-programmed training, in your pocket.</div>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: 32, fontWeight: 800, letterSpacing: "0.01em", lineHeight: 1, marginTop: 20, textTransform: "uppercase" }}>Jacked</div>
+          <div className="mu" style={{ marginTop: 14, fontSize: 12.5 }}>Coach-programmed training, in your pocket.</div>
 
           <div style={{ width: "100%", marginTop: 40, display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
         </div>
@@ -230,7 +230,7 @@ export function SetPasswordCard() {
   return (
     <div className="cell" style={{ padding: 12 }}>
       <div className="row" style={{ marginBottom: 8 }}>
-        <i className="ph ph-lock-key" style={{ fontSize: 15, color: "var(--color-accent-300)", marginRight: 6 }} />
+        <i className="ph ph-lock-key" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
         <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Set a password</span>
       </div>
       <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
@@ -240,9 +240,9 @@ export function SetPasswordCard() {
         <InfoBanner icon="ph-check-circle" tone="accent">Password set — use it to sign in next time.</InfoBanner>
       ) : (
         <>
-          <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" style={{ height: 40, fontSize: 13 }} />
+          <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" style={{ height: 40, fontSize: 12.5 }} />
           {error && <div className="mu" style={{ marginTop: 6 }}>{error}</div>}
-          <button className="btn btn-solid btn-block" style={{ height: 38, marginTop: 8, fontSize: 12.5, opacity: password.length >= 6 && !busy ? 1 : 0.5 }} disabled={password.length < 6 || busy} onClick={save}>
+          <button className="btn btn-solid btn-block" style={{ height: 48, marginTop: 8, fontSize: 12.5, opacity: password.length >= 6 && !busy ? 1 : 0.5 }} disabled={password.length < 6 || busy} onClick={save}>
             {busy ? "Saving…" : "Save password"}
           </button>
         </>
@@ -260,7 +260,7 @@ export function SignOutButton() {
   }
   return (
     <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 4 }} onClick={handle}>
-      <i className="ph ph-sign-out" style={{ fontSize: 15 }} />
+      <i className="ph ph-sign-out" style={{ fontSize: 14 }} />
       Sign out
     </button>
   );
@@ -295,7 +295,7 @@ export function ActionRow({
         <i className={`ph-fill ${icon}`} style={{ fontSize: 16, color: iconColor }} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div className="trunc" style={{ fontSize: 13.5, fontFamily: "var(--font-heading)", fontWeight: 500, color: labelColor }}>{label}</div>
+        <div className="trunc" style={{ fontSize: 12.5, fontFamily: "var(--font-heading)", fontWeight: 500, color: labelColor }}>{label}</div>
         {subtitle && <div className="mu trunc" style={{ marginTop: 1 }}>{subtitle}</div>}
       </div>
       <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)", flex: "none" }} />
@@ -315,7 +315,7 @@ export function HeroHeader({ kicker, title, right, children }: { kicker?: string
       <div className="row" style={{ width: "100%", marginBottom: children ? 14 : 0 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           {kicker && <div className="k">{kicker}</div>}
-          <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 26, lineHeight: 1.1, marginTop: kicker ? 3 : 0, letterSpacing: "-0.01em" }}>
+          <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 21, lineHeight: 1.1, marginTop: kicker ? 3 : 0, letterSpacing: "-0.01em" }}>
             {title}
           </div>
         </div>
@@ -334,7 +334,7 @@ export function HeroStat({ value, label, valueColor = "var(--color-accent)", chi
     <div className="hero-box">
       <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
         <div style={{ flex: children ? "none" : 1, paddingRight: children ? 14 : 0, borderRight: children ? "1px solid var(--color-neutral-800)" : undefined }}>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: 34, lineHeight: 1, color: valueColor }}>{value}</div>
+          <div className="num" style={{ fontSize: 32, lineHeight: 1, color: valueColor }}>{value}</div>
           <div className="scr" style={{ marginTop: 5, lineHeight: 1.3 }}>{label}</div>
         </div>
         {children && <div style={{ flex: 1, paddingLeft: 14, display: "flex", flexDirection: "column", justifyContent: "center", gap: 7, minWidth: 0 }}>{children}</div>}
@@ -347,7 +347,7 @@ export function StatCell({ label, value, valueColor }: { label: string; value: R
   return (
     <div style={{ flex: 1 }}>
       <div className="scr">{label}</div>
-      <div style={{ fontFamily: "var(--font-heading)", fontSize: 16, marginTop: 2, color: valueColor }}>{value}</div>
+      <div className="num" style={{ fontWeight: 700, fontSize: 16, marginTop: 2, color: valueColor }}>{value}</div>
     </div>
   );
 }

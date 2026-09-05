@@ -56,18 +56,18 @@ export function SignalActionSheet({
             </div>
           </div>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
 
         <div className="cell" style={{ padding: 11, display: "flex", flexDirection: "column", gap: 5 }}>
           {exercise && (
-            <div style={{ fontSize: 13 }}>
+            <div style={{ fontSize: 12.5 }}>
               <span className="mu">On </span>
               {exercise}
             </div>
           )}
-          {signal.detail && <div style={{ fontSize: 13, lineHeight: 1.5 }}>{signal.detail}</div>}
+          {signal.detail && <div style={{ fontSize: 12.5, lineHeight: 1.5 }}>{signal.detail}</div>}
           <div className="mu">
             {signal.day_label ?? "Session"} · reported {new Date(signal.created_at).toLocaleDateString()}
           </div>
@@ -78,7 +78,7 @@ export function SignalActionSheet({
         <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={onOpenSession}>
           <i className="ph ph-arrow-square-out" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13 }}>Open their session</div>
+            <div style={{ fontSize: 12.5 }}>Open their session</div>
             <div className="mu" style={{ marginTop: 1 }}>
               {exercise
                 ? `Goes straight to ${exercise} on the day it happened, where you can swap or drop it.`
@@ -91,7 +91,7 @@ export function SignalActionSheet({
           <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={addWarmup}>
             <i className="ph ph-thermometer-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 13 }}>{busy === "warmup" ? "Adding…" : "Add a warm-up set"}</div>
+              <div style={{ fontSize: 12.5 }}>{busy === "warmup" ? "Adding…" : "Add a warm-up set"}</div>
               <div className="mu" style={{ marginTop: 1 }}>One more warm-up on {exercise}, every session that's left. Keeps the working volume.</div>
             </div>
           </button>

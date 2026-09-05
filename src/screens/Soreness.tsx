@@ -54,12 +54,12 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
         <InfoBanner icon="ph-lock-simple" tone="accent">
           Required before the first set. Answers set today's volume, so be honest rather than tough.
         </InfoBanner>
-        <p className="mu" style={{ fontSize: 13, lineHeight: 1.6 }}>Are these healed since you last trained them?</p>
+        <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6 }}>Are these healed since you last trained them?</p>
 
         {due.map((m) => (
           <div key={m.muscle} className="cell elev-sm">
             <div className="row" style={{ alignItems: "baseline", marginBottom: 9 }}>
-              <div style={{ flex: 1, fontSize: 14.5, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{m.muscle}</div>
+              <div style={{ flex: 1, fontSize: 14, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{m.muscle}</div>
               <span className="mu">last trained {m.lastTrainedDaysAgo} days ago</span>
             </div>
             <div style={{ display: "flex", gap: 5 }}>
@@ -85,8 +85,8 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
                       color: "inherit",
                     }}
                   >
-                    <span style={{ fontSize: 14.5, fontFamily: "var(--font-heading)", color: on ? "var(--color-accent-100)" : "var(--color-neutral-400)" }}>{v}</span>
-                    <span style={{ fontSize: 8, color: on ? "var(--color-accent-300)" : "var(--color-neutral-600)", textAlign: "center", lineHeight: 1.2 }}>{label}</span>
+                    <span className="num" style={{ fontWeight: 700, fontSize: 14, color: on ? "var(--color-accent-100)" : "var(--color-neutral-400)" }}>{v}</span>
+                    <span style={{ fontSize: 11, color: on ? "var(--color-accent-300)" : "var(--color-neutral-600)", textAlign: "center", lineHeight: 1.2 }}>{label}</span>
                   </button>
                 );
               })}

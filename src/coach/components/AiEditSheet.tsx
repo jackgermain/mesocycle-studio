@@ -157,7 +157,7 @@ export function AiEditShell<T>({
             <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{title}</div>
           </div>
           <button onClick={onClose} disabled={busy} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
 
@@ -166,7 +166,7 @@ export function AiEditShell<T>({
         {context && (
           <div className="cell" style={{ padding: 11, borderLeft: "2px solid var(--color-accent)" }}>
             <div className="scr" style={{ color: "var(--color-accent-300)", marginBottom: 3 }}>It knows about</div>
-            <div style={{ fontSize: 13, lineHeight: 1.5 }}>{context}</div>
+            <div style={{ fontSize: 12.5, lineHeight: 1.5 }}>{context}</div>
           </div>
         )}
 
@@ -184,11 +184,11 @@ export function AiEditShell<T>({
           {dictation.supported && (
             <button
               className={`btn ${dictation.listening ? "btn-solid" : "btn-secondary"}`}
-              style={{ height: 38, marginTop: 8, width: "100%" }}
+              style={{ height: 36, marginTop: 8, width: "100%" }}
               disabled={busy}
               onClick={dictation.toggle}
             >
-              <i className={dictation.listening ? "ph-fill ph-microphone" : "ph ph-microphone"} style={{ fontSize: 15 }} />
+              <i className={dictation.listening ? "ph-fill ph-microphone" : "ph ph-microphone"} style={{ fontSize: 14 }} />
               {dictation.listening ? "Listening — tap when you're done" : "Say it instead"}
             </button>
           )}
@@ -213,8 +213,8 @@ export function AiEditShell<T>({
                       <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                         {list.map((c, i) => (
                           <div key={i} className="cell row" style={{ padding: "8px 11px", gap: 8 }}>
-                            <span className="trunc" style={{ flex: 1, fontSize: 13 }}>{c.target}</span>
-                            <span style={{ flex: "none", fontSize: 12, color: KIND_TONE[c.kind], fontFamily: "var(--font-heading)" }}>{c.detail}</span>
+                            <span className="trunc" style={{ flex: 1, fontSize: 12.5 }}>{c.target}</span>
+                            <span style={{ flex: "none", fontSize: 12.5, color: KIND_TONE[c.kind], fontFamily: "var(--font-heading)" }}>{c.detail}</span>
                           </div>
                         ))}
                       </div>
@@ -236,12 +236,12 @@ export function AiEditShell<T>({
 
             {proposal.changes.length > 0 && (
               <div className="row" style={{ gap: 8 }}>
-                <button className="btn btn-secondary" style={{ flex: 1, height: 46 }} onClick={() => setProposal(null)}>
+                <button className="btn btn-secondary" style={{ flex: 1, height: 44 }} onClick={() => setProposal(null)}>
                   Discard
                 </button>
                 <button
                   className="btn btn-primary"
-                  style={{ flex: 1, height: 46 }}
+                  style={{ flex: 1, height: 44 }}
                   onClick={() => onApply(proposal.next, proposal.changes, proposal.result.summary ?? instruction.trim())}
                 >
                   Apply
@@ -254,17 +254,17 @@ export function AiEditShell<T>({
         {!proposal && (
           <button
             className="btn btn-primary btn-block"
-            style={{ height: 46, opacity: instruction.trim() && !busy ? 1 : 0.5 }}
+            style={{ height: 48, opacity: instruction.trim() && !busy ? 1 : 0.5 }}
             disabled={!instruction.trim() || busy}
             onClick={run}
           >
-            <i className={busy ? "ph ph-circle-notch" : "ph ph-sparkle"} style={{ fontSize: 15 }} />
+            <i className={busy ? "ph ph-circle-notch" : "ph ph-sparkle"} style={{ fontSize: 14 }} />
             {busy ? "Working…" : "Show me the change"}
           </button>
         )}
 
         {proposal && (
-          <button className="btn btn-secondary btn-block" style={{ height: 40, marginTop: 2 }} disabled={busy} onClick={run}>
+          <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 2 }} disabled={busy} onClick={run}>
             Ask again with the same wording
           </button>
         )}

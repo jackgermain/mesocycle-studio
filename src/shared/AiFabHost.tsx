@@ -49,7 +49,7 @@ export function AiFabHost({ hidden }: { hidden?: boolean }) {
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Nothing open to change</div>
               </div>
               <button onClick={() => setStuck(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                <i className="ph ph-x" style={{ fontSize: 18 }} />
+                <i className="ph ph-x" style={{ fontSize: 16 }} />
               </button>
             </div>
             <div className="mu" style={{ lineHeight: 1.55 }}>
@@ -65,7 +65,7 @@ export function AiFabHost({ hidden }: { hidden?: boolean }) {
             >
               <i className="ph ph-stack" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13 }}>Open a program</div>
+                <div style={{ fontSize: 12.5 }}>Open a program</div>
                 <div className="mu" style={{ marginTop: 1 }}>Edit a template or a draft.</div>
               </div>
             </button>
@@ -79,7 +79,7 @@ export function AiFabHost({ hidden }: { hidden?: boolean }) {
             >
               <i className="ph ph-users-three" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13 }}>Open a client's session</div>
+                <div style={{ fontSize: 12.5 }}>Open a client's session</div>
                 <div className="mu" style={{ marginTop: 1 }}>Change their real numbers, week by week.</div>
               </div>
             </button>

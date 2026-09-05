@@ -39,11 +39,11 @@ export default function Progress() {
     <div className="screen">
       <HeroHeader title="Progress">
         <HeroStat value={currentWeek} label={<>current<br />week</>}>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Program length</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.program.totalWeeks} weeks</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{state.program.totalWeeks} weeks</span>
           </div>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Coach</span>
             <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.program.coachName}</span>
           </div>
@@ -93,11 +93,11 @@ function StrengthTab() {
       <div className="cell elev-sm">
         <div className="row" style={{ alignItems: "baseline" }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{featured.name}</div>
+            <div style={{ fontSize: 14, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{featured.name}</div>
             <div className="mu" style={{ marginTop: 2 }}>Sets logged per week · {history.length} weeks</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, color: "var(--color-accent-300)" }}>{featured.lastLoggedTopSet ?? "—"}</div>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: 14, color: "var(--color-accent-300)" }}>{featured.lastLoggedTopSet ?? "—"}</div>
             <div className="mu">last logged top set</div>
           </div>
         </div>
@@ -106,7 +106,7 @@ function StrengthTab() {
             <div key={i} style={{ flex: 1, height: `${(v / maxAdherence) * 100}%`, borderRadius: "3px 3px 0 0", background: i === adherence.length - 1 ? "var(--color-accent)" : "var(--color-accent-700)" }} />
           ))}
         </div>
-        <div className="row" style={{ marginTop: 7, fontSize: 10, color: "var(--color-neutral-600)" }}>
+        <div className="row" style={{ marginTop: 7, fontSize: 11, color: "var(--color-neutral-600)" }}>
           <span>wk {history[0]?.weekNumber ?? 1}</span>
           <span style={{ marginLeft: "auto" }}>wk {history[history.length - 1]?.weekNumber ?? 1}</span>
         </div>
@@ -123,7 +123,7 @@ function StrengthTab() {
           {lifts.slice(0, 5).map((l) => (
             <div key={l.name} className="cell row" style={{ padding: "11px 12px" }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13.5 }}>{l.name}</div>
+                <div style={{ fontSize: 12.5 }}>{l.name}</div>
                 <div className="mu" style={{ marginTop: 2 }}>{l.muscle}</div>
               </div>
               <span style={{ fontSize: 12.5, color: "var(--color-accent-300)" }}>{l.lastLoggedTopSet ?? "not logged yet"}</span>
@@ -180,11 +180,11 @@ function BodyTab() {
       {p.weighInsPerWeek > 0 && (
         <div className="row" style={{ gap: 8, padding: "10px 11px", borderRadius: 8, background: "var(--color-accent-900)" }}>
           <i className="ph ph-scales" style={{ fontSize: 16, color: "var(--color-accent)", flex: "none" }} />
-          <div style={{ flex: 1, fontSize: 12, lineHeight: 1.5, color: "var(--color-accent-200)" }}>
+          <div style={{ flex: 1, fontSize: 12.5, lineHeight: 1.5, color: "var(--color-accent-200)" }}>
             {p.weighInsPerWeek}× a week — {p.weighInDays.join(", ")}, first thing.
           </div>
           {!loggedToday && !logging && (
-            <button className="btn btn-solid" style={{ flex: "none", height: 34, fontSize: 12.5 }} onClick={() => setLogging(true)}>
+            <button className="btn btn-solid" style={{ flex: "none", height: 36, fontSize: 12.5 }} onClick={() => setLogging(true)}>
               Log
             </button>
           )}
@@ -213,12 +213,12 @@ function BodyTab() {
         <div className="row" style={{ alignItems: "baseline" }}>
           <div style={{ flex: 1 }}>
             <div className="scr">Trend weight</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 28, lineHeight: 1.1, marginTop: 3 }}>
+            <div className="num" style={{ fontSize: 21, lineHeight: 1.1, marginTop: 3 }}>
               {latest.toFixed(1)} <span style={{ fontSize: 14, color: "var(--color-neutral-500)" }}>{p.units}</span>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 13, color: ratePerWeek <= 0 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>
+            <div style={{ fontSize: 12.5, color: ratePerWeek <= 0 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>
               {ratePerWeek > 0 ? "+" : ""}
               {ratePerWeek} {p.units}/wk
             </div>
@@ -242,7 +242,7 @@ function BodyTab() {
         ) : (
           <div className="mu" style={{ marginTop: 14, textAlign: "center", padding: "20px 0" }}>Log a weigh-in to start the chart.</div>
         )}
-        <div className="row" style={{ marginTop: 8, fontSize: 10, color: "var(--color-neutral-600)" }}>
+        <div className="row" style={{ marginTop: 8, fontSize: 11, color: "var(--color-neutral-600)" }}>
           <span>{history[0] ? new Date(history[0].date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}</span>
           <span style={{ marginLeft: "auto" }}>each point is a logged weigh-in</span>
         </div>
@@ -270,7 +270,7 @@ function BodyTab() {
                         alignItems: "center",
                         justifyContent: "center",
                         color: loggedWeight !== undefined ? "var(--color-accent-200)" : isToday ? "var(--color-accent)" : "var(--color-neutral-700)",
-                        fontSize: 12,
+                        fontSize: 12.5,
                         fontFamily: "var(--font-heading)",
                       }}
                     >
@@ -291,7 +291,7 @@ function BodyTab() {
         <div style={{ display: "flex", gap: 8 }}>
           <div className="cell" style={{ flex: 1, padding: 11 }}>
             <div className="scr">Waist</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 16, marginTop: 3 }}>
+            <div className="num" style={{ fontWeight: 700, fontSize: 16, marginTop: 3 }}>
               81 <span style={{ fontSize: 11, color: "var(--color-neutral-500)" }}>cm</span>
             </div>
             <div className="mu" style={{ marginTop: 2 }}>+2 since wk 1</div>
@@ -336,8 +336,8 @@ function VolumeTab() {
         {muscles.map((m) => (
           <div key={m.name} className="cell" style={{ padding: 11 }}>
             <div className="row" style={{ marginBottom: 6 }}>
-              <span style={{ flex: 1, fontSize: 13 }}>{m.name}</span>
-              <span style={{ fontSize: 12, color: "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{m.sets} sets</span>
+              <span style={{ flex: 1, fontSize: 12.5 }}>{m.name}</span>
+              <span className="num" style={{ fontWeight: 700, fontSize: 12.5, color: "var(--color-accent-300)" }}>{m.sets} sets</span>
             </div>
             <div className="meter">
               <div className="meter-fill" style={{ width: `${(m.sets / max) * 100}%`, background: "var(--color-accent)" }} />

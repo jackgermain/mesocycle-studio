@@ -36,13 +36,13 @@ export default function Library() {
         title="Library"
         right={
           <button onClick={() => setAdding(true)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }} aria-label="Add a custom exercise">
-            <i className="ph ph-plus-circle" style={{ fontSize: 24, color: "var(--color-accent)" }} />
+            <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-accent)" }} />
           </button>
         }
       />
       <div className="screen-scroll">
         <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)" }}>
-          <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
+          <i className="ph ph-magnifying-glass" style={{ fontSize: 14 }} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search the library" style={{ flex: 1, background: "none", border: "none", outline: "none", color: "var(--color-text)", fontSize: 14 }} />
         </div>
         <div className="row hscroll" style={{ gap: 6 }}>
@@ -71,14 +71,14 @@ export default function Library() {
                       justifyContent: "center",
                     }}
                   >
-                    <i className={e.hasVideo ? "ph-fill ph-play-circle" : "ph ph-camera"} style={{ fontSize: 17, color: e.hasVideo ? "var(--color-accent)" : "var(--color-neutral-600)" }} />
+                    <i className={e.hasVideo ? "ph-fill ph-play-circle" : "ph ph-camera"} style={{ fontSize: 16, color: e.hasVideo ? "var(--color-accent)" : "var(--color-neutral-600)" }} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="trunc" style={{ fontSize: 13.5 }}>{e.name}</div>
+                    <div className="trunc" style={{ fontSize: 12.5 }}>{e.name}</div>
                   </div>
                   {e.kind === "cardio" && <span className="tag tag-neutral">Cardio</span>}
                   {e.id.startsWith("custom-") && <span className="tag tag-outline">Custom</span>}
-                  {!e.hasVideo && <span style={{ fontSize: 11.5, color: "var(--color-accent)" }}>Upload</span>}
+                  {!e.hasVideo && <span style={{ fontSize: 11, color: "var(--color-accent)" }}>Upload</span>}
                   <i className="ph ph-dots-three-vertical" style={{ fontSize: 16, color: "var(--color-neutral-600)" }} />
                 </div>
               ))}
@@ -92,8 +92,8 @@ export default function Library() {
           onClick={() => setAdding(true)}
           style={{ border: "1px dashed var(--color-accent-700)", borderRadius: "var(--radius-md)", padding: "20px 16px", textAlign: "center", background: "var(--color-accent-900)", cursor: "pointer" }}
         >
-          <i className="ph ph-plus-circle" style={{ fontSize: 22, color: "var(--color-accent)" }} />
-          <div style={{ fontSize: 13, marginTop: 7, color: "var(--color-accent-100)" }}>Add a custom exercise</div>
+          <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-accent)" }} />
+          <div style={{ fontSize: 12.5, marginTop: 7, color: "var(--color-accent-100)" }}>Add a custom exercise</div>
           <div className="mu" style={{ marginTop: 3, color: "var(--color-accent-300)" }}>Not on this list? Add your own — it shows up everywhere the library does.</div>
         </button>
       </div>
@@ -119,7 +119,7 @@ function AddCustomExercise({ onAdd, onClose }: { onAdd: (e: LibraryExercise) => 
         <div className="row" style={{ marginBottom: 14 }}>
           <div style={{ flex: 1, fontFamily: "var(--font-heading)", fontSize: 16 }}>Add a custom exercise</div>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
 
@@ -153,7 +153,7 @@ function AddCustomExercise({ onAdd, onClose }: { onAdd: (e: LibraryExercise) => 
         </div>
 
         <div style={{ marginTop: 16, paddingBottom: 4 }}>
-          <button className="btn btn-primary btn-block" style={{ height: 46, opacity: name.trim() ? 1 : 0.45 }} disabled={!name.trim()} onClick={save}>
+          <button className="btn btn-primary btn-block" style={{ height: 48, opacity: name.trim() ? 1 : 0.45 }} disabled={!name.trim()} onClick={save}>
             Add to library
           </button>
         </div>

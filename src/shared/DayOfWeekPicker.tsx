@@ -23,7 +23,7 @@ export function DayOfWeekPicker({ value, onChange }: { value: number[]; onChange
                 borderRadius: 9,
                 cursor: "pointer",
                 fontFamily: "var(--font-heading)",
-                fontSize: 13,
+                fontSize: 12.5,
                 border: `1px solid ${on ? "var(--color-accent)" : "var(--color-divider)"}`,
                 background: on ? "var(--color-accent-900)" : "transparent",
                 color: on ? "var(--color-accent-200)" : "var(--color-neutral-500)",

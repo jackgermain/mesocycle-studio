@@ -150,7 +150,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
                   border: `1px solid ${days[i] ? "var(--color-accent)" : "var(--color-divider)"}`,
                   background: days[i] ? "var(--color-accent-900)" : "transparent",
                   color: days[i] ? "var(--color-accent-200)" : "var(--color-neutral-500)",
-                  fontSize: 11.5,
+                  fontSize: 11,
                   cursor: "pointer",
                 }}
               >
@@ -167,7 +167,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
 
           <div className="cell" style={{ padding: 11, marginBottom: 10 }}>
             <div className="row" style={{ marginBottom: 4 }}>
-              <i className="ph ph-calculator" style={{ fontSize: 15, color: "var(--color-accent-300)", marginRight: 6 }} />
+              <i className="ph ph-calculator" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
               <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Protein-first calculator</span>
             </div>
             <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
@@ -177,24 +177,24 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={5} />
               <CalcRow label="Body fat" unit="%" value={calcBf} onChange={setCalcBf} step={1} max={100} />
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
               <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Lean mass</span>
-                <span style={{ fontFamily: "var(--font-heading)" }}>{lbm} lb</span>
+                <span className="num" style={{ fontWeight: 700,  }}>{lbm} lb</span>
               </div>
               <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Suggested protein</span>
-                <span style={{ color: "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{suggestedProtein} g</span>
+                <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{suggestedProtein} g</span>
               </div>
             </div>
-            <button className="btn btn-block" style={{ marginTop: 9, height: 34, fontSize: 12 }} onClick={applySuggestion}>
+            <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applySuggestion}>
               Apply to targets below
             </button>
           </div>
 
           <div className="cell" style={{ padding: 11, marginBottom: 10 }}>
             <div className="row" style={{ marginBottom: 4 }}>
-              <i className="ph ph-scales" style={{ fontSize: 15, color: "var(--color-accent-300)", marginRight: 6 }} />
+              <i className="ph ph-scales" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
               <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Rate-of-change calculator</span>
             </div>
             <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
@@ -205,19 +205,19 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               <CalcRow label="Rate" unit="% BW / wk" value={ratePct} onChange={setRatePct} step={0.1} min={-2} max={2} />
               <CalcRow label="Maintenance" unit="kcal" value={maintenance} onChange={setMaintenance} step={50} />
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
               <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Weekly change</span>
-                <span style={{ fontFamily: "var(--font-heading)" }}>{lbPerWeek > 0 ? "+" : ""}{lbPerWeek} lb/wk</span>
+                <span className="num" style={{ fontWeight: 700,  }}>{lbPerWeek > 0 ? "+" : ""}{lbPerWeek} lb/wk</span>
               </div>
               <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Daily intake</span>
-                <span style={{ fontFamily: "var(--font-heading)" }}>
+                <span className="num" style={{ fontWeight: 700,  }}>
                   {dailyKcalDelta >= 0 ? "+" : ""}{dailyKcalDelta} → <b style={{ color: "var(--color-accent-300)" }}>{targetKcal} kcal</b>
                 </span>
               </div>
             </div>
-            <button className="btn btn-block" style={{ marginTop: 9, height: 34, fontSize: 12 }} onClick={applyRate}>
+            <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applyRate}>
               Apply — sets kcal target and rate label below
             </button>
           </div>
@@ -250,8 +250,8 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             {portions.map((t) => (
               <div key={t.category} className="cell" style={{ padding: 11 }}>
                 <div className="row" style={{ marginBottom: 8 }}>
-                  <span style={{ flex: 1, fontSize: 13.5, fontFamily: "var(--font-heading)" }}>{t.category}</span>
-                  <span style={{ fontSize: 12, color: "var(--color-accent-300)" }}>{fmtQty(t)}</span>
+                  <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>{t.category}</span>
+                  <span style={{ fontSize: 12.5, color: "var(--color-accent-300)" }}>{fmtQty(t)}</span>
                 </div>
                 <div className="row" style={{ gap: 5, flexWrap: "wrap" }}>
                   {UNIT_OPTIONS.map((u) => (
@@ -261,7 +261,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
                       style={{
                         padding: "6px 10px",
                         borderRadius: 7,
-                        fontSize: 11.5,
+                        fontSize: 11,
                         cursor: "pointer",
                         border: `1px solid ${t.unit === u.value ? "var(--color-accent)" : "var(--color-divider)"}`,
                         background: t.unit === u.value ? "var(--color-accent-900)" : "transparent",
@@ -282,7 +282,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
                             flex: 1,
                             height: 32,
                             borderRadius: 7,
-                            fontSize: 11.5,
+                            fontSize: 11,
                             cursor: "pointer",
                             border: `1px solid ${t.qty === f ? "var(--color-accent)" : "var(--color-divider)"}`,
                             background: t.qty === f ? "var(--color-accent-900)" : "transparent",
@@ -297,7 +297,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
                         <button onClick={() => updatePortion(t.category, { qty: Math.max(0.5, t.qty - 0.5) })} style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 7, width: 32, height: 32, color: "var(--color-neutral-400)", cursor: "pointer" }}>
                           <i className="ph ph-minus" style={{ fontSize: 12 }} />
                         </button>
-                        <span style={{ fontFamily: "var(--font-heading)", fontSize: 14, minWidth: 30, textAlign: "center" }}>{t.qty}</span>
+                        <span className="num" style={{ fontWeight: 700, fontSize: 14, minWidth: 30, textAlign: "center" }}>{t.qty}</span>
                         <button onClick={() => updatePortion(t.category, { qty: t.qty + 0.5 })} style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 7, width: 32, height: 32, color: "var(--color-neutral-400)", cursor: "pointer" }}>
                           <i className="ph ph-plus" style={{ fontSize: 12 }} />
                         </button>
@@ -320,7 +320,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
       </div>
 
       <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-        <button className="btn btn-primary btn-block" style={{ height: 46 }} onClick={save}>
+        <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={save}>
           Save {subjectFirstName ? "protocol" : "nutrition settings"}
         </button>
       </div>
@@ -383,7 +383,7 @@ function PctField({ label, value, onChange, step }: { label: string; value: numb
       <div className="scr">{label}</div>
       <div className="row" style={{ marginTop: 3, gap: 4, justifyContent: "center" }}>
         <button onClick={() => onChange(clamp(value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
-          <i className="ph ph-minus" style={{ fontSize: 11 }} />
+          <i className="ph ph-minus" style={{ fontSize: 12 }} />
         </button>
         <input
           type="number"
@@ -408,7 +408,7 @@ function PctField({ label, value, onChange, step }: { label: string; value: numb
           style={{ width: 50, flex: "none", textAlign: "center", background: "none", border: "none", outline: "none", fontFamily: "var(--font-heading)", fontSize: 14, color: "inherit", padding: 0 }}
         />
         <button onClick={() => onChange(clamp(value + step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>
-          <i className="ph ph-plus" style={{ fontSize: 11 }} />
+          <i className="ph ph-plus" style={{ fontSize: 12 }} />
         </button>
       </div>
     </div>

@@ -63,11 +63,11 @@ export function UpdateBanner() {
         boxShadow: "0 10px 26px -8px rgba(76, 224, 143, 0.6)",
       }}
     >
-      <i className="ph-fill ph-arrow-clockwise" style={{ fontSize: 17, flex: "none" }} />
+      <i className="ph-fill ph-arrow-clockwise" style={{ fontSize: 16, flex: "none" }} />
       <span style={{ flex: 1, fontSize: 12.5, fontWeight: 600, lineHeight: 1.3 }}>A newer version is ready.</span>
       <button
         onClick={() => window.location.reload()}
-        style={{ background: "#0b1710", color: "var(--color-accent)", border: "none", borderRadius: 8, padding: "7px 12px", fontWeight: 700, fontSize: 12, cursor: "pointer", flex: "none" }}
+        style={{ background: "#0b1710", color: "var(--color-accent)", border: "none", borderRadius: 8, padding: "7px 12px", fontWeight: 700, fontSize: 12.5, cursor: "pointer", flex: "none" }}
       >
         Reload
       </button>

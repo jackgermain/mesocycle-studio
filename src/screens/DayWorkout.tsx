@@ -101,7 +101,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
 
         <div className="row" style={{ gap: 6 }}>
           <button className="link-row" style={{ flex: 1, padding: "9px 12px", color: "var(--color-neutral-400)" }} onClick={() => nav(`/block/day/${dayId}/reorder`)}>
-            <i className="ph ph-arrows-down-up" style={{ fontSize: 15 }} />
+            <i className="ph ph-arrows-down-up" style={{ fontSize: 14 }} />
             <span style={{ flex: 1, fontSize: 12.5 }}>Change the order</span>
             <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
           </button>
@@ -222,14 +222,14 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                     <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Options</div>
                   </div>
                   <button onClick={closeOptions} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                    <i className="ph ph-x" style={{ fontSize: 18 }} />
+                    <i className="ph ph-x" style={{ fontSize: 16 }} />
                   </button>
                 </div>
 
                 <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => setConfirmAction("session")}>
                   <i className="ph ph-flag-checkered" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13 }}>End session</div>
+                    <div style={{ fontSize: 12.5 }}>End session</div>
                     <div className="mu" style={{ marginTop: 1 }}>Close out today, even with sets left unlogged.</div>
                   </div>
                 </button>
@@ -238,7 +238,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                   <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => nav("/build?edit=1")}>
                     <i className="ph ph-pencil-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13 }}>Edit mesocycle</div>
+                      <div style={{ fontSize: 12.5 }}>Edit mesocycle</div>
                       <div className="mu" style={{ marginTop: 1 }}>Change exercises on days you haven't done yet.</div>
                     </div>
                   </button>
@@ -248,7 +248,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                   <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => setConfirmAction("mesocycle")}>
                     <i className="ph ph-x-circle" style={{ fontSize: 16, color: "var(--color-neutral-400)" }} />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, color: "var(--color-neutral-300)" }}>End mesocycle</div>
+                      <div style={{ fontSize: 12.5, color: "var(--color-neutral-300)" }}>End mesocycle</div>
                       <div className="mu" style={{ marginTop: 1 }}>Ends the whole program early — you'll pick a new one next.</div>
                     </div>
                   </button>
@@ -262,7 +262,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                     <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{confirmAction === "session" ? "End this session?" : "End this mesocycle?"}</div>
                   </div>
                   <button onClick={closeOptions} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                    <i className="ph ph-x" style={{ fontSize: 18 }} />
+                    <i className="ph ph-x" style={{ fontSize: 16 }} />
                   </button>
                 </div>
                 <InfoBanner icon="ph-warning">
@@ -276,7 +276,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                 </div>
                 <button
                   className="btn btn-primary btn-block"
-                  style={{ height: 46, opacity: confirmText.trim().toLowerCase() === confirmPhrase(confirmAction) ? 1 : 0.4 }}
+                  style={{ height: 48, opacity: confirmText.trim().toLowerCase() === confirmPhrase(confirmAction) ? 1 : 0.4 }}
                   disabled={confirmText.trim().toLowerCase() !== confirmPhrase(confirmAction)}
                   onClick={runConfirmedAction}
                 >

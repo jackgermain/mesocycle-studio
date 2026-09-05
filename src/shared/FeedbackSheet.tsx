@@ -36,7 +36,7 @@ export function FeedbackSheet({ onClose }: { onClose: () => void }) {
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>Report a bug or idea</div>
           </div>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
 
@@ -66,11 +66,11 @@ export function FeedbackSheet({ onClose }: { onClose: () => void }) {
             </div>
             <button
               className="btn btn-primary btn-block"
-              style={{ height: 46, opacity: body.trim() && !sending ? 1 : 0.5 }}
+              style={{ height: 48, opacity: body.trim() && !sending ? 1 : 0.5 }}
               disabled={!body.trim() || sending}
               onClick={submit}
             >
-              <i className="ph ph-paper-plane-tilt" style={{ fontSize: 15 }} />
+              <i className="ph ph-paper-plane-tilt" style={{ fontSize: 14 }} />
               {sending ? "Sending…" : "Send"}
             </button>
           </>
@@ -119,7 +119,7 @@ export function FeedbackInbox({ onClose, onCountChange }: { onClose: () => void;
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>From your users</div>
           </div>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto" }}>
@@ -128,7 +128,7 @@ export function FeedbackInbox({ onClose, onCountChange }: { onClose: () => void;
           {notes?.map((n) => (
             <div key={n.id} className="cell" style={{ padding: 12, opacity: removing === n.id ? 0.5 : 1 }}>
               <div className="row" style={{ marginBottom: 5 }}>
-                <span style={{ flex: 1, fontSize: 13, fontFamily: "var(--font-heading)" }}>{n.author_name}</span>
+                <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>{n.author_name}</span>
                 <span className="mu">{new Date(n.created_at).toLocaleDateString()}</span>
                 <button
                   onClick={() => remove(n.id)}
@@ -139,7 +139,7 @@ export function FeedbackInbox({ onClose, onCountChange }: { onClose: () => void;
                   <i className="ph ph-trash" style={{ fontSize: 14 }} />
                 </button>
               </div>
-              <div style={{ fontSize: 13.5, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>{n.body}</div>
+              <div style={{ fontSize: 12.5, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>{n.body}</div>
             </div>
           ))}
         </div>

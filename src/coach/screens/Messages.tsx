@@ -71,7 +71,7 @@ export default function Messages() {
                       borderRadius: 9,
                       background: "var(--color-accent)",
                       color: "#0b1710",
-                      fontSize: 10,
+                      fontSize: 11,
                       fontWeight: 700,
                       fontFamily: "var(--font-heading)",
                       display: "flex",
@@ -94,15 +94,15 @@ export default function Messages() {
         }
       >
         <HeroStat value={unreadCount} label="unread" valueColor={unreadCount > 0 ? "var(--color-accent)" : "var(--color-neutral-200)"}>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Total threads</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.threads.length}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{state.threads.length}</span>
           </div>
         </HeroStat>
       </HeroHeader>
       <div className="screen-scroll">
         <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)" }}>
-          <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
+          <i className="ph ph-magnifying-glass" style={{ fontSize: 14 }} />
           <span style={{ fontSize: 14 }}>Search messages</span>
         </div>
         <div className="row" style={{ gap: 6 }}>
@@ -188,12 +188,12 @@ export function CoachThread() {
               {b.attached ? (
                 <div style={{ borderRadius: 12, background: "var(--color-neutral-900)", border: "1px solid var(--color-neutral-800)", padding: "10px 11px" }}>
                   <div className="row" style={{ gap: 7, marginBottom: 7 }}>
-                    <i className="ph ph-paperclip" style={{ fontSize: 13, color: "var(--color-neutral-500)" }} />
+                    <i className="ph ph-paperclip" style={{ fontSize: 12, color: "var(--color-neutral-500)" }} />
                     <span className="scr">attached from their log</span>
                   </div>
                   <div className="row">
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13 }}>{b.text}</div>
+                      <div style={{ fontSize: 12.5 }}>{b.text}</div>
                       <div className="mu" style={{ marginTop: 2 }}>{b.attached}</div>
                     </div>
                     <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
@@ -208,16 +208,16 @@ export function CoachThread() {
                     border: b.from === "client" ? "1px solid var(--color-neutral-800)" : undefined,
                   }}
                 >
-                  <div style={{ fontSize: 13.5, lineHeight: 1.5, fontWeight: b.from === "coach" ? 600 : 400, color: b.from === "coach" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
+                  <div style={{ fontSize: 12.5, lineHeight: 1.5, fontWeight: b.from === "coach" ? 600 : 400, color: b.from === "coach" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
                   {b.receipt && (
                     <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "rgba(11, 23, 16, 0.15)" }}>
-                      <div className="row" style={{ gap: 7, fontSize: 11.5 }}>
-                        <i className="ph ph-arrows-left-right" style={{ fontSize: 13 }} />
+                      <div className="row" style={{ gap: 7, fontSize: 11 }}>
+                        <i className="ph ph-arrows-left-right" style={{ fontSize: 12 }} />
                         {b.receipt}
                       </div>
                     </div>
                   )}
-                  <div style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "coach" ? "right" : "left", opacity: b.from === "coach" ? 0.7 : undefined, color: b.from === "coach" ? "#0b1710" : "var(--color-neutral-500)" }}>{formatMessageTime(b.time)}</div>
+                  <div style={{ marginTop: 5, fontSize: 11, textAlign: b.from === "coach" ? "right" : "left", opacity: b.from === "coach" ? 0.7 : undefined, color: b.from === "coach" ? "#0b1710" : "var(--color-neutral-500)" }}>{formatMessageTime(b.time)}</div>
                 </div>
               )}
             </div>
@@ -226,10 +226,10 @@ export function CoachThread() {
       </div>
       <div style={{ flex: "none", padding: "8px 12px 18px", background: "#1b1e2e", borderTop: "1px solid var(--color-neutral-900)" }}>
         <div className="row" style={{ gap: 8 }}>
-          <i className="ph ph-plus-circle" style={{ fontSize: 22, color: "var(--color-neutral-500)", flex: "none" }} />
+          <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-neutral-500)", flex: "none" }} />
           <input className="input" style={{ flex: 1, height: 40 }} placeholder={`Message ${thread.clientName}`} value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} />
           <button onClick={send} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}>
-            <i className="ph-fill ph-paper-plane-right" style={{ fontSize: 19, color: "var(--color-accent)" }} />
+            <i className="ph-fill ph-paper-plane-right" style={{ fontSize: 16, color: "var(--color-accent)" }} />
           </button>
         </div>
         {thread.clientId !== thread.id && (

@@ -34,7 +34,7 @@ export function CoachTabBar() {
                     borderRadius: 8,
                     background: "var(--color-accent)",
                     color: "#123726",
-                    fontSize: 9,
+                    fontSize: 11,
                     fontWeight: 700,
                     display: "flex",
                     alignItems: "center",

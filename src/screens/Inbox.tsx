@@ -107,16 +107,16 @@ export default function Inbox() {
                   border: b.from === "coach" ? "1px solid var(--color-neutral-800)" : undefined,
                 }}
               >
-                <div style={{ fontSize: 13.5, lineHeight: 1.5, fontWeight: b.from === "client" ? 600 : 400, color: b.from === "client" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
+                <div style={{ fontSize: 12.5, lineHeight: 1.5, fontWeight: b.from === "client" ? 600 : 400, color: b.from === "client" ? "#0b1710" : "var(--color-text)" }}>{b.text}</div>
                 {b.receipt && (
                   <div style={{ marginTop: 8, padding: "8px 9px", borderRadius: 8, background: "rgba(11, 23, 16, 0.15)" }}>
-                    <div className="row" style={{ gap: 7, fontSize: 11.5 }}>
-                      <i className="ph ph-arrows-left-right" style={{ fontSize: 13 }} />
+                    <div className="row" style={{ gap: 7, fontSize: 11 }}>
+                      <i className="ph ph-arrows-left-right" style={{ fontSize: 12 }} />
                       {b.receipt}
                     </div>
                   </div>
                 )}
-                <div style={{ marginTop: 5, fontSize: 10.5, textAlign: b.from === "client" ? "right" : "left", opacity: 0.7 }}>{formatMessageTime(b.time)}</div>
+                <div style={{ marginTop: 5, fontSize: 11, textAlign: b.from === "client" ? "right" : "left", opacity: 0.7 }}>{formatMessageTime(b.time)}</div>
               </div>
             </div>
           );
@@ -138,7 +138,7 @@ export default function Inbox() {
             onKeyDown={(e) => e.key === "Enter" && !sending && send()}
           />
           <button onClick={send} disabled={sending || !draft.trim()} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", opacity: sending || !draft.trim() ? 0.4 : 1 }}>
-            <i className="ph-fill ph-paper-plane-right" style={{ fontSize: 22, color: "var(--color-accent)" }} />
+            <i className="ph-fill ph-paper-plane-right" style={{ fontSize: 20, color: "var(--color-accent)" }} />
           </button>
         </div>
       </div>
@@ -153,7 +153,7 @@ export default function Inbox() {
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{myName}</div>
               </div>
               <button onClick={() => setShowAccount(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                <i className="ph ph-x" style={{ fontSize: 18 }} />
+                <i className="ph ph-x" style={{ fontSize: 16 }} />
               </button>
             </div>
             <SetPasswordCard />

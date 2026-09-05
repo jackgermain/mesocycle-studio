@@ -111,12 +111,12 @@ export default function InviteRoster() {
             {role === "coach" ? (
               <div className="cell" style={{ padding: 12, marginTop: 4 }}>
                 <div className="row" style={{ marginBottom: 8 }}>
-                  <span style={{ flex: 1, fontSize: 13, fontFamily: "var(--font-heading)" }}>Coach signup link</span>
+                  <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Coach signup link</span>
                 </div>
                 <div className="mu trunc" style={{ padding: "8px 10px", background: "var(--color-neutral-900)", borderRadius: 7, fontFamily: "monospace" }}>
                   {COACH_SIGNUP_URL}
                 </div>
-                <button className="btn btn-secondary btn-block" style={{ height: 40, marginTop: 8, fontSize: 12.5 }} onClick={copyCoachLink}>
+                <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 8, fontSize: 12.5 }} onClick={copyCoachLink}>
                   {coachLinkCopied ? "Copied" : "Copy link"}
                 </button>
               </div>
@@ -128,8 +128,8 @@ export default function InviteRoster() {
                 </div>
 
                 <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-                  <button className="btn btn-primary btn-block" style={{ height: 46, opacity: name.trim() && !sending ? 1 : 0.5 }} disabled={!name.trim() || sending} onClick={send}>
-                    <i className="ph ph-paper-plane-tilt" style={{ fontSize: 15 }} />
+                  <button className="btn btn-primary btn-block" style={{ height: 48, opacity: name.trim() && !sending ? 1 : 0.5 }} disabled={!name.trim() || sending} onClick={send}>
+                    <i className="ph ph-paper-plane-tilt" style={{ fontSize: 14 }} />
                     {sending ? "Sending…" : "Generate invite link"}
                   </button>
                 </div>
@@ -144,13 +144,13 @@ export default function InviteRoster() {
 
             <div className="cell" style={{ padding: 12 }}>
               <div className="row" style={{ marginBottom: 8 }}>
-                <span style={{ flex: 1, fontSize: 13, fontFamily: "var(--font-heading)" }}>Invite link</span>
+                <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Invite link</span>
                 <span className="tag tag-neutral">Pending</span>
               </div>
               <div className="mu trunc" style={{ padding: "8px 10px", background: "var(--color-neutral-900)", borderRadius: 7, fontFamily: "monospace" }}>
                 {sent.url}
               </div>
-              <button className="btn btn-secondary btn-block" style={{ height: 40, marginTop: 8, fontSize: 12.5 }} onClick={copyLink}>
+              <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 8, fontSize: 12.5 }} onClick={copyLink}>
                 {copied ? "Copied" : "Copy link to send yourself"}
               </button>
               <div className="mu" style={{ marginTop: 8, lineHeight: 1.6 }}>

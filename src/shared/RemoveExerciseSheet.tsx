@@ -22,7 +22,7 @@ export function RemoveExerciseSheet({
             <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{name}</div>
           </div>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
 
@@ -33,7 +33,7 @@ export function RemoveExerciseSheet({
         <button className="link-row" style={{ padding: "12px 12px" }} onClick={() => onChoose("day")}>
           <i className="ph ph-calendar-blank" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13 }}>Just today</div>
+            <div style={{ fontSize: 12.5 }}>Just today</div>
             <div className="mu" style={{ marginTop: 1 }}>Every other week keeps it.</div>
           </div>
         </button>
@@ -41,7 +41,7 @@ export function RemoveExerciseSheet({
         <button className="link-row" style={{ padding: "12px 12px" }} onClick={() => onChoose("mesocycle")}>
           <i className="ph ph-trash" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13 }}>Rest of the mesocycle</div>
+            <div style={{ fontSize: 12.5 }}>Rest of the mesocycle</div>
             <div className="mu" style={{ marginTop: 1 }}>Takes it out of every session that's left.</div>
           </div>
         </button>

@@ -300,7 +300,7 @@ function LogSessionBody({
                 <div className="scr" style={{ color: "var(--color-accent-300)" }}>
                   {reported.exact && reported.dayId === day.id ? "Reported here" : `Reported ${new Date(signal.created_at).toLocaleDateString()}`}
                 </div>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, marginTop: 2 }}>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 14, marginTop: 2 }}>
                   {signal.kind === "joint" ? "Joint pain" : signal.kind === "soreness" ? "Still sore" : "Low pump"}
                   {signal.note ? ` — ${signal.note}` : ""}
                 </div>
@@ -356,7 +356,7 @@ function LogSessionBody({
                 <div className="row" style={{ gap: 8, marginTop: 10 }}>
                   <button
                     className="btn btn-solid"
-                    style={{ flex: 1, height: 34, fontSize: 12.5 }}
+                    style={{ flex: 1, height: 36, fontSize: 12.5 }}
                     onClick={() => {
                       setPainScope(true);
                       setSwapKey(painKey);
@@ -364,15 +364,15 @@ function LogSessionBody({
                   >
                     Swap it
                   </button>
-                  <button className="btn btn-secondary" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => setConfirmRemove(true)}>
+                  <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => setConfirmRemove(true)}>
                     Remove it
                   </button>
                 </div>
-                <button className="btn btn-secondary btn-block" style={{ height: 34, fontSize: 12.5, marginTop: 8 }} onClick={addWarmupRestOfBlock}>
+                <button className="btn btn-secondary btn-block" style={{ height: 44, fontSize: 12.5, marginTop: 8 }} onClick={addWarmupRestOfBlock}>
                   <i className="ph ph-thermometer-simple" style={{ fontSize: 14 }} />
                   Add a warm-up set to {painEx.name}
                 </button>
-                <button className="btn btn-secondary btn-block" style={{ height: 34, fontSize: 12.5, marginTop: 8 }} onClick={() => setShowAiEdit(true)}>
+                <button className="btn btn-secondary btn-block" style={{ height: 44, fontSize: 12.5, marginTop: 8 }} onClick={() => setShowAiEdit(true)}>
                   <i className="ph ph-sparkle" style={{ fontSize: 14, color: "var(--color-accent-300)" }} />
                   Or say what you want done
                 </button>
@@ -426,7 +426,7 @@ function LogSessionBody({
         })}
 
         <button className="cell row" style={{ padding: "12px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setShowAiEdit(true)}>
-          <i className="ph ph-sparkle" style={{ fontSize: 18, color: "var(--color-accent-300)", marginRight: 4 }} />
+          <i className="ph ph-sparkle" style={{ fontSize: 16, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Edit with AI</div>
             <div className="mu" style={{ marginTop: 2 }}>
@@ -508,10 +508,10 @@ function LogSessionBody({
               the rest of the mesocycle. Sessions already logged keep it.
             </div>
             <div className="row" style={{ gap: 8, marginTop: 12 }}>
-              <button className="btn btn-secondary" style={{ flex: 1, height: 42 }} onClick={() => setConfirmRemove(false)}>
+              <button className="btn btn-secondary" style={{ flex: 1, height: 44 }} onClick={() => setConfirmRemove(false)}>
                 Keep it
               </button>
-              <button className="btn btn-solid" style={{ flex: 1, height: 42 }} onClick={removePainExercise}>
+              <button className="btn btn-solid" style={{ flex: 1, height: 44 }} onClick={removePainExercise}>
                 Remove it
               </button>
             </div>
@@ -548,7 +548,7 @@ function DayRow({ day, onPick }: { day: TrainingDay; onPick: (id: string) => voi
   return (
     <button className="cell row" style={{ padding: "10px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => onPick(day.id)}>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13.5 }}>{dayDisplayTitle(day)}</div>
+        <div style={{ fontSize: 12.5 }}>{dayDisplayTitle(day)}</div>
         <div className="mu" style={{ marginTop: 2 }}>
           {day.dow} · {day.date} · {doneSets} of {totalSets} sets logged
         </div>

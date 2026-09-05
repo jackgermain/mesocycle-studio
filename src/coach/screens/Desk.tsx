@@ -118,17 +118,17 @@ export default function Desk() {
         }
       >
         <HeroStat value={allFlags.length + signals.length} label={<>decisions<br />waiting</>}>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-accent-300)" }}>{counts.volume}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{counts.volume}</span>
           </div>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Joint flags</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{counts.joint}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.joint}</span>
           </div>
-          <div className="row" style={{ fontSize: 12 }}>
+          <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Missed weigh-ins</span>
-            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{counts.weighin}</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.weighin}</span>
           </div>
         </HeroStat>
       </HeroHeader>
@@ -186,10 +186,10 @@ export default function Desk() {
                       </div>
                     </div>
                     <div className="row" style={{ gap: 8, marginTop: 9 }}>
-                      <button className="btn btn-solid" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => setActingOn(s)}>
+                      <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => setActingOn(s)}>
                         Attention
                       </button>
-                      <button className="btn btn-secondary" style={{ flex: 1, height: 34, fontSize: 12.5 }} onClick={() => clearSignal(s.id)}>
+                      <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => clearSignal(s.id)}>
                         Ignore
                       </button>
                     </div>
@@ -258,10 +258,10 @@ export default function Desk() {
           <div className="sh">Quick actions</div>
           <button className="cell row" style={{ gap: 10, padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => nav("/coach/clients")}>
             <div style={{ width: 34, height: 34, flex: "none", borderRadius: 10, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <i className="ph-fill ph-user-plus" style={{ fontSize: 17, color: "var(--color-accent)" }} />
+              <i className="ph-fill ph-user-plus" style={{ fontSize: 16, color: "var(--color-accent)" }} />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 13.5, fontFamily: "var(--font-heading)", fontWeight: 700 }}>Assign a client</div>
+              <div style={{ fontSize: 12.5, fontFamily: "var(--font-heading)", fontWeight: 700 }}>Assign a client</div>
               <div className="mu">{state.clients.filter((c) => c.status === "unassigned").length} waiting</div>
             </div>
           </button>
@@ -279,7 +279,7 @@ export default function Desk() {
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{coachName}</div>
               </div>
               <button onClick={() => setShowAccount(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
-                <i className="ph ph-x" style={{ fontSize: 18 }} />
+                <i className="ph ph-x" style={{ fontSize: 16 }} />
               </button>
             </div>
             <ActionGroup>

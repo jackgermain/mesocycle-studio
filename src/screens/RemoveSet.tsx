@@ -47,7 +47,7 @@ export default function RemoveSet() {
                   ) : (
                     <div style={{ width: 16, flex: "none" }} />
                   )}
-                  <div style={{ flex: 1, fontSize: 13.5, color: on ? "var(--color-accent-100)" : "var(--color-text)" }}>{r}</div>
+                  <div style={{ flex: 1, fontSize: 12.5, color: on ? "var(--color-accent-100)" : "var(--color-text)" }}>{r}</div>
                 </button>
               );
             })}
@@ -64,10 +64,10 @@ export default function RemoveSet() {
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
           <div className="row" style={{ gap: 8 }}>
-            <button className="btn btn-primary" style={{ flex: 1, height: 46 }} onClick={() => nav(-1)}>
+            <button className="btn btn-primary" style={{ flex: 1, height: 44 }} onClick={() => nav(-1)}>
               Keep the set
             </button>
-            <button className="btn btn-secondary" style={{ flex: "none", height: 46, fontSize: 12.5, color: "var(--color-neutral-300)" }} onClick={confirmRemove}>
+            <button className="btn btn-secondary" style={{ flex: "none", height: 44, fontSize: 12.5, color: "var(--color-neutral-300)" }} onClick={confirmRemove}>
               Remove it
             </button>
           </div>

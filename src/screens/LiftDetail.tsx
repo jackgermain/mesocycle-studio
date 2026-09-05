@@ -27,16 +27,16 @@ export default function LiftDetail() {
                   <div className="scr">wk {h.weekNumber}</div>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="trunc" style={{ fontSize: 13 }}>{h.dayLabel}</div>
+                  <div className="trunc" style={{ fontSize: 12.5 }}>{h.dayLabel}</div>
                   <div className="mu" style={{ marginTop: 1 }}>
                     {h.setsLogged} of {h.setsPrescribed} sets{h.dayStatus === "today" ? " · today" : ""}
                   </div>
                 </div>
                 <div style={{ textAlign: "right", flex: "none" }}>
-                  <div style={{ fontSize: 13, fontFamily: "var(--font-heading)", color: h.setsLogged > 0 ? "var(--color-accent-300)" : "var(--color-neutral-600)" }}>
+                  <div className="num" style={{ fontWeight: 700, fontSize: 12.5, color: h.setsLogged > 0 ? "var(--color-accent-300)" : "var(--color-neutral-600)" }}>
                     {h.topSet}
                   </div>
-                  <div className="mu" style={{ fontSize: 10 }}>top set</div>
+                  <div className="mu" style={{ fontSize: 11 }}>top set</div>
                 </div>
               </div>
             ))}

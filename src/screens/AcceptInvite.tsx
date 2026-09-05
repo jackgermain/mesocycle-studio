@@ -87,13 +87,13 @@ function SignInStep({ invite }: { invite: PublicInvite }) {
       </p>
       <div className="field">
         <label>Email</label>
-        <input className="input" style={{ height: 50, fontSize: 15 }} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
+        <input className="input" style={{ height: 50, fontSize: 14 }} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" autoFocus />
       </div>
       <div className="field">
         <label>Password</label>
         <input
           className="input"
-          style={{ height: 50, fontSize: 15 }}
+          style={{ height: 50, fontSize: 14 }}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -102,12 +102,12 @@ function SignInStep({ invite }: { invite: PublicInvite }) {
         />
       </div>
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-      <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
+      <button className="btn btn-solid btn-block" style={{ height: 48, fontSize: 14, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
         {busy ? "Working…" : mode === "signup" ? "Create account" : "Sign in"}
       </button>
       <button
         className="btn btn-ghost"
-        style={{ height: 34, fontSize: 12.5 }}
+        style={{ fontSize: 12.5 }}
         onClick={() => {
           setMode((m) => (m === "signup" ? "signin" : "signup"));
           setError(null);
@@ -147,7 +147,7 @@ function ClaimStep({ code, invite, onClaimed }: { code: string; invite: PublicIn
         You're signed in as {invite.clientName} — finish setting up your account with {invite.coachName}.
       </p>
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-      <button className="btn btn-solid btn-block" style={{ height: 52, fontSize: 15, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={claim}>
+      <button className="btn btn-solid btn-block" style={{ height: 48, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={claim}>
         {busy ? "Setting up…" : "Create account & start"}
       </button>
     </Hero>

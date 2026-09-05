@@ -24,7 +24,7 @@ export default function AssignProgramPickClient() {
             <button key={c.id} className="link-row" style={{ padding: "11px 12px" }} onClick={() => nav(`/coach/clients/${c.id}/assign?programId=${program.id}`)}>
               <div className="avatar" style={{ width: 34, height: 34 }}>{c.initials}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="trunc" style={{ fontSize: 13.5, fontFamily: "var(--font-heading)" }}>{c.name}</div>
+                <div className="trunc" style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>{c.name}</div>
                 <div className="mu" style={{ marginTop: 1 }}>{c.status === "unassigned" ? "Not assigned yet" : `Currently on ${c.programName}`}</div>
               </div>
               <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />

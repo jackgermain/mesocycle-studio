@@ -23,7 +23,7 @@ export default function AllLifts() {
       <CloseHeader kicker={`${lifts.length} exercises assigned so far`} title="All lifts" />
       <div className="screen-scroll">
         <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)" }}>
-          <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
+          <i className="ph ph-magnifying-glass" style={{ fontSize: 14 }} />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -54,12 +54,12 @@ export default function AllLifts() {
                     <i className={l.hasVideo ? "ph-fill ph-play-circle" : "ph ph-barbell"} style={{ fontSize: 16, color: l.hasVideo ? "var(--color-accent)" : "var(--color-neutral-500)" }} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="trunc" style={{ fontSize: 13.5 }}>{l.name}</div>
+                    <div className="trunc" style={{ fontSize: 12.5 }}>{l.name}</div>
                     <div className="mu" style={{ marginTop: 1 }}>
                       {l.occurrences} session{l.occurrences === 1 ? "" : "s"} · {l.lastLoggedTopSet ?? "not logged yet"}
                     </div>
                   </div>
-                  <i className="ph ph-caret-right" style={{ fontSize: 15, color: "var(--color-neutral-600)" }} />
+                  <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
                 </button>
               ))}
             </div>

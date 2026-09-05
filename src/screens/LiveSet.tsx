@@ -85,7 +85,7 @@ function ClusterLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: str
           {resting ? (
             <>
               <div className="k">Cluster {current + 1} of {spec.clusters} · rest</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: 46, lineHeight: 1.05, marginTop: 6, color: "var(--color-accent)" }}>
+              <div className="num" style={{ fontWeight: 700, fontSize: 32, lineHeight: 1.05, marginTop: 6, color: "var(--color-accent)" }}>
                 0:{String(secLeft).padStart(2, "0")}
               </div>
               <div className="mu" style={{ marginTop: 6 }}>Next: {spec.repsPerCluster[current]} more reps</div>
@@ -93,7 +93,7 @@ function ClusterLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: str
           ) : (
             <>
               <div className="k">Cluster {current + 1} of {spec.clusters}</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: 32, lineHeight: 1.1, marginTop: 6 }}>{spec.repsPerCluster[current]} reps</div>
+              <div className="num" style={{ fontWeight: 700, fontSize: 32, lineHeight: 1.1, marginTop: 6 }}>{spec.repsPerCluster[current]} reps</div>
             </>
           )}
           <div className="row" style={{ gap: 5, marginTop: 16 }}>
@@ -116,18 +116,18 @@ function ClusterLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: str
                     gap: 1,
                   }}
                 >
-                  <span style={{ fontSize: 15, fontFamily: "var(--font-heading)", color: done ? "var(--color-accent-100)" : "var(--color-accent-300)" }}>{r}</span>
-                  <span style={{ fontSize: 8.5, color: done ? "var(--color-accent-400)" : "var(--color-neutral-500)" }}>{done ? "done" : "to go"}</span>
+                  <span className="num" style={{ fontWeight: 700, fontSize: 14, color: done ? "var(--color-accent-100)" : "var(--color-accent-300)" }}>{r}</span>
+                  <span style={{ fontSize: 11, color: done ? "var(--color-accent-400)" : "var(--color-neutral-500)" }}>{done ? "done" : "to go"}</span>
                 </div>
               );
             })}
           </div>
           {resting ? (
-            <button className="btn btn-primary btn-block" style={{ height: 46, marginTop: 14 }} onClick={() => setResting(false)}>
+            <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 14 }} onClick={() => setResting(false)}>
               Skip rest, start now
             </button>
           ) : !blocks[current] ? (
-            <button className="btn btn-primary btn-block" style={{ height: 46, marginTop: 14 }} onClick={logBlock}>
+            <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 14 }} onClick={logBlock}>
               Log this block · {spec.repsPerCluster[current]} reps
             </button>
           ) : null}
@@ -136,7 +136,7 @@ function ClusterLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: str
         <div className="mu" style={{ lineHeight: 1.5 }}>Counts as one set of {spec.repsPerCluster.reduce((a, b) => a + b, 0)} against {ex.muscle.toLowerCase()} volume, not {spec.clusters}.</div>
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-          <button className="btn btn-primary btn-block" style={{ height: 46, opacity: allLogged ? 1 : 0.45, cursor: allLogged ? "pointer" : "not-allowed" }} disabled={!allLogged} onClick={finish}>
+          <button className="btn btn-primary btn-block" style={{ height: 48, opacity: allLogged ? 1 : 0.45, cursor: allLogged ? "pointer" : "not-allowed" }} disabled={!allLogged} onClick={finish}>
             Finish set
           </button>
         </div>
@@ -183,8 +183,8 @@ function TempoLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: strin
 
         <div className="cell elev-md" style={{ border: "1px solid var(--color-accent)", padding: "18px 14px", textAlign: "center" }}>
           <div className="k">Rep {rep} of {reps}</div>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: 26, lineHeight: 1.2, marginTop: 8, color: "var(--color-accent-100)" }}>{phaseLabel}</div>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: 52, lineHeight: 1, marginTop: 6, color: "var(--color-accent)" }}>{secLeft}</div>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: 21, lineHeight: 1.2, marginTop: 8, color: "var(--color-accent-100)" }}>{phaseLabel}</div>
+          <div className="num" style={{ fontWeight: 700, fontSize: 32, lineHeight: 1, marginTop: 6, color: "var(--color-accent)" }}>{secLeft}</div>
           <div className="mu" style={{ marginTop: 6 }}>Hold at the {tempo.holdAt}</div>
         </div>
 
@@ -245,7 +245,7 @@ function AssistedLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: st
         <div className="cell elev-md" style={{ border: "1px solid var(--color-accent)", padding: 14 }}>
           <div style={{ marginBottom: 12 }}>
             <div className="k">Set {set.index} · {assist.type === "none" ? "unassisted" : isSplit ? "part-assisted" : assist.type}</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 19, marginTop: 3 }}>
+            <div className="num" style={{ fontWeight: 700, fontSize: 16, marginTop: 3 }}>
               {reps} reps{isSplit ? ` · ${unassisted} free + ${assisted} assisted` : assist.detail ? ` · ${assist.detail}` : ""}
             </div>
           </div>
@@ -258,13 +258,13 @@ function AssistedLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: st
                   <div style={{ height: 46, borderRadius: 8, background: "var(--color-neutral-900)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                     <Stepper value={unassisted} onChange={setUnassisted} min={0} width={40} fontSize={18} />
                   </div>
-                  <div className="mu" style={{ textAlign: "center", marginTop: 5, fontSize: 10.5 }}>unassisted</div>
+                  <div className="mu" style={{ textAlign: "center", marginTop: 5, fontSize: 11 }}>unassisted</div>
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ height: 46, borderRadius: 8, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                     <Stepper value={assisted} onChange={setAssisted} min={0} width={40} fontSize={18} />
                   </div>
-                  <div style={{ textAlign: "center", marginTop: 5, fontSize: 10.5, color: "var(--color-accent-300)" }}>assisted</div>
+                  <div style={{ textAlign: "center", marginTop: 5, fontSize: 11, color: "var(--color-accent-300)" }}>assisted</div>
                 </div>
               </div>
               <div className="scr" style={{ margin: "12px 0 6px" }}>Assistance used</div>
@@ -278,7 +278,7 @@ function AssistedLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: st
                 <div style={{ height: 46, borderRadius: 8, background: "var(--color-neutral-900)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                   <Stepper value={unassisted} onChange={setUnassisted} min={0} width={40} fontSize={18} />
                 </div>
-                <div className="mu" style={{ textAlign: "center", marginTop: 5, fontSize: 10.5 }}>reps</div>
+                <div className="mu" style={{ textAlign: "center", marginTop: 5, fontSize: 11 }}>reps</div>
               </div>
             </div>
           )}

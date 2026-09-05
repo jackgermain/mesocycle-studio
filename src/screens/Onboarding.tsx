@@ -100,7 +100,7 @@ export default function Onboarding() {
         </InfoBanner>
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-          <button className="btn btn-solid btn-block" style={{ height: 50 }} onClick={finish}>
+          <button className="btn btn-solid btn-block" style={{ height: 48 }} onClick={finish}>
             Continue
           </button>
         </div>

@@ -132,10 +132,10 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
         <div className="sheet" onClick={(e) => e.stopPropagation()}>
           <div className="row">
             <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", color: "var(--color-accent)", cursor: "pointer", display: "flex" }}>
-              <i className="ph ph-caret-left" style={{ fontSize: 18 }} />
+              <i className="ph ph-caret-left" style={{ fontSize: 16 }} />
             </button>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 15, fontFamily: "var(--font-heading)" }}>{selected.name}</div>
+              <div style={{ fontSize: 14, fontFamily: "var(--font-heading)" }}>{selected.name}</div>
               {selected.brand && <div className="mu">{selected.brand}</div>}
             </div>
           </div>
@@ -155,7 +155,7 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
                     commitAmount(e.target.value, unit);
                   }}
                   onFocus={(e) => e.target.select()}
-                  style={{ width: 72, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: 20, background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, padding: "7px 0", color: "inherit", outline: "none" }}
+                  style={{ width: 72, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: 21, background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, padding: "7px 0", color: "inherit", outline: "none" }}
                 />
                 <div className="seg">
                   {UNIT_OPTIONS.map((o) => (
@@ -194,7 +194,7 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
                     setServings(Number.isFinite(n) ? Math.max(0, n) : 0);
                   }}
                   onFocus={(e) => e.target.select()}
-                  style={{ width: 56, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: 20, background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, padding: "7px 0", color: "inherit", outline: "none" }}
+                  style={{ width: 56, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: 21, background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, padding: "7px 0", color: "inherit", outline: "none" }}
                 />
                 <button onClick={() => setServings((s) => +(s + 0.5).toFixed(2))} style={{ background: "none", border: "1px solid var(--color-divider)", borderRadius: 8, width: 36, height: 36, color: "var(--color-neutral-300)", cursor: "pointer", flex: "none" }}>
                   <i className="ph ph-plus" style={{ fontSize: 14 }} />
@@ -205,7 +205,7 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
 
           <div className="cell" style={{ padding: 12 }}>
             <div className="scr" style={{ marginBottom: 8 }}>Adds to {mealName}</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 22 }}>{scaled.kcal} kcal</div>
+            <div className="num" style={{ fontWeight: 700, fontSize: 21 }}>{scaled.kcal} kcal</div>
             <div className="row" style={{ gap: 14, marginTop: 8, fontSize: 12.5, color: "var(--color-neutral-400)" }}>
               <span>{scaled.protein}g protein</span>
               <span>{scaled.carbs}g carbs</span>
@@ -215,7 +215,7 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
 
           <button
             className="btn btn-primary btn-block"
-            style={{ height: 46 }}
+            style={{ height: 48 }}
             onClick={() => {
               onAdd(selected, servings);
               onClose();
@@ -232,13 +232,13 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
     <div className="sheet-backdrop" onClick={onClose}>
       <div className="sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: "80%" }}>
         <div className="row">
-          <div style={{ flex: 1, fontSize: 15, fontFamily: "var(--font-heading)" }}>Add food to {mealName}</div>
+          <div style={{ flex: 1, fontSize: 14, fontFamily: "var(--font-heading)" }}>Add food to {mealName}</div>
           <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", display: "flex" }}>
-            <i className="ph ph-x" style={{ fontSize: 18 }} />
+            <i className="ph ph-x" style={{ fontSize: 16 }} />
           </button>
         </div>
         <div className="input row" style={{ height: 40, gap: 8, color: "var(--color-neutral-600)" }}>
-          <i className="ph ph-magnifying-glass" style={{ fontSize: 15 }} />
+          <i className="ph ph-magnifying-glass" style={{ fontSize: 14 }} />
           <input
             autoFocus
             value={query}
@@ -252,11 +252,11 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
         </div>
         <div className="row" style={{ gap: 7 }}>
           <button className="link-row" style={{ padding: "9px 11px", flex: 1 }} onClick={() => setScanning(true)}>
-            <i className="ph ph-barcode" style={{ fontSize: 15, color: "var(--color-accent)" }} />
+            <i className="ph ph-barcode" style={{ fontSize: 14, color: "var(--color-accent)" }} />
             <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>Scan a barcode</span>
           </button>
           <button className="link-row" style={{ padding: "9px 11px", flex: 1 }} onClick={() => setCreating(true)}>
-            <i className="ph ph-plus-circle" style={{ fontSize: 15, color: "var(--color-accent)" }} />
+            <i className="ph ph-plus-circle" style={{ fontSize: 14, color: "var(--color-accent)" }} />
             <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>Create a custom food</span>
           </button>
         </div>
@@ -295,7 +295,7 @@ function FoodResultRow({ food, onPick, onRemove }: { food: FoodItem; onPick: () 
   return (
     <div className="link-row" style={{ padding: "10px 11px", cursor: "default" }}>
       <button onClick={onPick} style={{ flex: 1, minWidth: 0, textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", color: "inherit" }}>
-        <div className="trunc" style={{ fontSize: 13.5 }}>{food.name}</div>
+        <div className="trunc" style={{ fontSize: 12.5 }}>{food.name}</div>
         <div className="mu" style={{ marginTop: 1 }}>
           {food.brand ? `${food.brand} · ` : ""}
           {food.servingLabel} · {food.kcal} kcal
@@ -314,7 +314,7 @@ function FoodResultRow({ food, onPick, onRemove }: { food: FoodItem; onPick: () 
         </button>
       )}
       <button onClick={onPick} aria-label={`Add ${food.name}`} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flex: "none", padding: 0 }}>
-        <i className="ph ph-plus-circle" style={{ fontSize: 18, color: "var(--color-accent)" }} />
+        <i className="ph ph-plus-circle" style={{ fontSize: 16, color: "var(--color-accent)" }} />
       </button>
     </div>
   );
@@ -351,9 +351,9 @@ function CustomFoodForm({ onBack, onSave }: { onBack: () => void; onSave: (food:
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
         <div className="row">
           <button onClick={onBack} style={{ background: "none", border: "none", color: "var(--color-accent)", cursor: "pointer", display: "flex" }}>
-            <i className="ph ph-caret-left" style={{ fontSize: 18 }} />
+            <i className="ph ph-caret-left" style={{ fontSize: 16 }} />
           </button>
-          <div style={{ flex: 1, fontSize: 15, fontFamily: "var(--font-heading)" }}>Create a custom food</div>
+          <div style={{ flex: 1, fontSize: 14, fontFamily: "var(--font-heading)" }}>Create a custom food</div>
         </div>
 
         <div className="field">
@@ -379,7 +379,7 @@ function CustomFoodForm({ onBack, onSave }: { onBack: () => void; onSave: (food:
           </div>
         </div>
 
-        <button className="btn btn-primary btn-block" style={{ height: 46, opacity: canSave ? 1 : 0.5 }} disabled={!canSave} onClick={save}>
+        <button className="btn btn-primary btn-block" style={{ height: 48, opacity: canSave ? 1 : 0.5 }} disabled={!canSave} onClick={save}>
           Save
         </button>
       </div>
@@ -390,7 +390,7 @@ function CustomFoodForm({ onBack, onSave }: { onBack: () => void; onSave: (food:
 function NumberField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <div className="row">
-      <span style={{ flex: 1, fontSize: 13 }}>{label}</span>
+      <span style={{ flex: 1, fontSize: 12.5 }}>{label}</span>
       <input
         type="number"
         inputMode="decimal"
