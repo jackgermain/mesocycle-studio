@@ -34,7 +34,7 @@ const MUSCLE_LANDMARKS: Record<string, { mev: number; mrv: number }> = {
 
 /** The lengths worth one tap. Anything else is still reachable by importing or building at that length,
  * and a block already set to something off this list keeps showing its own value. */
-const BLOCK_LENGTHS = [4, 6, 8, 10, 12, 16, 24];
+const BLOCK_LENGTHS = [4, 5, 6, 8, 10, 12, 16, 24];
 
 export default function ProgramDetail() {
   const { programId = "" } = useParams();
