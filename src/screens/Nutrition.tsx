@@ -220,7 +220,7 @@ export default function Nutrition() {
                 ))}
                 <button
                   onClick={() => setAddingTo(meal.id)}
-                  style={{ border: "1px dashed var(--color-neutral-700)", borderRadius: "var(--radius-md)", padding: 11, textAlign: "center", fontSize: "var(--text-sm)", color: "var(--color-accent)", background: "none", cursor: "pointer" }}
+                  className="add-row"
                 >
                   + Add food to {meal.name.toLowerCase()}
                 </button>

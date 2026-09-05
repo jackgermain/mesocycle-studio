@@ -552,7 +552,7 @@ function DayBuilderCard({ program, day, expanded, onToggle }: { program: CoachPr
           <button
             onClick={() => setAdding(true)}
             className="link-row"
-            style={{ border: "1px dashed var(--color-neutral-700)", borderRadius: "var(--radius-md)", padding: 11, justifyContent: "center", color: "var(--color-accent)" }}
+            style={{ border: "1px solid var(--color-divider)", borderRadius: "var(--radius-md)", padding: 11, justifyContent: "center", color: "var(--color-accent)" }}
           >
             <i className="ph ph-plus-circle" style={{ fontSize: 14 }} />
             <span style={{ fontSize: 12.5 }}>Add exercise</span>

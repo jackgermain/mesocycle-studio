@@ -1,5 +1,5 @@
 import type { DraftDay } from "../shared/programConvert";
-import { libraryExercises } from "./exerciseLibrary";
+import { guessMuscleFromLibrary } from "./exerciseLibrary";
 
 /** A minimal RFC-4180-ish CSV parser -- handles quoted fields, escaped quotes ("") inside them, and both
  * \n and \r\n line endings. No external dependency needed for a format this simple. */
@@ -125,41 +125,6 @@ function titleCase(s: string): string {
 
 function isTierCode(v: string): boolean {
   return /^T\d+$/i.test(v.trim());
-}
-
-function normalizeExerciseName(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/\([^)]*\)/g, " ")
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-/** A spreadsheet's own muscle-group tag next to an exercise is often stale -- copy-pasted from a previous
- * row and never updated (a real, common issue in hand-maintained templates, not something we can fix by
- * parsing more carefully). Matching the exercise name against the app's own library gives a more reliable
- * answer when the name is recognizable, so this is tried first and the sheet's tag is only a fallback. */
-function guessMuscleFromLibrary(name: string): string | undefined {
-  const norm = normalizeExerciseName(name);
-  if (!norm) return undefined;
-  const tokens = new Set(norm.split(" ").filter(Boolean));
-
-  let best: { muscle: string; score: number } | undefined;
-  for (const ex of libraryExercises) {
-    const exNorm = normalizeExerciseName(ex.name);
-    if (!exNorm) continue;
-    if (exNorm === norm) return ex.muscle;
-
-    const exTokens = exNorm.split(" ").filter(Boolean);
-    const overlap = exTokens.filter((t) => tokens.has(t)).length;
-    // Requiring 2+ shared words (not just a single generic one like "press" or "raise") before counting
-    // it as a match keeps this from confidently mislabeling an exercise the library doesn't actually have.
-    if (overlap < 2) continue;
-    const score = overlap / exTokens.length;
-    if (!best || score > best.score) best = { muscle: ex.muscle, score };
-  }
-  return best?.muscle;
 }
 
 /** Parses the "RP-style" periodization layout some coaches use instead of a flat table: multiple training

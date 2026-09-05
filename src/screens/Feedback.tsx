@@ -6,6 +6,8 @@ import { pumpWording, jointReasonLabels } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { useAuth } from "../lib/auth";
 import { isJointAlerting, isJointUrgent, isPumpAlerting, sendSignals } from "../shared/signals";
+import { resolveMuscle } from "../shared/muscleNames";
+import { BodyMap } from "../components/BodyMap";
 
 const COMMON_AREAS = ["R shoulder", "L shoulder", "Elbow", "Wrist", "Lower back", "Knee", "Hip"];
 
@@ -19,7 +21,7 @@ const COMMON_AREAS = ["R shoulder", "L shoulder", "Elbow", "Wrist", "Lower back"
 // All offered as chips, because this is answered standing in a gym with a phone in one hand.
 const SET_SCOPES = ["Warm-ups only", "Warm-ups and working sets", "Working sets only", "Every set"];
 const REP_MOMENTS = ["Bottom / stretch", "Middle of the rep", "Top / lockout", "Lowering it", "All the way through"];
-const PROGRESSIONS = ["Warmed up and faded", "Stayed the same", "Built up each set", "Worse after I finished"];
+const PROGRESSIONS = ["Warmed up and faded", "Same throughout", "Worse by the end"];
 const NOT_ONE_EXERCISE = "Not one exercise";
 
 export default function Feedback() {
@@ -39,7 +41,10 @@ export default function Feedback() {
       // real answer. Everything else here is already only what was actually trained today.
       if (ex.muscle === "Full body") return;
       const sets = ex.sets.filter((s) => s.checked && !s.removed).length;
-      if (sets > 0) set.set(ex.muscle, (set.get(ex.muscle) ?? 0) + sets);
+      // Asked about the muscle, not wherever the program filed it -- see resolveMuscle. Two exercises that
+      // resolve to the same muscle merge into one question, which is what the coach wants anyway.
+      const muscle = resolveMuscle(ex.muscle, ex.name);
+      if (sets > 0) set.set(muscle, (set.get(muscle) ?? 0) + sets);
     });
     return Array.from(set.entries());
   }, [day]);
@@ -241,6 +246,11 @@ export default function Feedback() {
               </div>
             </div>
 
+            <div>
+              <div className="sh">Or point to it</div>
+              <BodyMap value={jointLocation} onChange={setJointLocation} />
+            </div>
+
             {exerciseNames.length > 0 && (
               <div>
                 <div className="sh">Which exercise?</div>
@@ -270,7 +280,7 @@ export default function Feedback() {
             </div>
 
             <div>
-              <div className="sh">Where in the lift did it hurt?</div>
+              <div className="sh">When during the rep did it hurt?</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {REP_MOMENTS.map((v) => (
                   <button key={v} className={`chip${repMoment === v ? " on" : ""}`} onClick={() => setRepMoment(repMoment === v ? "" : v)}>
@@ -281,7 +291,7 @@ export default function Feedback() {
             </div>
 
             <div>
-              <div className="sh">Did it settle as you went?</div>
+              <div className="sh">Did it go away?</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {PROGRESSIONS.map((v) => (
                   <button key={v} className={`chip${progression === v ? " on" : ""}`} onClick={() => setProgression(progression === v ? "" : v)}>
@@ -299,7 +309,7 @@ export default function Feedback() {
                 style={{ minHeight: 76, lineHeight: 1.5 }}
                 value={jointDetail}
                 onChange={(e) => setJointDetail(e.target.value)}
-                placeholder="e.g. only once I got past 185, fine again after I dropped the weight"
+                placeholder="e.g. Right knee, doing squat at the bottom of the rep and it only hurt on one rep."
               />
               <div className="mu" style={{ marginTop: 6 }}>Optional.</div>
             </div>

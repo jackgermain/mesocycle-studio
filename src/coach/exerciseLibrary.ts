@@ -211,3 +211,43 @@ export const libraryExercises: LibraryExercise[] = [
   exCardio("Stair Climber"),
   exCardio("Ski Erg"),
 ];
+
+export function normalizeExerciseName(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** A spreadsheet's own muscle-group tag next to an exercise is often stale -- copy-pasted from a previous
+ * row and never updated (a real, common issue in hand-maintained templates, not something we can fix by
+ * parsing more carefully). Matching the exercise name against the app's own library gives a more reliable
+ * answer when the name is recognizable, so this is tried first and the sheet's tag is only a fallback. */
+export function guessMuscleFromLibrary(name: string): string | undefined {
+  const norm = normalizeExerciseName(name);
+  if (!norm) return undefined;
+  const tokens = new Set(norm.split(" ").filter(Boolean));
+
+  let best: { muscle: string; score: number } | undefined;
+  for (const ex of libraryExercises) {
+    const exNorm = normalizeExerciseName(ex.name);
+    if (!exNorm) continue;
+    if (exNorm === norm) return ex.muscle;
+
+    const exTokens = exNorm.split(" ").filter(Boolean);
+    const overlap = exTokens.filter((t) => tokens.has(t)).length;
+    // Requiring 2+ shared words (not just a single generic one like "press" or "raise") before counting
+    // it as a match keeps this from confidently mislabeling an exercise the library doesn't actually have.
+    if (overlap < 2) continue;
+    // Scored against the union of both names rather than the library entry's own length. Dividing by the
+    // entry alone quietly rewards short names: for the input "Hip Abduction Machine", "Hip Adduction
+    // Machine" scored 2/3 and beat "Life Fitness Hip Abduction Machine" at 3/5 -- picking the opposite
+    // movement, and the opposite muscle, on the strength of the words "hip" and "machine".
+    const union = new Set([...exTokens, ...tokens]).size;
+    const score = overlap / union;
+    if (!best || score > best.score) best = { muscle: ex.muscle, score };
+  }
+  return best?.muscle;
+}
