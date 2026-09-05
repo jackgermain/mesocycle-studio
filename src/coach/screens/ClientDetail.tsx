@@ -5,6 +5,7 @@ import { StoreProvider, useStore } from "../../state/store";
 import { useAuth } from "../../lib/auth";
 import { supabase } from "../../lib/supabase";
 import { ActionGroup, ActionRow, InfoBanner } from "../../components/UI";
+import { DeleteAccountSheet } from "../components/DeleteAccountSheet";
 import { createInvite } from "../../shared/invites";
 import { shareBaseUrl } from "../../shared/appUrl";
 import type { TrainingDay } from "../../data/types";
@@ -25,6 +26,7 @@ export default function ClientDetail() {
   const foundAccountId = found?.accountId;
   const [accountActive, setAccountActive] = useState<boolean | null>(null);
   const [revoking, setRevoking] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!foundAccountId) return;
@@ -274,10 +276,39 @@ export default function ClientDetail() {
                   onClick={toggleAccess}
                 />
               )}
+              {/* Only offered once they've actually claimed their invite -- there's no account to erase
+                  before that, just a roster entry, which "Remove from roster" above already handles. */}
+              {client.accountId && (
+                <ActionRow
+                  icon="ph-trash"
+                  iconColor="var(--color-danger)"
+                  tone="danger"
+                  label={`Delete ${client.name.split(" ")[0]}'s account`}
+                  subtitle="Erases their login and everything in it. Permanent."
+                  onClick={() => setDeleting(true)}
+                />
+              )}
             </ActionGroup>
           </div>
         )}
       </div>
+
+      {deleting && client.accountId && (
+        <DeleteAccountSheet
+          accountId={client.accountId}
+          name={client.name}
+          role={client.role === "friend" ? "friend" : "client"}
+          onClose={() => setDeleting(false)}
+          onDeleted={() => {
+            // The server already stripped them from coach_state, but this app holds its own copy and
+            // upserts the whole blob on the next change -- without this it would write them straight back.
+            dispatch({ type: "REMOVE_CLIENT", clientId: client.id });
+            dispatch({ type: "SHOW_TOAST", message: `${client.name}'s account has been deleted.` });
+            setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
+            nav("/coach/clients", { replace: true });
+          }}
+        />
+      )}
     </div>
   );
 }
