@@ -61,7 +61,6 @@ export default function ProgramDetail() {
     program
       ? () => ({
           title: program.name,
-          examples: ["Make every exercise one set", "Add 5 reps to every exercise", "Take the rest down to 60 seconds", "Swap the barbell work for dumbbells"],
           buildPayload: () => ({
             name: program.name,
             loadUnit: program.effortScale,

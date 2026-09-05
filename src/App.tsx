@@ -130,7 +130,6 @@ function ClientLayout() {
     selfDirected && state.program.weeks.length > 0
       ? () => ({
           title: state.program.name,
-          examples: ["Add 5 reps to everything next week", "Take the rest down to 60 seconds", "Swap the barbell work for dumbbells", "Add a set to every back exercise"],
           buildPayload: () => summarizeProgramForAi(state.program, state.program.weeks.find((w) => w.days.some((d) => d.status === "today"))?.number ?? null),
           build: (result) => (result.weeks ? reconcileLiveProgram(state.program, result.weeks) : state.program),
           diff: (next) => diffProgram(state.program, next as Program),

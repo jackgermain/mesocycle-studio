@@ -5,13 +5,6 @@ import { reconcileTemplateDays, diffTemplate, type AiEditResult, type ChangeEntr
 import { useDictation } from "../../shared/useDictation";
 import type { BuilderDay, CoachProgram } from "../types";
 
-const EXAMPLES = [
-  "Make every exercise one set",
-  "Add 5 reps to every exercise",
-  "Take the rest down to 60 seconds",
-  "Drop the last exercise on each day",
-];
-
 /** Only what the model needs, and in the shape it has to return. Sending the whole CoachProgram would
  * ship internal bookkeeping (assignedCount, visibility, phase weights) that has nothing to do with the
  * edit and only adds noise -- and giving it fields it can't return invites it to drop them. */
@@ -50,7 +43,6 @@ export function AiEditSheet({
   return (
     <AiEditShell
       title={program.name}
-      examples={EXAMPLES}
       buildPayload={() => summarizeForAi(program)}
       build={(result) => (result.days ? reconcileTemplateDays(program.days, result.days) : program.days)}
       diff={(next) => diffTemplate(program.days, next)}
@@ -78,7 +70,6 @@ const KIND_TONE: Record<ChangeEntry["kind"], string> = {
  * see a real diff, accept or discard -- and only the shapes differ, so those are props. */
 export function AiEditShell<T>({
   title,
-  examples,
   buildPayload,
   build,
   diff,
@@ -90,7 +81,6 @@ export function AiEditShell<T>({
   autoRun,
 }: {
   title: string;
-  examples: string[];
   buildPayload: () => unknown;
   build: (result: AiEditResult) => T;
   diff: (next: T) => ChangeEntry[];
@@ -181,7 +171,7 @@ export function AiEditShell<T>({
         )}
 
         <div className="field">
-          <label>What would you like changed?</label>
+          <label>Respond to feedback, or edit a program</label>
           <textarea
             className="input"
             style={{ minHeight: 78, lineHeight: 1.5 }}
@@ -204,19 +194,6 @@ export function AiEditShell<T>({
           )}
           {dictation.error && <div className="mu" style={{ marginTop: 6 }}>{dictation.error}</div>}
         </div>
-
-        {!proposal && (
-          <div>
-            <div className="sh">Or tap an example</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {examples.map((ex) => (
-                <button key={ex} className="chip" disabled={busy} onClick={() => setInstruction(ex)}>
-                  {ex}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {proposal && (
           <>

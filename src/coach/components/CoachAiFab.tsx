@@ -11,12 +11,6 @@ import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "../../
 import type { BuilderDay } from "../types";
 import type { Program } from "../../data/types";
 
-const GLOBAL_EXAMPLES = [
-  "Add 5 reps to everything in Jay's next week",
-  "Make every exercise in my template one set",
-  "Take Gran's rest down to 60 seconds",
-];
-
 const idsOf = (changes: ChangeEntry[]) => changes.map((c) => c.exerciseId).filter((id): id is string => !!id);
 
 /** The always-on button for the coach side.
@@ -63,7 +57,6 @@ export function CoachAiFab() {
     if (!program) return null;
     return {
       title: program.name,
-      examples: [],
       buildPayload: () => ({
         name: program.name,
         loadUnit: program.effortScale,
@@ -97,7 +90,6 @@ export function CoachAiFab() {
     const currentWeek = program.weeks.find((w) => w.days.some((d) => d.status === "today"))?.number ?? null;
     return {
       title: `${target.name} · ${program.name}`,
-      examples: [],
       buildPayload: () => summarizeProgramForAi(program, currentWeek),
       build: (result) => (result.weeks ? reconcileLiveProgram(program, result.weeks) : program),
       diff: (next) => diffProgram(program, next as Program),
@@ -154,7 +146,6 @@ export function CoachAiFab() {
       {scope && (
         <AiEditShell
           title={scope.scope.title}
-          examples={scope.scope.examples}
           buildPayload={scope.scope.buildPayload}
           build={scope.scope.build}
           diff={scope.scope.diff}
@@ -175,9 +166,9 @@ export function CoachAiFab() {
           <div className="sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: "88%", overflowY: "auto" }}>
             <div className="row" style={{ marginBottom: 4 }}>
               <div style={{ flex: 1 }}>
-                <div className="scr">Edit with AI</div>
+                <div className="scr">AI</div>
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>
-                  {choices ? "Which one?" : "What do you want changed?"}
+                  {choices ? "Which one?" : "Tell it what to do"}
                 </div>
               </div>
               <button onClick={reset} disabled={loading} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
@@ -210,7 +201,7 @@ export function CoachAiFab() {
             ) : (
               <>
                 <div className="field">
-                  <label>Say who it's about and what to change</label>
+                  <label>Respond to feedback, or edit a program</label>
                   <textarea
                     className="input"
                     style={{ minHeight: 84, lineHeight: 1.5 }}
@@ -232,17 +223,6 @@ export function CoachAiFab() {
                   {dictation.error && <div className="mu" style={{ marginTop: 6 }}>{dictation.error}</div>}
                 </div>
 
-                <div>
-                  <div className="sh">Or tap an example</div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {GLOBAL_EXAMPLES.map((ex) => (
-                      <button key={ex} className="chip" onClick={() => setInstruction(ex)}>
-                        {ex}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 <button
                   className="btn btn-primary btn-block"
                   style={{ height: 46, opacity: instruction.trim() && !loading ? 1 : 0.5 }}
@@ -253,7 +233,7 @@ export function CoachAiFab() {
                   {loading ? "Opening…" : "Show me the change"}
                 </button>
                 <div className="mu" style={{ textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
-                  Name the client or program and it'll find it. You'll review everything before it saves.
+                  Name the client or program. You'll review every change before it saves.
                 </div>
               </>
             )}

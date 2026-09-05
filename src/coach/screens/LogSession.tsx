@@ -165,9 +165,6 @@ function LogSessionBody({
     state.program.weeks.length > 0
       ? () => ({
           title: `${clientName} · ${state.program.name}`,
-          examples: signal
-            ? ["Swap that exercise for something easier on the joint", "Add two warm-up sets to it", "Drop it for the rest of the block", "Cut its load by 20% for the next two weeks"]
-            : ["Add 5 reps to everything next week", "Add 10 lb to every lift next week", "Take next week's rest down to 60 seconds", "Make every exercise 1 set this week"],
           context: signal
             ? [
                 `${clientName.split(" ")[0]} reported ${signal.kind === "joint" ? "joint pain" : signal.kind === "soreness" ? "unrecovered soreness" : "a low pump"}`,
@@ -471,11 +468,6 @@ function LogSessionBody({
       {showAiEdit && (
         <AiEditShell
           title={`${clientName} · ${state.program.name}`}
-          examples={
-            signal
-              ? ["Swap that exercise for something easier on the joint", "Add two warm-up sets to it", "Drop it for the rest of the block", "Cut its load by 20% for the next two weeks"]
-              : ["Add 5 reps to everything next week", "Add 10 lb to every lift next week", "Take next week's rest down to 60 seconds", "Make every exercise 1 set this week"]
-          }
           context={painContext}
           placeholder={signal ? "e.g. swap that for something that doesn't bother his shoulder" : undefined}
           buildPayload={() => summarizeProgramForAi(state.program, week.number)}

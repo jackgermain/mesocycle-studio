@@ -27,7 +27,6 @@ export function AiFabHost({ hidden }: { hidden?: boolean }) {
       {scope && (
         <AiEditShell
           title={scope.title}
-          examples={scope.examples}
           buildPayload={scope.buildPayload}
           build={scope.build}
           diff={scope.diff}

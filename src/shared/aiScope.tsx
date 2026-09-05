@@ -8,7 +8,6 @@ import type { AiEditResult, ChangeEntry } from "../coach/programAiEdit";
  * logger, your own block while training. The button just asks whoever is on screen. */
 export interface AiScope {
   title: string;
-  examples: string[];
   buildPayload: () => unknown;
   build: (result: AiEditResult) => unknown;
   diff: (next: unknown) => ChangeEntry[];
