@@ -17,7 +17,7 @@ const EXAMPLES = [
  * Nothing is written from here. The parsed days go back to the caller's existing import preview, which is
  * where they were always reviewed and accepted, so an AI reading mistake gets caught in the same place a
  * spreadsheet typo would. */
-export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProgramResult) => void; onClose: () => void }) {
+export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProgramResult, sourceLabel: string) => void; onClose: () => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [picked, setPicked] = useState<File[]>([]);
   const [instructions, setInstructions] = useState("");
@@ -31,7 +31,8 @@ export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProg
     try {
       const prepared = await Promise.all(picked.map(prepareFile));
       const result = await parseProgramWithAi(prepared, instructions);
-      onParsed(result);
+      const label = picked.length === 1 ? picked[0].name : `${picked.length} files`;
+      onParsed(result, label);
     } catch (e) {
       setError(e instanceof Error ? e.message : "That didn't work. Try again.");
     } finally {

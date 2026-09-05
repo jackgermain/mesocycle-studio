@@ -13,6 +13,7 @@ import { buildProgramFromDraft, expandCoachProgramToProgram, draftDaysFromProgra
 import type { DraftDay, DraftExercise } from "../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../coach/csvProgram";
 import { AiImportSheet } from "../shared/AiImportSheet";
+import { AiNotes } from "../shared/AiNotes";
 import type { AiProgramResult } from "../shared/aiImport";
 import type { CsvParseResult } from "../coach/csvProgram";
 import { csvDraftDaysToCoachProgram } from "../coach/programOps";
@@ -414,12 +415,12 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
   /** The AI import lands in the same preview as a spreadsheet: its days become `parsed`, and nothing is
    * built until the same Build button at the bottom. Its notes are kept apart from `errors` because they
    * mean something different -- "I guessed this" rather than "this row was unusable". */
-  function applyAi(result: AiProgramResult) {
+  function applyAi(result: AiProgramResult, sourceLabel: string) {
     setShowAi(false);
     setSource(null);
     setSheetNames([]);
     setSelectedSheet(null);
-    setFileName("From a photo or PDF");
+    setFileName(sourceLabel);
     setParsed({ days: result.days, rowCount: result.days.reduce((n, d) => n + d.exercises.length, 0), errors: [] });
     setAiNotes(result.notes ?? []);
     if (result.name) setName(result.name);
@@ -548,11 +549,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
           </InfoBanner>
         )}
 
-        {aiNotes.length > 0 && (
-          <InfoBanner icon="ph-eyes">
-            Check these before you build: {aiNotes.join(" · ")}
-          </InfoBanner>
-        )}
+        <AiNotes notes={aiNotes} verb="build" />
 
         {parsed && parsed.days.length > 0 && (
           <>

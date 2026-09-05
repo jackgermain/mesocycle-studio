@@ -8,6 +8,7 @@ import { duplicateProgram, csvDraftDaysToCoachProgram } from "../programOps";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../csvProgram";
 import { AiImportSheet } from "../../shared/AiImportSheet";
+import { AiNotes } from "../../shared/AiNotes";
 import type { AiProgramResult } from "../../shared/aiImport";
 import type { CsvParseResult } from "../csvProgram";
 import { writeProgramToClient, queueProgramForClient } from "../assignProgram";
@@ -268,12 +269,12 @@ function CsvStep({
   /** Same landing spot as a spreadsheet import: the parsed days fill the preview below and nothing is
    * assigned until the button at the bottom. Notes are kept apart from `errors` -- "I guessed this" is a
    * different thing from "this row was unusable". */
-  function applyAi(result: AiProgramResult) {
+  function applyAi(result: AiProgramResult, sourceLabel: string) {
     setShowAi(false);
     setSource(null);
     setSheetNames([]);
     setSelectedSheet(null);
-    setFileName("From a photo or PDF");
+    setFileName(sourceLabel);
     setParsed({ days: result.days, rowCount: result.days.reduce((n, d) => n + d.exercises.length, 0), errors: [] });
     setAiNotes(result.notes ?? []);
     if (result.name) setProgramName(result.name);
@@ -391,7 +392,7 @@ function CsvStep({
         </div>
         {linkError && <InfoBanner icon="ph-warning">{linkError}</InfoBanner>}
 
-        {aiNotes.length > 0 && <InfoBanner icon="ph-eyes">Check these before you assign: {aiNotes.join(" · ")}</InfoBanner>}
+        <AiNotes notes={aiNotes} verb="assign" />
 
         {sheetNames.length > 1 && (
           <div>
