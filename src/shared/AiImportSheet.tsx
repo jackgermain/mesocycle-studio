@@ -2,13 +2,6 @@ import React, { useRef, useState } from "react";
 import { InfoBanner } from "../components/UI";
 import { AI_ACCEPT, parseProgramWithAi, prepareFile, type AiProgramResult } from "./aiImport";
 
-const EXAMPLES = [
-  "Run the same two days twice a week each, so it's a 4-day split",
-  "Make this 3x a week for 4 weeks",
-  "Keep the exercises, drop it to 3 sets each",
-  "Swap every barbell movement for a dumbbell one",
-];
-
 /** Import a program from a photo, screenshot or PDF, with an instruction in plain English. The point of
  * the instruction box is that most real programs need reshaping, not just reading -- a coach has a 2-day
  * plan on paper and wants it run four days a week -- and describing that is far quicker than rebuilding
@@ -20,7 +13,6 @@ const EXAMPLES = [
 export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProgramResult, sourceLabel: string) => void; onClose: () => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [picked, setPicked] = useState<File[]>([]);
-  const [instructions, setInstructions] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,7 +22,7 @@ export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProg
     setError(null);
     try {
       const prepared = await Promise.all(picked.map(prepareFile));
-      const result = await parseProgramWithAi(prepared, instructions);
+      const result = await parseProgramWithAi(prepared);
       const label = picked.length === 1 ? picked[0].name : `${picked.length} files`;
       onParsed(result, label);
     } catch (e) {
@@ -58,7 +50,7 @@ export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProg
         </div>
 
         <div className="mu" style={{ lineHeight: 1.55 }}>
-          A photo of a written program, a screenshot, or a PDF. Say what you want done with it and it gets built that way.
+          A photo of a written program, a screenshot, or a PDF. It gets read exactly as written — reshape it afterwards with Edit&nbsp;with&nbsp;AI.
         </div>
 
         {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
@@ -89,30 +81,6 @@ export function AiImportSheet({ onParsed, onClose }: { onParsed: (result: AiProg
             </div>
           </div>
         </button>
-
-        <div className="field">
-          <label>What do you want done with it?</label>
-          <textarea
-            className="input"
-            style={{ minHeight: 84, lineHeight: 1.5 }}
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
-            placeholder="e.g. run the same two days twice a week each so it's a 4-day split, for 4 weeks"
-            disabled={busy}
-          />
-          <div className="mu" style={{ marginTop: 6 }}>Optional — leave it blank to import exactly as written.</div>
-        </div>
-
-        <div>
-          <div className="sh">Or tap an example</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {EXAMPLES.map((ex) => (
-              <button key={ex} className="chip" disabled={busy} onClick={() => setInstructions(ex)}>
-                {ex}
-              </button>
-            ))}
-          </div>
-        </div>
 
         <button
           className="btn btn-primary btn-block"

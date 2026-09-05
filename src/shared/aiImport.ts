@@ -61,6 +61,14 @@ export async function prepareFile(file: File): Promise<{ mediaType: string; data
 
 /** Sends the attachments and the coach's instructions to the serverless endpoint, which holds the API key.
  * Throws with a message worth showing rather than returning a null nobody can act on. */
+/** A written program that lists one prescription per movement means one set of it. The shared draft
+ * pipeline assumes 3 when the count is absent, which is right for a spreadsheet with a Sets column left
+ * blank and wrong for a photographed sheet -- it turned a 16-movement chair routine into 48 sets. Decided
+ * here, per source, instead of asking the model to compensate for a default it can't see. */
+function normalizeSets(days: DraftDay[]): DraftDay[] {
+  return days.map((d) => ({ ...d, exercises: d.exercises.map((e) => ({ ...e, sets: e.sets ?? 1 })) }));
+}
+
 /** Repeats the distinct sessions across the week the coach actually asked for.
  *
  * This exists so the model never has to know that the length of the days array is what decides training
@@ -94,10 +102,7 @@ export function expandToFrequency(days: DraftDay[], daysPerWeek?: number): { day
   return { days: expanded, note };
 }
 
-export async function parseProgramWithAi(
-  files: { mediaType: string; data: string }[],
-  instructions: string,
-): Promise<AiProgramResult> {
+export async function parseProgramWithAi(files: { mediaType: string; data: string }[]): Promise<AiProgramResult> {
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
   if (!token) throw new Error("Sign in again — your session expired.");
@@ -105,7 +110,7 @@ export async function parseProgramWithAi(
   const res = await fetch("/api/parse-program", {
     method: "POST",
     headers: { "content-type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ files, instructions }),
+    body: JSON.stringify({ files }),
   });
 
   if (!res.ok) {
@@ -118,6 +123,6 @@ export async function parseProgramWithAi(
   if (!Array.isArray(result.days) || result.days.length === 0) {
     throw new Error(result.notes?.[0] ?? "Nothing readable came back — try a clearer photo.");
   }
-  const { days, note } = expandToFrequency(result.days, result.daysPerWeek);
+  const { days, note } = expandToFrequency(normalizeSets(result.days), result.daysPerWeek);
   return { ...result, days, notes: note ? [...(result.notes ?? []), note] : result.notes };
 }
