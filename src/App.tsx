@@ -22,6 +22,10 @@ import AllDaysCalendar from "./screens/AllDaysCalendar";
 import AllLifts from "./screens/AllLifts";
 import LiftDetail from "./screens/LiftDetail";
 import BuildProgram from "./screens/BuildProgram";
+import { AiScopeProvider, useRegisterAiScope } from "./shared/aiScope";
+import { AiFabHost } from "./shared/AiFabHost";
+import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "./shared/liveProgramAiEdit";
+import type { Program } from "./data/types";
 
 import { CoachStoreProvider, useCoachStore } from "./coach/store";
 import Desk from "./coach/screens/Desk";
@@ -112,13 +116,40 @@ function PreviewBanner() {
 }
 
 function ClientLayout() {
-  const { state } = useStore();
+  const { state, dispatch } = useStore();
   const { account, previewingAsClient } = useAuth();
   const showingPreviewBanner = account?.role === "coach" && previewingAsClient;
+  // A prescribed client's block belongs to their coach, so the button isn't theirs to have. Everyone
+  // self-directed -- friends and family, and a coach training themselves -- owns their own program.
+  const selfDirected = account?.role === "friend" || previewingAsClient;
+
+  // Registered once here rather than per screen: on this side there is only ever one program, so it's in
+  // scope on the calendar, a workout, progress, nutrition — anywhere they happen to be.
+  useRegisterAiScope(
+    selfDirected && state.program.weeks.length > 0
+      ? () => ({
+          title: state.program.name,
+          examples: ["Add 5 reps to everything next week", "Take the rest down to 60 seconds", "Swap the barbell work for dumbbells", "Add a set to every back exercise"],
+          buildPayload: () => summarizeProgramForAi(state.program, state.program.weeks.find((w) => w.days.some((d) => d.status === "today"))?.number ?? null),
+          build: (result) => (result.weeks ? reconcileLiveProgram(state.program, result.weeks) : state.program),
+          diff: (next) => diffProgram(state.program, next as Program),
+          apply: (next, changes, summary) => {
+            dispatch({
+              type: "SET_PROGRAM",
+              program: { ...(next as Program), lastAiEdit: { at: new Date().toISOString(), summary, exerciseIds: changes.map((c) => c.exerciseId).filter((id): id is string => !!id) } },
+            });
+            dispatch({ type: "SHOW_TOAST", message: `Applied — ${changes.length} change${changes.length === 1 ? "" : "s"}.` });
+            setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2600);
+          },
+        })
+      : null,
+  );
+
   return (
     <div className={`app-shell${showingPreviewBanner ? " has-preview-banner" : ""}`}>
       {showingPreviewBanner && <PreviewBanner />}
       <Outlet />
+      <AiFabHost hidden={!selfDirected} />
       {state.toast && <Toast message={state.toast} />}
     </div>
   );
@@ -153,7 +184,9 @@ function ClientProviders() {
 
   return (
     <StoreProvider accountId={account.id} ownerName={account.display_name} coachName={coachName ?? account.display_name}>
-      <ClientLayout />
+      <AiScopeProvider>
+        <ClientLayout />
+      </AiScopeProvider>
     </StoreProvider>
   );
 }
@@ -163,6 +196,7 @@ function CoachLayout() {
   return (
     <div className="app-shell">
       <Outlet />
+      <AiFabHost />
       {state.toast && <Toast message={state.toast} />}
     </div>
   );
@@ -171,7 +205,9 @@ function CoachLayout() {
 function CoachProviders() {
   return (
     <CoachStoreProvider>
-      <CoachLayout />
+      <AiScopeProvider>
+        <CoachLayout />
+      </AiScopeProvider>
     </CoachStoreProvider>
   );
 }

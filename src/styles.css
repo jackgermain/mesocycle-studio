@@ -342,3 +342,26 @@ input[type="number"] { appearance: textfield; }
 .action-row { display: flex; align-items: center; gap: 11px; width: 100%; background: none; border: none; color: inherit; cursor: pointer; text-align: left; padding: 12px 9px; border-radius: 6px; }
 .action-row:not(:disabled):hover { background: rgba(233,233,237,0.05); }
 .action-row + .action-row { border-top: 1px solid var(--color-neutral-900); border-radius: 0; }
+
+/* The always-available AI button. Floats clear of the tab bar (10px + ~34px icons + 16px + safe area)
+   so it never sits on top of the icons, and stays put while the page behind it scrolls. */
+.ai-fab {
+  position: fixed;
+  right: 14px;
+  bottom: calc(74px + env(safe-area-inset-bottom));
+  z-index: 40;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--color-accent-700);
+  background: var(--color-accent-900);
+  color: var(--color-accent-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+.ai-fab:active {
+  background: var(--color-accent-800);
+}

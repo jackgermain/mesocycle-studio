@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AiEditSheet } from "../components/AiEditSheet";
+import { useRegisterAiScope } from "../../shared/aiScope";
+import { reconcileTemplateDays, diffTemplate } from "../programAiEdit";
+import type { BuilderDay } from "../types";
 import { useCoachStore } from "../store";
 import { BackHeader, InfoBanner, Seg, StatCell, Stepper } from "../../components/UI";
 import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
@@ -39,6 +42,47 @@ export default function ProgramDetail() {
   const assignToClient = assignToId ? state.clients.find((c) => c.id === assignToId) : null;
   const [week, setWeek] = useState(1);
   const [showAiEdit, setShowAiEdit] = useState(false);
+
+  // Lets the always-on button act on this template from anywhere on the screen, with the same behaviour
+  // as the header button beside the title.
+  const applyAiEdit = (days: BuilderDay[], changes: { exerciseId?: string }[], summary: string) => {
+    if (!program) return;
+    dispatch({
+      type: "SET_PROGRAM_DAYS",
+      programId: program.id,
+      days,
+      aiEdit: { at: new Date().toISOString(), summary, exerciseIds: changes.map((c) => c.exerciseId).filter((id): id is string => !!id) },
+    });
+    dispatch({ type: "SHOW_TOAST", message: `Applied — ${changes.length} change${changes.length === 1 ? "" : "s"}.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2600);
+  };
+
+  useRegisterAiScope(
+    program
+      ? () => ({
+          title: program.name,
+          examples: ["Make every exercise one set", "Add 5 reps to every exercise", "Take the rest down to 60 seconds", "Swap the barbell work for dumbbells"],
+          buildPayload: () => ({
+            name: program.name,
+            loadUnit: program.effortScale,
+            weeks: program.weeks,
+            days: program.days.map((d) => ({
+              dayId: d.id,
+              name: d.name,
+              exercises: d.exercises.map((ex) => ({
+                exerciseId: ex.id,
+                name: ex.name,
+                muscle: ex.muscle,
+                sets: ex.sets.map((st) => ({ reps: st.reps, load: st.loadValue, restSec: st.restSec ?? null, warmup: st.warmup })),
+              })),
+            })),
+          }),
+          build: (result) => (result.days ? reconcileTemplateDays(program.days, result.days) : program.days),
+          diff: (next) => diffTemplate(program.days, next as BuilderDay[]),
+          apply: (next, changes, summary) => applyAiEdit(next as BuilderDay[], changes, summary),
+        })
+      : null,
+  );
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() => (program?.days[0] ? { [program.days[0].id]: true } : {}));
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 

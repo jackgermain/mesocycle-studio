@@ -12,6 +12,7 @@ import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { SwapScopeSheet } from "../../shared/SwapScopeSheet";
 import { RemoveExerciseSheet } from "../../shared/RemoveExerciseSheet";
 import { AiEditShell } from "../components/AiEditSheet";
+import { useRegisterAiScope } from "../../shared/aiScope";
 import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "../../shared/liveProgramAiEdit";
 import { getSignal, type ClientSignal } from "../../shared/signals";
 import { jointReasonLabels } from "../../data/mockData";
@@ -139,12 +140,58 @@ function LogSessionBody({
   const [confirmRemove, setConfirmRemove] = useState(false);
   const [removeKey, setRemoveKey] = useState<string | null>(null);
   const [showAiEdit, setShowAiEdit] = useState(false);
+
+  // The always-on button edits this client's live program from anywhere on the screen, and carries the
+  // open pain report with it when there is one -- same behaviour as the inline entry points below.
+  const applyLiveAiEdit = (next: Program, changes: { exerciseId?: string }[], summary: string) => {
+    dispatch({
+      type: "SET_PROGRAM",
+      program: { ...next, lastAiEdit: { at: new Date().toISOString(), summary, exerciseIds: changes.map((c) => c.exerciseId).filter((id): id is string => !!id) } },
+    });
+    dispatch({ type: "SHOW_TOAST", message: `Applied — ${changes.length} change${changes.length === 1 ? "" : "s"}.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2600);
+  };
   // Picking the replacement and deciding how far it reaches are two steps: the picked exercise is held
   // here until a scope is chosen, so nothing is written until the coach says how far it should go.
   // Declared up here with the rest, not down beside applySwap where it reads better -- everything below
   // is past an early return, and a hook there only runs on some renders (React error #310).
   const [pendingSwap, setPendingSwap] = useState<LibraryExercise | null>(null);
   const nav = useNavigate();
+
+  // Above the early returns with the other hooks, and everything it needs is worked out inside the
+  // factory rather than up here -- the factory only runs when the button is tapped, by which point the
+  // component has re-rendered with whatever is current.
+  useRegisterAiScope(
+    state.program.weeks.length > 0
+      ? () => ({
+          title: `${clientName} · ${state.program.name}`,
+          examples: signal
+            ? ["Swap that exercise for something easier on the joint", "Add two warm-up sets to it", "Drop it for the rest of the block", "Cut its load by 20% for the next two weeks"]
+            : ["Add 5 reps to everything next week", "Add 10 lb to every lift next week", "Take next week's rest down to 60 seconds", "Make every exercise 1 set this week"],
+          context: signal
+            ? [
+                `${clientName.split(" ")[0]} reported ${signal.kind === "joint" ? "joint pain" : signal.kind === "soreness" ? "unrecovered soreness" : "a low pump"}`,
+                signal.note ? `at the ${signal.note}` : null,
+                signal.exercise ? `on ${signal.exercise}` : null,
+                `severity ${signal.severity}${signal.kind === "joint" ? ` of 4 (${jointReasonLabels[signal.severity - 1]})` : " of 5"}`,
+                signal.detail ? `— ${signal.detail}` : null,
+                `Reported ${new Date(signal.created_at).toLocaleDateString()}.`,
+              ]
+                .filter(Boolean)
+                .join(" ")
+            : undefined,
+          placeholder: signal ? "e.g. swap that for something that doesn't bother his shoulder" : undefined,
+          buildPayload: () =>
+            summarizeProgramForAi(
+              state.program,
+              state.program.weeks.find((w) => w.days.some((d) => d.id === (reported.dayId ?? todayDay?.id)))?.number ?? null,
+            ),
+          build: (result) => (result.weeks ? reconcileLiveProgram(state.program, result.weeks) : state.program),
+          diff: (next) => diffProgram(state.program, next as Program),
+          apply: (next, changes, summary) => applyLiveAiEdit(next as Program, changes, summary),
+        })
+      : null,
+  );
 
   if (!selectedId) {
     return (
