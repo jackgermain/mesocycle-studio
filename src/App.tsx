@@ -24,6 +24,7 @@ import LiftDetail from "./screens/LiftDetail";
 import BuildProgram from "./screens/BuildProgram";
 import { AiScopeProvider, useRegisterAiScope } from "./shared/aiScope";
 import { AiFabHost } from "./shared/AiFabHost";
+import { CoachAiFab } from "./coach/components/CoachAiFab";
 import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "./shared/liveProgramAiEdit";
 import type { Program } from "./data/types";
 
@@ -196,7 +197,7 @@ function CoachLayout() {
   return (
     <div className="app-shell">
       <Outlet />
-      <AiFabHost />
+      <CoachAiFab />
       {state.toast && <Toast message={state.toast} />}
     </div>
   );

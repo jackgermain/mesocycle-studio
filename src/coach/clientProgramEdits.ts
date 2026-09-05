@@ -51,3 +51,33 @@ export function swapExerciseForClient(clientAccountId: string, exerciseName: str
     }),
   );
 }
+
+/** Reads a client's live program without editing it — used when the AI button is invoked from somewhere
+ * that isn't already inside that client's session, so there's nothing loaded to work from yet. */
+export async function readClientProgram(clientAccountId: string): Promise<Program | null> {
+  const { data, error } = await supabase.from("client_state").select("data").eq("account_id", clientAccountId).maybeSingle();
+  if (error) {
+    console.error("Failed to read client state", error);
+    return null;
+  }
+  return ((data?.data as Record<string, unknown>)?.program as Program | undefined) ?? null;
+}
+
+/** Writes a whole edited program back, leaving every other field of the blob alone. Read-merge-write, so
+ * a concurrent change to their meals or weigh-ins isn't clobbered by a program edit. */
+export async function saveClientProgram(clientAccountId: string, program: Program): Promise<boolean> {
+  const { data, error: readError } = await supabase.from("client_state").select("data").eq("account_id", clientAccountId).maybeSingle();
+  if (readError) {
+    console.error("Failed to read client state", readError);
+    return false;
+  }
+  const existing = (data?.data as Record<string, unknown>) ?? {};
+  const { error } = await supabase
+    .from("client_state")
+    .upsert({ account_id: clientAccountId, data: { ...existing, program }, updated_at: new Date().toISOString() });
+  if (error) {
+    console.error("Failed to write client state", error);
+    return false;
+  }
+  return true;
+}

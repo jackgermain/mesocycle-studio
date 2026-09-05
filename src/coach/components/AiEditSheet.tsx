@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { InfoBanner } from "../../components/UI";
 import { reconcileTemplateDays, diffTemplate, type AiEditResult, type ChangeEntry } from "../programAiEdit";
@@ -86,6 +86,8 @@ export function AiEditShell<T>({
   onClose,
   context,
   placeholder,
+  initialInstruction,
+  autoRun,
 }: {
   title: string;
   examples: string[];
@@ -98,13 +100,25 @@ export function AiEditShell<T>({
    * "swap this for something easier on his shoulder" resolves without them having to restate any of it. */
   context?: string;
   placeholder?: string;
+  /** Pre-filled and submitted on mount — used when the instruction was already typed somewhere else (the
+   * always-on button's compose box) and this sheet is only taking over to resolve and review it. */
+  initialInstruction?: string;
+  autoRun?: boolean;
 }) {
-  const [instruction, setInstruction] = useState("");
+  const [instruction, setInstruction] = useState(initialInstruction ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [proposal, setProposal] = useState<{ next: T; changes: ChangeEntry[]; result: AiEditResult } | null>(null);
   // Appends rather than replaces, so several bursts of speech build one instruction.
   const dictation = useDictation((text) => setInstruction((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text)));
+
+  const started = useRef(false);
+  useEffect(() => {
+    if (!autoRun || started.current || !(initialInstruction ?? "").trim()) return;
+    started.current = true;
+    void run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRun, initialInstruction]);
 
   async function run() {
     if (!instruction.trim()) return;
