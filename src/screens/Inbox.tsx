@@ -130,7 +130,7 @@ export default function Inbox() {
           );
         })}
       </div>
-      <div style={{ flex: "none", padding: "8px 12px 18px", background: "#1b1e2e", borderTop: "1px solid var(--color-neutral-900)" }}>
+      <div style={{ flex: "none", padding: "8px 12px 18px", background: "var(--color-bg)", borderTop: "1px solid var(--color-divider)" }}>
         {error && (
           <div style={{ marginBottom: 8 }}>
             <InfoBanner icon="ph-warning">Couldn't send: {error}</InfoBanner>
@@ -139,7 +139,8 @@ export default function Inbox() {
         <div className="row" style={{ gap: 8 }}>
           <input
             className="input"
-            style={{ flex: 1, height: 42 }}
+            // Same surface as a message bubble, so the thing you type into looks like the thing it becomes.
+            style={{ flex: 1, height: 42, background: "var(--color-surface)" }}
             placeholder={`Message ${coachName.split(" ")[0]}`}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}

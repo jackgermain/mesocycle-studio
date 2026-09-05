@@ -224,10 +224,10 @@ export function CoachThread() {
           );
         })}
       </div>
-      <div style={{ flex: "none", padding: "8px 12px 18px", background: "#1b1e2e", borderTop: "1px solid var(--color-neutral-900)" }}>
+      <div style={{ flex: "none", padding: "8px 12px 18px", background: "var(--color-bg)", borderTop: "1px solid var(--color-divider)" }}>
         <div className="row" style={{ gap: 8 }}>
           <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-neutral-500)", flex: "none" }} />
-          <input className="input" style={{ flex: 1, height: 40 }} placeholder={`Message ${thread.clientName}`} value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} />
+          <input className="input" style={{ flex: 1, height: 40, background: "var(--color-surface)" }} placeholder={`Message ${thread.clientName}`} value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} />
           <button onClick={send} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}>
             <i className="ph-fill ph-paper-plane-right" style={{ fontSize: 16, color: "var(--color-accent)" }} />
           </button>
