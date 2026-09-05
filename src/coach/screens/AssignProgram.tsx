@@ -159,7 +159,7 @@ export default function AssignProgram() {
     );
   }
 
-  return <CsvStep client={client} busy={busy} error={error} onBack={() => setMode("choose")} onCreate={(program) => createAndEdit(program)} />;
+  return <CsvStep defaultName={`${client.name.split(" ")[0]}'s Program`} kicker={client.name} busy={busy} error={error} onBack={() => setMode("choose")} onCreate={(program) => createAndEdit(program)} />;
 }
 
 function ConfirmExistingStep({
@@ -257,14 +257,21 @@ function ConfirmExistingStep({
   );
 }
 
-function CsvStep({
-  client,
+/** The real importer: spreadsheet, CSV, or a photo/PDF read by the AI.
+ *
+ * Exported because it was only reachable while assigning a program to someone -- a coach importing into
+ * their own library was being sent to a different screen entirely, which turned out to be a mockup. It
+ * never needed the client for anything but a default name and a header, so those are plain props now. */
+export function CsvStep({
+  defaultName,
+  kicker,
   busy,
   error,
   onBack,
   onCreate,
 }: {
-  client: { name: string };
+  defaultName: string;
+  kicker: string;
   busy: boolean;
   error: string | null;
   onBack: () => void;
@@ -276,7 +283,7 @@ function CsvStep({
   const [source, setSource] = useState<{ type: "file"; file: File } | { type: "url"; url: string } | null>(null);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
   const [selectedSheet, setSelectedSheet] = useState<string | null>(null);
-  const [programName, setProgramName] = useState(`${client.name.split(" ")[0]}'s Program`);
+  const [programName, setProgramName] = useState(defaultName);
   const [weeksCount, setWeeksCount] = useState(6);
   const [linkInput, setLinkInput] = useState("");
   const [linkBusy, setLinkBusy] = useState(false);
@@ -351,7 +358,7 @@ function CsvStep({
           <i className="ph ph-caret-left" />
         </button>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="k">{client.name}</div>
+          <div className="k">{kicker}</div>
           <div className="h1 trunc">Import a program</div>
         </div>
       </div>
@@ -466,7 +473,7 @@ function CsvStep({
             className="btn btn-solid btn-block"
             style={{ height: 48, opacity: totalExercises > 0 && !busy ? 1 : 0.5 }}
             disabled={totalExercises === 0 || busy}
-            onClick={() => parsed && onCreate(csvDraftDaysToCoachProgram(programName || `${client.name}'s Program`, parsed.days, weeksCount))}
+            onClick={() => parsed && onCreate(csvDraftDaysToCoachProgram(programName || defaultName, parsed.days, weeksCount))}
           >
             Create &amp; open in builder
           </button>
