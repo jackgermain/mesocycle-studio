@@ -163,7 +163,7 @@ export default function Nutrition() {
               <div className="num" style={{ fontSize: 21, lineHeight: 1.1, marginTop: 3 }}>{left}</div>
             </div>
             <div style={{ textAlign: "right", paddingRight: canSelfServe ? 20 : 0 }}>
-              <div className="mu">{totals.kcal.toLocaleString()} of {kcalTarget.toLocaleString()}</div>
+              <div className="mu"><span className="mono">{totals.kcal.toLocaleString()}</span> of <span className="mono">{kcalTarget.toLocaleString()}</span></div>
               <div className="mu" style={{ marginTop: 2 }}>{canSelfServe ? "Your target" : `${state.program.coachName}'s target`}</div>
             </div>
           </div>
@@ -181,7 +181,11 @@ export default function Nutrition() {
             <div key={meal.id}>
               <div className="row" style={{ marginBottom: 6 }}>
                 <div className="sh" style={{ flex: 1, margin: 0 }}>{meal.name}</div>
-                {meal.items.length > 0 && <span className="mu">{mealTotals.kcal} kcal</span>}
+                {meal.items.length > 0 && (
+                  <span className="mu">
+                    <span className="mono">{mealTotals.kcal}</span> kcal
+                  </span>
+                )}
                 <button
                   onClick={() => dispatch({ type: "REMOVE_MEAL", mealId: meal.id })}
                   style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-600)", display: "flex", padding: 2, marginLeft: 6 }}
@@ -194,13 +198,16 @@ export default function Nutrition() {
                 {meal.items.map((item) => (
                   <div key={item.id} className="cell row" style={{ padding: "10px 12px" }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div className="trunc" style={{ fontSize: 12.5 }}>{item.name}</div>
+                      <div className="trunc" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>{item.name}</div>
                       <div className="mu trunc" style={{ marginTop: 2 }}>
-                        {item.servings}× {item.servingLabel} · {item.protein}p · {item.carbs}c · {item.fat}f
+                        <span className="mono">{item.servings}×</span> {item.servingLabel} ·{" "}
+                        <span className="mono">
+                          {item.protein}p · {item.carbs}c · {item.fat}f
+                        </span>
                       </div>
                     </div>
                     <div style={{ textAlign: "right", flex: "none", display: "flex", alignItems: "center", gap: 10 }}>
-                      <div className="num" style={{ fontWeight: 700, fontSize: 12.5 }}>{item.kcal}</div>
+                      <div className="num" style={{ fontWeight: 700, fontSize: 13 }}>{item.kcal}</div>
                       <button
                         onClick={() => dispatch({ type: "REMOVE_FOOD_ITEM", mealId: meal.id, itemId: item.id })}
                         style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-600)", display: "flex" }}
@@ -213,7 +220,7 @@ export default function Nutrition() {
                 ))}
                 <button
                   onClick={() => setAddingTo(meal.id)}
-                  style={{ border: "1px dashed var(--color-neutral-700)", borderRadius: "var(--radius-md)", padding: 11, textAlign: "center", fontSize: 12.5, color: "var(--color-accent)", background: "none", cursor: "pointer" }}
+                  style={{ border: "1px dashed var(--color-neutral-700)", borderRadius: "var(--radius-md)", padding: 11, textAlign: "center", fontSize: "var(--text-sm)", color: "var(--color-accent)", background: "none", cursor: "pointer" }}
                 >
                   + Add food to {meal.name.toLowerCase()}
                 </button>
@@ -367,7 +374,9 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
             <div key={meal.id}>
               <div className="row" style={{ marginBottom: 6 }}>
                 <div className="sh" style={{ flex: 1, margin: 0 }}>{meal.name}</div>
-                <span className="mu">{hit.length} of {targets.length}</span>
+                <span className="mu">
+                  <span className="mono">{hit.length}</span> of <span className="mono">{targets.length}</span>
+                </span>
                 <button
                   onClick={() => dispatch({ type: "REMOVE_MEAL", mealId: meal.id })}
                   style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-600)", display: "flex", padding: 2, marginLeft: 6 }}
@@ -445,7 +454,7 @@ function MacroCol({ label, value, target, color, valueColor }: { label: string; 
         <span className="num" style={{ fontWeight: 700, color: valueColor ?? "var(--color-neutral-200)" }}>{value}</span>
       </div>
       <Meter pct={(value / target) * 100} color={color} />
-      <div className="mu" style={{ marginTop: 4, fontSize: 11 }}>of {target} g</div>
+      <div className="mu" style={{ marginTop: 4, fontSize: 11 }}>of <span className="mono">{target}</span> g</div>
     </div>
   );
 }

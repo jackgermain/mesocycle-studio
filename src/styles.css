@@ -287,6 +287,12 @@ a { color: var(--color-accent); text-decoration: none; }
   border: none; border-radius: var(--radius-sm);
 }
 .input:focus-visible { border-color: var(--color-accent); }
+/* Placeholders had no rule at all, so they fell back to the UA default grey -- on this dark ground
+   that reads as almost-invisible and a composer looks empty rather than prompting. Muted rather than
+   faint on purpose: the placeholder is often the only label a field has. The explicit opacity is for
+   Firefox, which dims placeholders by default on top of whatever colour you set. */
+input::placeholder,
+textarea::placeholder { color: var(--color-text-muted); opacity: 1; }
 textarea.input { min-height: 78px; resize: vertical; line-height: 1.5; }
 .seg { display: flex; background: var(--color-surface-sunken); border: none; border-radius: var(--radius-sm); overflow: hidden; }
 .seg-opt {

@@ -295,10 +295,10 @@ function FoodResultRow({ food, onPick, onRemove }: { food: FoodItem; onPick: () 
   return (
     <div className="link-row" style={{ padding: "10px 11px", cursor: "default" }}>
       <button onClick={onPick} style={{ flex: 1, minWidth: 0, textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", color: "inherit" }}>
-        <div className="trunc" style={{ fontSize: 12.5 }}>{food.name}</div>
+        <div className="trunc" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>{food.name}</div>
         <div className="mu" style={{ marginTop: 1 }}>
           {food.brand ? `${food.brand} · ` : ""}
-          {food.servingLabel} · {food.kcal} kcal
+          {food.servingLabel} · <span className="mono">{food.kcal}</span> kcal
         </div>
       </button>
       {onRemove && (
