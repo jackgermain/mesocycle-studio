@@ -4,6 +4,9 @@ import type { DraftDay } from "./programConvert";
 export interface AiProgramResult {
   name?: string;
   weeks?: number;
+  /** How often this trains. The days list holds the distinct sessions; this says how many sessions a
+   * week they add up to, and the app fills the gap. */
+  daysPerWeek?: number;
   days: DraftDay[];
   /** What the model had to guess, couldn't read, or interpreted. Shown to the coach before they accept. */
   notes?: string[];
@@ -58,6 +61,33 @@ export async function prepareFile(file: File): Promise<{ mediaType: string; data
 
 /** Sends the attachments and the coach's instructions to the serverless endpoint, which holds the API key.
  * Throws with a message worth showing rather than returning a null nobody can act on. */
+/** Repeats the distinct sessions across the week the coach actually asked for.
+ *
+ * This exists so the model never has to know that the length of the days array is what decides training
+ * frequency. That's an app detail, and making an instruction depend on it meant "7 days a week" worked or
+ * didn't depending on how it was phrased -- the model would sometimes return one day and a note saying it
+ * repeats, which built a once-a-week program. Now it can answer either way and both are right: state the
+ * frequency, list the sessions once, and the repetition happens here where it's just arithmetic.
+ *
+ * Cycles rather than pads, so two distinct days over four sessions alternate A B A B. */
+export function expandToFrequency(days: DraftDay[], daysPerWeek?: number): DraftDay[] {
+  const target = Math.min(7, Math.max(0, Math.round(daysPerWeek ?? 0)));
+  if (days.length === 0 || target <= days.length) return days;
+
+  const repeats = new Map<string, number>();
+  return Array.from({ length: target }, (_, i) => {
+    const source = days[i % days.length];
+    const seen = (repeats.get(source.name) ?? 0) + 1;
+    repeats.set(source.name, seen);
+    return {
+      ...source,
+      // Only suffixed when it actually repeats, so a genuine Upper/Lower split keeps its own names.
+      name: target > days.length ? `${source.name} ${String.fromCharCode(64 + seen)}` : source.name,
+      exercises: source.exercises.map((e) => ({ ...e })),
+    };
+  });
+}
+
 export async function parseProgramWithAi(
   files: { mediaType: string; data: string }[],
   instructions: string,
@@ -82,5 +112,5 @@ export async function parseProgramWithAi(
   if (!Array.isArray(result.days) || result.days.length === 0) {
     throw new Error(result.notes?.[0] ?? "Nothing readable came back — try a clearer photo.");
   }
-  return result;
+  return { ...result, days: expandToFrequency(result.days, result.daysPerWeek) };
 }

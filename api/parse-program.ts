@@ -35,6 +35,11 @@ const PROGRAM_TOOL = {
     properties: {
       name: { type: "string", description: "A short name for the program, from the document if it has one." },
       weeks: { type: "integer", description: "How many weeks the program runs. Default 4 if unstated." },
+      daysPerWeek: {
+        type: "integer",
+        description:
+          "How many sessions a week this should be trained. If the same session runs several days a week, put the number here and list the session once in days -- the app repeats it. 7 means every day.",
+      },
       days: {
         type: "array",
         description: "One entry per distinct training day in a single week, in the order they're trained.",
@@ -75,9 +80,9 @@ const SYSTEM = `You read training programs out of photos, screenshots and PDFs a
 
 Rules:
 - Return one entry in "days" per distinct training day in a SINGLE week. The app repeats that week for the requested number of weeks, so never repeat a week yourself.
-- The number of entries in "days" IS how many times a week they train. The app has no separate "days per week" setting to fall back on, so if you return one day, they train once a week -- there is no default that fixes it afterwards.
-- So when the user asks for a session to run N days a week, return N entries, repeating the same exercises in each. "1 set each exercise, 7 days a week" over a 16-movement sheet means seven days of those sixteen movements, at one set each. Do not return one day and note that it repeats; that is not the same thing, and the app will build a once-a-week program.
-- Name repeats so they can be told apart in a list: "Full Body A", "Full Body B", and so on.
+- "days" holds the DISTINCT sessions -- an upper day and a lower day are two entries; the same session done on several days is still one entry.
+- "daysPerWeek" is how often they train. Set it whenever the user says or the document implies a frequency, in any wording: "7 days a week", "every day", "three times a week", "run this twice a week each". The app repeats the distinct days across that many sessions, so you never need to duplicate a day yourself to make the count come out.
+- If no frequency is stated anywhere, leave daysPerWeek out and it defaults to however many distinct days there are.
 - Read the actual numbers off the source. Do not invent sets, reps or loads that are not there -- leave the field out instead, and the app fills in its own default.
 - One exception, because the app's default is 3 sets: if the source lists a single prescription per exercise with no set count at all (e.g. just "20 reps", or a list of movements with one number each), that means ONE set. Say sets: 1 explicitly. Only omit "sets" when the source genuinely implies multiple and you can't tell how many.
 - "load" is only a weight when loadMode is "lb". Use "pct1rm" for percentages, "rpe" or "rir" when the source prescribes effort rather than weight.
