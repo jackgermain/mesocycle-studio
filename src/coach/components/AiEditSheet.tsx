@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { InfoBanner } from "../../components/UI";
-import { reconcileTemplateDays, diffTemplate, type AiEditResult, type ChangeEntry } from "../programAiEdit";
+import { reconcileTemplateDays, diffTemplate, sanitizeAiResult, type AiEditResult, type ChangeEntry } from "../programAiEdit";
 import { useDictation } from "../../shared/useDictation";
 import type { BuilderDay, CoachProgram } from "../types";
 
@@ -129,7 +129,7 @@ export function AiEditShell<T>({
         const body = await res.json().catch(() => null);
         throw new Error(body?.error ?? "That didn't work. Try again.");
       }
-      const result = (await res.json()) as AiEditResult;
+      const result = sanitizeAiResult(await res.json());
       const next = build(result);
       setProposal({ next, changes: diff(next), result });
     } catch (e) {
@@ -230,8 +230,8 @@ export function AiEditShell<T>({
               )}
             </div>
 
-            {proposal.result.notes && proposal.result.notes.length > 0 && (
-              <InfoBanner icon="ph-eyes">{proposal.result.notes.join(" · ")}</InfoBanner>
+            {(proposal.result.notes?.length ?? 0) > 0 && (
+              <InfoBanner icon="ph-eyes">{proposal.result.notes!.join(" · ")}</InfoBanner>
             )}
 
             {proposal.changes.length > 0 && (

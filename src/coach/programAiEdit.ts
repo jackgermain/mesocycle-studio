@@ -32,6 +32,30 @@ export interface AiSetDraft {
   warmup?: boolean;
 }
 
+/** Everything a model returns is a suggestion about shape, not a guarantee of one.
+ *
+ * The schema asks for notes as an array of strings and it came back as a single string, which crashed the
+ * review sheet on `.join` -- and got past the guard because a string has a `.length` too. Rather than fix
+ * that one call site, every field is coerced here, once, at the boundary. Nothing downstream should have
+ * to wonder whether it got what it asked for. */
+export function toStringArray(v: unknown): string[] {
+  if (Array.isArray(v)) return v.filter((x): x is string => typeof x === "string" && x.trim().length > 0);
+  if (typeof v === "string" && v.trim().length > 0) return [v];
+  return [];
+}
+
+export function sanitizeAiResult(raw: unknown): AiEditResult {
+  const r = (raw ?? {}) as Record<string, unknown>;
+  return {
+    days: Array.isArray(r.days) ? (r.days as AiDayDraft[]) : undefined,
+    weeks: Array.isArray(r.weeks)
+      ? (r.weeks as { week: number; days: AiDayDraft[] }[]).filter((w) => w && Array.isArray(w.days))
+      : undefined,
+    summary: typeof r.summary === "string" ? r.summary : undefined,
+    notes: toStringArray(r.notes),
+  };
+}
+
 export interface AiEditResult {
   days?: AiDayDraft[];
   weeks?: { week: number; days: AiDayDraft[] }[];

@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabase";
 import type { DraftDay } from "./programConvert";
+import { toStringArray } from "../coach/programAiEdit";
 
 export interface AiProgramResult {
   name?: string;
@@ -119,8 +120,17 @@ export async function parseProgramWithAi(files: { mediaType: string; data: strin
     throw new Error((body?.error ?? "That didn't work. Try again in a moment.") + detail);
   }
 
-  const result = (await res.json()) as AiProgramResult;
-  if (!Array.isArray(result.days) || result.days.length === 0) {
+  const raw = (await res.json()) as Record<string, unknown>;
+  // Same coercion as the editor: the schema is a request, not a promise, and notes has already come back
+  // as a bare string once.
+  const result: AiProgramResult = {
+    name: typeof raw.name === "string" ? raw.name : undefined,
+    weeks: typeof raw.weeks === "number" ? raw.weeks : undefined,
+    daysPerWeek: typeof raw.daysPerWeek === "number" ? raw.daysPerWeek : undefined,
+    days: Array.isArray(raw.days) ? (raw.days as DraftDay[]) : [],
+    notes: toStringArray(raw.notes),
+  };
+  if (result.days.length === 0) {
     throw new Error(result.notes?.[0] ?? "Nothing readable came back — try a clearer photo.");
   }
   const { days, note } = expandToFrequency(normalizeSets(result.days), result.daysPerWeek);
