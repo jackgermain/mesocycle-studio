@@ -64,7 +64,7 @@ export default function Library() {
                       height: 38,
                       flex: "none",
                       borderRadius: 6,
-                      background: e.hasVideo ? "linear-gradient(#20233a, #161826)" : "var(--color-neutral-900)",
+                      background: e.hasVideo ? "linear-gradient(var(--color-surface-raised), var(--color-surface))" : "var(--color-neutral-900)",
                       border: e.hasVideo ? undefined : "1px dashed var(--color-neutral-700)",
                       display: "flex",
                       alignItems: "center",

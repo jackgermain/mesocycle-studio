@@ -192,14 +192,28 @@ export function Logomark({ size = 96 }: { size?: number }) {
 
 export function AuthHero({ children }: { children: React.ReactNode }) {
   return (
-    <div className="screen" style={{ background: "radial-gradient(130% 90% at 50% -8%, #1f2f28, #161826 55%)" }}>
+    <div
+      className="screen"
+      style={{
+        // Was #1f2f28 into #161826 -- the old navy palette, which is why this screen and the splash never
+        // matched the app behind them. Now the real page colour, lit from above so the mark has a halo,
+        // with a much fainter glow off the floor: without it the lower half is a dead black rectangle.
+        background:
+          "radial-gradient(78% 42% at 50% -4%, rgba(76, 224, 143, 0.22), rgba(11, 12, 17, 0) 66%)," +
+          "radial-gradient(130% 60% at 50% 106%, rgba(76, 224, 143, 0.07), rgba(11, 12, 17, 0) 62%)," +
+          "var(--color-bg)",
+      }}
+    >
       <div className="screen-scroll" style={{ gap: 0, padding: "24px 24px calc(24px + env(safe-area-inset-bottom))" }}>
         <div style={{ margin: "auto 0", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Logomark size={120} />
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: 32, fontWeight: 800, letterSpacing: "0.01em", lineHeight: 1, marginTop: 20, textTransform: "uppercase" }}>Jacked</div>
-          <div className="mu" style={{ marginTop: 14, fontSize: 12.5 }}>Coach-programmed training, in your pocket.</div>
+          {/* Bigger and tighter than before. Uppercase at negative tracking reads as a brand rather than
+              as a heading, which is what this screen is doing. */}
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: 40, fontWeight: 800, letterSpacing: "-0.015em", lineHeight: 1, marginTop: 22, textTransform: "uppercase" }}>Jacked</div>
+          <div style={{ width: 48, height: 2, borderRadius: 2, background: "var(--color-accent)", marginTop: 18, opacity: 0.9 }} />
+          <div className="mu" style={{ marginTop: 10, fontSize: 12.5, letterSpacing: "0.02em" }}>Coach-programmed training, in your pocket.</div>
 
-          <div style={{ width: "100%", marginTop: 40, display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
+          <div style={{ width: "100%", marginTop: 34, display: "flex", flexDirection: "column", gap: 12 }}>{children}</div>
         </div>
       </div>
     </div>

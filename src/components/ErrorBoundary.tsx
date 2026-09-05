@@ -36,7 +36,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
           gap: 14,
           padding: 24,
           textAlign: "center",
-          background: "var(--color-bg, #161826)",
+          background: "var(--color-bg, #0b0c11)",
           color: "var(--color-text, #eee)",
         }}
       >
