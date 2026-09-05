@@ -9,6 +9,31 @@ export interface ClientFlag {
   tagLabel: string;
 }
 
+/** One record of a program being put on someone, and why.
+ *
+ * Written at the moment of assignment because it cannot be reconstructed afterwards. The program itself
+ * gets edited, templates get renamed and deleted, and a coach's reasoning is never anywhere at all -- so
+ * six weeks later "why is this person on this?" has no answer, and across a roster there is no way to see
+ * which template suits which kind of person.
+ *
+ * This is the dataset that eventually says whether template selection could be automated, and the audit
+ * trail for a decision in the meantime. `answers` is the slot for the intake questionnaire: a snapshot of
+ * what was true when the choice was made, not a live pointer, since the person's answers will change. */
+export interface ProgramAssignment {
+  at: string;
+  programId: string;
+  programName: string;
+  totalWeeks: number;
+  mode: "now" | "queued";
+  /** The template it was cloned from, when it was cloned from one. */
+  sourceProgramId?: string;
+  /** Why this program for this person, in the coach's own words. */
+  reason?: string;
+  /** Intake answers as they stood at assignment time. Unshaped on purpose -- the questionnaire doesn't
+   * exist yet, and a record written today should still be readable once it does. */
+  answers?: Record<string, unknown>;
+}
+
 export interface CoachClient {
   id: string;
   name: string;
@@ -32,6 +57,8 @@ export interface CoachClient {
   /** Set when a new program has been queued to start once their current one's block ends, rather than
    * replacing it immediately. */
   queuedProgramId?: string;
+  /** Every program this person has been put on, oldest first. Append-only. */
+  assignments?: ProgramAssignment[];
   adherencePct: number;
   flags: ClientFlag[];
   lastSessionSummary?: string;

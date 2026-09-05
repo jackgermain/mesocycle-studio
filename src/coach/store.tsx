@@ -31,7 +31,7 @@ type Action =
   | { type: "DISMISS_FLAG"; clientId: string; flagId: string }
   | { type: "ADD_PROGRAM"; program: CoachProgram }
   | { type: "REMOVE_PROGRAM"; programId: string }
-  | { type: "ASSIGN_PROGRAM"; clientId: string; programId: string; programName: string; totalWeeks: number; mode: "now" | "queued"; sourceProgramId?: string }
+  | { type: "ASSIGN_PROGRAM"; clientId: string; programId: string; programName: string; totalWeeks: number; mode: "now" | "queued"; sourceProgramId?: string; reason?: string }
   | { type: "SET_PROGRAM_NAME"; programId: string; name: string }
   | { type: "SET_PROGRAM_TEMPLATE"; programId: string; isTemplate: boolean }
   | { type: "SET_PROGRAM_VISIBILITY"; programId: string; visibility: "private" | "public" }
@@ -104,11 +104,25 @@ function reducer(state: CoachState, action: Action): CoachState {
       let programs = toCleanup.size ? state.programs.filter((p) => !(toCleanup.has(p.id) && isPendingProgram(p))) : state.programs;
       if (action.sourceProgramId) programs = programs.map((p) => (p.id === action.sourceProgramId ? { ...p, assignedCount: p.assignedCount + 1 } : p));
 
+      const record = {
+        at: new Date().toISOString(),
+        programId: action.programId,
+        programName: action.programName,
+        totalWeeks: action.totalWeeks,
+        mode: action.mode,
+        sourceProgramId: action.sourceProgramId,
+        reason: action.reason?.trim() || undefined,
+      };
+
       const clients = state.clients.map((c) => {
         if (c.id !== action.clientId) return c;
+        // Append-only: an assignment that was later replaced is still the reason this person trained the
+        // way they did for those weeks, and the history is the whole point of keeping it.
+        const assignments = [...(c.assignments ?? []), record];
         if (action.mode === "now") {
           return {
             ...c,
+            assignments,
             programName: action.programName,
             week: 1,
             totalWeeks: action.totalWeeks,
@@ -117,7 +131,7 @@ function reducer(state: CoachState, action: Action): CoachState {
             queuedProgramId: undefined,
           };
         }
-        return { ...c, queuedProgramId: action.programId };
+        return { ...c, assignments, queuedProgramId: action.programId };
       });
       return { ...state, clients, programs };
     }

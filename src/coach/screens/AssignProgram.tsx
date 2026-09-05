@@ -59,14 +59,14 @@ export default function AssignProgram() {
     nav(`/coach/programs/${program.id}?assignTo=${clientId2}`);
   }
 
-  async function finishAssign(cp: CoachProgram, timing: "now" | "queued", sourceProgramId?: string) {
+  async function finishAssign(cp: CoachProgram, timing: "now" | "queued", sourceProgramId?: string, reason?: string) {
     setBusy(true);
     setError(null);
     try {
       const program = expandCoachProgramToProgram(cp, coachName);
       if (timing === "now") await writeProgramToClient(accountId, program);
       else await queueProgramForClient(accountId, program);
-      dispatch({ type: "ASSIGN_PROGRAM", clientId: clientId2, programId: cp.id, programName: program.name, totalWeeks: program.totalWeeks, mode: timing, sourceProgramId });
+      dispatch({ type: "ASSIGN_PROGRAM", clientId: clientId2, programId: cp.id, programName: program.name, totalWeeks: program.totalWeeks, mode: timing, sourceProgramId, reason });
       dispatch({
         type: "SHOW_TOAST",
         message: timing === "now" ? `${program.name} assigned to ${clientName}.` : `${program.name} queued — starts once ${clientName.split(" ")[0]} finishes their current block.`,
@@ -154,7 +154,7 @@ export default function AssignProgram() {
         error={error}
         initialPickedId={forcedProgramId}
         onBack={() => nav(-1)}
-        onAssign={(cp, timing) => finishAssign(cp, timing)}
+        onAssign={(cp, timing, why) => finishAssign(cp, timing, undefined, why)}
       />
     );
   }
@@ -177,8 +177,12 @@ function ConfirmExistingStep({
   error: string | null;
   initialPickedId?: string | null;
   onBack: () => void;
-  onAssign: (p: CoachProgram, timing: "now" | "queued") => void;
+  onAssign: (p: CoachProgram, timing: "now" | "queued", reason?: string) => void;
 }) {
+  // Above the "not found" return on purpose: programs arrive asynchronously, so this component genuinely
+  // renders once without a match and again with one -- a hook below that return would run on the second
+  // render and not the first, which is React #310.
+  const [reason, setReason] = useState("");
   const picked = allPrograms.find((p) => p.id === initialPickedId) ?? null;
   if (!picked) return <div className="screen-scroll">Not found.</div>;
 
@@ -203,11 +207,25 @@ function ConfirmExistingStep({
           <div className="mu" style={{ marginTop: 4 }}>{picked.weeks} weeks · {picked.daysPerWeek} days/week · {picked.days.reduce((n, d) => n + d.exercises.length, 0)} exercises</div>
         </div>
 
+        {/* Recorded against the client, not the program. Six weeks from now the program will have been
+            edited and this is the only thing that still says why they were put on it -- and across a
+            roster it is what shows which template suits which kind of person. */}
+        <div className="field">
+          <label>Why this one for {client.name.split(" ")[0]}? (optional)</label>
+          <textarea
+            className="input"
+            style={{ minHeight: 64, lineHeight: 1.5 }}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="e.g. 3 days free, coming off a layoff, right shoulder history — wanted lower pressing volume to start"
+          />
+        </div>
+
         {isEditingCurrent ? (
           <>
             <InfoBanner icon="ph-info">Updates what {client.name.split(" ")[0]} is already on — their in-progress logs for this block stay put.</InfoBanner>
             <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now")}>
+              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now", reason)}>
                 {busy ? "Saving…" : `Update ${client.name.split(" ")[0]}'s program`}
               </button>
             </div>
@@ -216,10 +234,10 @@ function ConfirmExistingStep({
           <>
             <InfoBanner icon="ph-info">{client.name.split(" ")[0]} is already on a different program — choose how this one should take over.</InfoBanner>
             <div style={{ marginTop: "auto", paddingBottom: 8, display: "flex", flexDirection: "column", gap: 8 }}>
-              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now")}>
+              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now", reason)}>
                 {busy ? "Assigning…" : "Start now — ends their current program"}
               </button>
-              <button className="btn btn-secondary btn-block" style={{ height: 44, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "queued")}>
+              <button className="btn btn-secondary btn-block" style={{ height: 44, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "queued", reason)}>
                 Queue — starts once their current one ends
               </button>
             </div>
@@ -228,7 +246,7 @@ function ConfirmExistingStep({
           <>
             <InfoBanner icon="ph-info">This starts {client.name.split(" ")[0]} at week 1, day 1 — their own copy, editable from here on without touching this saved program.</InfoBanner>
             <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now")}>
+              <button className="btn btn-solid btn-block" style={{ height: 48, opacity: busy ? 0.6 : 1 }} disabled={busy} onClick={() => onAssign(picked, "now", reason)}>
                 {busy ? "Assigning…" : `Assign to ${client.name.split(" ")[0]}`}
               </button>
             </div>
