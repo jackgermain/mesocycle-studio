@@ -281,12 +281,18 @@ a { color: var(--color-accent); text-decoration: none; }
 
 /* — form controls — */
 .field label { display: block; font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; color: var(--color-text-faint); }
+/* Every field gets a visible edge. The fill is --color-surface-sunken (#08090c) against a #0b0c11 page,
+   a difference of three values -- with `border: none` there was nothing to show where a box started or
+   ended, so an empty field read as a gap in the layout rather than something to type in.
+   box-sizing is border-box globally, so the border costs no height. */
 .input {
   width: 100%; min-height: 36px; padding: 8px 12px; font: inherit; font-size: var(--text-base);
   color: var(--color-text); background: var(--color-surface-sunken);
-  border: none; border-radius: var(--radius-sm);
+  border: 1px solid var(--color-neutral-900); border-radius: var(--radius-sm);
 }
-.input:focus-visible { border-color: var(--color-accent); }
+/* This rule existed already and did nothing: it sets a colour on a border the rule above had removed, so
+   focusing a field produced no visible change at all. */
+.input:focus-visible { border-color: var(--color-accent); outline: none; }
 /* Placeholders had no rule at all, so they fell back to the UA default grey -- on this dark ground
    that reads as almost-invisible and a composer looks empty rather than prompting. Muted rather than
    faint on purpose: the placeholder is often the only label a field has. The explicit opacity is for
