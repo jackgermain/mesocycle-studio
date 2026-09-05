@@ -70,14 +70,23 @@ export function coachProgramToDraft(cp: CoachProgram): { name: string; days: Dra
         // Cardio has no representation in the client logging model, so it is dropped here for the same
         // reason expandCoachProgramToProgram drops it rather than mis-converting it.
         .filter((e) => e.kind !== "cardio")
-        .map((e) => ({
-          name: e.name,
-          muscle: e.muscle,
-          sets: e.sets.length || 1,
-          reps: e.sets[0]?.reps,
-          load: e.sets[0]?.loadValue,
-          loadMode: e.loadModeOverride ?? cp.effortScale,
-        })),
+        .map((e) => {
+          // Only a genuine per-exercise override travels. Stamping the program's own effortScale onto
+          // every exercise made the builder open with RPE (or %1RM) preselected on all of them, when the
+          // default for anything nobody has explicitly set is pounds.
+          const mode = e.loadModeOverride;
+          const inLb = (mode ?? cp.effortScale) === "lb";
+          return {
+            name: e.name,
+            muscle: e.muscle,
+            sets: e.sets.length || 1,
+            reps: e.sets[0]?.reps,
+            // A load only survives if it was already a weight. Carrying "7" across from an RPE-scaled
+            // template into a field now labelled LB would silently turn RPE 7 into 7 pounds.
+            load: inLb ? e.sets[0]?.loadValue : undefined,
+            loadMode: mode,
+          };
+        }),
     })),
   };
 }

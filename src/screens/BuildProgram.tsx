@@ -28,7 +28,9 @@ const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
 ];
 
 type Mode = "choose" | "scratch" | "templates" | "csv" | "editMesocycle";
-type ScratchSeed = { name: string; days: DraftDay[]; weeks: number };
+const DOW_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+type ScratchSeed = { name: string; days: DraftDay[]; weeks: number; dows?: number[] };
 
 /** BackHeader's own back button always pops browser history, which would leave this screen entirely from
  * a sub-step reached by local state (not a route) — this small header calls back into that state instead. */
@@ -178,7 +180,7 @@ export default function BuildProgram() {
         coachName={state.program.coachName}
         onBack={() => setMode("choose")}
         onUse={(cp) => {
-          setScratchSeed(coachProgramToDraft(cp));
+          setScratchSeed({ ...coachProgramToDraft(cp), dows: cp.trainingDows });
           setMode("scratch");
         }}
       />
@@ -268,7 +270,11 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
   const [days, setDays] = useState<DraftDay[]>(seed?.days.length ? seed.days : [{ name: "Day 1", exercises: [] }, { name: "Day 2", exercises: [] }, { name: "Day 3", exercises: [] }]);
   const [pickerDay, setPickerDay] = useState<number | null>(null);
   const [savingTemplate, setSavingTemplate] = useState(false);
-  const [dows, setDows] = useState<number[]>(() => defaultDows(seed?.days.length || 3));
+  // A template that trains Mon/Wed/Sat should open on Mon/Wed/Sat, not on an even spread that happens to
+  // land elsewhere -- otherwise a day someone thinks of as Saturday quietly becomes a different weekday.
+  const [dows, setDows] = useState<number[]>(() =>
+    seed?.dows?.length ? resizeDows(seed.dows, seed.days.length || 3) : defaultDows(seed?.days.length || 3),
+  );
 
   function saveAsTemplate() {
     if (!account) return;
@@ -366,8 +372,15 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
         )}
 
         {days.map((d, i) => (
-          <div key={i} className="cell">
+          <div key={i} className="cell" style={d.exercises.length === 0 ? { border: "1px solid var(--color-warning)" } : undefined}>
             <input className="input" style={{ height: 34, fontSize: 12.5 }} value={d.name} onChange={(e) => renameDay(i, e.target.value)} />
+            {/* An empty day still gets scheduled, so it becomes a real dated session with nothing in it.
+                Saying so here is the difference between noticing now and finding out on the morning. */}
+            {d.exercises.length === 0 && (
+              <div className="mu" style={{ marginTop: 6, color: "var(--color-warning)" }}>
+                Nothing in this day — it will show up as a rest day on {DOW_NAMES[dows[Math.min(i, dows.length - 1)]] ?? "its scheduled day"}.
+              </div>
+            )}
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
               {d.exercises.map((ex, ei) => (
                 <DraftExerciseCard key={ei} ex={ex} onChange={(patch) => updateExercise(i, ei, patch)} onRemove={() => removeExercise(i, ei)} />
