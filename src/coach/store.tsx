@@ -40,6 +40,7 @@ type Action =
   | { type: "SYNC_THREADS"; threads: CoachThread[] }
   | { type: "ADD_CUSTOM_EXERCISE"; exercise: LibraryExercise }
   | { type: "SET_PROGRAM_SHAPE"; programId: string; hasDeload?: boolean; openEnded?: boolean }
+  | { type: "SET_PROGRAM_WEEKS"; programId: string; weeks: number }
   | { type: "SET_DAYS_PER_WEEK"; programId: string; count: number }
   | { type: "SET_TRAINING_DOWS"; programId: string; dows: number[] }
   | { type: "RENAME_PROGRAM_DAY"; programId: string; dayId: string; name: string }
@@ -186,6 +187,12 @@ function reducer(state: CoachState, action: Action): CoachState {
     }
     case "ADD_CUSTOM_EXERCISE":
       return { ...state, customExercises: [...state.customExercises, action.exercise] };
+    case "SET_PROGRAM_WEEKS": {
+      // Clamped rather than trusted: this is the repeat count the whole expansion runs off, and a zero or
+      // a negative would produce a program with no days at all.
+      const weeks = Math.max(1, Math.min(52, Math.round(action.weeks)));
+      return { ...state, programs: state.programs.map((p) => (p.id === action.programId ? { ...p, weeks } : p)) };
+    }
     case "SET_PROGRAM_SHAPE": {
       const programs = state.programs.map((p) =>
         p.id === action.programId

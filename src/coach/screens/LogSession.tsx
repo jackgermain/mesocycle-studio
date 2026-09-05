@@ -505,7 +505,7 @@ function LogSessionBody({
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 16, marginBottom: 6 }}>Drop {painEx.name}?</div>
             <div className="mu" style={{ lineHeight: 1.55 }}>
               It comes out of every session left in the block, and nothing replaces it — that muscle loses those sets for
-              the rest of the mesocycle. Sessions already logged keep it.
+              the rest of the block. Sessions already logged keep it.
             </div>
             <div className="row" style={{ gap: 8, marginTop: 12 }}>
               <button className="btn btn-secondary" style={{ flex: 1, height: 44 }} onClick={() => setConfirmRemove(false)}>

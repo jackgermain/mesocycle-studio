@@ -32,6 +32,10 @@ const MUSCLE_LANDMARKS: Record<string, { mev: number; mrv: number }> = {
   Abs: { mev: 6, mrv: 20 },
 };
 
+/** The lengths worth one tap. Anything else is still reachable by importing or building at that length,
+ * and a block already set to something off this list keeps showing its own value. */
+const BLOCK_LENGTHS = [4, 6, 8, 10, 12, 16, 24];
+
 export default function ProgramDetail() {
   const { programId = "" } = useParams();
   const nav = useNavigate();
@@ -205,6 +209,35 @@ export default function ProgramDetail() {
             always labelled a deload whether it was one or not. */}
         <div className="cell">
           <div className="sh">How this block runs</div>
+
+          {!program.openEnded && (
+            <div style={{ marginBottom: 4 }}>
+              <div className="scr" style={{ marginBottom: 7 }}>Block length</div>
+              {/* 4 and 6 are here alongside the requested lengths so an existing shorter block stays
+                  selectable -- without them, opening a 6-week block would show nothing as chosen and the
+                  only way back to 6 would be to rebuild it. */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {BLOCK_LENGTHS.map((n) => (
+                  <button
+                    key={n}
+                    className={`chip${program.weeks === n ? " on" : ""}`}
+                    onClick={() => {
+                      dispatch({ type: "SET_PROGRAM_WEEKS", programId: program.id, weeks: n });
+                      // The week picker below is showing one of the old weeks; if the block just got
+                      // shorter than that, it would be pointing at a week that no longer exists.
+                      setWeek((w) => Math.min(w, n));
+                    }}
+                  >
+                    <span className="mono">{n}</span> weeks
+                  </button>
+                ))}
+                {!BLOCK_LENGTHS.includes(program.weeks) && (
+                  <span className="chip on"><span className="mono">{program.weeks}</span> weeks</span>
+                )}
+              </div>
+            </div>
+          )}
+
           <button
             className="row"
             style={{ width: "100%", background: "none", border: "none", padding: "8px 0", cursor: "pointer", color: "inherit", textAlign: "left" }}

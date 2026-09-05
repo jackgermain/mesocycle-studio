@@ -92,7 +92,7 @@ export default function AllDaysCalendar() {
 
   return (
     <div className="screen">
-      <CloseHeader kicker={state.program.name} title="Whole mesocycle" />
+      <CloseHeader kicker={state.program.name} title="Whole block" />
       <div className="screen-scroll">
         <div className="row" style={{ justifyContent: "space-between" }}>
           <button className="btn btn-secondary btn-icon" style={{ width: 34, height: 34 }} onClick={() => shiftMonth(-1)} aria-label="Previous month">

@@ -91,7 +91,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   }
 
   function confirmPhrase(action: ConfirmAction) {
-    return action === "session" ? "end session" : "end mesocycle";
+    return action === "session" ? "end session" : "end block";
   }
 
   function runConfirmedAction() {
@@ -294,7 +294,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                   <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => nav("/build?edit=1")}>
                     <i className="ph ph-pencil-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 12.5 }}>Edit mesocycle</div>
+                      <div style={{ fontSize: 12.5 }}>Edit block</div>
                       <div className="mu" style={{ marginTop: 1 }}>Change exercises on days you haven't done yet.</div>
                     </div>
                   </button>
@@ -323,7 +323,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                   <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => setConfirmAction("mesocycle")}>
                     <i className="ph ph-x-circle" style={{ fontSize: 16, color: "var(--color-neutral-400)" }} />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 12.5, color: "var(--color-neutral-300)" }}>End mesocycle</div>
+                      <div style={{ fontSize: 12.5, color: "var(--color-neutral-300)" }}>End block</div>
                       <div className="mu" style={{ marginTop: 1 }}>Ends the whole program early — you'll pick a new one next.</div>
                     </div>
                   </button>
@@ -334,7 +334,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                 <div className="row" style={{ marginBottom: 4 }}>
                   <div style={{ flex: 1 }}>
                     <div className="scr">Confirm</div>
-                    <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{confirmAction === "session" ? "End this session?" : "End this mesocycle?"}</div>
+                    <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{confirmAction === "session" ? "End this session?" : "End this block?"}</div>
                   </div>
                   <button onClick={closeOptions} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
                     <i className="ph ph-x" style={{ fontSize: 16 }} />
@@ -355,7 +355,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                   disabled={confirmText.trim().toLowerCase() !== confirmPhrase(confirmAction)}
                   onClick={runConfirmedAction}
                 >
-                  {confirmAction === "session" ? "End session" : "End mesocycle"}
+                  {confirmAction === "session" ? "End session" : "End block"}
                 </button>
               </>
             )}

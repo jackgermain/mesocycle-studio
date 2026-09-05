@@ -39,7 +39,7 @@ export function SwapScopeSheet({
         <button className="link-row" style={{ padding: "12px 12px" }} onClick={() => onChoose("mesocycle")}>
           <i className="ph ph-arrows-clockwise" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12.5 }}>Rest of the mesocycle</div>
+            <div style={{ fontSize: 12.5 }}>Rest of the block</div>
             <div className="mu" style={{ marginTop: 1 }}>Replaces it everywhere it still appears. Sessions already logged stay as they were.</div>
           </div>
         </button>

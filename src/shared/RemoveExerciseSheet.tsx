@@ -41,7 +41,7 @@ export function RemoveExerciseSheet({
         <button className="link-row" style={{ padding: "12px 12px" }} onClick={() => onChoose("mesocycle")}>
           <i className="ph ph-trash" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12.5 }}>Rest of the mesocycle</div>
+            <div style={{ fontSize: 12.5 }}>Rest of the block</div>
             <div className="mu" style={{ marginTop: 1 }}>Takes it out of every session that's left.</div>
           </div>
         </button>

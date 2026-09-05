@@ -108,7 +108,7 @@ export default function BuildProgram() {
                   <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
                 </button>
               </div>
-              <div className="sh">Or start a new mesocycle</div>
+              <div className="sh">Or start a new block</div>
             </>
           )}
 
@@ -343,7 +343,7 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
 
   return (
     <div className="screen">
-      <SubHeader title={editMode ? "Edit mesocycle" : "From scratch"} onBack={onBack} />
+      <SubHeader title={editMode ? "Edit block" : "From scratch"} onBack={onBack} />
       <div className="screen-scroll">
         <div className="field">
           <label>Program name</label>

@@ -296,7 +296,7 @@ export default function ClientDetail() {
                 <ActionRow
                   icon="ph-calendar-plus"
                   disabled={extending}
-                  label={extending ? "Working…" : "Extend their mesocycle"}
+                  label={extending ? "Working…" : "Extend their block"}
                   subtitle="Adds 4 more weeks, repeating their last full week"
                   onClick={extendBlock}
                 />
