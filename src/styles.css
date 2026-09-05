@@ -473,7 +473,10 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
   position: fixed;
   right: 16px;
   bottom: calc(96px + env(safe-area-inset-bottom));
-  z-index: 40;
+  /* Below .sheet-backdrop's 40, not level with it. They were equal, and this button is mounted after
+     <Outlet /> in both layouts, so it painted on top of every sheet in the app -- covering the delete
+     confirmation, the tissue picker, the exercise menu. Same paint order, different layer. */
+  z-index: 30;
   width: 48px;
   height: 48px;
   border-radius: 50%;

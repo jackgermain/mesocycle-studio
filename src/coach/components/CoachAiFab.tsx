@@ -141,6 +141,7 @@ export function CoachAiFab() {
 
   return (
     <>
+      {/* Whether it shows at all is AiFab's own call now -- see FOCUSED_ROUTES. */}
       <AiFab onOpen={open} />
 
       {scope && (

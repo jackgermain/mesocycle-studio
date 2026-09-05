@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import type { AiEditResult, ChangeEntry } from "../coach/programAiEdit";
 
 /** What the always-on AI button would act on, for whatever screen is currently open.
@@ -46,6 +47,26 @@ export function useAiScopeRef(): ScopeRef | null {
   return useContext(Ctx);
 }
 
+/** Screens the button stays off.
+ *
+ * It floats over everything, so on a screen with one job and its own primary action it is pure
+ * obstruction -- there is nothing for it to edit, and it lands on whatever the screen is showing. Import
+ * was reported twice: the button sitting on a file row with no program in scope to act on.
+ *
+ * The check lives inside AiFab rather than in either host, so both sides get it and a third host can't
+ * forget it. Adding a new focused flow means adding one line here. */
+const FOCUSED_ROUTES: RegExp[] = [
+  /^\/coach\/programs\/import/,
+  /^\/coach\/invite/,
+  /^\/coach\/admin/,
+  /^\/onboarding/,
+  /^\/invite\//,
+  // Post-session feedback and the removal-reason flow: both are questionnaires with a required answer,
+  // and the button was reported covering the text on the joint-pain step.
+  /\/finish$/,
+  /\/remove\//,
+];
+
 const FAB_SIZE = 48;
 const FAB_POS_KEY = "jacked.aiFab.pos";
 /** Enough movement to mean "I'm dragging this" rather than a thumb wobbling during a tap. Below it the
@@ -83,6 +104,7 @@ export function AiFab({ onOpen, hidden }: { onOpen: () => void; hidden?: boolean
       return null;
     }
   });
+  const { pathname } = useLocation();
   const drag = useRef<{ dx: number; dy: number; moved: boolean } | null>(null);
   const [dragging, setDragging] = useState(false);
   const [scrolling, setScrolling] = useState(false);
@@ -162,7 +184,7 @@ export function AiFab({ onOpen, hidden }: { onOpen: () => void; hidden?: boolean
     });
   }
 
-  if (hidden) return null;
+  if (hidden || FOCUSED_ROUTES.some((r) => r.test(pathname))) return null;
 
   return (
     <button
