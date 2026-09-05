@@ -38,14 +38,14 @@ const mirror = (s: Shape): Shape => {
 
 const HEAD: Shape[] = [{ kind: "ellipse", cx: 110, cy: 34, rx: 21, ry: 26 }];
 const NECK: Shape[] = [{ kind: "path", d: "M99,52 L121,52 L123,72 L97,72 Z" }];
-const DELT_L: Shape[] = [{ kind: "ellipse", cx: 68, cy: 94, rx: 19, ry: 20 }];
+const DELT_L: Shape[] = [{ kind: "ellipse", cx: 66, cy: 93, rx: 20, ry: 19 }];
 const UPPER_TORSO: Shape[] = [{
   kind: "path",
-  d: "M73,84 C81,72 93,66 110,66 C127,66 139,72 147,84 C152,102 152,124 149,142 L71,142 C68,124 68,102 73,84 Z",
+  d: "M70,86 C79,71 92,64 110,64 C128,64 141,71 150,86 C153,105 152,127 147,144 L73,144 C68,127 67,105 70,86 Z",
 }];
-const MID_TORSO: Shape[] = [{ kind: "path", d: "M71,145 L149,145 C147,164 143,182 140,200 L80,200 C77,182 73,164 71,145 Z" }];
-const PELVIS_L: Shape[] = [{ kind: "path", d: "M110,202 L80,202 C72,213 69,233 77,255 L110,255 Z" }];
-const UPPER_ARM_L: Shape[] = [{ kind: "limb", x1: 60, y1: 106, x2: 50, y2: 156, w: 23 }];
+const MID_TORSO: Shape[] = [{ kind: "path", d: "M73,147 L147,147 C145,166 141,185 138,201 L82,201 C79,185 75,166 73,147 Z" }];
+const PELVIS_L: Shape[] = [{ kind: "path", d: "M110,203 L82,203 C73,214 70,234 78,256 L110,256 Z" }];
+const UPPER_ARM_L: Shape[] = [{ kind: "limb", x1: 58, y1: 106, x2: 49, y2: 156, w: 23 }];
 const ELBOW_L: Shape[] = [{ kind: "ellipse", cx: 48, cy: 169, rx: 12, ry: 12 }];
 const FOREARM_L: Shape[] = [{ kind: "limb", x1: 46, y1: 182, x2: 39, y2: 231, w: 19 }];
 const HAND_L: Shape[] = [{ kind: "ellipse", cx: 36, cy: 250, rx: 11, ry: 15 }];
@@ -330,7 +330,24 @@ function TissueBubble({
             transform: "rotate(45deg)",
           }}
         />
-        <div className="scr" style={{ marginBottom: 8, color: "var(--color-text-muted)" }}>{label} — what does it feel like?</div>
+        <div className="row" style={{ marginBottom: 8, alignItems: "baseline" }}>
+          <div className="scr" style={{ flex: 1, color: "var(--color-text-muted)" }}>{label} — what does it feel like?</div>
+          {/* "Tap the marked one again" was the only way to undo a choice, and nobody found it: tapping the
+              highlighted body part reopens this bubble rather than clearing it, and tapping it a second
+              time hits the dismiss layer, so it felt like the mark was stuck. This says it plainly. */}
+          {current && (
+            <button
+              type="button"
+              onClick={() => onChoose("")}
+              style={{
+                flex: "none", background: "none", border: "none", cursor: "pointer", padding: "2px 0 2px 8px",
+                color: "var(--color-accent)", fontSize: "var(--text-sm)", fontWeight: 700,
+              }}
+            >
+              Clear
+            </button>
+          )}
+        </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
           {TISSUES.map((t) => {
             const on = current === t.id;
@@ -361,7 +378,6 @@ function TissueBubble({
             );
           })}
         </div>
-        {current && <div className="mu" style={{ marginTop: 7 }}>Tap the marked one again to clear it.</div>}
       </div>
     </>
   );
@@ -383,10 +399,11 @@ function BodyView({
   const ordered = selected ? [...regions.filter((r) => r !== selected), selected] : regions;
   // Biggest hit areas first so the smallest end up on top and win the tap.
   const hitOrder = [...regions].sort((a, b) => footprint(b) - footprint(a));
+  const gradId = `bodyfill-${caption.toLowerCase()}`;
   const fillFor = (r: Region) =>
     r.label === location ? tissueColor(tissue)
     : r.id === openId ? "var(--color-neutral-700)"
-    : "var(--color-surface-raised)";
+    : `url(#${gradId})`;
 
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
@@ -396,6 +413,13 @@ function BodyView({
         role="group"
         aria-label={`Body map, ${caption.toLowerCase()} view`}
       >
+        <defs>
+          {/* Ids have to differ between the two views -- both silhouettes live in the same document. */}
+          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-neutral-900)" />
+            <stop offset="100%" stopColor="var(--color-surface-raised)" />
+          </linearGradient>
+        </defs>
         {/* Outlines first, all of them, then every fill on top. Interleaving the two per region would let
             a later region's outline eat into the neighbour drawn before it. */}
         {ordered.map((r) => <ShapeEls key={`o-${r.id}`} shapes={r.shapes} fill="" outline />)}

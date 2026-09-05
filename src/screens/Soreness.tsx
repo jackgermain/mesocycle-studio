@@ -56,37 +56,25 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
         </InfoBanner>
         <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6 }}>Are these healed since you last trained them?</p>
 
+        {/* Same shape as the pump question at the end of a session -- heading, then a flat row of options.
+            These two are the only questions in the app that ask the same thing about several muscles at
+            once, so they read as one pattern rather than two. */}
         {due.map((m) => (
-          <div key={m.muscle} className="cell elev-sm">
-            <div className="row" style={{ alignItems: "baseline", marginBottom: 9 }}>
-              <div style={{ flex: 1, fontSize: 14, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{m.muscle}</div>
-              <span className="mu">last trained {m.lastTrainedDaysAgo} days ago</span>
-            </div>
-            <div style={{ display: "flex", gap: 5 }}>
+          <div key={m.muscle}>
+            <div className="sh">{m.muscle} — last trained {m.lastTrainedDaysAgo} {m.lastTrainedDaysAgo === 1 ? "day" : "days"} ago</div>
+            <div style={{ display: "flex", gap: 6 }}>
               {sorenessWording.map((label, i) => {
                 const v = i + 1;
                 const on = answers[m.muscle] === v;
                 return (
                   <button
                     key={v}
+                    className={`pill-opt${on ? " on" : ""}`}
                     onClick={() => setAnswers((a) => ({ ...a, [m.muscle]: v }))}
-                    style={{
-                      flex: 1,
-                      height: 52,
-                      borderRadius: 8,
-                      border: `1px solid ${on ? "var(--color-accent)" : "var(--color-divider)"}`,
-                      background: on ? "var(--color-accent-900)" : "transparent",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 2,
-                      cursor: "pointer",
-                      color: "inherit",
-                    }}
+                    style={{ height: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2 }}
                   >
-                    <span className="num" style={{ fontWeight: 700, fontSize: 14, color: on ? "var(--color-accent-100)" : "var(--color-neutral-400)" }}>{v}</span>
-                    <span style={{ fontSize: 11, color: on ? "var(--color-accent-300)" : "var(--color-neutral-600)", textAlign: "center", lineHeight: 1.2 }}>{label}</span>
+                    <span style={{ fontSize: 14 }}>{v}</span>
+                    <span style={{ fontSize: 11, opacity: 0.85, textAlign: "center", lineHeight: 1.2 }}>{label}</span>
                   </button>
                 );
               })}
