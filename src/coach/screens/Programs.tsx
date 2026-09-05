@@ -183,7 +183,7 @@ export default function Programs() {
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <button
                 className="cell row"
-                style={{ padding: 13, textAlign: "left", cursor: "pointer" }}
+                style={{ textAlign: "left", cursor: "pointer" }}
                 onClick={() => {
                   setChoosing(false);
                   nav("/coach/programs/import");
@@ -198,7 +198,7 @@ export default function Programs() {
               </button>
               <button
                 className="cell row"
-                style={{ padding: 13, textAlign: "left", cursor: "pointer" }}
+                style={{ textAlign: "left", cursor: "pointer" }}
                 onClick={() => {
                   setChoosing(false);
                   setNaming(true);

@@ -74,14 +74,14 @@ function ClusterLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: str
     <div className="screen">
       <CloseHeader kicker={kicker} title={exName} />
       <div className="screen-scroll">
-        <div className="cell row" style={{ padding: "10px 12px" }}>
+        <div className="cell row">
           <div style={{ flex: 1, fontSize: 12.5, color: "var(--color-neutral-400)" }}>
             {set.prescribed.load ? `${set.prescribed.load} ${state.profile.units}` : "Bodyweight"} · {spec.clusters} × {spec.repsPerCluster[0]} · {spec.intraRestSec}s between
           </div>
           <span className="tag tag-accent">{set.prescribed.effort.scale} {set.prescribed.effort.value}</span>
         </div>
 
-        <div className="cell elev-md" style={{ border: "1px solid var(--color-accent)", padding: 16, textAlign: "center" }}>
+        <div className="cell elev-md" style={{ border: "1px solid var(--color-accent)", textAlign: "center" }}>
           {resting ? (
             <>
               <div className="k">Cluster {current + 1} of {spec.clusters} · rest</div>
@@ -174,14 +174,14 @@ function TempoLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: strin
     <div className="screen">
       <CloseHeader kicker={kicker} title={exName} />
       <div className="screen-scroll">
-        <div className="cell row" style={{ padding: "10px 12px" }}>
+        <div className="cell row">
           <div style={{ flex: 1, fontSize: 12.5, color: "var(--color-neutral-400)" }}>
             {set.prescribed.load} {state.profile.units} · {reps} reps · {set.prescribed.effort.scale} {set.prescribed.effort.value}
           </div>
           <span className="tag tag-accent">ecc {tempo.eccentric} · iso {tempo.isometric} · con {tempo.concentric}</span>
         </div>
 
-        <div className="cell elev-md" style={{ border: "1px solid var(--color-accent)", padding: "18px 14px", textAlign: "center" }}>
+        <div className="cell elev-md" style={{ border: "1px solid var(--color-accent)", textAlign: "center" }}>
           <div className="k">Rep {rep} of {reps}</div>
           <div style={{ fontFamily: "var(--font-heading)", fontSize: 21, lineHeight: 1.2, marginTop: 8, color: "var(--color-accent-100)" }}>{phaseLabel}</div>
           <div className="num" style={{ fontWeight: 700, fontSize: 32, lineHeight: 1, marginTop: 6, color: "var(--color-accent)" }}>{secLeft}</div>
@@ -242,7 +242,7 @@ function AssistedLive({ kicker, exName, dayId, exerciseId, setId }: { kicker: st
     <div className="screen">
       <CloseHeader kicker={kicker} title={exName} />
       <div className="screen-scroll">
-        <div className="cell elev-md" style={{ border: "1px solid var(--color-accent)", padding: 14 }}>
+        <div className="cell elev-md" style={{ border: "1px solid var(--color-accent)" }}>
           <div style={{ marginBottom: 12 }}>
             <div className="k">Set {set.index} · {assist.type === "none" ? "unassisted" : isSplit ? "part-assisted" : assist.type}</div>
             <div className="num" style={{ fontWeight: 700, fontSize: 16, marginTop: 3 }}>

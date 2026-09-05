@@ -293,7 +293,7 @@ function LogSessionBody({
       />
       <div className="screen-scroll" onClick={() => openMenu && setOpenMenu(null)}>
         {signal ? (
-          <div className="cell elev-sm" style={{ borderLeft: "2px solid var(--color-accent)", padding: 12 }}>
+          <div className="cell elev-sm" style={{ borderLeft: "2px solid var(--color-accent)" }}>
             <div className="row" style={{ marginBottom: 6 }}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 {/* Only claim "here" when this really is the session it came from. */}
@@ -425,7 +425,7 @@ function LogSessionBody({
           );
         })}
 
-        <button className="cell row" style={{ padding: "12px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setShowAiEdit(true)}>
+        <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => setShowAiEdit(true)}>
           <i className="ph ph-sparkle" style={{ fontSize: 16, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Edit with AI</div>
@@ -546,7 +546,7 @@ function DayRow({ day, onPick }: { day: TrainingDay; onPick: (id: string) => voi
   const totalSets = exIds.reduce((n, id) => n + (day.exercises[id]?.sets.length ?? 0), 0);
   const doneSets = exIds.reduce((n, id) => n + (day.exercises[id]?.sets.filter((s) => s.checked).length ?? 0), 0);
   return (
-    <button className="cell row" style={{ padding: "10px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => onPick(day.id)}>
+    <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => onPick(day.id)}>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 12.5 }}>{dayDisplayTitle(day)}</div>
         <div className="mu" style={{ marginTop: 2 }}>

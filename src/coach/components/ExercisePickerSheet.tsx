@@ -54,7 +54,7 @@ export function ExercisePickerSheet({
 
         <div style={{ overflowY: "auto", marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
           {filtered.map((e) => (
-            <button key={e.id} className="cell row" style={{ padding: "10px 11px", textAlign: "left", cursor: "pointer" }} onClick={() => onPick(e)}>
+            <button key={e.id} className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => onPick(e)}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="trunc" style={{ fontSize: 12.5 }}>{e.name}</div>
                 <div className="mu" style={{ marginTop: 2 }}>

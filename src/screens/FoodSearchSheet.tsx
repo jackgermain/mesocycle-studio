@@ -141,7 +141,7 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
           </div>
 
           {baseGrams != null ? (
-            <div className="cell" style={{ padding: 12 }}>
+            <div className="cell">
               <div className="row" style={{ marginBottom: 10 }}>
                 <span className="scr" style={{ flex: 1 }}>Amount · 1 serving is {selected.servingLabel}</span>
               </div>
@@ -177,7 +177,7 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
               </div>
             </div>
           ) : (
-            <div className="cell" style={{ padding: 12 }}>
+            <div className="cell">
               <div className="row" style={{ marginBottom: 10 }}>
                 <span className="scr" style={{ flex: 1 }}>Servings ({selected.servingLabel})</span>
               </div>
@@ -203,7 +203,7 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
             </div>
           )}
 
-          <div className="cell" style={{ padding: 12 }}>
+          <div className="cell">
             <div className="scr" style={{ marginBottom: 8 }}>Adds to {mealName}</div>
             <div className="num" style={{ fontWeight: 700, fontSize: 21 }}>{scaled.kcal} kcal</div>
             <div className="row" style={{ gap: 14, marginTop: 8, fontSize: 12.5, color: "var(--color-neutral-400)" }}>
@@ -369,7 +369,7 @@ function CustomFoodForm({ onBack, onSave }: { onBack: () => void; onSave: (food:
           <input className="input" value={servingLabel} onChange={(e) => setServingLabel(e.target.value)} placeholder="e.g. 1 serving, 100 g, 1 scoop (32g)" />
         </div>
 
-        <div className="cell" style={{ padding: 12 }}>
+        <div className="cell">
           <div className="scr" style={{ marginBottom: 8 }}>Macros per serving</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <NumberField label="Calories" value={kcal} onChange={setKcal} placeholder="0" />

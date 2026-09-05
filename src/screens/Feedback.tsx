@@ -7,9 +7,7 @@ import { dayDisplayTitle } from "../data/dayNumbering";
 import { useAuth } from "../lib/auth";
 import { isJointAlerting, isJointUrgent, isPumpAlerting, sendSignals } from "../shared/signals";
 import { resolveMuscle } from "../shared/muscleNames";
-import { BodyMap } from "../components/BodyMap";
-
-const COMMON_AREAS = ["R shoulder", "L shoulder", "Elbow", "Wrist", "Lower back", "Knee", "Hip"];
+import { BodyMap, type Tissue } from "../components/BodyMap";
 
 // The three things a coach asks next anyway, and each one changes the answer.
 //
@@ -61,6 +59,7 @@ export default function Feedback() {
   const [jointYes, setJointYes] = useState<boolean | null>(null);
   const [jointSeverity, setJointSeverity] = useState<number | null>(null);
   const [jointLocation, setJointLocation] = useState("");
+  const [jointTissue, setJointTissue] = useState<Tissue | "">("");
   const [jointExercise, setJointExercise] = useState("");
   const [setScope, setSetScope] = useState("");
   const [repMoment, setRepMoment] = useState("");
@@ -87,7 +86,11 @@ export default function Feedback() {
   const canFinish = jointGateAnswered && jointDetailDone;
 
   // The free-form half of the report, assembled from the chips and whatever they typed.
-  const composedDetail = [setScope, repMoment, progression, jointDetail.trim()].filter(Boolean).join(" · ");
+  // Tissue leads: it's the first thing a coach reads, because muscle pain and joint-line pain lead to
+  // opposite decisions. It stays out of `note`, which is matched on for recurrence and has to be the bare
+  // body area -- the same shoulder reported as "tendon" once and "not sure" the next time is still the
+  // same shoulder.
+  const composedDetail = [jointTissue, setScope, repMoment, progression, jointDetail.trim()].filter(Boolean).join(" · ");
 
   function finish() {
     dispatch({ type: "SET_FEEDBACK_DONE", dayId });
@@ -229,26 +232,17 @@ export default function Feedback() {
               </div>
             </div>
 
-            <div className="field">
-              <label>Where on the body?</label>
-              <textarea className="input" value={jointLocation} onChange={(e) => setJointLocation(e.target.value)} placeholder="Front of right shoulder, worse on the incline press" />
+            <div>
+              <div className="sh">Where on the body?</div>
+              <BodyMap
+                location={jointLocation}
+                tissue={jointTissue}
+                onPick={(loc, t) => {
+                  setJointLocation(loc);
+                  setJointTissue(t);
+                }}
+              />
               <div className="mu" style={{ marginTop: 6 }}>Required when pain is 2 or higher.</div>
-            </div>
-
-            <div>
-              <div className="sh">Or tap a common area</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {COMMON_AREAS.map((a) => (
-                  <button key={a} className={`chip${jointLocation === a ? " on" : ""}`} onClick={() => setJointLocation(a)}>
-                    {a}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="sh">Or point to it</div>
-              <BodyMap value={jointLocation} onChange={setJointLocation} />
             </div>
 
             {exerciseNames.length > 0 && (

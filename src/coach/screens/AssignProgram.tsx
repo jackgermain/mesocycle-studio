@@ -198,7 +198,7 @@ function ConfirmExistingStep({
       </div>
       <div className="screen-scroll">
         {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-        <div className="cell" style={{ padding: 14 }}>
+        <div className="cell">
           <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{picked.name}</div>
           <div className="mu" style={{ marginTop: 4 }}>{picked.weeks} weeks · {picked.daysPerWeek} days/week · {picked.days.reduce((n, d) => n + d.exercises.length, 0)} exercises</div>
         </div>
@@ -344,7 +344,7 @@ function CsvStep({
         </InfoBanner>
 
         <input ref={fileRef} type="file" accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style={{ display: "none" }} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
-        <button className="cell row" style={{ padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => fileRef.current?.click()}>
+        <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => fileRef.current?.click()}>
           <i className="ph ph-file-arrow-up" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{fileName ?? "Choose a file"}</div>
@@ -358,7 +358,7 @@ function CsvStep({
           <div style={{ flex: 1, height: 1, background: "var(--color-neutral-800)" }} />
         </div>
 
-        <button className="cell row" style={{ padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => setShowAi(true)}>
+        <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => setShowAi(true)}>
           <i className="ph ph-sparkle" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>From a photo or PDF</div>
@@ -372,7 +372,7 @@ function CsvStep({
           <div style={{ flex: 1, height: 1, background: "var(--color-neutral-800)" }} />
         </div>
 
-        <div className="cell" style={{ padding: 12 }}>
+        <div className="cell">
           <div className="scr" style={{ marginBottom: 6 }}>Link a OneDrive file</div>
           <div className="row" style={{ gap: 8 }}>
             <input
@@ -420,7 +420,7 @@ function CsvStep({
               <label>Program name</label>
               <input className="input" value={programName} onChange={(e) => setProgramName(e.target.value)} />
             </div>
-            <div className="cell" style={{ padding: 9 }}>
+            <div className="cell">
               <div className="scr">Weeks (repeats this template)</div>
               <div className="row" style={{ marginTop: 3, justifyContent: "center" }}>
                 <Stepper value={weeksCount} onChange={setWeeksCount} min={1} max={16} width={34} fontSize={16} />
@@ -431,7 +431,7 @@ function CsvStep({
               <div className="sh">Parsed from your file · {parsed.rowCount} rows</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {parsed.days.map((d, i) => (
-                  <div key={i} className="cell" style={{ padding: 11 }}>
+                  <div key={i} className="cell">
                     <div style={{ fontFamily: "var(--font-heading)", fontSize: 12.5 }}>{d.name}</div>
                     <div className="mu" style={{ marginTop: 4, lineHeight: 1.6 }}>
                       {d.exercises.map((e) => `${e.name}${e.sets ? ` (${e.sets}×${e.reps ?? 10})` : ""}`).join(" · ")}

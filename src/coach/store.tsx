@@ -6,6 +6,7 @@ import { defaultRestSec } from "./rest";
 import { isPendingProgram } from "./programOps";
 import { resizeDows } from "../shared/trainingDays";
 import { supabase } from "../lib/supabase";
+import { mergeThreads } from "./mergeThreads";
 import { useAuth } from "../lib/auth";
 
 export interface CoachState {
@@ -36,6 +37,7 @@ type Action =
   | { type: "SET_PROGRAM_VISIBILITY"; programId: string; visibility: "private" | "public" }
   | { type: "SEND_MESSAGE"; threadId: string; text: string; clientName?: string }
   | { type: "MARK_READ"; threadId: string }
+  | { type: "SYNC_THREADS"; threads: CoachThread[] }
   | { type: "ADD_CUSTOM_EXERCISE"; exercise: LibraryExercise }
   | { type: "SET_DAYS_PER_WEEK"; programId: string; count: number }
   | { type: "SET_TRAINING_DOWS"; programId: string; dows: number[] }
@@ -158,6 +160,10 @@ function reducer(state: CoachState, action: Action): CoachState {
       }
       const threads = state.threads.map((t) => (t.id === action.threadId ? { ...t, bubbles: [...t.bubbles, bubble], preview: action.text, unread: false, time: now } : t));
       return { ...state, threads };
+    }
+    case "SYNC_THREADS": {
+      const merged = mergeThreads(state.threads, action.threads);
+      return merged === state.threads ? state : { ...state, threads: merged };
     }
     case "MARK_READ": {
       const threads = state.threads.map((t) => (t.id === action.threadId ? { ...t, unread: false } : t));
@@ -372,6 +378,35 @@ export function CoachStoreProvider({ children }: { children: React.ReactNode }) 
       });
     return () => {
       active = false;
+    };
+  }, [accountId]);
+
+  // Clients append to this coach's threads through send_client_message, and nothing tells the coach's
+  // open app that it happened. Poll for just the threads -- selecting the JSON path rather than the whole
+  // blob, which holds every program and client -- and merge (see SYNC_THREADS). Without this an unread
+  // message doesn't show until the app is reopened, and may not survive that either.
+  useEffect(() => {
+    if (!accountId) return;
+    let active = true;
+    async function poll() {
+      if (!active || !readyRef.current) return;
+      const { data, error } = await supabase
+        .from("coach_state")
+        .select("data->threads")
+        .eq("account_id", accountId)
+        .maybeSingle();
+      if (!active || error || !data) return;
+      const threads = (data as unknown as { threads?: CoachThread[] }).threads;
+      if (Array.isArray(threads) && threads.length) dispatch({ type: "SYNC_THREADS", threads });
+    }
+    const id = setInterval(poll, 30000);
+    const onFocus = () => void poll();
+    window.addEventListener("focus", onFocus);
+    void poll();
+    return () => {
+      active = false;
+      clearInterval(id);
+      window.removeEventListener("focus", onFocus);
     };
   }, [accountId]);
 

@@ -126,7 +126,7 @@ export function FeedbackInbox({ onClose, onCountChange }: { onClose: () => void;
           {notes === null && <div className="mu" style={{ textAlign: "center", padding: 20 }}>Loading…</div>}
           {notes?.length === 0 && <div className="mu" style={{ textAlign: "center", padding: 20 }}>No feedback yet.</div>}
           {notes?.map((n) => (
-            <div key={n.id} className="cell" style={{ padding: 12, opacity: removing === n.id ? 0.5 : 1 }}>
+            <div key={n.id} className="cell" style={{ opacity: removing === n.id ? 0.5 : 1 }}>
               <div className="row" style={{ marginBottom: 5 }}>
                 <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>{n.author_name}</span>
                 <span className="mu">{new Date(n.created_at).toLocaleDateString()}</span>

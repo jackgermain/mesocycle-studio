@@ -196,7 +196,7 @@ export default function Nutrition() {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {meal.items.map((item) => (
-                  <div key={item.id} className="cell row" style={{ padding: "10px 12px" }}>
+                  <div key={item.id} className="cell row">
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div className="trunc" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>{item.name}</div>
                       <div className="mu trunc" style={{ marginTop: 2 }}>
@@ -385,7 +385,7 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
                   <i className="ph ph-x" style={{ fontSize: 12 }} />
                 </button>
               </div>
-              <div className="cell" style={{ padding: 10 }}>
+              <div className="cell">
                 <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                   {targets.map((t) => {
                     const on = hit.includes(t.category);

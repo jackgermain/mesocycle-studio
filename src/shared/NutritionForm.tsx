@@ -165,7 +165,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
         <div>
           <div className="sh">Macro targets</div>
 
-          <div className="cell" style={{ padding: 11, marginBottom: 10 }}>
+          <div className="cell" style={{ marginBottom: 10 }}>
             <div className="row" style={{ marginBottom: 4 }}>
               <i className="ph ph-calculator" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
               <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Protein-first calculator</span>
@@ -192,7 +192,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             </button>
           </div>
 
-          <div className="cell" style={{ padding: 11, marginBottom: 10 }}>
+          <div className="cell" style={{ marginBottom: 10 }}>
             <div className="row" style={{ marginBottom: 4 }}>
               <i className="ph ph-scales" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
               <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Rate-of-change calculator</span>
@@ -222,13 +222,13 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             </button>
           </div>
 
-          <div className="cell" style={{ padding: 11 }}>
+          <div className="cell">
             <CalcRow label="Calories" unit="kcal" value={kcal} onChange={setKcal} step={50} />
             <CalcRow label="Protein" unit="g" value={protein} onChange={setProtein} step={5} />
             <CalcRow label="Carbs" unit="g" value={carbs} onChange={setCarbs} step={10} />
             <CalcRow label="Fat" unit="g" value={fat} onChange={setFat} step={5} />
           </div>
-          <div className="cell" style={{ padding: 11, marginTop: 8 }}>
+          <div className="cell" style={{ marginTop: 8 }}>
             <CalcRow label="Training day bonus" unit="g carbs" value={carbBonus} onChange={setCarbBonus} step={10} />
             <div className="row" style={{ marginTop: 6 }}>
               <span style={{ flex: 1, fontSize: 12.5 }}>Rate target</span>
@@ -248,7 +248,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
           <div className="sh">Portion targets · per meal</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {portions.map((t) => (
-              <div key={t.category} className="cell" style={{ padding: 11 }}>
+              <div key={t.category} className="cell">
                 <div className="row" style={{ marginBottom: 8 }}>
                   <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>{t.category}</span>
                   <span style={{ fontSize: 12.5, color: "var(--color-accent-300)" }}>{fmtQty(t)}</span>
@@ -379,7 +379,7 @@ function PctField({ label, value, onChange, step }: { label: string; value: numb
   }
 
   return (
-    <div className="cell" style={{ flex: 1, padding: 9 }}>
+    <div className="cell" style={{ flex: 1 }}>
       <div className="scr">{label}</div>
       <div className="row" style={{ marginTop: 3, gap: 4, justifyContent: "center" }}>
         <button onClick={() => onChange(clamp(value - step))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0, flex: "none" }}>

@@ -22,6 +22,10 @@ export interface AppState {
   /** Foods this person has manually entered themselves (name + macros, no database match) -- searchable
    * alongside the built-in list and live database results from then on. */
   customFoods: FoodItem[];
+  /** When this person last opened their inbox, ISO. Drives the tab badge: the stored thread's own
+   * `unread` flag means "unread by the coach", so the client side needs its own mark. Null means they
+   * have never opened it, and every coach message counts as new. */
+  inboxReadAt: string | null;
   toast: string | null;
 }
 
@@ -33,6 +37,7 @@ function buildBlankState(ownerName: string, coachName: string): AppState {
     profile: buildSelfProfile(ownerName),
     program: { name: "Your program", totalWeeks: 0, coachName, weeks: [] },
     nextProgram: null,
+    inboxReadAt: null,
     removals: [],
     meals: [],
     weighIns: [],
@@ -68,6 +73,7 @@ type Action =
   | { type: "REMOVE_CUSTOM_FOOD"; foodId: string }
   | { type: "LOG_WEIGHIN"; date: string; weight: number }
   | { type: "TOGGLE_PORTION"; mealId: string; category: import("../data/types").PortionCategory }
+  | { type: "MARK_INBOX_READ" }
   | { type: "SHOW_TOAST"; message: string }
   | { type: "CLEAR_TOAST" };
 
@@ -366,6 +372,8 @@ function reducer(state: AppState, action: Action): AppState {
     }
     case "SHOW_TOAST":
       return { ...state, toast: action.message };
+    case "MARK_INBOX_READ":
+      return { ...state, inboxReadAt: new Date().toISOString() };
     case "CLEAR_TOAST":
       return { ...state, toast: null };
     default:

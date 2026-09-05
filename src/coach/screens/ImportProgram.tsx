@@ -83,7 +83,7 @@ export default function ImportProgram() {
                 <span className="chip">New exercise</span>
               </div>
             </div>
-            <div className="cell row" style={{ padding: "10px 11px" }}>
+            <div className="cell row">
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="trunc" style={{ fontSize: 12.5 }}>&ldquo;Face pulls 100 reps&rdquo;</div>
                 <div className="mu" style={{ marginTop: 2 }}>p.6 · no sets given</div>
@@ -119,7 +119,7 @@ function StatCell({ label, value, valueColor }: { label: string; value: React.Re
 
 function FileRow({ icon, name, note, ok }: { icon: string; name: string; note: string; ok: boolean }) {
   return (
-    <div className="cell row" style={{ padding: "10px 11px" }}>
+    <div className="cell row">
       <div style={{ width: 34, height: 42, flex: "none", borderRadius: 4, background: "var(--color-neutral-900)", border: "1px solid var(--color-neutral-800)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-neutral-500)" }}>
         <i className={`ph ${icon}`} style={{ fontSize: 14 }} />
       </div>

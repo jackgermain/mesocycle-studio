@@ -50,7 +50,7 @@ export default function PlatformAdmin() {
         {coaches === null && !error && <div className="mu" style={{ textAlign: "center", padding: 20 }}>Loading…</div>}
 
         {coaches?.map((c) => (
-          <div key={c.id} className="cell row" style={{ padding: 12 }}>
+          <div key={c.id} className="cell row">
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className="trunc" style={{ fontSize: 14, fontFamily: "var(--font-heading)" }}>{c.display_name}</div>
               <div className="mu" style={{ marginTop: 2 }}>

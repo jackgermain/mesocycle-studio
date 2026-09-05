@@ -66,7 +66,7 @@ export default function BuildProgram() {
         <div className="screen-scroll">
           {hasCurrentProgram && (
             <>
-              <div className="cell row" style={{ padding: "14px 12px", cursor: "default", borderColor: "var(--color-accent-700)" }}>
+              <div className="cell row" style={{ cursor: "default", borderColor: "var(--color-accent-700)" }}>
                 <i className="ph-fill ph-calendar-check" style={{ fontSize: 20, color: "var(--color-accent)", marginRight: 4 }} />
                 <button
                   onClick={() => nav("/block")}
@@ -95,7 +95,7 @@ export default function BuildProgram() {
 
           <InfoBanner icon="ph-info">Nothing here is prescribed by {state.program.coachName === state.profile.name ? "anyone" : "your coach"} — build your own from scratch, or start from one of {state.program.coachName}'s templates and make it yours.</InfoBanner>
 
-          <button className="cell row" style={{ padding: "14px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setMode("scratch")}>
+          <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => setMode("scratch")}>
             <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Build from scratch</div>
@@ -104,7 +104,7 @@ export default function BuildProgram() {
             <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
           </button>
 
-          <button className="cell row" style={{ padding: "14px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setMode("templates")}>
+          <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => setMode("templates")}>
             <i className="ph ph-stack" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Use a saved template</div>
@@ -113,7 +113,7 @@ export default function BuildProgram() {
             <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
           </button>
 
-          <button className="cell row" style={{ padding: "14px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setMode("csv")}>
+          <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => setMode("csv")}>
             <i className="ph ph-file-arrow-up" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Import a program</div>
@@ -234,7 +234,7 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
       <div className="screen-scroll">
         {templates?.length === 0 && <InfoBanner icon="ph-tray">{coachName} hasn't saved any templates yet.</InfoBanner>}
         {(templates ?? []).map((t) => (
-          <div key={t.id} className="cell" style={{ padding: 12 }}>
+          <div key={t.id} className="cell">
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{t.name}</div>
             <div className="mu" style={{ marginTop: 2 }}>{t.weeks} weeks · {t.daysPerWeek} days/week</div>
             <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(expandCoachProgramToProgram(t, coachName))}>
@@ -318,7 +318,7 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
           <InfoBanner icon="ph-info">Editing what's still ahead — any week already done stays exactly as logged.</InfoBanner>
         ) : (
           <div className="row" style={{ gap: 8 }}>
-            <div className="cell" style={{ flex: 1, padding: 9 }}>
+            <div className="cell" style={{ flex: 1 }}>
               <div className="scr">Weeks</div>
               <div className="row" style={{ marginTop: 3, gap: 4 }}>
                 <button onClick={() => setWeeksCount((v) => Math.max(1, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
@@ -330,7 +330,7 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
                 </button>
               </div>
             </div>
-            <div className="cell" style={{ flex: 1, padding: 9 }}>
+            <div className="cell" style={{ flex: 1 }}>
               <div className="scr">Days / week</div>
               <div className="row" style={{ marginTop: 3, gap: 4 }}>
                 <button onClick={() => setDaysCount(days.length - 1)} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", padding: 0 }}>
@@ -346,14 +346,14 @@ function ScratchStep({ seed, editMode, onBack, onCreate }: { seed: ScratchSeed |
         )}
 
         {!editMode && (
-          <div className="cell" style={{ padding: 11 }}>
+          <div className="cell">
             <div className="scr" style={{ marginBottom: 7 }}>Training days</div>
             <DayOfWeekPicker value={dows} onChange={setTrainingDows} />
           </div>
         )}
 
         {days.map((d, i) => (
-          <div key={i} className="cell" style={{ padding: 11 }}>
+          <div key={i} className="cell">
             <input className="input" style={{ height: 34, fontSize: 12.5 }} value={d.name} onChange={(e) => renameDay(i, e.target.value)} />
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
               {d.exercises.map((ex, ei) => (
@@ -481,7 +481,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
         </InfoBanner>
 
         <input ref={fileRef} type="file" accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style={{ display: "none" }} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
-        <button className="cell row" style={{ padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => fileRef.current?.click()}>
+        <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => fileRef.current?.click()}>
           <i className="ph ph-file-arrow-up" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="trunc" style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{fileName ?? "Choose a file"}</div>
@@ -495,7 +495,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
           <div style={{ flex: 1, height: 1, background: "var(--color-neutral-800)" }} />
         </div>
 
-        <button className="cell row" style={{ padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => setShowAi(true)}>
+        <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => setShowAi(true)}>
           <i className="ph ph-sparkle" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>From a photo or PDF</div>
@@ -509,7 +509,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
           <div style={{ flex: 1, height: 1, background: "var(--color-neutral-800)" }} />
         </div>
 
-        <div className="cell" style={{ padding: 12 }}>
+        <div className="cell">
           <div className="scr" style={{ marginBottom: 6 }}>Link a OneDrive file</div>
           <div className="row" style={{ gap: 8 }}>
             <input
@@ -557,7 +557,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
               <label>Program name</label>
               <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
-            <div className="cell" style={{ padding: 9 }}>
+            <div className="cell">
               <div className="scr">Weeks (repeats this template)</div>
               <div className="row" style={{ marginTop: 3, gap: 8, justifyContent: "center" }}>
                 <button onClick={() => setWeeksCount((v) => Math.max(1, v - 1))} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer" }}>
@@ -574,7 +574,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
               <div className="sh">Parsed from your file · {parsed.rowCount} rows</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {parsed.days.map((d, i) => (
-                  <div key={i} className="cell" style={{ padding: 11 }}>
+                  <div key={i} className="cell">
                     <div style={{ fontFamily: "var(--font-heading)", fontSize: 12.5 }}>{d.name}</div>
                     <div className="mu" style={{ marginTop: 4, lineHeight: 1.6 }}>
                       {d.exercises.map((e) => `${e.name}${e.sets ? ` (${e.sets}×${e.reps ?? 10})` : ""}`).join(" · ")}
@@ -655,7 +655,7 @@ function DraftExerciseCard({ ex, onChange, onRemove }: { ex: DraftExercise; onCh
   const range = LOAD_RANGE[mode];
 
   return (
-    <div className="cell" style={{ padding: "10px 11px", background: "var(--color-neutral-900)" }}>
+    <div className="cell" style={{ background: "var(--color-neutral-900)" }}>
       <div className="row" style={{ marginBottom: 8 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="trunc" style={{ fontSize: 12.5 }}>{ex.name}</div>

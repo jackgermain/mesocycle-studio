@@ -228,7 +228,7 @@ export function SetPasswordCard() {
   }
 
   return (
-    <div className="cell" style={{ padding: 12 }}>
+    <div className="cell">
       <div className="row" style={{ marginBottom: 8 }}>
         <i className="ph ph-lock-key" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
         <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Set a password</span>
@@ -304,7 +304,7 @@ export function ActionRow({
 }
 
 export function ActionGroup({ children }: { children: React.ReactNode }) {
-  return <div className="cell" style={{ padding: 4, display: "flex", flexDirection: "column" }}>{children}</div>;
+  return <div className="cell" style={{ display: "flex", flexDirection: "column" }}>{children}</div>;
 }
 
 /** The gradient "hero" header used at the top of every main tab — a kicker line, a big bold title, an

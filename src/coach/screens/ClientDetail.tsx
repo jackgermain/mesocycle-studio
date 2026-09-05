@@ -153,7 +153,7 @@ export default function ClientDetail() {
             )}
 
             {client.inviteCode && (
-              <div className="cell" style={{ padding: 12 }}>
+              <div className="cell">
                 <div className="row" style={{ marginBottom: 8 }}>
                   <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Invite link</span>
                   <span className="tag tag-neutral">Pending</span>
@@ -238,7 +238,7 @@ export default function ClientDetail() {
                 <div className="sh">Recent sessions</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                   {client.recentSessions.map((s, i) => (
-                    <div key={i} className="cell row" style={{ padding: "10px 12px" }}>
+                    <div key={i} className="cell row">
                       <span style={{ flex: 1, fontSize: 12.5 }}>{s.label}</span>
                       <span className={`tag ${s.status === "Complete" ? "tag-accent" : "tag-neutral"}`}>{s.status}</span>
                     </div>
@@ -361,7 +361,7 @@ function NotLoggedList({ items, clientName }: { items: NotLoggedItem[]; clientNa
       <div className="sh">Not yet logged today</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
         {items.map((it) => (
-          <div key={it.exercise} className="cell row" style={{ padding: "10px 12px" }}>
+          <div key={it.exercise} className="cell row">
             <span style={{ flex: 1, fontSize: 12.5 }}>{it.exercise}</span>
             <span className="tag tag-neutral">
               {it.logged}/{it.total} sets

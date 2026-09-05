@@ -79,13 +79,13 @@ export default function Onboarding() {
           <div className="sh">Height &amp; bodyweight</div>
           <div className="row" style={{ gap: 8 }}>
             <div style={{ flex: 1 }}>
-              <div className="cell" style={{ padding: "10px 12px" }}>
+              <div className="cell">
                 <div className="scr" style={{ marginBottom: 4 }}>Height</div>
                 <input className="input" style={{ padding: 0, border: "none", background: "none", fontSize: 16, fontFamily: "var(--font-heading)" }} value={height} onChange={(e) => setHeight(e.target.value)} />
               </div>
             </div>
             <div style={{ flex: 1 }}>
-              <div className="cell" style={{ padding: "10px 12px" }}>
+              <div className="cell">
                 <div className="scr" style={{ marginBottom: 4 }}>Bodyweight</div>
                 <input className="input" style={{ padding: 0, border: "none", background: "none", fontSize: 16, fontFamily: "var(--font-heading)" }} value={weight} onChange={(e) => setWeight(e.target.value)} />
               </div>

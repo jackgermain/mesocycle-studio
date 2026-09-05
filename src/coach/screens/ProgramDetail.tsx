@@ -129,7 +129,7 @@ export default function ProgramDetail() {
       />
       <div className="screen-scroll">
         {program.lastAiEdit && (
-          <div className="cell" style={{ padding: 12, borderLeft: "2px solid var(--color-accent)" }}>
+          <div className="cell" style={{ borderLeft: "2px solid var(--color-accent)" }}>
             <div className="row" style={{ marginBottom: 4 }}>
               <div className="scr" style={{ flex: 1, color: "var(--color-accent-300)" }}>
                 Changed by AI · {new Date(program.lastAiEdit.at).toLocaleDateString()}
@@ -153,7 +153,7 @@ export default function ProgramDetail() {
             Working copy — lives under the Drafts tab until you check "Save as a personal template" below to make it a real reusable one. Otherwise it's cleaned up automatically once you assign something else.
           </InfoBanner>
         )}
-        <div className="cell" style={{ padding: "10px 12px" }}>
+        <div className="cell">
           <div className="scr" style={{ marginBottom: 5 }}>Program name</div>
           <input
             className="input"
@@ -240,7 +240,7 @@ export default function ProgramDetail() {
           ))}
         </div>
 
-        <button className="cell row" style={{ padding: "12px 12px", textAlign: "left", cursor: "pointer" }} onClick={() => setShowAiEdit(true)}>
+        <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => setShowAiEdit(true)}>
           <i className="ph ph-sparkle" style={{ fontSize: 16, color: "var(--color-accent-300)", marginRight: 4 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>Edit with AI</div>
@@ -249,7 +249,7 @@ export default function ProgramDetail() {
           <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
         </button>
 
-        <div className="cell" style={{ padding: "10px 12px" }}>
+        <div className="cell">
           <div className="mu" style={{ marginBottom: 7 }}>Load as — applies to every exercise in this program</div>
           <Seg<LoadMode>
             value={program.effortScale}
@@ -263,7 +263,7 @@ export default function ProgramDetail() {
           />
         </div>
 
-        <div className="cell" style={{ padding: "10px 12px" }}>
+        <div className="cell">
           <div className="row">
             <span style={{ flex: 1, fontSize: 12.5 }}>Days per week</span>
             <div className="row" style={{ gap: 8 }}>
@@ -328,7 +328,7 @@ export default function ProgramDetail() {
 
         <div>
           <div className="sh">Volume vs landmark</div>
-          <div className="cell" style={{ display: "flex", flexDirection: "column", gap: 10, padding: 12 }}>
+          <div className="cell" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {volumeByMuscle.map((m) => {
               const pct = Math.min(100, (m.sets / m.mrv) * 100);
               const mevPct = (m.mev / m.mrv) * 100;
@@ -502,7 +502,7 @@ function DayBuilderCard({ program, day, expanded, onToggle }: { program: CoachPr
   }
 
   return (
-    <div className="cell elev-sm" style={{ padding: "11px 12px 10px" }}>
+    <div className="cell elev-sm">
       <div className="row" style={{ cursor: "pointer" }} onClick={onToggle}>
         <i className={`ph ${expanded ? "ph-caret-down" : "ph-caret-right"}`} style={{ fontSize: 12, color: "var(--color-neutral-500)", marginRight: 8 }} />
         <input
@@ -590,7 +590,6 @@ function BuilderExerciseCard({
     <div
       className="cell"
       style={{
-        padding: "10px 11px",
         background: "var(--color-neutral-900)",
         borderLeft: aiChanged ? "2px solid var(--color-accent)" : undefined,
       }}

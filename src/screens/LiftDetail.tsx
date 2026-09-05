@@ -22,7 +22,7 @@ export default function LiftDetail() {
           <div className="sh">By week</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
             {history.map((h, i) => (
-              <div key={i} className="cell row" style={{ padding: "11px 12px" }}>
+              <div key={i} className="cell row">
                 <div style={{ width: 40, flex: "none" }}>
                   <div className="scr">wk {h.weekNumber}</div>
                 </div>

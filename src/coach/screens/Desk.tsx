@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
 import { acknowledgeSignal, isJointUrgent, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
+import { noteSignalCleared, refreshOpenSignalCount } from "../../shared/openSignals";
 import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
 import { SignalActionSheet } from "../components/SignalActionSheet";
@@ -47,6 +48,7 @@ export default function Desk() {
   useEffect(() => {
     let active = true;
     listRecentSignals().then((rows) => active && setAllSignals(rows));
+    void refreshOpenSignalCount(true);
     return () => {
       active = false;
     };
@@ -58,7 +60,10 @@ export default function Desk() {
 
   async function clearSignal(id: string) {
     const ok = await acknowledgeSignal(id);
-    if (ok) setAllSignals((prev) => prev.map((s) => (s.id === id ? { ...s, acknowledged_at: new Date().toISOString() } : s)));
+    if (ok) {
+      setAllSignals((prev) => prev.map((s) => (s.id === id ? { ...s, acknowledged_at: new Date().toISOString() } : s)));
+      noteSignalCleared();
+    }
   }
 
   function signalClientName(s: ClientSignal): string {
@@ -136,7 +141,7 @@ export default function Desk() {
       <div className="screen-scroll">
         <div>
           <div className="sh">Roster this week · {assigned.length} clients</div>
-          <div className="cell" style={{ padding: 12 }}>
+          <div className="cell">
             <div style={{ display: "flex", gap: 2, height: 32, alignItems: "flex-end" }}>
               {rosterBars.map((c) => (
                 <div
@@ -256,7 +261,7 @@ export default function Desk() {
 
         <div>
           <div className="sh">Quick actions</div>
-          <button className="cell row" style={{ gap: 10, padding: 14, textAlign: "left", cursor: "pointer" }} onClick={() => nav("/coach/clients")}>
+          <button className="cell row" style={{ gap: 10, textAlign: "left", cursor: "pointer" }} onClick={() => nav("/coach/clients")}>
             <div style={{ width: 34, height: 34, flex: "none", borderRadius: 10, background: "var(--color-accent-900)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <i className="ph-fill ph-user-plus" style={{ fontSize: 16, color: "var(--color-accent)" }} />
             </div>

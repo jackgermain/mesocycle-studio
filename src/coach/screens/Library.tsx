@@ -57,7 +57,7 @@ export default function Library() {
             <div className="sh">{m} · {items.length}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {items.map((e) => (
-                <div key={e.id} className="cell row" style={{ padding: "9px 11px" }}>
+                <div key={e.id} className="cell row">
                   <div
                     style={{
                       width: 52,

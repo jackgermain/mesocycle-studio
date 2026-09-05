@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useStore } from "../state/store";
 import { supabase } from "../lib/supabase";
+import { refreshInboxBubbles } from "../shared/inboxUnread";
 import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, HeroHeader, SetPasswordCard, SignOutButton } from "../components/UI";
@@ -24,7 +25,7 @@ interface Thread {
  * ever this one thread. Reads/writes through get_my_thread / send_client_message, the two RPCs that let
  * a client touch their own slice of the coach's threads without any broader access. */
 export default function Inbox() {
-  const { state } = useStore();
+  const { state, dispatch } = useStore();
   const { account } = useAuth();
   const [thread, setThread] = useState<Thread | "loading" | null>("loading");
   const [draft, setDraft] = useState("");
@@ -44,6 +45,10 @@ export default function Inbox() {
 
   useEffect(() => {
     refresh();
+    // Opening the inbox is what counts as reading it -- there's no per-message read state, and anything
+    // finer would mean tracking scroll position in a chat log to decide what was "seen".
+    dispatch({ type: "MARK_INBOX_READ" });
+    void refreshInboxBubbles(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

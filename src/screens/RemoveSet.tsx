@@ -39,7 +39,7 @@ export default function RemoveSet() {
                 <button
                   key={r}
                   className="cell row"
-                  style={{ padding: 12, border: `1px solid ${on ? "var(--color-accent)" : "transparent"}`, background: on ? "var(--color-accent-900)" : "var(--color-surface)", cursor: "pointer", textAlign: "left", color: "inherit" }}
+                  style={{ border: `1px solid ${on ? "var(--color-accent)" : "transparent"}`, background: on ? "var(--color-accent-900)" : "var(--color-surface)", cursor: "pointer", textAlign: "left", color: "inherit" }}
                   onClick={() => setReason(r)}
                 >
                   {on ? (
@@ -54,7 +54,7 @@ export default function RemoveSet() {
           </div>
         </div>
 
-        <div className="cell" style={{ padding: 12 }}>
+        <div className="cell">
           <div className="scr" style={{ marginBottom: 7 }}>Goes to {state.program.coachName} as</div>
           <div style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--color-neutral-300)" }}>
             &ldquo;Removed set {set.index} of {ex.name} — {reason.toLowerCase()}.{" "}

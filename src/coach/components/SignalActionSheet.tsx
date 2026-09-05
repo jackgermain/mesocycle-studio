@@ -60,7 +60,7 @@ export function SignalActionSheet({
           </button>
         </div>
 
-        <div className="cell" style={{ padding: 11, display: "flex", flexDirection: "column", gap: 5 }}>
+        <div className="cell" style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           {exercise && (
             <div style={{ fontSize: 12.5 }}>
               <span className="mu">On </span>

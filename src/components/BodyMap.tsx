@@ -13,7 +13,9 @@ import React from "react";
  * separate label tables rather than sharing one. */
 
 type Shape =
-  | { kind: "path"; d: string }
+  // `flip` mirrors the path about the body's centre line at render time. Mirroring by rewriting the
+  // coordinates in `d` means parsing path syntax; a transform is exact and can't drift from the original.
+  | { kind: "path"; d: string; flip?: boolean }
   | { kind: "ellipse"; cx: number; cy: number; rx: number; ry: number }
   // Limbs are drawn as thick round-capped strokes rather than outlined shapes: a stroke gives a clean
   // tapered joint where two segments meet, which hand-authored outlines around a knee do not.
@@ -24,7 +26,10 @@ type Region = { id: string; label: string; shapes: Shape[] };
 const mirror = (s: Shape): Shape => {
   if (s.kind === "ellipse") return { ...s, cx: 220 - s.cx };
   if (s.kind === "limb") return { ...s, x1: 220 - s.x1, x2: 220 - s.x2 };
-  return s;
+  // Paths used to fall through here unchanged, which meant the one path-shaped region that gets mirrored
+  // -- the hip/glute -- drew both halves on top of each other on the left, and the right side of the body
+  // was simply missing on both views.
+  return { ...s, flip: !s.flip };
 };
 
 // ——— shared skeleton ————————————————————————————————————————————————————
@@ -50,6 +55,9 @@ const SHIN_L: Shape[] = [{ kind: "limb", x1: 85, y1: 346, x2: 82, y2: 402, w: 23
 const FOOT_L: Shape[] = [{ kind: "ellipse", cx: 80, cy: 419, rx: 12, ry: 13 }];
 
 const M = (s: Shape[]) => s.map(mirror);
+
+/** Reflects about x = 110, the body's centre line. */
+const FLIP = "translate(220,0) scale(-1,1)";
 
 /** Front view. Viewer's left is the lifter's right. */
 const FRONT: Region[] = [
@@ -105,10 +113,47 @@ const BACK: Region[] = [
   { id: "r-ankle", label: "R ankle / heel", shapes: M(FOOT_L) },
 ];
 
+/** What kind of tissue it feels like. Four options because a coach's first question after "where" is
+ * always "what does it feel like" -- muscle pain and joint-line pain lead to opposite decisions, and a
+ * report without it is a report they have to chase. "Not sure" is deliberately one of the four: forcing a
+ * guess between three confident answers produces confident wrong data, which is worse than a shrug.
+ *
+ * The colours run least- to most-concerning so a coach can read a report at a glance without the legend. */
+export type Tissue = "Muscle belly" | "Tendon" | "Deep in the joint" | "Not sure";
+
+export const TISSUES: { id: Tissue; color: string }[] = [
+  { id: "Muscle belly", color: "var(--color-accent)" },
+  { id: "Tendon", color: "var(--color-warning)" },
+  { id: "Deep in the joint", color: "var(--color-danger)" },
+  { id: "Not sure", color: "var(--color-neutral-500)" },
+];
+
+const tissueColor = (t: string) => TISSUES.find((x) => x.id === t)?.color ?? "var(--color-accent)";
+
 /** Every label either view can produce, so callers can tell a tapped region from free text. */
 export const BODY_MAP_LABELS: string[] = Array.from(
   new Set([...FRONT, ...BACK].map((r) => r.label)),
 );
+
+/** Where the bubble's pointer goes: the middle of the region, in viewBox units. */
+function centre(r: Region): { x: number; y: number } {
+  const pts = r.shapes.map((s) => {
+    if (s.kind === "ellipse") return { x: s.cx, y: s.cy, w: s.rx * s.ry };
+    if (s.kind === "limb") return { x: (s.x1 + s.x2) / 2, y: (s.y1 + s.y2) / 2, w: s.w * Math.hypot(s.x2 - s.x1, s.y2 - s.y1) };
+    const nums = (s.d.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
+    const xs = nums.filter((_, i) => i % 2 === 0);
+    const ys = nums.filter((_, i) => i % 2 === 1);
+    const cx = (Math.max(...xs) + Math.min(...xs)) / 2;
+    const cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+    // A flipped path draws on the other side of the centre line, so its anchor has to move with it.
+    return { x: s.flip ? 220 - cx : cx, y: cy, w: 3000 };
+  });
+  const total = pts.reduce((n, p) => n + p.w, 0) || 1;
+  return {
+    x: pts.reduce((n, p) => n + p.x * p.w, 0) / total,
+    y: pts.reduce((n, p) => n + p.y * p.w, 0) / total,
+  };
+}
 
 function ShapeEls({ shapes, fill, outline }: { shapes: Shape[]; fill: string; outline: boolean }) {
   // The outline pass is the same geometry drawn slightly fatter in the page colour underneath the fill.
@@ -127,7 +172,7 @@ function ShapeEls({ shapes, fill, outline }: { shapes: Shape[]; fill: string; ou
               strokeWidth={s.w + grow * 2} strokeLinecap="round" />
           );
         }
-        return <path key={i} d={s.d} fill={outline ? "var(--color-bg)" : fill}
+        return <path key={i} d={s.d} transform={s.flip ? FLIP : undefined} fill={outline ? "var(--color-bg)" : fill}
           stroke={outline ? "var(--color-bg)" : undefined} strokeWidth={grow * 2} strokeLinejoin="round" />;
       })}
     </>
@@ -150,7 +195,7 @@ function HitShapes({ shapes }: { shapes: Shape[] }) {
         }
         // A path can't be offset outwards cheaply, so it gets a fat transparent stroke on top of its fill,
         // which comes to the same thing.
-        return <path key={i} d={s.d} fill="transparent" stroke="transparent" strokeWidth={pad * 2} strokeLinejoin="round" />;
+        return <path key={i} d={s.d} transform={s.flip ? FLIP : undefined} fill="transparent" stroke="transparent" strokeWidth={pad * 2} strokeLinejoin="round" />;
       })}
     </>
   );
@@ -174,29 +219,174 @@ function footprint(r: Region): number {
   }, 0);
 }
 
-export function BodyMap({ value, onChange }: { value: string; onChange: (label: string) => void }) {
+const VIEWS: { regions: Region[]; caption: string }[] = [
+  { regions: FRONT, caption: "Front" },
+  { regions: BACK, caption: "Back" },
+];
+
+export function BodyMap({
+  location, tissue, onPick,
+}: {
+  location: string;
+  tissue: string;
+  onPick: (location: string, tissue: Tissue | "") => void;
+}) {
+  // Which region's bubble is open. Separate from `location`, because tapping a part only asks the
+  // follow-up question -- nothing is recorded until they answer it, so a stray tap records nothing.
+  const [open, setOpen] = React.useState<{ col: number; id: string } | null>(null);
+
+  const openRegion = open ? VIEWS[open.col].regions.find((r) => r.id === open.id) ?? null : null;
+  const anchor = openRegion ? centre(openRegion) : null;
+
   return (
     <div>
-      <div className="cell" style={{ padding: "10px 6px", display: "flex", gap: 4 }}>
-        <BodyView regions={FRONT} caption="Front" value={value} onChange={onChange} />
-        <BodyView regions={BACK} caption="Back" value={value} onChange={onChange} />
+      <div className="cell" style={{ display: "flex", gap: 4, position: "relative" }}>
+        {VIEWS.map((v, col) => (
+          <BodyView
+            key={v.caption}
+            regions={v.regions}
+            caption={v.caption}
+            location={location}
+            tissue={tissue}
+            openId={open?.col === col ? open.id : null}
+            onTapRegion={(id) => setOpen(open?.col === col && open.id === id ? null : { col, id })}
+          />
+        ))}
+
+        {openRegion && anchor && (
+          <TissueBubble
+            label={openRegion.label}
+            current={location === openRegion.label ? tissue : ""}
+            // Two equal columns, so a point's horizontal place on the card is its place within its own
+            // body, halved, plus half a card for the back view.
+            xPct={open!.col * 50 + (anchor.x / 220) * 50}
+            yPct={(anchor.y / 445) * 100}
+            onChoose={(t) => {
+              onPick(t ? openRegion.label : "", t);
+              setOpen(null);
+            }}
+            onDismiss={() => setOpen(null)}
+          />
+        )}
       </div>
+
       <div className="mu" style={{ marginTop: 8, textAlign: "center" }}>
-        {value ? `Marked: ${value}` : "Tap where it hurts. Left and right are yours, not the picture's."}
+        {location
+          ? `${location} — ${tissue.toLowerCase()}`
+          : "Tap where it hurts. Left and right are yours, not the picture's."}
       </div>
     </div>
   );
 }
 
+function TissueBubble({
+  label, current, xPct, yPct, onChoose, onDismiss,
+}: {
+  label: string;
+  current: string;
+  xPct: number;
+  yPct: number;
+  onChoose: (t: Tissue | "") => void;
+  onDismiss: () => void;
+}) {
+  // Below the tapped part normally, above it once the part is low enough that a bubble underneath would
+  // fall off the card.
+  const below = yPct < 55;
+  // The pointer tracks the body part, but the bubble itself spans the card -- four options don't fit in
+  // the ~155px a single body gets on a phone.
+  const caretX = Math.min(94, Math.max(6, xPct));
+
+  return (
+    <>
+      {/* Catches the tap that dismisses without answering. Sits under the bubble, over everything else. */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 1 }} onClick={onDismiss} />
+      <div
+        style={{
+          position: "absolute",
+          left: 8,
+          right: 8,
+          zIndex: 2,
+          ...(below ? { top: `calc(${yPct}% + 14px)` } : { bottom: `calc(${100 - yPct}% + 14px)` }),
+          background: "var(--color-surface-raised)",
+          border: "1px solid var(--color-divider)",
+          borderRadius: "var(--radius-md)",
+          boxShadow: "var(--shadow-md)",
+          padding: 10,
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: `${caretX}%`,
+            [below ? "top" : "bottom"]: -5,
+            width: 9,
+            height: 9,
+            marginLeft: -4,
+            background: "var(--color-surface-raised)",
+            borderTop: below ? "1px solid var(--color-divider)" : undefined,
+            borderLeft: below ? "1px solid var(--color-divider)" : undefined,
+            borderBottom: below ? undefined : "1px solid var(--color-divider)",
+            borderRight: below ? undefined : "1px solid var(--color-divider)",
+            transform: "rotate(45deg)",
+          }}
+        />
+        <div className="scr" style={{ marginBottom: 8, color: "var(--color-text-muted)" }}>{label} — what does it feel like?</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+          {TISSUES.map((t) => {
+            const on = current === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => onChoose(on ? "" : t.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 7,
+                  padding: "9px 10px",
+                  borderRadius: "var(--radius-sm)",
+                  border: `1px solid ${on ? t.color : "var(--color-divider)"}`,
+                  background: on ? "var(--color-surface-sunken)" : "transparent",
+                  color: on ? "var(--color-text)" : "var(--color-text-muted)",
+                  fontSize: "var(--text-sm)",
+                  fontWeight: 600,
+                  textAlign: "left",
+                  cursor: "pointer",
+                  minHeight: 38,
+                }}
+              >
+                <span style={{ width: 9, height: 9, borderRadius: "50%", background: t.color, flex: "none" }} />
+                {t.id}
+              </button>
+            );
+          })}
+        </div>
+        {current && <div className="mu" style={{ marginTop: 7 }}>Tap the marked one again to clear it.</div>}
+      </div>
+    </>
+  );
+}
+
 function BodyView({
-  regions, caption, value, onChange,
-}: { regions: Region[]; caption: string; value: string; onChange: (label: string) => void }) {
-  const selected = regions.find((r) => r.label === value);
+  regions, caption, location, tissue, openId, onTapRegion,
+}: {
+  regions: Region[];
+  caption: string;
+  location: string;
+  tissue: string;
+  openId: string | null;
+  onTapRegion: (id: string) => void;
+}) {
+  const selected = regions.find((r) => r.label === location);
   // The highlighted part is drawn last so it lands on top. Without this a tapped deltoid comes out as a
   // crescent peeking from behind the chest, which reads as a rendering fault rather than a selection.
   const ordered = selected ? [...regions.filter((r) => r !== selected), selected] : regions;
   // Biggest hit areas first so the smallest end up on top and win the tap.
   const hitOrder = [...regions].sort((a, b) => footprint(b) - footprint(a));
+  const fillFor = (r: Region) =>
+    r.label === location ? tissueColor(tissue)
+    : r.id === openId ? "var(--color-neutral-700)"
+    : "var(--color-surface-raised)";
 
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
@@ -209,25 +399,19 @@ function BodyView({
         {/* Outlines first, all of them, then every fill on top. Interleaving the two per region would let
             a later region's outline eat into the neighbour drawn before it. */}
         {ordered.map((r) => <ShapeEls key={`o-${r.id}`} shapes={r.shapes} fill="" outline />)}
-        {ordered.map((r) => (
-          <ShapeEls key={r.id} shapes={r.shapes}
-            fill={r.label === value ? "var(--color-accent)" : "var(--color-surface-raised)"} outline={false} />
+        {ordered.map((r) => <ShapeEls key={r.id} shapes={r.shapes} fill={fillFor(r)} outline={false} />)}
+        {hitOrder.map((r) => (
+          <g
+            key={`h-${r.id}`}
+            onClick={() => onTapRegion(r.id)}
+            style={{ cursor: "pointer" }}
+            role="button"
+            aria-pressed={r.label === location}
+            aria-label={r.label}
+          >
+            <HitShapes shapes={r.shapes} />
+          </g>
         ))}
-        {hitOrder.map((r) => {
-          const on = r.label === value;
-          return (
-            <g
-              key={`h-${r.id}`}
-              onClick={() => onChange(on ? "" : r.label)}
-              style={{ cursor: "pointer" }}
-              role="button"
-              aria-pressed={on}
-              aria-label={r.label}
-            >
-              <HitShapes shapes={r.shapes} />
-            </g>
-          );
-        })}
       </svg>
       <div className="scr" style={{ textAlign: "center", marginTop: 2 }}>{caption}</div>
     </div>

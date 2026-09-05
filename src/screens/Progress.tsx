@@ -121,7 +121,7 @@ function StrengthTab() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
           {lifts.slice(0, 5).map((l) => (
-            <div key={l.name} className="cell row" style={{ padding: "11px 12px" }}>
+            <div key={l.name} className="cell row">
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 12.5 }}>{l.name}</div>
                 <div className="mu" style={{ marginTop: 2 }}>{l.muscle}</div>
@@ -289,14 +289,14 @@ function BodyTab() {
       <div>
         <div className="sh">Also tracked</div>
         <div style={{ display: "flex", gap: 8 }}>
-          <div className="cell" style={{ flex: 1, padding: 11 }}>
+          <div className="cell" style={{ flex: 1 }}>
             <div className="scr">Waist</div>
             <div className="num" style={{ fontWeight: 700, fontSize: 16, marginTop: 3 }}>
               81 <span style={{ fontSize: 11, color: "var(--color-neutral-500)" }}>cm</span>
             </div>
             <div className="mu" style={{ marginTop: 2 }}>+2 since wk 1</div>
           </div>
-          <div className="cell" style={{ flex: 1, padding: 11 }}>
+          <div className="cell" style={{ flex: 1 }}>
             <div className="scr">Photos</div>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 16, marginTop: 3 }}>wk 8</div>
             <div className="mu" style={{ marginTop: 2 }}>next due wk 12</div>
@@ -334,7 +334,7 @@ function VolumeTab() {
       <div className="sh">Sets per muscle · week {week?.number}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {muscles.map((m) => (
-          <div key={m.name} className="cell" style={{ padding: 11 }}>
+          <div key={m.name} className="cell">
             <div className="row" style={{ marginBottom: 6 }}>
               <span style={{ flex: 1, fontSize: 12.5 }}>{m.name}</span>
               <span className="num" style={{ fontWeight: 700, fontSize: 12.5, color: "var(--color-accent-300)" }}>{m.sets} sets</span>

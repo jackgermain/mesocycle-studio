@@ -10,7 +10,7 @@ export function AiNotes({ notes, verb }: { notes: string[]; verb: string }) {
   if (list.length === 0) return null;
 
   return (
-    <div className="cell" style={{ padding: 11, borderLeft: "2px solid var(--color-accent-700)" }}>
+    <div className="cell" style={{ borderLeft: "2px solid var(--color-accent-700)" }}>
       <button
         onClick={() => setOpen((v) => !v)}
         style={{ background: "none", border: "none", padding: 0, width: "100%", cursor: "pointer", color: "inherit", textAlign: "left" }}

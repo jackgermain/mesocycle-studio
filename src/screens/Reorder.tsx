@@ -60,7 +60,7 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
               <div
                 key={id}
                 className="cell row"
-                style={{ padding: 11, opacity: isDone ? 0.6 : 1, border: inProgress ? "1px solid var(--color-accent)" : undefined, background: inProgress ? "var(--color-accent-900)" : "var(--color-surface)" }}
+                style={{ opacity: isDone ? 0.6 : 1, border: inProgress ? "1px solid var(--color-accent)" : undefined, background: inProgress ? "var(--color-accent-900)" : "var(--color-surface)" }}
               >
                 <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   <button disabled={i === 0} onClick={() => move(id, -1)} style={{ background: "none", border: "none", color: i === 0 ? "var(--color-neutral-800)" : "var(--color-neutral-500)", cursor: i === 0 ? "default" : "pointer", padding: 2 }}>

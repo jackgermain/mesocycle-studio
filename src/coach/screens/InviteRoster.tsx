@@ -109,7 +109,7 @@ export default function InviteRoster() {
             </div>
 
             {role === "coach" ? (
-              <div className="cell" style={{ padding: 12, marginTop: 4 }}>
+              <div className="cell" style={{ marginTop: 4 }}>
                 <div className="row" style={{ marginBottom: 8 }}>
                   <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Coach signup link</span>
                 </div>
@@ -142,7 +142,7 @@ export default function InviteRoster() {
               {sent.name} was added to your roster as {sent.role === "friend" ? "a friend/family account" : "a client"}.
             </InfoBanner>
 
-            <div className="cell" style={{ padding: 12 }}>
+            <div className="cell">
               <div className="row" style={{ marginBottom: 8 }}>
                 <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Invite link</span>
                 <span className="tag tag-neutral">Pending</span>

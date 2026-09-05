@@ -164,7 +164,7 @@ export function AiEditShell<T>({
         {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
 
         {context && (
-          <div className="cell" style={{ padding: 11, borderLeft: "2px solid var(--color-accent)" }}>
+          <div className="cell" style={{ borderLeft: "2px solid var(--color-accent)" }}>
             <div className="scr" style={{ color: "var(--color-accent-300)", marginBottom: 3 }}>It knows about</div>
             <div style={{ fontSize: 12.5, lineHeight: 1.5 }}>{context}</div>
           </div>
@@ -212,7 +212,7 @@ export function AiEditShell<T>({
                       <div className="scr" style={{ marginBottom: 4 }}>{scope}</div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                         {list.map((c, i) => (
-                          <div key={i} className="cell row" style={{ padding: "8px 11px", gap: 8 }}>
+                          <div key={i} className="cell row" style={{ gap: 8 }}>
                             <span className="trunc" style={{ flex: 1, fontSize: 12.5 }}>{c.target}</span>
                             <span style={{ flex: "none", fontSize: 12.5, color: KIND_TONE[c.kind], fontFamily: "var(--font-heading)" }}>{c.detail}</span>
                           </div>
