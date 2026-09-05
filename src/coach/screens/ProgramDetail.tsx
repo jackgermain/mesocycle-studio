@@ -85,6 +85,26 @@ export default function ProgramDetail() {
         }
       />
       <div className="screen-scroll">
+        {program.lastAiEdit && (
+          <div className="cell" style={{ padding: 12, borderLeft: "2px solid var(--color-accent)" }}>
+            <div className="row" style={{ marginBottom: 4 }}>
+              <div className="scr" style={{ flex: 1, color: "var(--color-accent-300)" }}>
+                Changed by AI · {new Date(program.lastAiEdit.at).toLocaleDateString()}
+              </div>
+              <button
+                onClick={() => dispatch({ type: "CLEAR_AI_EDIT_MARK", programId: program.id })}
+                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11.5, color: "var(--color-neutral-500)", padding: 0 }}
+              >
+                Dismiss
+              </button>
+            </div>
+            <div style={{ fontSize: 13, lineHeight: 1.5 }}>{program.lastAiEdit.summary}</div>
+            <div className="mu" style={{ marginTop: 5 }}>
+              {program.lastAiEdit.exerciseIds.length} exercise{program.lastAiEdit.exerciseIds.length === 1 ? "" : "s"} marked below. Dismiss once you've looked them over.
+            </div>
+          </div>
+        )}
+
         {isPendingProgram(program) && (
           <InfoBanner icon="ph-file-dashed">
             Working copy — lives under the Drafts tab until you check "Save as a personal template" below to make it a real reusable one. Otherwise it's cleaned up automatically once you assign something else.
@@ -315,9 +335,14 @@ export default function ProgramDetail() {
         <AiEditSheet
           program={program}
           onClose={() => setShowAiEdit(false)}
-          onApply={(days) => {
-            dispatch({ type: "SET_PROGRAM_DAYS", programId: program.id, days });
-            dispatch({ type: "SHOW_TOAST", message: "Program updated." });
+          onApply={(days, changes, summary) => {
+            dispatch({
+              type: "SET_PROGRAM_DAYS",
+              programId: program.id,
+              days,
+              aiEdit: { at: new Date().toISOString(), summary, exerciseIds: changes.map((c) => c.exerciseId).filter((id): id is string => !!id) },
+            });
+            dispatch({ type: "SHOW_TOAST", message: `Applied — ${changes.length} change${changes.length === 1 ? "" : "s"}.` });
             setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2600);
             setShowAiEdit(false);
           }}
@@ -332,6 +357,7 @@ type DragHandleProps = {
 };
 
 function DayBuilderCard({ program, day, expanded, onToggle }: { program: CoachProgram; day: CoachProgram["days"][number]; expanded: boolean; onToggle: () => void }) {
+  const aiTouched = new Set(program.lastAiEdit?.exerciseIds ?? []);
   const { dispatch } = useCoachStore();
   const [adding, setAdding] = useState(false);
   const totalSets = day.exercises.reduce((n, e) => n + e.sets.length, 0);
@@ -473,6 +499,7 @@ function DayBuilderCard({ program, day, expanded, onToggle }: { program: CoachPr
                   dayId={day.id}
                   ex={ex}
                   loadMode={program.effortScale}
+                  aiChanged={aiTouched.has(ex.id)}
                   dragHandleProps={{
                     onPointerDown: (e) => onGripPointerDown(id, e),
                   }}
@@ -501,12 +528,16 @@ function BuilderExerciseCard({
   dayId,
   ex,
   loadMode,
+  aiChanged,
   dragHandleProps,
 }: {
   programId: string;
   dayId: string;
   ex: BuilderExercise;
   loadMode: LoadMode;
+  /** Touched by the last AI edit and not yet dismissed — marked so it's obvious which numbers weren't
+   * put there by hand, once the review sheet is long closed. */
+  aiChanged?: boolean;
   dragHandleProps: DragHandleProps;
 }) {
   const { dispatch } = useCoachStore();
@@ -514,7 +545,20 @@ function BuilderExerciseCard({
   const effectiveLoadMode = ex.loadModeOverride ?? loadMode;
 
   return (
-    <div className="cell" style={{ padding: "10px 11px", background: "var(--color-neutral-900)" }}>
+    <div
+      className="cell"
+      style={{
+        padding: "10px 11px",
+        background: "var(--color-neutral-900)",
+        borderLeft: aiChanged ? "2px solid var(--color-accent)" : undefined,
+      }}
+    >
+      {aiChanged && (
+        <div className="scr" style={{ color: "var(--color-accent-300)", marginBottom: 5 }}>
+          <i className="ph ph-sparkle" style={{ fontSize: 11, marginRight: 4 }} />
+          Changed by AI
+        </div>
+      )}
       <div className="row" style={{ marginBottom: 8 }}>
         <div
           {...dragHandleProps}

@@ -71,6 +71,8 @@ export interface BuilderDay {
 }
 
 export interface CoachProgram {
+  /** What an AI edit last touched — see AiEditMark in data/types.ts. */
+  lastAiEdit?: import("../data/types").AiEditMark;
   /** Which weekdays this program trains, as offsets from Monday (0=Mon … 6=Sun), sorted, one per day slot.
    * Absent means "spread evenly across the week", which is what every program did before this was
    * pickable -- so leaving it unset keeps an existing program's dates exactly as they were. */

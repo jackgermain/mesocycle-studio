@@ -107,7 +107,17 @@ export interface TrainingWeek {
   days: TrainingDay[];
 }
 
+/** What an AI edit touched, kept so the change is still visible after the review sheet closes. Lives on
+ * the program itself rather than in component state so it survives navigation and reload -- the point is
+ * that a coach can come back later and still see what wasn't their own hand. Cleared once dismissed. */
+export interface AiEditMark {
+  at: string;
+  summary: string;
+  exerciseIds: string[];
+}
+
 export interface Program {
+  lastAiEdit?: AiEditMark;
   name: string;
   totalWeeks: number;
   coachName: string;

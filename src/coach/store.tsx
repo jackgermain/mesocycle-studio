@@ -40,7 +40,8 @@ type Action =
   | { type: "SET_DAYS_PER_WEEK"; programId: string; count: number }
   | { type: "SET_TRAINING_DOWS"; programId: string; dows: number[] }
   | { type: "RENAME_PROGRAM_DAY"; programId: string; dayId: string; name: string }
-  | { type: "SET_PROGRAM_DAYS"; programId: string; days: BuilderDay[] }
+  | { type: "SET_PROGRAM_DAYS"; programId: string; days: BuilderDay[]; aiEdit?: { at: string; summary: string; exerciseIds: string[] } }
+  | { type: "CLEAR_AI_EDIT_MARK"; programId: string }
   | { type: "ADD_PROGRAM_EXERCISE"; programId: string; dayId: string; exercise: { name: string; muscle: string; kind?: ExerciseKind } }
   | { type: "REMOVE_PROGRAM_EXERCISE"; programId: string; dayId: string; exerciseId: string }
   | { type: "SET_PROGRAM_LOAD_MODE"; programId: string; loadMode: LoadMode }
@@ -204,7 +205,16 @@ function reducer(state: CoachState, action: Action): CoachState {
       // make the approved preview and the saved result two different computations.
       const programs = structuredClone(state.programs);
       const program = programs.find((p) => p.id === action.programId);
-      if (program) program.days = structuredClone(action.days);
+      if (program) {
+        program.days = structuredClone(action.days);
+        if (action.aiEdit) program.lastAiEdit = action.aiEdit;
+      }
+      return { ...state, programs };
+    }
+    case "CLEAR_AI_EDIT_MARK": {
+      const programs = structuredClone(state.programs);
+      const program = programs.find((p) => p.id === action.programId);
+      if (program) delete program.lastAiEdit;
       return { ...state, programs };
     }
     case "RENAME_PROGRAM_DAY": {

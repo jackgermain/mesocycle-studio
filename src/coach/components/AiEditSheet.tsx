@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { InfoBanner } from "../../components/UI";
-import { applyOps, diffDays, type AiEditResult, type DiffLine, type EditOp } from "../programAiEdit";
+import { reconcileTemplateDays, diffTemplate, type AiEditResult, type ChangeEntry } from "../programAiEdit";
 import { useDictation } from "../../shared/useDictation";
 import type { BuilderDay, CoachProgram } from "../types";
 
@@ -12,9 +12,9 @@ const EXAMPLES = [
   "Drop the last exercise on each day",
 ];
 
-/** Only what the model needs to make the decision: ids so it can target, and the current numbers so it
- * can reason about them. Sending the whole CoachProgram would ship internal bookkeeping (assignedCount,
- * visibility, phase weights) that has nothing to do with the edit and only adds noise. */
+/** Only what the model needs, and in the shape it has to return. Sending the whole CoachProgram would
+ * ship internal bookkeeping (assignedCount, visibility, phase weights) that has nothing to do with the
+ * edit and only adds noise -- and giving it fields it can't return invites it to drop them. */
 function summarizeForAi(program: CoachProgram) {
   return {
     name: program.name,
@@ -27,27 +27,24 @@ function summarizeForAi(program: CoachProgram) {
         exerciseId: ex.id,
         name: ex.name,
         muscle: ex.muscle,
-        sets: ex.sets.length,
-        reps: ex.sets.map((s) => s.reps),
-        load: ex.sets.map((s) => s.loadValue),
-        restSec: ex.sets[0]?.restSec ?? null,
+        sets: ex.sets.map((s) => ({ reps: s.reps, load: s.loadValue, restSec: s.restSec ?? null, warmup: s.warmup })),
       })),
     })),
   };
 }
 
-/** Ask for a change in plain English, see exactly what it would do, then accept or throw it away.
+/** Ask for a change in plain English, see everything it did, then accept or throw it away.
  *
- * The preview is not the model's description of its own work -- it's a diff computed from the real before
- * and after. A coach reviewing an explanation is reviewing the wrong thing; this way what they approve is
- * what they get. Nothing is written until they press Apply. */
+ * The preview is not the model's account of its own work -- it's a diff computed from the real before and
+ * after. That distinction is what makes free-form rewriting safe: the model can return whatever it likes,
+ * and anything it touched shows up here whether it was asked for or not. Nothing is written until Apply. */
 export function AiEditSheet({
   program,
   onApply,
   onClose,
 }: {
   program: CoachProgram;
-  onApply: (days: BuilderDay[]) => void;
+  onApply: (days: BuilderDay[], changes: ChangeEntry[], summary: string) => void;
   onClose: () => void;
 }) {
   return (
@@ -55,21 +52,35 @@ export function AiEditSheet({
       title={program.name}
       examples={EXAMPLES}
       buildPayload={() => summarizeForAi(program)}
-      applyOps={(ops) => applyOps(program.days, ops)}
-      diff={(next) => diffDays(program.days, next)}
+      build={(result) => (result.days ? reconcileTemplateDays(program.days, result.days) : program.days)}
+      diff={(next) => diffTemplate(program.days, next)}
       onApply={onApply}
       onClose={onClose}
     />
   );
 }
 
-/** The shared shell. Both the week template and a client's live program are edited by the same loop --
- * describe it, see a real diff, accept or discard -- and only the shapes differ, so those are props. */
+const KIND_TONE: Record<ChangeEntry["kind"], string> = {
+  added: "var(--color-accent-300)",
+  removed: "var(--color-neutral-400)",
+  renamed: "var(--color-accent-300)",
+  muscle: "var(--color-accent-300)",
+  sets: "var(--color-accent-300)",
+  reps: "var(--color-accent-300)",
+  load: "var(--color-accent-300)",
+  rest: "var(--color-accent-300)",
+  warmups: "var(--color-accent-300)",
+  moved: "var(--color-neutral-400)",
+  day: "var(--color-neutral-400)",
+};
+
+/** The shared shell. Both the week template and a client's live program run the same loop -- describe it,
+ * see a real diff, accept or discard -- and only the shapes differ, so those are props. */
 export function AiEditShell<T>({
   title,
   examples,
   buildPayload,
-  applyOps: apply,
+  build,
   diff,
   onApply,
   onClose,
@@ -79,20 +90,19 @@ export function AiEditShell<T>({
   title: string;
   examples: string[];
   buildPayload: () => unknown;
-  applyOps: (ops: EditOp[]) => T;
-  diff: (next: T) => DiffLine[];
-  onApply: (next: T) => void;
+  build: (result: AiEditResult) => T;
+  diff: (next: T) => ChangeEntry[];
+  onApply: (next: T, changes: ChangeEntry[], summary: string) => void;
   onClose: () => void;
   /** What the coach is looking at, in words -- an open pain report, say. Sent alongside the program so
-   * "swap this for something easier on his shoulder" resolves without them having to restate any of it.
-   * Availability is the easy half of making this useful; knowing what "this" refers to is the other half. */
+   * "swap this for something easier on his shoulder" resolves without them having to restate any of it. */
   context?: string;
   placeholder?: string;
 }) {
   const [instruction, setInstruction] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [proposal, setProposal] = useState<{ next: T; diff: DiffLine[]; result: AiEditResult } | null>(null);
+  const [proposal, setProposal] = useState<{ next: T; changes: ChangeEntry[]; result: AiEditResult } | null>(null);
   // Appends rather than replaces, so several bursts of speech build one instruction.
   const dictation = useDictation((text) => setInstruction((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text)));
 
@@ -116,13 +126,22 @@ export function AiEditShell<T>({
         throw new Error(body?.error ?? "That didn't work. Try again.");
       }
       const result = (await res.json()) as AiEditResult;
-      const next = apply(result.ops ?? []);
-      setProposal({ next, diff: diff(next), result });
+      const next = build(result);
+      setProposal({ next, changes: diff(next), result });
     } catch (e) {
       setError(e instanceof Error ? e.message : "That didn't work. Try again.");
     } finally {
       setBusy(false);
     }
+  }
+
+  // Grouped by where the change landed, so a day you didn't mention standing there with edits under it is
+  // immediately obvious rather than buried in a flat list.
+  const grouped = new Map<string, ChangeEntry[]>();
+  for (const c of proposal?.changes ?? []) {
+    const list = grouped.get(c.scope) ?? [];
+    list.push(c);
+    grouped.set(c.scope, list);
   }
 
   return (
@@ -154,7 +173,7 @@ export function AiEditShell<T>({
             style={{ minHeight: 78, lineHeight: 1.5 }}
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}
-            placeholder={placeholder ?? "e.g. make every exercise one set — or tap the mic and say it"}
+            placeholder={placeholder ?? "Say anything — e.g. make every exercise one set, or swap the barbell work for dumbbells"}
             disabled={busy}
             autoFocus
           />
@@ -187,22 +206,35 @@ export function AiEditShell<T>({
 
         {proposal && (
           <>
-            {proposal.result.summary && (
-              <div className="mu" style={{ lineHeight: 1.55 }}>{proposal.result.summary}</div>
-            )}
+            {proposal.result.summary && <div className="mu" style={{ lineHeight: 1.55 }}>{proposal.result.summary}</div>}
 
             <div>
-              <div className="sh">What this changes · {proposal.diff.length === 0 ? "nothing" : proposal.diff.length}</div>
-              {proposal.diff.length === 0 ? (
+              <div className="sh">
+                Everything it changed · {proposal.changes.length === 0 ? "nothing" : proposal.changes.length}
+              </div>
+              {proposal.changes.length === 0 ? (
                 <div className="mu">Nothing would change. Try saying it a different way.</div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {proposal.diff.map((line, i) => (
-                    <div key={i} className="cell row" style={{ padding: "9px 11px" }}>
-                      <span className="trunc" style={{ flex: 1, fontSize: 13 }}>{line.label}</span>
-                      <span style={{ flex: "none", fontSize: 12, color: "var(--color-accent-300)", fontFamily: "var(--font-heading)" }}>{line.detail}</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {Array.from(grouped.entries()).map(([scope, list]) => (
+                    <div key={scope}>
+                      <div className="scr" style={{ marginBottom: 4 }}>{scope}</div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                        {list.map((c, i) => (
+                          <div key={i} className="cell row" style={{ padding: "8px 11px", gap: 8 }}>
+                            <span className="trunc" style={{ flex: 1, fontSize: 13 }}>{c.target}</span>
+                            <span style={{ flex: "none", fontSize: 12, color: KIND_TONE[c.kind], fontFamily: "var(--font-heading)" }}>{c.detail}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ))}
+                </div>
+              )}
+              {proposal.changes.length > 0 && (
+                <div className="mu" style={{ marginTop: 8, lineHeight: 1.5 }}>
+                  This is everything that differs, not just what you asked for. Anything here you didn't want is a
+                  reason to discard.
                 </div>
               )}
             </div>
@@ -211,12 +243,16 @@ export function AiEditShell<T>({
               <InfoBanner icon="ph-eyes">{proposal.result.notes.join(" · ")}</InfoBanner>
             )}
 
-            {proposal.diff.length > 0 && (
+            {proposal.changes.length > 0 && (
               <div className="row" style={{ gap: 8 }}>
                 <button className="btn btn-secondary" style={{ flex: 1, height: 46 }} onClick={() => setProposal(null)}>
                   Discard
                 </button>
-                <button className="btn btn-primary" style={{ flex: 1, height: 46 }} onClick={() => onApply(proposal.next)}>
+                <button
+                  className="btn btn-primary"
+                  style={{ flex: 1, height: 46 }}
+                  onClick={() => onApply(proposal.next, proposal.changes, proposal.result.summary ?? instruction.trim())}
+                >
                   Apply
                 </button>
               </div>

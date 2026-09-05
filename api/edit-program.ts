@@ -1,10 +1,11 @@
 /**
- * Turns a coach's plain-English instruction ("make every exercise one set") into a list of edit
- * operations against the program open in the builder.
+ * Turns a coach's plain-English instruction into a rewritten program.
  *
- * The model never returns a program. It returns operations, which the browser applies itself and shows as
- * a diff before anything is saved -- see src/coach/programAiEdit.ts for why that matters. This endpoint's
- * job is only translation: English in, a checkable list of changes out.
+ * The model returns the program itself, not a list of permitted operations. An earlier version
+ * constrained it to a fixed vocabulary so it couldn't mangle anything; that made every new kind of
+ * request wait on a new operation being added, which is the wrong tradeoff. What keeps this safe is the
+ * browser re-imposing the rules the model isn't allowed to break and then diffing real before against
+ * real after, so anything it changed -- asked for or not -- is visible before it saves.
  *
  * Same key handling, auth and role rules as api/parse-program.ts.
  */
@@ -13,92 +14,84 @@ export const config = { maxDuration: 60 };
 
 const MODEL = "claude-sonnet-5";
 
-const TARGET = {
-  type: "array",
-  items: { type: "string" },
-  description: "Exercise ids this applies to. List every id you mean; there is no 'all' shorthand.",
+const MUSCLES = [
+  "Abs", "Back", "Biceps", "Calves", "Chest", "Forearms", "Front delts", "Side delts", "Rear delts",
+  "Full body", "Glutes", "Hamstrings", "Adductors", "Obliques", "Quads", "Traps", "Triceps",
+];
+
+const SET = {
+  type: "object",
+  properties: {
+    reps: { type: "integer" },
+    load: { type: "number", description: "In the program's own load unit. Omit to leave as it was; a bodyweight set has no load." },
+    restSec: { type: "integer" },
+    warmup: { type: "boolean" },
+  },
+};
+
+const EXERCISE = {
+  type: "object",
+  properties: {
+    exerciseId: {
+      type: "string",
+      description: "Copy the id exactly for an exercise that already exists, even if you changed it. Omit only for a brand new one.",
+    },
+    name: { type: "string" },
+    muscle: { type: "string", enum: MUSCLES },
+    sets: { type: "array", items: SET },
+  },
+  required: ["name", "muscle", "sets"],
+};
+
+const DAY = {
+  type: "object",
+  properties: {
+    dayId: { type: "string", description: "Copy the id exactly. Omit only for a brand new day." },
+    name: { type: "string" },
+    exercises: { type: "array", items: EXERCISE },
+  },
+  required: ["name", "exercises"],
 };
 
 const EDIT_TOOL = {
-  name: "emit_edits",
-  description: "Return the edits to make to the program.",
+  name: "emit_program",
+  description: "Return the whole program after your changes.",
   input_schema: {
     type: "object",
     properties: {
-      ops: {
+      days: { type: "array", items: DAY, description: "Use this when you were given a 'days' list (one week's template)." },
+      weeks: {
         type: "array",
+        description: "Use this when you were given a 'weeks' list. Return every week you were shown.",
         items: {
           type: "object",
-          properties: {
-            op: {
-              type: "string",
-              enum: [
-                "set_set_count",
-                "set_reps",
-                "adjust_reps",
-                "set_load",
-                "adjust_load",
-                "set_rest",
-                "rename_exercise",
-                "remove_exercise",
-                "rename_day",
-                "swap_exercise",
-                "add_exercise",
-                "reorder_day",
-                "set_warmup_count",
-                "set_reps_per_set",
-              ],
-            },
-            exerciseIds: TARGET,
-            dayId: { type: "string", description: "For rename_day only." },
-            count: { type: "integer", description: "For set_set_count: how many working sets." },
-            reps: { type: "integer", description: "For set_reps." },
-            delta: { type: "number", description: "For adjust_reps and adjust_load. Negative to decrease." },
-            value: { type: "number", description: "For set_load, in the program's load unit." },
-            seconds: { type: "integer", description: "For set_rest." },
-            name: { type: "string", description: "For rename_exercise, rename_day, swap_exercise and add_exercise." },
-            dayIds: { type: "array", items: { type: "string" }, description: "For add_exercise: which days to add it to." },
-            muscle: {
-              type: "string",
-              enum: [
-                "Abs", "Back", "Biceps", "Calves", "Chest", "Forearms", "Front delts", "Side delts",
-                "Rear delts", "Full body", "Glutes", "Hamstrings", "Adductors", "Obliques", "Quads",
-                "Traps", "Triceps",
-              ],
-              description: "For add_exercise (required) and swap_exercise (when the muscle changes).",
-            },
-            repsPerSet: { type: "array", items: { type: "integer" }, description: "For set_reps_per_set, e.g. [12,10,8]." },
-            load: { type: "number", description: "For add_exercise: starting load." },
-            sets: { type: "integer", description: "For add_exercise: how many sets." },
-          },
-          required: ["op"],
+          properties: { week: { type: "integer" }, days: { type: "array", items: DAY } },
+          required: ["week", "days"],
         },
       },
       summary: { type: "string", description: "One sentence describing what you changed." },
       notes: {
         type: "array",
         items: { type: "string" },
-        description: "Anything you could not do, or had to interpret. Be specific and honest.",
+        description: "Anything you couldn't do, had to interpret, or judged. Be specific and honest.",
       },
     },
-    required: ["ops"],
   },
 };
 
-const SYSTEM = `You edit strength training programs on behalf of a coach, by returning operations against the program you're shown.
+const SYSTEM = `You edit strength training programs on behalf of a coach. You are given a program and an instruction, and you return the whole program back with the instruction carried out.
 
 Rules:
-- Only use the operations available. If the coach asks for something outside them, do what you can and say plainly in "notes" what you couldn't do. Never pretend an unsupported change was made.
-- What the operations cover: how many sets, reps (uniform or per-set like 12/10/8), load, rest, warm-up count, renaming, removing, swapping one movement for another, adding a new movement to a day, and reordering a day. Between them that covers most of what a coach asks for. Resolve whatever the coach refers to yourself -- "the calf work", "the first exercise", "everything on Tuesday", "the pressing" -- using the names, muscles, day names and order you can see.
-- swap_exercise keeps the sets and reps and changes the movement. remove_exercise plus add_exercise is a different thing and loses the prescription; prefer a swap when they say "swap", "replace" or "change X to Y".
-- Target exercises by listing their ids explicitly. "Every exercise" means listing all of them.
-- You will be shown one of two shapes, and it changes what's possible:
-  (a) A "days" list with no week numbers. That is ONE WEEK's template, repeated for the whole program, so week 2 cannot differ from week 1. If asked for a week-over-week change, return no ops for that part and say so in notes.
-  (b) A "weeks" list, each with a week number and its own days. Here every week is real and separately editable. "Next week" means the week after "currentWeek". "This week" means currentWeek itself. Target only the exercise ids inside the weeks you mean.
-- In shape (b), "loggedSets" tells you how many sets of an exercise are already done. Those can't be changed, and a set count can't go below them. Days already finished aren't shown at all.
-- "load" is in the program's own unit, which is stated in the input. It is not always pounds.
-- Rest is in seconds.
-- Be conservative. A coach is reviewing this, and a change they didn't ask for costs them more time than one you skipped and flagged.`;
+- Return EVERY day and EVERY exercise you were shown, not only the ones you changed. Anything you leave out is treated as deleted.
+- Copy dayId and exerciseId across exactly, including for things you changed. That is how an edit is told apart from a deletion plus an addition. Omit an id only for something genuinely new.
+- Change only what was asked for. The coach sees a line-by-line diff of everything you touched, so an unrequested "improvement" reads as a mistake and costs them time.
+- Resolve what the coach refers to yourself -- "the calf work", "the first exercise", "everything on Tuesday", "the pressing" -- from the names, muscles, day names and order you can see.
+- You will be given one of two shapes:
+  (a) "days" with no week numbers: ONE WEEK's template, repeated for the whole program. Week 2 cannot differ from week 1. If asked for a week-over-week change, say so in notes and leave it alone. Return "days".
+  (b) "weeks", each with its own days: every week is real and separately editable. "Next week" means the week after currentWeek. Return "weeks", including every week you were shown.
+- In shape (b), sets marked alreadyLogged are training that has already happened. Leave them exactly as they are, in place, and never reduce an exercise below them. The app enforces this regardless, so proposing otherwise just produces a change that silently doesn't land.
+- Load is in the program's own unit, which is not always pounds. Rest is in seconds.
+- If part of the request is impossible or ambiguous, do the part you're sure of and say the rest in notes. Never pretend.`;
 
 async function readJson(req: any): Promise<any> {
   if (req.body && typeof req.body === "object") return req.body;
@@ -178,7 +171,7 @@ export default async function handler(req: any, res: any) {
         max_tokens: 8000,
         system: SYSTEM,
         tools: [EDIT_TOOL],
-        tool_choice: { type: "tool", name: "emit_edits" },
+        tool_choice: { type: "tool", name: "emit_program" },
         messages: [
           {
             role: "user",
@@ -208,9 +201,9 @@ export default async function handler(req: any, res: any) {
   }
 
   const payload = await response.json();
-  const block = (payload.content ?? []).find((b: any) => b.type === "tool_use" && b.name === "emit_edits");
+  const block = (payload.content ?? []).find((b: any) => b.type === "tool_use" && b.name === "emit_program");
   if (!block) {
-    res.status(502).json({ error: "The AI didn't return any edits. Try rewording it." });
+    res.status(502).json({ error: "The AI didn't return a program. Try rewording it." });
     return;
   }
 

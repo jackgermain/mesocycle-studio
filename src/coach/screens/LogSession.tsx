@@ -12,7 +12,7 @@ import { ExercisePickerSheet } from "../components/ExercisePickerSheet";
 import { SwapScopeSheet } from "../../shared/SwapScopeSheet";
 import { RemoveExerciseSheet } from "../../shared/RemoveExerciseSheet";
 import { AiEditShell } from "../components/AiEditSheet";
-import { applyOpsToProgram, diffProgram, summarizeProgramForAi } from "../../shared/liveProgramAiEdit";
+import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "../../shared/liveProgramAiEdit";
 import { getSignal, type ClientSignal } from "../../shared/signals";
 import { jointReasonLabels } from "../../data/mockData";
 import type { Program, TrainingDay } from "../../data/types";
@@ -432,11 +432,14 @@ function LogSessionBody({
           context={painContext}
           placeholder={signal ? "e.g. swap that for something that doesn't bother his shoulder" : undefined}
           buildPayload={() => summarizeProgramForAi(state.program, week.number)}
-          applyOps={(ops) => applyOpsToProgram(state.program, ops)}
+          build={(result) => (result.weeks ? reconcileLiveProgram(state.program, result.weeks) : state.program)}
           diff={(next) => diffProgram(state.program, next)}
-          onApply={(next) => {
-            dispatch({ type: "SET_PROGRAM", program: next });
-            toast("Program updated.");
+          onApply={(next, changes, summary) => {
+            dispatch({
+              type: "SET_PROGRAM",
+              program: { ...next, lastAiEdit: { at: new Date().toISOString(), summary, exerciseIds: changes.map((c) => c.exerciseId).filter((id): id is string => !!id) } },
+            });
+            toast(`Applied — ${changes.length} change${changes.length === 1 ? "" : "s"}.`);
             setShowAiEdit(false);
           }}
           onClose={() => setShowAiEdit(false)}
