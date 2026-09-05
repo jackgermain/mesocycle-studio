@@ -168,7 +168,8 @@ export default async function handler(req: any, res: any) {
       headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 8000,
+        // The whole program comes back, not a diff, so this has to cover a multi-week block in full.
+        max_tokens: 32000,
         system: SYSTEM,
         tools: [EDIT_TOOL],
         tool_choice: { type: "tool", name: "emit_program" },
@@ -201,9 +202,16 @@ export default async function handler(req: any, res: any) {
   }
 
   const payload = await response.json();
+  const truncated = payload.stop_reason === "max_tokens";
   const block = (payload.content ?? []).find((b: any) => b.type === "tool_use" && b.name === "emit_program");
-  if (!block) {
-    res.status(502).json({ error: "The AI didn't return a program. Try rewording it." });
+
+  if (!block || truncated) {
+    console.error("edit-program produced nothing usable", { stop_reason: payload.stop_reason, hasBlock: !!block });
+    res.status(502).json({
+      error: truncated
+        ? "That program is too big to rewrite in one go. Try asking for one week or one day at a time."
+        : "The AI didn't return a program. Try rewording it.",
+    });
     return;
   }
 

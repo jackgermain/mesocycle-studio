@@ -186,7 +186,11 @@ export default async function handler(req: any, res: any) {
       headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 8000,
+        // A program is emitted as one JSON object, so the ceiling has to cover the largest plausible one:
+        // "one set each, 7 days a week" over a 16-exercise sheet is 112 exercises, which ran past 8000
+        // and came back truncated -- a partial tool_use object with no days, reported to the coach as an
+        // unreadable photo when the photo was fine.
+        max_tokens: 32000,
         system: SYSTEM,
         tools: [PROGRAM_TOOL],
         tool_choice: { type: "tool", name: "emit_program" },
@@ -228,9 +232,25 @@ export default async function handler(req: any, res: any) {
   }
 
   const payload = await response.json();
+  const truncated = payload.stop_reason === "max_tokens";
   const block = (payload.content ?? []).find((b: any) => b.type === "tool_use" && b.name === "emit_program");
-  if (!block) {
-    res.status(502).json({ error: "The AI didn't return a program. Try a clearer photo." });
+
+  if (!block || truncated || !Array.isArray(block.input?.days) || block.input.days.length === 0) {
+    console.error("parse-program produced nothing usable", {
+      stop_reason: payload.stop_reason,
+      hasBlock: !!block,
+      dayCount: Array.isArray(block?.input?.days) ? block.input.days.length : null,
+    });
+    // Truncation and an unreadable photo need opposite responses from the coach, and telling them to
+    // retake a photo that was never the problem sends them in circles.
+    res.status(502).json({
+      error: truncated
+        ? "That came out too big to finish in one go — try importing it as written, then use Edit with AI to repeat the days across the week."
+        : block?.input?.notes?.[0] ?? "Couldn't read a program out of that. Try a clearer photo, or crop it to just the program.",
+      // Relayed so a failure can be diagnosed from the screen instead of guessed at. None of it is
+      // sensitive -- it says how the model stopped and how much it produced, not what was in the image.
+      diagnostic: `stop=${payload.stop_reason ?? "none"} block=${block ? "yes" : "no"} days=${Array.isArray(block?.input?.days) ? block.input.days.length : "none"}`,
+    });
     return;
   }
 

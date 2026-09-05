@@ -74,7 +74,8 @@ export async function parseProgramWithAi(
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
-    throw new Error(body?.error ?? "That didn't work. Try again in a moment.");
+    const detail = typeof body?.diagnostic === "string" ? ` (${body.diagnostic})` : "";
+    throw new Error((body?.error ?? "That didn't work. Try again in a moment.") + detail);
   }
 
   const result = (await res.json()) as AiProgramResult;
