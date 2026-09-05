@@ -390,3 +390,31 @@ export function appendWeeks(program: Program, extraWeeks: number): Program {
 
   return { ...program, totalWeeks: last.number + count, weeks: [...sorted, ...added] };
 }
+
+/** Which weekdays a built program actually trains on, as offsets from Monday.
+ *
+ * A Program stores dates, not a pattern -- so repeating one means reading the pattern back off the
+ * calendar. Without this, rebuilding falls back to an even spread and a Mon/Tue/Thu/Fri/Sat block quietly
+ * comes back as something else. */
+export function dowsFromProgram(program: Program): number[] {
+  const week = program.weeks.find((w) => w.days.length);
+  if (!week) return [];
+  return week.days.map((d) => (new Date(`${d.date}T00:00:00`).getDay() + 6) % 7);
+}
+
+/** The same block again, from today, with nothing logged.
+ *
+ * Rebuilt through the draft path rather than copied: that re-runs the scheduler, so the new block starts
+ * on the right upcoming days instead of carrying the old block's dates, and every set comes back unticked
+ * with fresh ids. Copying the finished program and clearing flags by hand would leave stale dates and any
+ * removals someone made along the way. */
+export function repeatProgram(program: Program): Program {
+  const days = draftDaysFromProgram(program);
+  const dows = dowsFromProgram(program);
+  const weeks = program.totalWeeks || program.weeks.length || 1;
+  const repeated = buildProgramFromDraft(program.name, days, weeks, program.coachName, dows.length ? dows : undefined);
+  // buildProgramFromDraft puts the owner's name in coachName; on a repeat the block already knows whose
+  // it is, and overwriting it would rename a coached client's coach to themselves.
+  return { ...repeated, coachName: program.coachName };
+}
+

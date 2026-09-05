@@ -9,7 +9,7 @@ import { listCoachTemplates } from "../shared/templates";
 import { DayOfWeekPicker } from "../shared/DayOfWeekPicker";
 import { SimpleExercisePicker } from "../shared/SimpleExercisePicker";
 import { defaultDows, resizeDows } from "../shared/trainingDays";
-import { buildProgramFromDraft, draftDaysFromProgram, mergeEditedDraftIntoProgram } from "../shared/programConvert";
+import { buildProgramFromDraft, draftDaysFromProgram, dowsFromProgram, mergeEditedDraftIntoProgram } from "../shared/programConvert";
 import type { DraftDay, DraftExercise } from "../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../coach/csvProgram";
 import { AiImportSheet } from "../shared/AiImportSheet";
@@ -53,12 +53,29 @@ export default function BuildProgram() {
   const nav = useNavigate();
   const [searchParams] = useSearchParams();
   const editRequested = searchParams.get("edit") === "1";
-  const [mode, setMode] = useState<Mode>(editRequested && state.program.weeks.length > 0 ? "editMesocycle" : "choose");
+  // Arrived from "Block complete -> change it first". Same editor as a from-scratch build, seeded with the
+  // finished block, so saving creates a NEW program with fresh dates rather than editing the old one in
+  // place -- which is what "edit" does and is the opposite of repeating.
+  const repeatRequested = searchParams.get("repeat") === "1" && state.program.weeks.length > 0;
+  const [mode, setMode] = useState<Mode>(editRequested && state.program.weeks.length > 0 ? "editMesocycle" : repeatRequested ? "scratch" : "choose");
   const [renaming, setRenaming] = useState(false);
   const [renameText, setRenameText] = useState("");
-  const [scratchSeed, setScratchSeed] = useState<ScratchSeed | null>(
-    editRequested && state.program.weeks.length > 0 ? { name: state.program.name, days: draftDaysFromProgram(state.program), weeks: state.program.totalWeeks } : null,
-  );
+  const [scratchSeed, setScratchSeed] = useState<ScratchSeed | null>(() => {
+    if (editRequested && state.program.weeks.length > 0) {
+      return { name: state.program.name, days: draftDaysFromProgram(state.program), weeks: state.program.totalWeeks };
+    }
+    if (repeatRequested) {
+      // dows come off the calendar because a Program stores dates, not a pattern -- without them the
+      // rebuild falls back to an even spread and a Mon/Wed/Sat block comes back on different days.
+      return {
+        name: state.program.name,
+        days: draftDaysFromProgram(state.program),
+        weeks: state.program.totalWeeks || state.program.weeks.length,
+        dows: dowsFromProgram(state.program),
+      };
+    }
+    return null;
+  });
 
   if (mode === "choose") {
     const hasCurrentProgram = state.program.weeks.length > 0;
