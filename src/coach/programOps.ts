@@ -53,6 +53,35 @@ export function duplicateProgram(source: CoachProgram, newName: string): CoachPr
 /** Turns the spreadsheet importer's parsed rows into a real, fully-editable CoachProgram -- opened in the
  * normal builder afterward, same as building from scratch, so whatever the sheet got wrong is just as
  * fixable as anything else (drag to reorder, edit sets/reps/load, swap exercises). */
+/** A saved template, back in the shape the build-a-program editor works in.
+ *
+ * Lossy in one way worth knowing: DraftExercise carries a single reps/load for a whole exercise, while a
+ * template can prescribe a different number on every set. The first set's numbers are taken as the
+ * exercise's, and per-set variation is flattened. That's a property of the editor, not of this function --
+ * the spreadsheet import has always landed in the same place -- and it only applies when someone chooses
+ * to edit a template rather than run it as written. */
+export function coachProgramToDraft(cp: CoachProgram): { name: string; days: DraftDay[]; weeks: number } {
+  return {
+    name: cp.name,
+    weeks: cp.weeks,
+    days: (cp.days ?? []).map((d) => ({
+      name: d.name,
+      exercises: (d.exercises ?? [])
+        // Cardio has no representation in the client logging model, so it is dropped here for the same
+        // reason expandCoachProgramToProgram drops it rather than mis-converting it.
+        .filter((e) => e.kind !== "cardio")
+        .map((e) => ({
+          name: e.name,
+          muscle: e.muscle,
+          sets: e.sets.length || 1,
+          reps: e.sets[0]?.reps,
+          load: e.sets[0]?.loadValue,
+          loadMode: e.loadModeOverride ?? cp.effortScale,
+        })),
+    })),
+  };
+}
+
 export function csvDraftDaysToCoachProgram(name: string, days: DraftDay[], weeks: number): CoachProgram {
   // Most exercises share one load type -- whichever mode shows up most becomes the program default, so
   // individual exercises only need an override when they actually differ from the rest.

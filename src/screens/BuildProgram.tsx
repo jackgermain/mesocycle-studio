@@ -9,14 +9,14 @@ import { listCoachTemplates } from "../shared/templates";
 import { DayOfWeekPicker } from "../shared/DayOfWeekPicker";
 import { SimpleExercisePicker } from "../shared/SimpleExercisePicker";
 import { defaultDows, resizeDows } from "../shared/trainingDays";
-import { buildProgramFromDraft, expandCoachProgramToProgram, draftDaysFromProgram, mergeEditedDraftIntoProgram } from "../shared/programConvert";
+import { buildProgramFromDraft, draftDaysFromProgram, mergeEditedDraftIntoProgram } from "../shared/programConvert";
 import type { DraftDay, DraftExercise } from "../shared/programConvert";
 import { parseCsvToDraftDays, parseXlsxToDraftDays, listXlsxSheetNames, parseXlsxFromUrl, listXlsxSheetNamesFromUrl } from "../coach/csvProgram";
 import { AiImportSheet } from "../shared/AiImportSheet";
 import { AiNotes } from "../shared/AiNotes";
 import type { AiProgramResult } from "../shared/aiImport";
 import type { CsvParseResult } from "../coach/csvProgram";
-import { csvDraftDaysToCoachProgram } from "../coach/programOps";
+import { coachProgramToDraft, csvDraftDaysToCoachProgram } from "../coach/programOps";
 import { writeTemplateToCoach } from "../coach/assignProgram";
 import { useAuth } from "../lib/auth";
 
@@ -169,7 +169,20 @@ export default function BuildProgram() {
   }
 
   if (mode === "templates") {
-    return <TemplatesStep coachName={state.program.coachName} onBack={() => setMode("choose")} onUse={(program) => { dispatch({ type: "SET_PROGRAM", program }); nav("/block"); }} />;
+    // Picking a template used to set the program and jump straight to today's session, which left no way
+    // to change anything -- and if today happened to be a rest day in that split, it landed on an empty
+    // day with nothing to do. Every other way in (from scratch, spreadsheet, photo) reviews first, so
+    // this one does too.
+    return (
+      <TemplatesStep
+        coachName={state.program.coachName}
+        onBack={() => setMode("choose")}
+        onUse={(cp) => {
+          setScratchSeed(coachProgramToDraft(cp));
+          setMode("scratch");
+        }}
+      />
+    );
   }
 
   if (mode === "csv") {
@@ -217,7 +230,7 @@ export default function BuildProgram() {
   );
 }
 
-function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack: () => void; onUse: (p: ReturnType<typeof expandCoachProgramToProgram>) => void }) {
+function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack: () => void; onUse: (t: Awaited<ReturnType<typeof listCoachTemplates>>[number]) => void }) {
   const [templates, setTemplates] = useState<Awaited<ReturnType<typeof listCoachTemplates>> | null>(null);
 
   useEffect(() => {
@@ -237,7 +250,7 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
           <div key={t.id} className="cell">
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{t.name}</div>
             <div className="mu" style={{ marginTop: 2 }}>{t.weeks} weeks · {t.daysPerWeek} days/week</div>
-            <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(expandCoachProgramToProgram(t, coachName))}>
+            <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(t)}>
               Use this template
             </button>
           </div>

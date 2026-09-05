@@ -112,8 +112,8 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
         {nothingProgrammed && (
           <InfoBanner icon="ph-calendar-x">
             {selfDirected
-              ? "Nothing is programmed for this day. Add exercises from the builder, or finish it and move on."
-              : `Nothing is programmed for this day. Finish it to move on, or message ${state.program.coachName} if you were expecting a session.`}
+              ? "Nothing is programmed for this day — a rest day as far as the app is concerned. Nothing to log, and no feedback to fill in."
+              : `Nothing is programmed for this day, so there's nothing to log and no feedback to fill in. Message ${state.program.coachName} if you were expecting a session.`}
           </InfoBanner>
         )}
 
@@ -192,9 +192,20 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
             className="btn btn-primary btn-block"
             style={{ height: 48, opacity: canFinish ? 1 : 0.45, cursor: canFinish ? "pointer" : "not-allowed" }}
             disabled={!canFinish}
-            onClick={() => canFinish && nav(`/block/day/${dayId}/finish`)}
+            onClick={() => {
+              if (!canFinish) return;
+              // A day with no exercises asks for nothing. Sending it through the feedback flow would ask
+              // how a session went that never happened -- how was your pump, any joint pain -- about a
+              // day off. Mark it done and move on; SET_FEEDBACK_DONE is what closes a day out either way.
+              if (nothingProgrammed) {
+                dispatch({ type: "SET_FEEDBACK_DONE", dayId });
+                nav("/block", { replace: true });
+                return;
+              }
+              nav(`/block/day/${dayId}/finish`);
+            }}
           >
-            Finish session
+            {nothingProgrammed ? "Nothing to log — mark it done" : "Finish session"}
           </button>
           {!canFinish && <div className="mu" style={{ textAlign: "center", marginTop: 7 }}>Log or remove every set to finish · {totalSets - doneSets} left</div>}
         </div>
