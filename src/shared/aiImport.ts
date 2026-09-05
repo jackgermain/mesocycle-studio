@@ -70,12 +70,17 @@ export async function prepareFile(file: File): Promise<{ mediaType: string; data
  * frequency, list the sessions once, and the repetition happens here where it's just arithmetic.
  *
  * Cycles rather than pads, so two distinct days over four sessions alternate A B A B. */
-export function expandToFrequency(days: DraftDay[], daysPerWeek?: number): DraftDay[] {
-  const target = Math.min(7, Math.max(0, Math.round(daysPerWeek ?? 0)));
-  if (days.length === 0 || target <= days.length) return days;
+export function expandToFrequency(days: DraftDay[], daysPerWeek?: number): { days: DraftDay[]; note?: string } {
+  const asked = Math.max(0, Math.round(daysPerWeek ?? 0));
+  // Seven is the scheduler's limit, not a preference: scheduleWeeks() places one session per weekday, so
+  // there is nowhere to put an eighth. Clamping quietly would build a different program than the one that
+  // was asked for and say nothing, so the shortfall is reported instead.
+  const target = Math.min(7, asked);
+  const note = asked > 7 ? `Asked for ${asked} sessions a week; the calendar holds one a day, so this is 7.` : undefined;
+  if (days.length === 0 || target <= days.length) return { days, note };
 
   const repeats = new Map<string, number>();
-  return Array.from({ length: target }, (_, i) => {
+  const expanded = Array.from({ length: target }, (_, i) => {
     const source = days[i % days.length];
     const seen = (repeats.get(source.name) ?? 0) + 1;
     repeats.set(source.name, seen);
@@ -86,6 +91,7 @@ export function expandToFrequency(days: DraftDay[], daysPerWeek?: number): Draft
       exercises: source.exercises.map((e) => ({ ...e })),
     };
   });
+  return { days: expanded, note };
 }
 
 export async function parseProgramWithAi(
@@ -112,5 +118,6 @@ export async function parseProgramWithAi(
   if (!Array.isArray(result.days) || result.days.length === 0) {
     throw new Error(result.notes?.[0] ?? "Nothing readable came back — try a clearer photo.");
   }
-  return { ...result, days: expandToFrequency(result.days, result.daysPerWeek) };
+  const { days, note } = expandToFrequency(result.days, result.daysPerWeek);
+  return { ...result, days, notes: note ? [...(result.notes ?? []), note] : result.notes };
 }

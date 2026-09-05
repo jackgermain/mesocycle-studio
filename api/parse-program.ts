@@ -37,8 +37,7 @@ const PROGRAM_TOOL = {
       weeks: { type: "integer", description: "How many weeks the program runs. Default 4 if unstated." },
       daysPerWeek: {
         type: "integer",
-        description:
-          "How many sessions a week this should be trained. If the same session runs several days a week, put the number here and list the session once in days -- the app repeats it. 7 means every day.",
+        description: "How many sessions a week. Defaults to the number of distinct days if not stated anywhere.",
       },
       days: {
         type: "array",
@@ -54,12 +53,12 @@ const PROGRAM_TOOL = {
                 properties: {
                   name: { type: "string" },
                   muscle: { type: "string", enum: MUSCLES, description: "The primary mover." },
-                  sets: { type: "integer" },
-                  reps: { type: "integer" },
+                  sets: { type: "integer", description: "How many sets. One prescription with no set count is 1." },
+                  reps: { type: "integer", description: "Leave out if the source doesn't say." },
                   load: { type: "number", description: "Value in whatever unit loadMode says." },
                   loadMode: { type: "string", enum: ["lb", "pct1rm", "rpe", "rir"] },
                 },
-                required: ["name", "muscle"],
+                required: ["name", "muscle", "sets"],
               },
             },
           },
@@ -78,17 +77,12 @@ const PROGRAM_TOOL = {
 
 const SYSTEM = `You read training programs out of photos, screenshots and PDFs and return them as structured data for a hypertrophy training app.
 
-Rules:
-- Return one entry in "days" per distinct training day in a SINGLE week. The app repeats that week for the requested number of weeks, so never repeat a week yourself.
-- "days" holds the DISTINCT sessions -- an upper day and a lower day are two entries; the same session done on several days is still one entry.
-- "daysPerWeek" is how often they train. Set it whenever the user says or the document implies a frequency, in any wording: "7 days a week", "every day", "three times a week", "run this twice a week each". The app repeats the distinct days across that many sessions, so you never need to duplicate a day yourself to make the count come out.
-- If no frequency is stated anywhere, leave daysPerWeek out and it defaults to however many distinct days there are.
-- Read the actual numbers off the source. Do not invent sets, reps or loads that are not there -- leave the field out instead, and the app fills in its own default.
-- One exception, because the app's default is 3 sets: if the source lists a single prescription per exercise with no set count at all (e.g. just "20 reps", or a list of movements with one number each), that means ONE set. Say sets: 1 explicitly. Only omit "sets" when the source genuinely implies multiple and you can't tell how many.
+- "days" holds the distinct sessions in one week. An upper day and a lower day are two entries; the same session trained on several days is still one entry, with the frequency in "daysPerWeek".
+- "weeks" is how long the block runs, "daysPerWeek" is how often they train in one. Fill both in whenever the source or the coach tells you, however they say it.
+- Read the numbers off the source. Don't invent reps or loads that aren't there -- leave the field out and the coach fills it in.
 - "load" is only a weight when loadMode is "lb". Use "pct1rm" for percentages, "rpe" or "rir" when the source prescribes effort rather than weight.
-- Every exercise needs a primary muscle from the allowed list. Pick the closest one.
-- Keep the source's exercise names as written. Do not rename a movement to something you think is better.
-- Put anything you guessed, could not read, or had to interpret into "notes". A coach is going to check your work, and a wrong number is worse than a flagged one. If the image is unreadable, return an empty days list and say why in notes.`;
+- Keep the source's exercise names as written. Don't rename a movement to something you think is better.
+- Put anything you guessed, couldn't read, or had to interpret into "notes". A coach checks your work, and a wrong number is worse than a flagged one. If the image is unreadable, return an empty days list and say why.`;
 
 async function readJson(req: any): Promise<any> {
   if (req.body && typeof req.body === "object") return req.body;
