@@ -5,6 +5,7 @@ import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner } from "../components/UI";
 import { canSelfBuildProgram } from "../shared/canBuild";
+import { WeighInDue } from "../components/WeighInDue";
 
 /** The "Train" tab's landing spot — always today's lift, no overview page in between. */
 export default function TodayRedirect() {
@@ -33,6 +34,8 @@ export default function TodayRedirect() {
           </div>
         </div>
         <div className="screen-scroll">
+          <WeighInDue />
+
           {canBuild ? (
             <>
               <InfoBanner icon="ph-hourglass">Nothing built yet — start your own program from scratch, or clone one of {state.program.coachName}'s templates.</InfoBanner>

@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
 import { acknowledgeSignal, isJointUrgent, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
-import { noteSignalCleared, refreshOpenSignalCount } from "../../shared/openSignals";
+import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
+import { loadWeighInGaps, type ClientWeighInGap } from "../weighInWatch";
 import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
 import { SignalActionSheet } from "../components/SignalActionSheet";
@@ -40,6 +41,7 @@ export default function Desk() {
   const nav = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
   const [allSignals, setAllSignals] = useState<ClientSignal[]>([]);
+  const [weighInGaps, setWeighInGaps] = useState<ClientWeighInGap[]>([]);
   const [actingOn, setActingOn] = useState<ClientSignal | null>(null);
 
   // Real client-reported feedback (pump, joint pain, unhealed soreness), as opposed to the demo flags
@@ -49,6 +51,11 @@ export default function Desk() {
     let active = true;
     listRecentSignals().then((rows) => active && setAllSignals(rows));
     void refreshOpenSignalCount(true);
+    loadWeighInGaps().then((gaps) => {
+      if (!active) return;
+      setWeighInGaps(gaps);
+      setWeighInGapCount(gaps.length);
+    });
     return () => {
       active = false;
     };
@@ -122,7 +129,7 @@ export default function Desk() {
           </button>
         }
       >
-        <HeroStat value={allFlags.length + signals.length} label={<>decisions<br />waiting</>}>
+        <HeroStat value={allFlags.length + signals.length + weighInGaps.length} label={<>decisions<br />waiting</>}>
           <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
             <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{counts.volume}</span>
@@ -161,6 +168,49 @@ export default function Desk() {
             </div>
           </div>
         </div>
+
+        {weighInGaps.length > 0 && (
+          <div>
+            <div className="sh">Weigh-ins not done · {weighInGaps.length}</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {weighInGaps.map((g) => {
+                const client = state.clients.find((c) => c.accountId === g.accountId);
+                const latest = g.entries[0];
+                return (
+                  <div key={g.accountId} className="cell elev-sm">
+                    <div className="row">
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="name">{client?.name ?? "A client"}</div>
+                        <div className="mu" style={{ marginTop: 1 }}>
+                          {latest.kind === "skipped"
+                            ? `Skipped ${latest.date} — "${latest.reason}"`
+                            : `No weigh-in on ${latest.date}`}
+                          {g.entries.length > 1 ? ` · ${g.entries.length} in the last 14 days` : ""}
+                        </div>
+                      </div>
+                      {/* A skip and a silence are different problems -- one person told you, the other
+                          stopped answering -- so the tag says which, rather than lumping both under
+                          "missed". */}
+                      <span className={`tag ${g.missedCount > 0 ? "tag-warning" : "tag-neutral"}`} style={{ flex: "none" }}>
+                        {g.missedCount > 0 ? `${g.missedCount} missed` : `${g.skippedCount} skipped`}
+                      </span>
+                    </div>
+                    {client && (
+                      <div className="row" style={{ gap: 8, marginTop: 9 }}>
+                        <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => remindWeighIn(client.accountId ?? client.id, client.name)}>
+                          Remind
+                        </button>
+                        <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
+                          Open
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {signals.length > 0 && (
           <div>

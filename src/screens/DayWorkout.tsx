@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { findDay, useStore } from "../state/store";
 import { useAuth } from "../lib/auth";
+import { WeighInDue } from "../components/WeighInDue";
 import { BackHeader, InfoBanner } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
@@ -100,6 +101,8 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
         onBack={selfDirected ? () => nav("/build") : undefined}
       />
       <div className="screen-scroll" onClick={() => openMenu && setOpenMenu(null)}>
+        <WeighInDue />
+
         {allResolved && (
           <InfoBanner icon="ph-check-circle" tone="accent">
             Every set is logged or removed. Finish the session to answer feedback and unlock next time.

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { buildSelfProfile } from "../data/mockData";
 import type { ClientProfile, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, TrainingDay, WeighIn, WorkSet } from "../data/types";
+import type { WeighInSkip } from "../shared/weighIns";
 import type { FoodItem } from "../data/foodDatabase";
 import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
@@ -19,6 +20,10 @@ export interface AppState {
   removals: RemovalRecord[];
   meals: MealSection[];
   weighIns: WeighIn[];
+  /** Weigh-in days the person actively declined, with why. Kept apart from `weighIns` so the trend chart
+   * and the rate-of-change maths never have to filter out entries that carry no weight, and so a coach
+   * can tell "told me they were travelling" from "went quiet", which are different conversations. */
+  weighInSkips: WeighInSkip[];
   /** Foods this person has manually entered themselves (name + macros, no database match) -- searchable
    * alongside the built-in list and live database results from then on. */
   customFoods: FoodItem[];
@@ -41,6 +46,7 @@ function buildBlankState(ownerName: string, coachName: string): AppState {
     removals: [],
     meals: [],
     weighIns: [],
+    weighInSkips: [],
     customFoods: [],
     toast: null,
   };
@@ -73,6 +79,7 @@ type Action =
   | { type: "REMOVE_CUSTOM_FOOD"; foodId: string }
   | { type: "LOG_WEIGHIN"; date: string; weight: number }
   | { type: "TOGGLE_PORTION"; mealId: string; category: import("../data/types").PortionCategory }
+  | { type: "SKIP_WEIGH_IN"; date: string; reason: string }
   | { type: "MARK_INBOX_READ" }
   | { type: "SHOW_TOAST"; message: string }
   | { type: "CLEAR_TOAST" };
@@ -372,6 +379,10 @@ function reducer(state: AppState, action: Action): AppState {
     }
     case "SHOW_TOAST":
       return { ...state, toast: action.message };
+    case "SKIP_WEIGH_IN": {
+      const rest = state.weighInSkips.filter((s) => s.date !== action.date);
+      return { ...state, weighInSkips: [...rest, { date: action.date, reason: action.reason }] };
+    }
     case "MARK_INBOX_READ":
       return { ...state, inboxReadAt: new Date().toISOString() };
     case "CLEAR_TOAST":

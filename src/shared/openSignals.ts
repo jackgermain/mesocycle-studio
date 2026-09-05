@@ -49,6 +49,21 @@ export function noteSignalCleared(): void {
   }
 }
 
+/** Weigh-ins nobody did, folded into the same badge.
+ *
+ * Set by the Desk rather than fetched here: working it out means reading every client's stored weigh-in
+ * history, which is far too much to repeat on the tab bar's own timer for a number that changes once a
+ * day. It goes stale between Desk visits, and that is the right trade -- a badge that is a few hours
+ * behind on "who hasn't weighed in" is still useful, and a roster-wide read every 60 seconds is not. */
+let weighInGaps = 0;
+
+export function setWeighInGapCount(n: number): void {
+  if (n !== weighInGaps) {
+    weighInGaps = n;
+    emit();
+  }
+}
+
 export function useOpenSignalCount(): number {
-  return useSyncExternalStore(subscribe, () => count, () => 0);
+  return useSyncExternalStore(subscribe, () => count + weighInGaps, () => 0);
 }
