@@ -39,6 +39,7 @@ type Action =
   | { type: "MARK_READ"; threadId: string }
   | { type: "SYNC_THREADS"; threads: CoachThread[] }
   | { type: "ADD_CUSTOM_EXERCISE"; exercise: LibraryExercise }
+  | { type: "SET_PROGRAM_SHAPE"; programId: string; hasDeload?: boolean; openEnded?: boolean }
   | { type: "SET_DAYS_PER_WEEK"; programId: string; count: number }
   | { type: "SET_TRAINING_DOWS"; programId: string; dows: number[] }
   | { type: "RENAME_PROGRAM_DAY"; programId: string; dayId: string; name: string }
@@ -171,6 +172,19 @@ function reducer(state: CoachState, action: Action): CoachState {
     }
     case "ADD_CUSTOM_EXERCISE":
       return { ...state, customExercises: [...state.customExercises, action.exercise] };
+    case "SET_PROGRAM_SHAPE": {
+      const programs = state.programs.map((p) =>
+        p.id === action.programId
+          ? {
+              ...p,
+              ...(action.hasDeload !== undefined ? { hasDeload: action.hasDeload } : {}),
+              // Open-ended has no last week, so it can't have a deload on one.
+              ...(action.openEnded !== undefined ? { openEnded: action.openEnded, hasDeload: action.openEnded ? false : p.hasDeload } : {}),
+            }
+          : p,
+      );
+      return { ...state, programs };
+    }
     case "SET_DAYS_PER_WEEK": {
       const programs = structuredClone(state.programs);
       const p = programs.find((x) => x.id === action.programId);

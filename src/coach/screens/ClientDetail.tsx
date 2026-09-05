@@ -6,6 +6,8 @@ import { useAuth } from "../../lib/auth";
 import { supabase } from "../../lib/supabase";
 import { ActionGroup, ActionRow, InfoBanner } from "../../components/UI";
 import { DeleteAccountSheet } from "../components/DeleteAccountSheet";
+import { readClientProgram, saveClientProgram } from "../clientProgramEdits";
+import { appendWeeks } from "../../shared/programConvert";
 import { createInvite } from "../../shared/invites";
 import { shareBaseUrl } from "../../shared/appUrl";
 import type { TrainingDay } from "../../data/types";
@@ -27,6 +29,31 @@ export default function ClientDetail() {
   const [accountActive, setAccountActive] = useState<boolean | null>(null);
   const [revoking, setRevoking] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [extending, setExtending] = useState(false);
+
+  /** Adds four weeks onto whatever this client is currently running.
+   *
+   * Read-modify-write against their live client_state rather than anything held here, because the coach
+   * app has no copy of a client's program -- and because the client may have logged sets since this screen
+   * loaded. Their app holds a stale copy in memory either way; see the write-race note in CLAUDE.md. */
+  async function extendBlock() {
+    if (!client.accountId) return;
+    setExtending(true);
+    const program = await readClientProgram(client.accountId);
+    if (!program || !program.weeks.length) {
+      setExtending(false);
+      dispatch({ type: "SHOW_TOAST", message: "They don't have a program running to extend." });
+      setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+      return;
+    }
+    const ok = await saveClientProgram(client.accountId, appendWeeks(program, 4));
+    setExtending(false);
+    dispatch({
+      type: "SHOW_TOAST",
+      message: ok ? `Added 4 weeks to ${client.name.split(" ")[0]}'s block.` : "Couldn't save that — try again.",
+    });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
+  }
 
   useEffect(() => {
     if (!foundAccountId) return;
@@ -265,6 +292,15 @@ export default function ClientDetail() {
               />
               <ActionRow icon="ph-pencil-simple-line" label="Log a session in person" onClick={() => nav(`/coach/clients/${client.id}/log`)} />
               <ActionRow icon="ph-fork-knife" label="Nutrition protocol" onClick={() => nav(`/coach/clients/${client.id}/nutrition`)} />
+              {client.accountId && client.status !== "unassigned" && (
+                <ActionRow
+                  icon="ph-calendar-plus"
+                  disabled={extending}
+                  label={extending ? "Working…" : "Extend their mesocycle"}
+                  subtitle="Adds 4 more weeks, repeating their last full week"
+                  onClick={extendBlock}
+                />
+              )}
               <ActionRow icon="ph-chat-circle" label={`Message ${client.name.split(" ")[0]}`} onClick={() => nav(`/coach/messages/${client.accountId}`)} />
               {accountActive !== null && (
                 <ActionRow

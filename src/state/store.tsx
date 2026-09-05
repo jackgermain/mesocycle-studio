@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo, useReducer, useRe
 import { buildSelfProfile } from "../data/mockData";
 import type { ClientProfile, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, TrainingDay, WeighIn, WorkSet } from "../data/types";
 import type { WeighInSkip } from "../shared/weighIns";
+import { appendWeeks } from "../shared/programConvert";
 import type { FoodItem } from "../data/foodDatabase";
 import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
@@ -79,6 +80,7 @@ type Action =
   | { type: "REMOVE_CUSTOM_FOOD"; foodId: string }
   | { type: "LOG_WEIGHIN"; date: string; weight: number }
   | { type: "TOGGLE_PORTION"; mealId: string; category: import("../data/types").PortionCategory }
+  | { type: "EXTEND_PROGRAM"; weeks: number }
   | { type: "SKIP_WEIGH_IN"; date: string; reason: string }
   | { type: "MARK_INBOX_READ" }
   | { type: "SHOW_TOAST"; message: string }
@@ -379,6 +381,10 @@ function reducer(state: AppState, action: Action): AppState {
     }
     case "SHOW_TOAST":
       return { ...state, toast: action.message };
+    case "EXTEND_PROGRAM":
+      // Repeats the last week that actually has exercises in it -- see appendWeeks. Nothing arrives
+      // logged, so an extended block reads as work still to do rather than work already done.
+      return { ...state, program: appendWeeks(state.program, action.weeks) };
     case "SKIP_WEIGH_IN": {
       const rest = state.weighInSkips.filter((s) => s.date !== action.date);
       return { ...state, weighInSkips: [...rest, { date: action.date, reason: action.reason }] };

@@ -301,6 +301,25 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                 )}
 
                 {selfDirected && (
+                  <button
+                    className="link-row"
+                    style={{ padding: "11px 12px" }}
+                    onClick={() => {
+                      dispatch({ type: "EXTEND_PROGRAM", weeks: 4 });
+                      dispatch({ type: "SHOW_TOAST", message: "Added 4 more weeks, repeating your last full week." });
+                      setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
+                      closeOptions();
+                    }}
+                  >
+                    <i className="ph ph-calendar-plus" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 12.5 }}>Add 4 more weeks</div>
+                      <div className="mu" style={{ marginTop: 1 }}>Keeps this block running instead of ending it.</div>
+                    </div>
+                  </button>
+                )}
+
+                {selfDirected && (
                   <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => setConfirmAction("mesocycle")}>
                     <i className="ph ph-x-circle" style={{ fontSize: 16, color: "var(--color-neutral-400)" }} />
                     <div style={{ flex: 1 }}>

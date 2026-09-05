@@ -320,3 +320,73 @@ export function mergeEditedDraftIntoProgram(existing: Program, days: DraftDay[],
 
   return { ...existing, name, weeks };
 }
+
+/** Adds more weeks onto a block that's already running.
+ *
+ * Two ways this is reached: a coach (or someone training themselves) deciding a block deserves longer,
+ * and an open-ended block being built out as it goes. Either way the new weeks repeat the pattern of the
+ * last week that has any exercises in it -- a deload week, or a week someone emptied, is a bad template
+ * for what comes next.
+ *
+ * Everything is re-seeded rather than copied: fresh ids, nothing checked, no logs, no feedback flags.
+ * Cloning a week with its logged sets intact would hand someone a week that already looked done.
+ *
+ * Dates are anchored to Mondays, the same way scheduleWeeks anchors the original block, so a Mon/Wed/Sat
+ * split stays Mon/Wed/Sat no matter which day of the week the block happens to be extended on. */
+export function appendWeeks(program: Program, extraWeeks: number): Program {
+  const count = Math.max(1, Math.min(52, Math.floor(extraWeeks)));
+  if (!program.weeks.length) return program;
+
+  const sorted = [...program.weeks].sort((a, b) => a.number - b.number);
+  const last = sorted[sorted.length - 1];
+  const pattern = [...sorted].reverse().find((w) => w.days.some((d) => Object.keys(d.exercises).length > 0)) ?? last;
+  if (!pattern.days.length) return program;
+
+  const parse = (iso: string) => new Date(`${iso}T00:00:00`);
+  const mondayOf = (d: Date) => addDays(d, -(((d.getDay() + 6) % 7)));
+
+  // The Monday of the last week that exists anywhere in the block. Appended weeks start the Monday after.
+  const lastIso = sorted.flatMap((w) => w.days.map((d) => d.date)).sort().pop()!;
+  const lastMonday = mondayOf(parse(lastIso));
+  // Which weekday each pattern day runs on, 0 = Monday.
+  const dayOffsets = pattern.days.map((d) => (parse(d.date).getDay() + 6) % 7);
+
+  const added: TrainingWeek[] = [];
+  for (let n = 1; n <= count; n++) {
+    const weekNumber = last.number + n;
+    const monday = addDays(lastMonday, n * 7);
+    const days: TrainingDay[] = pattern.days.map((d, di) => {
+      const date = addDays(monday, dayOffsets[di]);
+      const exercises: Record<string, WorkExercise> = {};
+      const order: string[] = [];
+      let setCount = 0;
+      for (const id of d.order.length ? d.order : Object.keys(d.exercises)) {
+        const src = d.exercises[id];
+        if (!src) continue;
+        const freshId = `w${weekNumber}-${id.replace(/^w\d+-/, "")}`;
+        const sets = src.sets
+          // A set someone removed for one week isn't a removal for every week after it.
+          .filter((set) => !set.removed)
+          .map((set, si) => ({ ...set, id: `${freshId}-s${si + 1}`, index: si + 1, actual: null, checked: false }));
+        exercises[freshId] = { ...src, id: freshId, sets };
+        order.push(freshId);
+        setCount += sets.length;
+      }
+      return {
+        id: `w${weekNumber}-${d.id.replace(/^w\d+-/, "")}`,
+        code: d.code,
+        label: d.label,
+        dow: shortDow(date),
+        date: isoDate(date),
+        status: "visible",
+        muscleSummary: d.muscleSummary,
+        setCount,
+        order,
+        exercises,
+      };
+    });
+    added.push({ number: weekNumber, phase: "accumulation", days });
+  }
+
+  return { ...program, totalWeeks: last.number + count, weeks: [...sorted, ...added] };
+}

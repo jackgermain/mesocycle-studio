@@ -81,6 +81,12 @@ export interface CoachProgram {
   name: string;
   status: "published" | "draft";
   weeks: number;
+  /** Whether the last week is a deload. Defaults to true when absent, which is what every program built
+   * before this was a choice assumed -- the builder hardcoded "the last week is the deload". */
+  hasDeload?: boolean;
+  /** An open-ended block: it runs until the coach ends it, and `weeks` is just how far it has been built
+   * out so far rather than a finish line. Implies no deload -- there is no "last week" to deload. */
+  openEnded?: boolean;
   daysPerWeek: number;
   /** One load mode for the whole program — every exercise's sets are entered in this unit. */
   effortScale: LoadMode;

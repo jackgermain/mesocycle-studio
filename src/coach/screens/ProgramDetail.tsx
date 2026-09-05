@@ -106,7 +106,9 @@ export default function ProgramDetail() {
 
   if (!program) return <div className="screen-scroll">Not found.</div>;
 
-  const deloadWeek = program.weeks;
+  // Was `program.weeks` unconditionally: every program's last week was labelled a deload whether or not
+  // it was one, and an open-ended block has no last week to label at all.
+  const deloadWeek = program.openEnded || program.hasDeload === false ? null : program.weeks;
 
   return (
     <div className="screen">
@@ -194,9 +196,44 @@ export default function ProgramDetail() {
         </div>
 
         <div className="cell row" style={{ gap: 8 }}>
-          <StatCell label="Block" value={`${program.weeks} wk`} />
+          <StatCell label="Block" value={program.openEnded ? "Open" : `${program.weeks} wk`} />
           <StatCell label="Week" value={week} />
           <StatCell label="Scale" value={LOAD_LABELS[program.effortScale]} />
+        </div>
+
+        {/* Both of these were assumptions rather than choices: every block ended, and its last week was
+            always labelled a deload whether it was one or not. */}
+        <div className="cell">
+          <div className="sh">How this block runs</div>
+          <button
+            className="row"
+            style={{ width: "100%", background: "none", border: "none", padding: "8px 0", cursor: "pointer", color: "inherit", textAlign: "left" }}
+            onClick={() => dispatch({ type: "SET_PROGRAM_SHAPE", programId: program.id, openEnded: !program.openEnded })}
+          >
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "var(--text-sm)" }}>Open-ended</div>
+              <div className="mu" style={{ marginTop: 1 }}>Runs until you end it. No finish line, no deload.</div>
+            </div>
+            <i className={`ph-fill ${program.openEnded ? "ph-toggle-right" : "ph-toggle-left"}`}
+               style={{ fontSize: 26, flex: "none", color: program.openEnded ? "var(--color-accent)" : "var(--color-neutral-700)" }} />
+          </button>
+
+          {!program.openEnded && (
+            <button
+              className="row"
+              style={{ width: "100%", background: "none", border: "none", padding: "8px 0", cursor: "pointer", color: "inherit", textAlign: "left" }}
+              onClick={() => dispatch({ type: "SET_PROGRAM_SHAPE", programId: program.id, hasDeload: program.hasDeload === false })}
+            >
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: "var(--text-sm)" }}>Last week is a deload</div>
+                <div className="mu" style={{ marginTop: 1 }}>
+                  {program.hasDeload === false ? `Week ${program.weeks} is a normal week.` : `Week ${program.weeks} shows as D on the week picker.`}
+                </div>
+              </div>
+              <i className={`ph-fill ${program.hasDeload === false ? "ph-toggle-left" : "ph-toggle-right"}`}
+                 style={{ fontSize: 26, flex: "none", color: program.hasDeload === false ? "var(--color-neutral-700)" : "var(--color-accent)" }} />
+            </button>
+          )}
         </div>
 
         {assignToClient ? (

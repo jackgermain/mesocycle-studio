@@ -22,7 +22,10 @@ export function DeleteAccountSheet({
   const [error, setError] = useState<string | null>(null);
 
   const firstName = name.split(" ")[0];
-  const matches = typed.trim().toLowerCase() === firstName.toLowerCase();
+  // One phrase for every account rather than the person's own name. A name is short, sometimes a single
+  // common word, and on the wrong card it can be typed correctly by accident -- "delete account" cannot.
+  const CONFIRM = "delete account";
+  const matches = typed.trim().toLowerCase() === CONFIRM;
 
   async function go() {
     setWorking(true);
@@ -72,14 +75,14 @@ export function DeleteAccountSheet({
         </p>
 
         <div className="field">
-          <label>Type “{firstName}” to confirm</label>
+          <label>Type “delete account” to confirm</label>
           <input
             className="input"
             value={typed}
             onChange={(e) => setTyped(e.target.value)}
             autoCapitalize="off"
             autoCorrect="off"
-            placeholder={firstName}
+            placeholder="delete account"
           />
         </div>
 
