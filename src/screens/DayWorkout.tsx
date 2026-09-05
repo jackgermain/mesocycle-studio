@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { findDay, useStore } from "../state/store";
 import { useAuth } from "../lib/auth";
 import { WeighInDue } from "../components/WeighInDue";
+import { FormCheckSheet } from "../shared/FormCheckSheet";
+import { formChecksAvailable } from "../shared/formChecks";
 import { BackHeader, InfoBanner } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
@@ -29,6 +31,17 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   const [pendingSwap, setPendingSwap] = useState<{ name: string; muscle: string; hasVideo: boolean } | null>(null);
   const [removeKey, setRemoveKey] = useState<string | null>(null);
   const [confirmText, setConfirmText] = useState("");
+  const [formCheckFor, setFormCheckFor] = useState<string | null>(null);
+  // The bucket and table land by hand-run migration, so the button only appears once they exist -- a
+  // client tapping into a 404 is worse than the option not being there yet.
+  const [canFormCheck, setCanFormCheck] = useState(false);
+  useEffect(() => {
+    let active = true;
+    formChecksAvailable().then((ok) => active && setCanFormCheck(ok));
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const found = findDay(state.program, dayId);
   if (!found) return <div className="screen-scroll">Not found.</div>;
@@ -183,6 +196,12 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                 setOpenMenu(null);
                 setRemoveKey(id);
               } : undefined}
+              // Offered to anyone with a coach on file, prescribed client or friend/family alike --
+              // a self-directed account still has someone to ask.
+              onFormCheck={canFormCheck && account?.coach_id ? () => {
+                setOpenMenu(null);
+                setFormCheckFor(ex.name);
+              } : undefined}
             />
           );
         })}
@@ -210,6 +229,14 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
           {!canFinish && <div className="mu" style={{ textAlign: "center", marginTop: 7 }}>Log or remove every set to finish · {totalSets - doneSets} left</div>}
         </div>
       </div>
+      {formCheckFor && (
+        <FormCheckSheet
+          exerciseName={formCheckFor}
+          dayId={dayId}
+          dayLabel={dayDisplayTitle(day)}
+          onClose={() => setFormCheckFor(null)}
+        />
+      )}
       <TabBar />
 
       {swapKey && swappingEx && !pendingSwap && (

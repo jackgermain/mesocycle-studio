@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../state/store";
 import { supabase } from "../lib/supabase";
 import { refreshInboxBubbles } from "../shared/inboxUnread";
+import { MyFormChecks } from "../components/MyFormChecks";
 import { useAuth } from "../lib/auth";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, HeroHeader, SetPasswordCard, SignOutButton } from "../components/UI";
@@ -93,6 +94,8 @@ export default function Inbox() {
         }
       />
       <div className="screen-scroll" style={{ justifyContent: bubbles.length ? "flex-end" : "flex-start", gap: 4 }}>
+        <MyFormChecks coachName={coachName} />
+
         {thread === "loading" && <div className="mu">Loading…</div>}
         {thread !== "loading" && bubbles.length === 0 && (
           <InfoBanner icon="ph-chat-circle-dots">

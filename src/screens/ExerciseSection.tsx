@@ -64,6 +64,7 @@ export function ExerciseSection({
   onRemoveSet,
   onSwap,
   onRemoveExercise,
+  onFormCheck,
   readOnly,
 }: {
   index: number;
@@ -79,6 +80,8 @@ export function ExerciseSection({
   /** Same rule as onSwap -- dropping a movement is a change to the prescription, so only whoever owns the
    * program gets it: a coach, or someone training themselves. */
   onRemoveExercise?: () => void;
+  /** Absent when there's no coach to send it to -- a coach training themselves has nobody to ask. */
+  onFormCheck?: () => void;
   readOnly?: "future" | "past";
 }) {
   const locked = readOnly === "past";
@@ -158,6 +161,12 @@ export function ExerciseSection({
                 <button className="link-row" style={{ padding: "9px 11px", borderRadius: 0 }} onClick={onSwap}>
                   <i className="ph ph-arrows-left-right" style={{ fontSize: 14, color: "var(--color-accent)" }} />
                   <span style={{ fontSize: 12.5 }}>Swap exercise</span>
+                </button>
+              )}
+              {onFormCheck && (
+                <button className="link-row" style={{ padding: "9px 11px", borderRadius: 0 }} onClick={onFormCheck}>
+                  <i className="ph ph-video-camera" style={{ fontSize: 14, color: "var(--color-accent)" }} />
+                  <span style={{ fontSize: 12.5 }}>Ask for a form check</span>
                 </button>
               )}
               {onRemoveExercise && (

@@ -5,6 +5,8 @@ import { useAuth } from "../../lib/auth";
 import { acknowledgeSignal, isJointUrgent, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
 import { loadWeighInGaps, type ClientWeighInGap } from "../weighInWatch";
+import { listFormChecks, type FormCheck } from "../../shared/formChecks";
+import { CoachFormCheckSheet } from "../components/FormCheckSheet";
 import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
 import { CoachTabBar } from "../components/CoachTabBar";
 import { SignalActionSheet } from "../components/SignalActionSheet";
@@ -42,6 +44,8 @@ export default function Desk() {
   const [showAccount, setShowAccount] = useState(false);
   const [allSignals, setAllSignals] = useState<ClientSignal[]>([]);
   const [weighInGaps, setWeighInGaps] = useState<ClientWeighInGap[]>([]);
+  const [formChecks, setFormChecks] = useState<FormCheck[]>([]);
+  const [watching, setWatching] = useState<FormCheck | null>(null);
   const [actingOn, setActingOn] = useState<ClientSignal | null>(null);
 
   // Real client-reported feedback (pump, joint pain, unhealed soreness), as opposed to the demo flags
@@ -56,6 +60,9 @@ export default function Desk() {
       setWeighInGaps(gaps);
       setWeighInGapCount(gaps.length);
     });
+    // Unanswered only: an answered one has had its decision made and belongs in history, not on a desk
+    // that is supposed to be a list of things still owed.
+    listFormChecks(true).then((rows) => active && setFormChecks(rows));
     return () => {
       active = false;
     };
@@ -129,7 +136,7 @@ export default function Desk() {
           </button>
         }
       >
-        <HeroStat value={allFlags.length + signals.length + weighInGaps.length} label={<>decisions<br />waiting</>}>
+        <HeroStat value={allFlags.length + signals.length + weighInGaps.length + formChecks.length} label={<>decisions<br />waiting</>}>
           <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
             <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{counts.volume}</span>
@@ -168,6 +175,36 @@ export default function Desk() {
             </div>
           </div>
         </div>
+
+        {formChecks.length > 0 && (
+          <div>
+            <div className="sh">Form checks waiting · {formChecks.length}</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {formChecks.map((fc) => {
+                const client = state.clients.find((c) => c.accountId === fc.client_id);
+                return (
+                  <button
+                    key={fc.id}
+                    className="cell row elev-sm"
+                    style={{ textAlign: "left", cursor: "pointer", width: "100%" }}
+                    onClick={() => setWatching(fc)}
+                  >
+                    <i className="ph-fill ph-video-camera" style={{ fontSize: 18, color: "var(--color-accent)", flex: "none" }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="name">{client?.name ?? "A client"}</div>
+                      <div className="mu trunc" style={{ marginTop: 1 }}>
+                        {fc.exercise_name}
+                        {fc.day_label ? ` · ${fc.day_label}` : ""}
+                        {fc.note ? ` — "${fc.note}"` : ""}
+                      </div>
+                    </div>
+                    <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)", flex: "none" }} />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {weighInGaps.length > 0 && (
           <div>
@@ -366,6 +403,15 @@ export default function Desk() {
             <SignOutButton />
           </div>
         </div>
+      )}
+
+      {watching && (
+        <CoachFormCheckSheet
+          check={watching}
+          clientName={state.clients.find((c) => c.accountId === watching.client_id)?.name ?? "Client"}
+          onClose={() => setWatching(null)}
+          onAnswered={() => setFormChecks((prev) => prev.filter((f) => f.id !== watching.id))}
+        />
       )}
 
       {actingOn && (
