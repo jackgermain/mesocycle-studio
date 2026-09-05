@@ -151,6 +151,12 @@ export default function Feedback() {
             <div />
           </div>
 
+          {muscles.length === 0 && (
+            <InfoBanner icon="ph-info">
+              Nothing was logged today, so there's no pump to rate. Carry on to the joint check.
+            </InfoBanner>
+          )}
+
           {muscles.map(([muscle, sets], i) => (
             <div key={muscle}>
               <div className="sh">{muscle} — {sets} sets{i === muscles.length - 1 && muscles.length > 1 ? "" : ""}</div>

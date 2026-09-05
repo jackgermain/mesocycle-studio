@@ -37,6 +37,13 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   const totalSets = exIds.reduce((n, id) => n + (day.exercises[id]?.sets.length ?? 0), 0);
   const doneSets = exIds.reduce((n, id) => n + (day.exercises[id]?.sets.filter((s) => s.checked).length ?? 0), 0);
   const allResolved = totalSets > 0 && doneSets === totalSets;
+  // A day with nothing in it was a dead end. allResolved is false when totalSets is 0, so "Finish
+  // session" stayed disabled under the message "Log or remove every set to finish · 0 left" -- nothing
+  // to log, nothing to remove, and no way off the screen except the day arrows. A coach can leave a
+  // builder day empty and it still gets scheduled (see expandCoachProgramToProgram), so this is reachable
+  // by a real client on a real program. Nothing to resolve means it is finishable.
+  const nothingProgrammed = totalSets === 0;
+  const canFinish = allResolved || nothingProgrammed;
 
   const swappingEx = swapKey ? day.exercises[swapKey] : null;
 
@@ -96,6 +103,14 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
         {allResolved && (
           <InfoBanner icon="ph-check-circle" tone="accent">
             Every set is logged or removed. Finish the session to answer feedback and unlock next time.
+          </InfoBanner>
+        )}
+
+        {nothingProgrammed && (
+          <InfoBanner icon="ph-calendar-x">
+            {selfDirected
+              ? "Nothing is programmed for this day. Add exercises from the builder, or finish it and move on."
+              : `Nothing is programmed for this day. Finish it to move on, or message ${state.program.coachName} if you were expecting a session.`}
           </InfoBanner>
         )}
 
@@ -172,13 +187,13 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
         <div style={{ paddingBottom: 8 }}>
           <button
             className="btn btn-primary btn-block"
-            style={{ height: 48, opacity: allResolved ? 1 : 0.45, cursor: allResolved ? "pointer" : "not-allowed" }}
-            disabled={!allResolved}
-            onClick={() => allResolved && nav(`/block/day/${dayId}/finish`)}
+            style={{ height: 48, opacity: canFinish ? 1 : 0.45, cursor: canFinish ? "pointer" : "not-allowed" }}
+            disabled={!canFinish}
+            onClick={() => canFinish && nav(`/block/day/${dayId}/finish`)}
           >
             Finish session
           </button>
-          {!allResolved && <div className="mu" style={{ textAlign: "center", marginTop: 7 }}>Log or remove every set to finish · {totalSets - doneSets} left</div>}
+          {!canFinish && <div className="mu" style={{ textAlign: "center", marginTop: 7 }}>Log or remove every set to finish · {totalSets - doneSets} left</div>}
         </div>
       </div>
       <TabBar />
