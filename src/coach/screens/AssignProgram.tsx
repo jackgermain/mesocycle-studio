@@ -262,6 +262,10 @@ function ConfirmExistingStep({
  * Exported because it was only reachable while assigning a program to someone -- a coach importing into
  * their own library was being sent to a different screen entirely, which turned out to be a mockup. It
  * never needed the client for anything but a default name and a header, so those are plain props now. */
+/** How much of an open-ended block gets built up front. Long enough to train against without anyone
+ * touching it, short enough that it is obviously not the finish line. */
+const OPEN_ENDED_SEED_WEEKS = 6;
+
 export function CsvStep({
   defaultName,
   kicker,
@@ -285,6 +289,7 @@ export function CsvStep({
   const [selectedSheet, setSelectedSheet] = useState<string | null>(null);
   const [programName, setProgramName] = useState(defaultName);
   const [weeksCount, setWeeksCount] = useState(6);
+  const [openEnded, setOpenEnded] = useState(false);
   const [linkInput, setLinkInput] = useState("");
   const [linkBusy, setLinkBusy] = useState(false);
   const [linkError, setLinkError] = useState<string | null>(null);
@@ -446,10 +451,29 @@ export function CsvStep({
               <input className="input" value={programName} onChange={(e) => setProgramName(e.target.value)} />
             </div>
             <div className="cell">
-              <div className="scr">Weeks (repeats this template)</div>
-              <div className="row" style={{ marginTop: 3, justifyContent: "center" }}>
-                <Stepper value={weeksCount} onChange={setWeeksCount} min={1} max={16} width={34} fontSize={16} />
+              <div className="scr" style={{ marginBottom: 8 }}>How long does it run?</div>
+              {/* A block that ends and a block that doesn't are two different decisions, so they read as a
+                  choice rather than as a stepper with a switch bolted underneath. */}
+              <div className="seg">
+                <button type="button" className={`seg-opt${openEnded ? "" : " on"}`} onClick={() => setOpenEnded(false)}>
+                  Set number of weeks
+                </button>
+                <button type="button" className={`seg-opt${openEnded ? " on" : ""}`} onClick={() => setOpenEnded(true)}>
+                  Until I end it
+                </button>
               </div>
+
+              {openEnded ? (
+                <div className="mu" style={{ marginTop: 10, lineHeight: 1.55 }}>
+                  Runs with no finish line and no deload. It starts with{" "}
+                  <span className="mono">{OPEN_ENDED_SEED_WEEKS}</span> weeks built out, and you add more
+                  whenever you want from their program — or end it when you're done.
+                </div>
+              ) : (
+                <div className="row" style={{ marginTop: 10, justifyContent: "center" }}>
+                  <Stepper value={weeksCount} onChange={setWeeksCount} min={1} max={16} width={34} fontSize={16} />
+                </div>
+              )}
             </div>
 
             <div>
@@ -473,7 +497,15 @@ export function CsvStep({
             className="btn btn-solid btn-block"
             style={{ height: 48, opacity: totalExercises > 0 && !busy ? 1 : 0.5 }}
             disabled={totalExercises === 0 || busy}
-            onClick={() => parsed && onCreate(csvDraftDaysToCoachProgram(programName || defaultName, parsed.days, weeksCount))}
+            onClick={() => {
+              if (!parsed) return;
+              // An open-ended block still has to be materialised as real weeks -- the scheduler and the
+              // client app both work from dated days, not from an intention. It just starts short and
+              // grows, which is what appendWeeks is for.
+              const weeks = openEnded ? OPEN_ENDED_SEED_WEEKS : weeksCount;
+              const program = csvDraftDaysToCoachProgram(programName || defaultName, parsed.days, weeks);
+              onCreate(openEnded ? { ...program, openEnded: true, hasDeload: false } : program);
+            }}
           >
             Create &amp; open in builder
           </button>
