@@ -23,7 +23,10 @@ const ROLE_COPY: Record<PickerRole, string> = {
     "A fully independent coach — they get their own separate roster, clients, and programs, completely walled off from yours. Not part of your roster at all; this is just a general signup link, so no name needed.",
 };
 
-const COACH_SIGNUP_URL = `${shareBaseUrl()}#/`;
+// ?signup=1 so it opens on "Create account" rather than "Sign in". Without it the link lands on a screen
+// whose only button says Sign in, and the one audience this link exists for -- someone who has no account
+// yet -- gets "Invalid login credentials" on their first attempt before spotting the small toggle.
+const COACH_SIGNUP_URL = `${shareBaseUrl()}#/?signup=1`;
 
 export default function InviteRoster() {
   const { dispatch } = useCoachStore();

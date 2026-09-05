@@ -85,6 +85,7 @@ export function AiFab({ onOpen, hidden }: { onOpen: () => void; hidden?: boolean
   });
   const drag = useRef<{ dx: number; dy: number; moved: boolean } | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [scrolling, setScrolling] = useState(false);
 
   // A phone rotating, or a desktop window shrinking, can leave a remembered spot off-screen.
   useEffect(() => {
@@ -93,6 +94,27 @@ export function AiFab({ onOpen, hidden }: { onOpen: () => void; hidden?: boolean
     }
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Fades out of the way while the page moves under it.
+  //
+  // Being draggable wasn't enough on its own: the button floats above everything, so wherever it rests it
+  // is covering something, and on a long list the thing underneath changes every time you scroll. Dropping
+  // it to near-transparent while scrolling means it never hides the row you're reading, and it comes back
+  // as soon as you stop. Capture phase because these lists scroll inside .screen-scroll, and a scroll event
+  // on an element doesn't bubble.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    function onScroll() {
+      setScrolling(true);
+      clearTimeout(timer);
+      timer = setTimeout(() => setScrolling(false), 650);
+    }
+    document.addEventListener("scroll", onScroll, true);
+    return () => {
+      document.removeEventListener("scroll", onScroll, true);
+      clearTimeout(timer);
+    };
   }, []);
 
   function onPointerDown(e: React.PointerEvent<HTMLButtonElement>) {
@@ -155,7 +177,9 @@ export function AiFab({ onOpen, hidden }: { onOpen: () => void; hidden?: boolean
         ...(pos ? { left: pos.x, top: pos.y, right: "auto", bottom: "auto" } : null),
         // Stops iOS treating the drag as a page scroll or a long-press selection.
         touchAction: "none",
-        transition: dragging ? "none" : undefined,
+        // Still tappable while faded -- someone who wants it mid-scroll shouldn't have to wait for it.
+        opacity: scrolling && !dragging ? 0.25 : 1,
+        transition: dragging ? "none" : "opacity 0.2s ease",
         cursor: dragging ? "grabbing" : "pointer",
       }}
     >

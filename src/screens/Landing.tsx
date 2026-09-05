@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 import { bootstrapCoach } from "../lib/accountSetup";
@@ -7,6 +7,10 @@ import { AuthHero as Hero, InfoBanner } from "../components/UI";
 
 export default function Landing() {
   const { loading, session, account, recovering, clearRecovering, revoked, clearRevoked, refreshAccount } = useAuth();
+  // Set by the coach signup link. Read from the hash route's own query, which is where HashRouter puts it
+  // -- window.location.search is the real query string and holds the magic-link `invite` param instead.
+  const [params] = useSearchParams();
+  const wantsSignup = params.get("signup") === "1";
 
   // Coming back from a magic-link email sent from the invite-accept screen — forward to it (it handles
   // its own loading/auth state) rather than falling through to the plain sign-in form here.
@@ -47,7 +51,7 @@ export default function Landing() {
     return <NoAccountYet onBootstrapped={refreshAccount} />;
   }
 
-  return <SignIn />;
+  return <SignIn startInSignup={wantsSignup} />;
 }
 
 function ResetPassword({ onDone }: { onDone: () => void }) {
@@ -88,10 +92,10 @@ function ResetPassword({ onDone }: { onDone: () => void }) {
   );
 }
 
-function SignIn() {
+function SignIn({ startInSignup }: { startInSignup?: boolean }) {
   const nav = useNavigate();
-  const [step, setStep] = useState<"welcome" | "form">("welcome");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [step, setStep] = useState<"welcome" | "form">(startInSignup ? "form" : "welcome");
+  const [mode, setMode] = useState<"signin" | "signup">(startInSignup ? "signup" : "signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
