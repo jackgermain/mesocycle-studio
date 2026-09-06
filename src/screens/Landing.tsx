@@ -267,13 +267,14 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
+  const [coachCode, setCoachCode] = useState("");
   const forCoach = cameForCoachSignup();
 
   async function setUpAsCoach() {
     setBusy(true);
     setError(null);
     try {
-      await bootstrapCoach(name.trim() || "Coach");
+      await bootstrapCoach(name.trim() || "Coach", coachCode.trim());
       onBootstrapped();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't set this up.");
@@ -323,10 +324,26 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
           </p>
           <div className="field">
             <label>Your name</label>
-            <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" onKeyDown={(e) => e.key === "Enter" && setUpAsCoach()} />
+            <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" />
+          </div>
+          <div className="field">
+            <label>Coach signup code</label>
+            <input
+              className="input"
+              style={{ height: 50, fontSize: 14 }}
+              value={coachCode}
+              onChange={(e) => setCoachCode(e.target.value)}
+              placeholder="From the platform owner"
+              onKeyDown={(e) => e.key === "Enter" && coachCode.trim() && setUpAsCoach()}
+            />
           </div>
           {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-          <button className="btn btn-secondary btn-block" style={{ height: 48, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={setUpAsCoach}>
+          <button
+            className="btn btn-secondary btn-block"
+            style={{ height: 48, fontSize: 14, opacity: busy || !coachCode.trim() ? 0.5 : 1 }}
+            disabled={busy || !coachCode.trim()}
+            onClick={setUpAsCoach}
+          >
             {busy ? "Setting up…" : "Set up as the coach"}
           </button>
         </>

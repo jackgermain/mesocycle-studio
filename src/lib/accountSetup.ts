@@ -10,8 +10,16 @@ export async function claimInvite(code: string, displayName: string): Promise<Ac
 }
 
 /** The very first person to sign in can claim the coach role — fails if a coach account already exists. */
-export async function bootstrapCoach(displayName: string): Promise<Account> {
-  const { data, error } = await supabase.rpc("bootstrap_coach", { p_display_name: displayName });
+/** Coach signup, gated by a one-time code (migration 0018).
+ *
+ * The old `bootstrap_coach` took a name and nothing else, and was granted to every authenticated user --
+ * so which button the UI happened to render was the only thing between an ordinary signup and a coach
+ * account. That grant is now revoked, and this is the only way in. */
+export async function bootstrapCoach(displayName: string, code: string): Promise<Account> {
+  const { data, error } = await supabase.rpc("bootstrap_coach_with_code", {
+    p_display_name: displayName,
+    p_code: code,
+  });
   if (error) throw error;
   return data as Account;
 }
