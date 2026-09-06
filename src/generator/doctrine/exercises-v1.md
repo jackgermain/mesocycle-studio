@@ -559,6 +559,61 @@ as well as the bar, and only the incline changes both.
 
 ---
 
+## Dumbbell Fly — *flat and incline together; accessory, never first*
+
+**Library:** `Dumbbell Fly` · `Incline Dumbbell Fly`
+**His usage:** flat 42, incline 3.
+
+Covered as a pair at his instruction. The flies as a whole are **not** one group — *"there's intricacies of
+all of them"* — so the cable variants and the pec deck get their own entries.
+
+> *"These are accessories, obviously. On these accessory exercises I would do no more than 15 reps at the
+> most, maybe 20, but that's really pushing it. On the lowest end of the rep range I would go at eight
+> reps, never anything lower than that. The most amount of sets I would do on this exercise is four and the
+> least amount is two, same rep ranges and rep progressions as all the other things we've talked about."*
+
+**Rule — role:** accessory. Never a primary.
+
+**Rule — reps 8-15**, with 20 as a stretch ceiling that is "really pushing it". Never below 8.
+
+**Rule — sets 2-4.**
+
+### Slot — never first, ever
+
+> *"If I was only doing two chest exercises in one day, this probably wouldn't be one of the two choices.
+> And I would never, in any cases, do either one of these exercises first. Ever."*
+
+**Rule:** never the first chest exercise. This is the hardest slot restriction recorded so far — the chest
+press machine merely needs a condition met to lead, while the fly is excluded outright.
+
+**Rule:** with only two chest exercises in a session, the fly is probably not one of them. It effectively
+requires a third slot to exist before it is worth picking.
+
+---
+
+## The rep floor tracks the implement — (inferred)
+
+Six chest entries in, the low end of each rep range lines up with what the exercise is, not with what it
+trains:
+
+| Floor | Exercises |
+|---|---|
+| 1 | Flat barbell bench |
+| 3 | Incline barbell bench |
+| 6 | Dumbbell presses (flat and incline), Smith presses (flat and incline) |
+| 8 | Chest press machine, dumbbell flies |
+
+The ceiling barely moves — almost everything tops out at 15. **It is the floor that carries the
+information**, and it falls as the exercise gets more loadable and more stable. Free barbell reaches the
+peak-strength band; dumbbells and the Smith stop at the top of middle-strength; accessories never leave
+hypertrophy at all.
+
+Marked inferred because Jack gave these numbers one exercise at a time and has not stated the pattern
+himself. If it holds, it is a useful default for exercises not yet covered — but it should be confirmed
+before the generator leans on it.
+
+---
+
 ## The chest slot hierarchy, as it stands
 
 Enough chest entries now exist to see the ordering rule they collectively encode. This is synthesis, not a
@@ -570,6 +625,7 @@ quote — but every line traces to an entry above.
 | Incline dumbbell press | 1st | When no barbell bench is in the session. 2nd otherwise. |
 | Smith bench (flat / incline) | 1st or 2nd | Never 3rd. Demoted off 1st if very strong. |
 | Chest press machine | 2nd or 3rd | 1st only when chest is trained 3x/week. |
+| Dumbbell fly (flat / incline) | Never 1st | Needs a 3rd slot to exist before it is worth picking. |
 
 Two things fall out of it:
 
