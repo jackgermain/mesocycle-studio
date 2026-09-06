@@ -116,6 +116,36 @@ export async function loadComplianceGaps(days = 14): Promise<ClientComplianceGap
   return out;
 }
 
+/** A stable key per gap item, so a coach can wave off one miss without silencing the next one.
+ *
+ * Dates are part of the key deliberately. Keying on the client alone would mean "ignore" hides them
+ * forever, and a client who goes quiet again is exactly what this is meant to surface. */
+export function complianceKeys(gap: ClientComplianceGap): string[] {
+  return [
+    ...gap.missedSessions.map((s) => `${gap.accountId}|session|${s.date}`),
+    ...gap.missedFoodDays.map((d) => `${gap.accountId}|food|${d}`),
+    ...(gap.neverLoggedFood ? [`${gap.accountId}|food|never`] : []),
+  ];
+}
+
+/** Drop everything the coach has already waved off, and any client left with nothing. */
+export function applyDismissals(
+  gaps: ClientComplianceGap[],
+  dismissed: readonly string[],
+): ClientComplianceGap[] {
+  if (!dismissed.length) return gaps;
+  const off = new Set(dismissed);
+  const out: ClientComplianceGap[] = [];
+  for (const g of gaps) {
+    const missedSessions = g.missedSessions.filter((s) => !off.has(`${g.accountId}|session|${s.date}`));
+    const missedFoodDays = g.missedFoodDays.filter((d) => !off.has(`${g.accountId}|food|${d}`));
+    const neverLoggedFood = g.neverLoggedFood && !off.has(`${g.accountId}|food|never`);
+    if (!missedSessions.length && !missedFoodDays.length && !neverLoggedFood) continue;
+    out.push({ ...g, missedSessions, missedFoodDays, neverLoggedFood });
+  }
+  return out;
+}
+
 /** One number for the Desk's headline count. */
 export function totalComplianceItems(gaps: ClientComplianceGap[]): number {
   return gaps.reduce(

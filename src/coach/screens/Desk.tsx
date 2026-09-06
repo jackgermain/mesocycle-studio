@@ -5,7 +5,7 @@ import { useAuth } from "../../lib/auth";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
 import { loadWeighInGaps, type ClientWeighInGap } from "../weighInWatch";
-import { loadComplianceGaps, totalComplianceItems, type ClientComplianceGap } from "../complianceWatch";
+import { loadComplianceGaps, totalComplianceItems, applyDismissals, complianceKeys, type ClientComplianceGap } from "../complianceWatch";
 import { listFormChecks, type FormCheck } from "../../shared/formChecks";
 import { CoachFormCheckSheet } from "../components/FormCheckSheet";
 import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
@@ -45,7 +45,7 @@ export default function Desk() {
   const [showAccount, setShowAccount] = useState(false);
   const [allSignals, setAllSignals] = useState<ClientSignal[]>([]);
   const [weighInGaps, setWeighInGaps] = useState<ClientWeighInGap[]>([]);
-  const [compliance, setCompliance] = useState<ClientComplianceGap[]>([]);
+  const [allCompliance, setAllCompliance] = useState<ClientComplianceGap[]>([]);
   const [formChecks, setFormChecks] = useState<FormCheck[]>([]);
   const [watching, setWatching] = useState<FormCheck | null>(null);
   const [actingOn, setActingOn] = useState<ClientSignal | null>(null);
@@ -67,7 +67,7 @@ export default function Desk() {
     listFormChecks(true).then((rows) => active && setFormChecks(rows));
     // Sessions and food logs nobody filled in. Pulled rather than pushed for the same reason as the
     // weigh-in gaps: a client who has gone quiet is exactly the one whose app is not reporting anything.
-    loadComplianceGaps().then((rows) => active && setCompliance(rows));
+    loadComplianceGaps().then((rows) => active && setAllCompliance(rows));
     return () => {
       active = false;
     };
@@ -100,6 +100,21 @@ export default function Desk() {
       return `${s.muscle} recovered early${s.note ? ` — ${s.note.toLowerCase()}` : ""}`;
     }
     return `${s.muscle} pump was low`;
+  }
+
+  // Recomputed rather than filtered once on load, so an "Ignore" takes effect immediately without
+  // refetching the whole roster's state.
+  const compliance = useMemo(
+    () => applyDismissals(allCompliance, state.dismissedCompliance ?? []),
+    [allCompliance, state.dismissedCompliance],
+  );
+
+  function ignoreCompliance(gap: ClientComplianceGap, clientName: string) {
+    // Everything currently shown for this client, not the client themselves -- a new miss next week
+    // reappears.
+    dispatch({ type: "DISMISS_COMPLIANCE", keys: complianceKeys(gap) });
+    dispatch({ type: "SHOW_TOAST", message: `Ignored for ${clientName}.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
   }
 
   const allFlags = useMemo(() => state.clients.flatMap((c) => c.flags.map((f) => ({ client: c, flag: f }))), [state.clients]);
@@ -283,6 +298,9 @@ export default function Desk() {
                         </button>
                         <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
                           Open
+                        </button>
+                        <button className="btn btn-ghost" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => ignoreCompliance(g, client.name)}>
+                          Ignore
                         </button>
                       </div>
                     )}

@@ -14,11 +14,18 @@ export interface CoachState {
   programs: CoachProgram[];
   threads: CoachThread[];
   customExercises: LibraryExercise[];
+  /** Compliance gaps the coach has waved off, as `accountId|kind|date` keys.
+   *
+   * Kept per gap rather than per client on purpose. Dismissing "no session on the 3rd" should not also
+   * silence a session missed next week -- a client who goes quiet again is exactly the thing this is for.
+   * Stored on coach_state rather than a table because these are computed, not records: there is no row to
+   * mark acknowledged, and the judgement is the coach's own. */
+  dismissedCompliance: string[];
   toast: string | null;
 }
 
 export function blankState(): CoachState {
-  return { clients: [], programs: [], threads: [], customExercises: [], toast: null };
+  return { clients: [], programs: [], threads: [], customExercises: [], dismissedCompliance: [], toast: null };
 }
 
 type Action =
@@ -29,6 +36,7 @@ type Action =
   | { type: "REMOVE_CLIENT"; clientId: string }
   | { type: "APPLY_FLAG"; clientId: string; flagId: string }
   | { type: "DISMISS_FLAG"; clientId: string; flagId: string }
+  | { type: "DISMISS_COMPLIANCE"; keys: string[] }
   | { type: "ADD_PROGRAM"; program: CoachProgram }
   | { type: "REMOVE_PROGRAM"; programId: string }
   | { type: "ASSIGN_PROGRAM"; clientId: string; programId: string; programName: string; totalWeeks: number; mode: "now" | "queued"; sourceProgramId?: string; reason?: string }
@@ -85,6 +93,10 @@ function reducer(state: CoachState, action: Action): CoachState {
     case "DISMISS_FLAG": {
       const clients = state.clients.map((c) => (c.id === action.clientId ? { ...c, flags: c.flags.filter((f) => f.id !== action.flagId) } : c));
       return { ...state, clients };
+    }
+    case "DISMISS_COMPLIANCE": {
+      const seen = new Set([...(state.dismissedCompliance ?? []), ...action.keys]);
+      return { ...state, dismissedCompliance: [...seen] };
     }
     case "SET_PROGRAM_VISIBILITY": {
       const programs = state.programs.map((p) => (p.id === action.programId ? { ...p, visibility: action.visibility } : p));
