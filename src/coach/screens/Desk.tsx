@@ -364,6 +364,16 @@ export default function Desk() {
                       <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => remindWeighIn(g.accountId, client?.name ?? "A client")}>
                         Remind
                       </button>
+                      {/* Same roster fallback as the compliance card: without a matched record there is
+                          no detail page to open, but hiding the button would be worse than landing them
+                          somewhere they can find the person. */}
+                      <button
+                        className="btn btn-secondary"
+                        style={{ flex: 1, height: 36, fontSize: 12.5 }}
+                        onClick={() => nav(client ? `/coach/clients/${client.id}` : "/coach/clients")}
+                      >
+                        Open
+                      </button>
                       <button className="btn btn-ghost" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => ignoreWeighIn(g, client?.name ?? "A client")}>
                         Ignore
                       </button>
