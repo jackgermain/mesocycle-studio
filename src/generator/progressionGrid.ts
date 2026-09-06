@@ -69,6 +69,10 @@ export interface GridPoint {
   intensity: number;
   /** Stimulus-weighted total work -- reps times normalised load, summed. */
   volume: number;
+  /** Mean weight actually on the bar. Not normalised -- this is what the client loads. */
+  load: number;
+  /** Total reps in the session for this exercise. Jack's "very important landmark". */
+  totalReps: number;
 }
 
 export function gridPointOf(sets: PerformedSet[], ref = REFERENCE_REPS): GridPoint | undefined {
@@ -81,12 +85,22 @@ export function gridPointOf(sets: PerformedSet[], ref = REFERENCE_REPS): GridPoi
     volume += s.reps * n;
   }
   if (!loads.length) return undefined;
-  return { intensity: loads.reduce((a, b) => a + b, 0) / loads.length, volume };
+  const rawLoads = sets.map((x) => x.load ?? 0);
+  return {
+    intensity: loads.reduce((a, b) => a + b, 0) / loads.length,
+    volume,
+    load: rawLoads.reduce((a, b) => a + b, 0) / rawLoads.length,
+    totalReps: sets.reduce((n, x) => n + x.reps, 0),
+  };
 }
 
 export interface Move {
   intensityPct: number;
   volumePct: number;
+  /** Change in the weight on the bar. */
+  loadPct: number;
+  /** Change in total reps for the session -- the landmark that must stay put. */
+  repsPct: number;
   verdict: "good" | "too small" | "too big" | "backwards" | "unsafe";
   why: string;
 }
@@ -99,6 +113,29 @@ export interface Move {
 /** Beyond this, one equipment step is too big a jump to wave through -- the exercise is simply too light
  * for its own hardware, and reps are the only lever it has. */
 export const MAX_SINGLE_STEP_PCT = 30;
+
+/** Total reps per session for an exercise is a landmark, not a free variable.
+ *
+ * > *"The volume -- as in the total reps per session of that exercise -- should be relatively similar or
+ * > even very similar by the end of the block, especially in the ten-plus rep range, for all accessories
+ * > for sure... A very important landmark with training is reps per session of that exercise. They need
+ * > to be similar."*
+ *
+ * So a block may not double an exercise's rep count and may not halve it. Generation was doing both --
+ * 2x12 becoming 1x15, or 12 reps becoming 30 -- and both are wrong for the same reason. */
+export const SESSION_REPS_TOLERANCE_PCT = 20;
+
+/** Load and volume move against each other.
+ *
+ * > *"Why is the load going down and the volume going down? Those two things are contrary. That's how you
+ * > lose gains. **Load can only go down if volume rises a lot, and volume only comes down if load goes
+ * > up.** In very few situations does volume go up and load go up -- there is, to some degree, but just a
+ * > little bit."*
+ *
+ * The failure this catches is the one he called out hardest: a progression that regresses one axis and
+ * restores it the next week, netting nothing. *"All you're doing is regressing and then bringing it back
+ * to where it was each week. So there's no upwards increase in stress at all."* */
+export const BOTH_RISING_MAX_PCT = 12;
 
 export const GOOD_MOVE = {
   /** Calibrated against his own examples, which span +1.2% to +10.1%. The strength ladder sits at +1.6 to
@@ -122,25 +159,49 @@ export function judgeMove(
   // amount of favourable arithmetic elsewhere makes that the right move (C8, section 18).
   for (let i = 0; i < Math.min(from.length, to.length); i++) {
     if (to[i].reps > from[i].reps && !isRepLeverSafe(from[i].reps)) {
-      const pctA = ((b.intensity - a.intensity) / a.intensity) * 100;
-      const pctV = ((b.volume - a.volume) / a.volume) * 100;
+      const rnd = (n: number) => Math.round(n * 10) / 10;
       return {
-        intensityPct: Math.round(pctA * 10) / 10,
-        volumePct: Math.round(pctV * 10) / 10,
+        intensityPct: rnd(((b.intensity - a.intensity) / a.intensity) * 100),
+        volumePct: rnd(((b.volume - a.volume) / a.volume) * 100),
+        loadPct: a.load > 0 ? rnd(((b.load - a.load) / a.load) * 100) : 0,
+        repsPct: rnd(((b.totalReps - a.totalReps) / a.totalReps) * 100),
         verdict: "unsafe",
         why: `Adding a rep at ${from[i].reps} reps is a ${Math.round(100 / from[i].reps)}% jump in one session. Move the load instead.`,
       };
     }
   }
-  const intensityPct = ((b.intensity - a.intensity) / a.intensity) * 100;
-  const volumePct = ((b.volume - a.volume) / a.volume) * 100;
-
   const round = (n: number) => Math.round(n * 10) / 10;
-  const i = round(intensityPct);
-  const v = round(volumePct);
+  const i = round(((b.intensity - a.intensity) / a.intensity) * 100);
+  const v = round(((b.volume - a.volume) / a.volume) * 100);
+  const l = a.load > 0 ? round(((b.load - a.load) / a.load) * 100) : 0;
+  const r = round(((b.totalReps - a.totalReps) / a.totalReps) * 100);
+  const base = { intensityPct: i, volumePct: v, loadPct: l, repsPct: r };
+
+  // The landmark first: total reps for the session must stay put.
+  if (Math.abs(r) > SESSION_REPS_TOLERANCE_PCT) {
+    return {
+      ...base,
+      verdict: "too big",
+      why: `Total reps for this exercise ${r > 0 ? "rise" : "fall"} ${Math.abs(r)}% in one week. Reps per session is a landmark and should stay close.`,
+    };
+  }
+  // Then the direction rule: the two axes move against each other.
+  if (l < -1 && r <= 5) {
+    return { ...base, verdict: "backwards", why: "Load came down without the reps rising to pay for it." };
+  }
+  if (r < -5 && l <= 1) {
+    return { ...base, verdict: "backwards", why: "Reps came down without the load going up to pay for it." };
+  }
+  if (l > 1 && r > 1 && l + r > BOTH_RISING_MAX_PCT) {
+    return {
+      ...base,
+      verdict: "too big",
+      why: `Load +${l}% and reps +${r}% in the same week. Both may rise, but only a little.`,
+    };
+  }
 
   if (i < GOOD_MOVE.intensity.min && v <= 0) {
-    return { intensityPct: i, volumePct: v, verdict: "backwards", why: "Both difficulty and volume fell." };
+    return { ...base, verdict: "backwards", why: "Both difficulty and volume fell." };
   }
   if (i > GOOD_MOVE.intensity.max) {
     // One step on the equipment is the smallest move that exists, and on a light dumbbell that step is
@@ -164,28 +225,21 @@ export function judgeMove(
       });
     if (!singleStep) {
       return {
-        intensityPct: i,
-        volumePct: v,
+        ...base,
         verdict: "too big",
         why: `Difficulty jumps ${i}% in one week. The rep drop did not accommodate the load.`,
       };
     }
   }
   if (v < GOOD_MOVE.volume.min) {
-    return {
-      intensityPct: i,
-      volumePct: v,
-      verdict: "too big",
-      why: `Volume falls ${Math.abs(v)}%, which is more than a modest decline.`,
-    };
+    return { ...base, verdict: "too big", why: `Volume falls ${Math.abs(v)}%, which is more than a modest decline.` };
   }
   if (i <= 0.5 && v <= 2) {
-    return { intensityPct: i, volumePct: v, verdict: "too small", why: "Barely a change from last week." };
+    return { ...base, verdict: "too small", why: "Barely a change from last week." };
   }
   return {
-    intensityPct: i,
-    volumePct: v,
+    ...base,
     verdict: "good",
-    why: `Difficulty ${i > 0 ? "+" : ""}${i}%, volume ${v > 0 ? "+" : ""}${v}%.`,
+    why: `Load ${l > 0 ? "+" : ""}${l}%, reps ${r > 0 ? "+" : ""}${r}%, difficulty ${i > 0 ? "+" : ""}${i}%.`,
   };
 }

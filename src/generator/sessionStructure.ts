@@ -279,6 +279,29 @@ export function restFor(slotIndex: number, strengthEmphasis = false): number {
   return strengthEmphasis ? REST_BANDS.strength.target : REST_BANDS.general.target;
 }
 
+/** How many sets an exercise needs, which depends on what else the session does for that muscle.
+ *
+ * > *"One set isn't enough of any exercise. If you're gonna have two sets on an exercise, they better be
+ * > really, really unbelievably hard and heavy, or it's because you're doing another exercise afterwards
+ * > that works the same muscle. **If this is the only exercise for that muscle you're doing that day, you
+ * > should be doing a minimum of three sets.** Assuming you train it only twice a week -- if you train it
+ * > twice a week you should be doing three or four for sure. If you're training that muscle three times a
+ * > week, you might be able to get away with three, maybe four at most."*
+ *
+ * The default of two sets was wrong for any muscle a session touches once, which in a three-day full-body
+ * split is most of them. */
+export function minSetsFor(opts: {
+  onlyExerciseForMuscleToday: boolean;
+  weeklyFrequency: number;
+}): number {
+  if (!opts.onlyExerciseForMuscleToday) return 2;
+  return 3;
+}
+
+export function maxSetsFor(weeklyFrequency: number): number {
+  return weeklyFrequency >= 3 ? 4 : 4;
+}
+
 export function profileFor(
   slot: Slot,
   total: number,
