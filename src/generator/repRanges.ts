@@ -11,9 +11,11 @@
  * > and fifteen, and the upper hypertrophy range is fifteen to twenty. And twenty to thirty is reserved
  * > pretty much strictly for cluster sets, or crazy forearm training, or calf raises."*
  *
- * **Seven is a deliberate gap**, not an oversight -- it sits between the top of middle strength and the
- * bottom of lower hypertrophy and belongs to neither. Worth knowing because the relative intensity table
- * interpolates rows for 7 and 9: 9 fills a hole in the source data, but 7 is a rep count he avoids.
+ * **Seven belongs to no zone**, which is not the same as being forbidden -- an earlier version of this
+ * file had it as a rep count he avoids, and that was wrong. It sits between the top of middle strength
+ * and the bottom of lower hypertrophy and is named by neither, but he writes it freely in transit: his
+ * ascending hypertrophy block runs 3x6, **3x7**, 4x8, 4x10. So a set of seven is a legal, ordinary thing
+ * to prescribe; it just isn't the name of a training zone.
  */
 
 export type RepZone =
@@ -88,11 +90,12 @@ export const REP_ZONES: ZoneSpec[] = [
   },
 ];
 
-/** Rep counts he actively avoids. Seven is the only one, and it is a real gap rather than rounding. */
-export const AVOIDED_REPS = [7];
+/** Rep counts that belong to no named zone. Seven is the only one. Legal to prescribe -- it simply has
+ * no zone name, so `zoneFor` returns undefined rather than a label. */
+export const UNZONED_REPS = [7];
 
-export function isAvoidedRepCount(reps: number): boolean {
-  return AVOIDED_REPS.includes(reps);
+export function isUnzonedRepCount(reps: number): boolean {
+  return UNZONED_REPS.includes(reps);
 }
 
 /** Which zone a rep count belongs to.
@@ -103,7 +106,7 @@ export function isAvoidedRepCount(reps: number): boolean {
  * strength, and "eight to twelve is a gold standard" for hypertrophy. Preferring the narrower band
  * instead would put a triple in middle strength and a set of twelve outside the gold standard. */
 export function zoneFor(reps: number): RepZone | undefined {
-  if (isAvoidedRepCount(reps)) return undefined;
+  if (isUnzonedRepCount(reps)) return undefined;
   return REP_ZONES.find((z) => reps >= z.min && reps <= z.max)?.zone;
 }
 
@@ -115,6 +118,44 @@ export function specFor(zone: RepZone): ZoneSpec {
 export function isHypertrophy(reps: number): boolean {
   const z = zoneFor(reps);
   return z === "lower-hypertrophy" || z === "mid-hypertrophy" || z === "upper-hypertrophy";
+}
+
+/** Which lever to pull, decided by what one rep actually costs.
+ *
+ * > *"The five rep range and below, you can't just add a rep, because the percentage increase in that is
+ * > so high. If you're doing four reps and you try to add a rep next time, and you're already at, like,
+ * > RPE eight, that's a twenty percent increase in stress that you're adding in one session with a very
+ * > heavy load, and you can very easily hurt yourself. But it's easier just to add a little bit more
+ * > weight on it and have the total stress significantly less with a similar amount of volume in terms of
+ * > total reps from the last session. Being able to use reps as a modality is a bit better in the rep
+ * > range of six and up, and even more so from the ten up, and definitely so the fifteen to twenty --
+ * > just because the percentage increase is so much smaller."*
+ *
+ * This is the exchange rate from Model C turned into a safety rule. One rep is `100/reps` percent of the
+ * set, so at five reps it is a **20% jump in a single session under a heavy bar**, and at twenty reps it
+ * is 5%. The rep lever is not merely less useful at low reps -- it is the dangerous one.
+ *
+ * It also explains C8's floors from the stress side rather than as a list: the exercises allowed below
+ * six reps are exactly the ones where the load lever is available in small enough increments to be used
+ * instead. */
+export function repCostPct(reps: number): number {
+  return reps > 0 ? 100 / reps : Infinity;
+}
+
+/** Above this, adding a rep is too large a single-session jump to be the default lever. */
+export const REP_LEVER_MAX_COST_PCT = 20;
+
+export function isRepLeverSafe(reps: number): boolean {
+  return repCostPct(reps) < REP_LEVER_MAX_COST_PCT;
+}
+
+export type LeverPreference = "load-only" | "either" | "reps-preferred" | "reps-strongly-preferred";
+
+export function leverPreferenceFor(reps: number): LeverPreference {
+  if (reps <= 5) return "load-only";
+  if (reps < 10) return "either";
+  if (reps < 15) return "reps-preferred";
+  return "reps-strongly-preferred";
 }
 
 /** Zones that train muscular endurance alongside their primary quality. */

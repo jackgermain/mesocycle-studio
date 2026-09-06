@@ -189,6 +189,54 @@ export function ascendingLadder(
  * the block would go nowhere. */
 export const EFFORT_CLIMBS_ACROSS_BLOCK = true;
 
+/** Climbing from six up into hypertrophy, which he walked at last: 3x6, 3x7, 4x8, 4x10.
+ *
+ * > *"The week-by-week schemes literally just reverse what I said about descending. So we do three or
+ * > four sets of six to start. Then the following week we do three sets of seven. Then the following week
+ * > four sets of eight. And then the week after, either three or four sets of ten. And if you do that,
+ * > you'll probably only be able to add maybe ten pounds in load -- definitely no more than twenty --
+ * > throughout the block."*
+ *
+ * | Week | Scheme | Total reps |
+ * |---|---|---|
+ * | 1 | 3x6 | 18 |
+ * | 2 | 3x7 | 21 |
+ * | 3 | 4x8 | 32 |
+ * | 4 | 4x10 | 40 |
+ *
+ * Volume more than doubles across the block while load moves 10-20 lb. That is the mirror image of the
+ * descending ladder, where volume fell from 20 to 15 and load moved 25-30 -- and it is the same trade
+ * seen from the other side.
+ *
+ * Note **week two is a set of seven**, which settles something: seven is a rep count with no zone name,
+ * not a rep count he avoids. */
+export const ASCENDING_6_TO_10: [number, number][] = [
+  [3, 6],
+  [3, 7],
+  [4, 8],
+  [4, 10],
+];
+
+export function hypertrophyLadder(weeks = 4, loadStep = 5): LadderWeek[] {
+  const pairs = ASCENDING_6_TO_10.slice(0, weeks);
+  return pairs.map(([sets, reps], i) => ({
+    week: i + 1,
+    sets,
+    reps,
+    loadStep: i === 0 ? 0 : loadStep,
+    totalReps: sets * reps,
+  }));
+}
+
+/** Exercises that work well at both ends of the rep scale, so their floor is 6 but they are equally at
+ * home at 15. *"You can do dumbbell presses and dumbbell rows and things like that at higher rep ranges
+ * as well. They can also be used at lower ranges like that really well."* */
+const RANGE_FLEXIBLE = /dumbbell press|dumbbell row|dumbbell bench/i;
+
+export function isRangeFlexible(name: string): boolean {
+  return RANGE_FLEXIBLE.test(name);
+}
+
 /** The other direction -- opening at six and climbing into hypertrophy.
  *
  * Recorded as the weaker option rather than the symmetric one, because he says so: *"each time you do
@@ -199,5 +247,5 @@ export const EFFORT_CLIMBS_ACROSS_BLOCK = true;
  * So **climbing in reps costs strength progress**: 10-15 lb across a whole block against the 25-30 lb the
  * descending ladder produces over the same four weeks. Worth stating plainly, because "add a rep" is the
  * cheapest-looking progression and it is the expensive one when strength is the goal. */
-export const ASCENDING_BLOCK_LOAD_GAIN_LB: [number, number] = [10, 15];
+export const ASCENDING_BLOCK_LOAD_GAIN_LB: [number, number] = [10, 20];
 export const DESCENDING_LADDER_LOAD_GAIN_LB: [number, number] = [25, 30];
