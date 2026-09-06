@@ -264,6 +264,30 @@ This is a harder rule than "avoid by default". The chest dip is avoided but unlo
 decline has no unlock. The generator should treat these as absent from the library rather than as
 low-ranked options, and the validator should reject them outright.
 
+**G10 — No entry, no prescription.** On the Svend press:
+
+> *"I have no idea what a Svend press is, so we'll skip that."*
+
+**Rule:** an exercise with no entry in this file is **not generatable**. Not because it is bad — the Svend
+press is not on the G9 denylist and nothing here says it is a poor exercise — but because there is no
+doctrine for how to use it, and a generator with no rules for an exercise cannot prescribe it responsibly.
+
+This makes the file itself the effective allowlist, and it matters at the scale involved: the library holds
+163 exercises and this document will never cover all of them. So the default for an uncovered exercise has
+to be defined, and the default is **exclude**. It also means the practical way to widen what the generator
+can build with is to add entries here, not to add exercises to the library.
+
+Three categories, and they are distinct:
+
+| Category | Meaning | Generator behaviour |
+|---|---|---|
+| Has an entry | Doctrine exists | Prescribable under its rules |
+| No entry (G10) | No doctrine yet | Not prescribed; add an entry to unlock |
+| Denylisted (G9) | Judged bad | Never prescribed, at all |
+
+This aligns with `v1.md` C5 — "only approved exercises" — and gives that constraint a concrete definition
+of *approved*.
+
 ---
 
 # Entries
@@ -900,7 +924,8 @@ landmine press currently books its sets to chest and none to front delts. A sess
 target could satisfy it with an exercise the generator believes is chest work, and the volume report would
 be wrong in both directions.
 
-`Svend Press` at line 63 is tagged Chest too and has not been discussed.
+`Svend Press` at line 63 is tagged Chest too. It falls under G10 — *"I have no idea what a Svend press is"*
+— so it is not generatable, and its tag does not matter until that changes.
 
 ---
 
