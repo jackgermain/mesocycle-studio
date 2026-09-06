@@ -185,6 +185,78 @@ export function levelUp(sets: PerformedSet[]): PerformedSet[] {
   return sets.map((s) => ({ ...s, load: top }));
 }
 
+/** The most load an accessory should take in a week.
+ *
+ * > *"If we're talking accessories, which is pretty much the ten rep range and upwards, if you're gonna
+ * > take a weight jump it should not be more than five pounds per week in most cases. If we're talking a
+ * > cable exercise on a stack or a machine, you might be able to take ten -- but I wouldn't do fifteen,
+ * > and I definitely wouldn't try doing ten or fifteen more than one week in a row."*
+ *
+ * Which lands exactly on `stepForEquipment`: 5 lb for dumbbells and barbells, 10 for machines and cable
+ * stacks. **One equipment step a week, and no more** -- the rule and the hardware agree, which is a good
+ * sign both are right.
+ *
+ * The second half of that sentence is a separate rule: a 10 lb machine jump **may not repeat in
+ * consecutive weeks**, so a stack has to spend a week consolidating before it moves again. */
+export function maxWeeklyLoadStep(equipment: Equipment): number {
+  return stepForEquipment(equipment);
+}
+
+/** True when this week's jump would be the second big one in a row on a stack. */
+export function isRepeatedBigJump(equipment: Equipment, jumpedLastWeek: boolean): boolean {
+  return jumpedLastWeek && stepForEquipment(equipment) >= 10;
+}
+
+/** Promote some sets to a higher rep count, one at a time -- the rep-axis twin of `jumpLoad`.
+ *
+ * > *"Week one, all three sets of ten. Week two, one set of twelve and two sets of ten -- maybe with the
+ * > set of twelve you increase the weight a little bit, and the last two sets of ten with the same weight
+ * > you did in week one. Week three, two sets of twelve and one set of ten. And week four, all three sets
+ * > of twelve with your increased weight."*
+ *
+ * So the stagger he uses for load works on reps too: convert one set a week rather than the whole
+ * exercise, and the sets left behind are what next week converts. Same mechanic, other axis.
+ *
+ * `alsoBumpLoad` is his "maybe" -- the converted set can take a small load jump at the same time. Note
+ * that this moves two variables on one set, which sits awkwardly against C4. He offered it as optional
+ * rather than standard, so it is off by default and the tension is recorded rather than resolved. */
+export function promoteReps(
+  sets: PerformedSet[],
+  count: number,
+  targetReps: number,
+  opts: { equipment?: Equipment; alsoBumpLoad?: boolean } = {},
+): PerformedSet[] {
+  // A set joining the promoted group takes the weight that group is already using -- "two sets of twelve
+  // and one set of ten, with the same weight that you did last week on the sets of twelve". Without this
+  // the second set of twelve would sit at the old, lighter weight and the group would be inconsistent.
+  const existing = sets.find((s) => s.reps >= targetReps);
+  let promoted = 0;
+  return sets.map((s) => {
+    if (promoted >= count || s.reps >= targetReps) return { ...s };
+    promoted += 1;
+    if (opts.alsoBumpLoad && opts.equipment && s.load !== null) {
+      return { reps: targetReps, load: nextLoadUp(opts.equipment, s.load) };
+    }
+    return { reps: targetReps, load: existing?.load ?? s.load };
+  });
+}
+
+/** The simplest block there is: never change the scheme, add one equipment step a week.
+ *
+ * > *"You could just keep it three or four sets of ten the entire block and add five pounds a week. By
+ * > the peak week you might miss it, but you'll probably be able to do it for the other ones -- **assuming
+ * > you're not training too hard to failure right away in week one.**"*
+ *
+ * That last clause is P10 stated for the client rather than for the engine: the whole block only works
+ * because week one leaves room. Open at RIR 3 and there are three weeks of runway; open at RIR 0 and
+ * there is none. */
+export function holdAndLoad(sets: PerformedSet[], equipment: Equipment): PerformedSet[] {
+  return sets.map((s) => ({
+    ...s,
+    load: s.load === null ? null : nextLoadUp(equipment, s.load),
+  }));
+}
+
 /** One week of Model C.
  *
  * The lever is chosen by the caller, not guessed here, because Jack's own answer to which one to use was
