@@ -46,6 +46,9 @@ Variables, since `.env` is never committed. Changing one in Vercel requires a re
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY` — publishable/anon key, not a secret; RLS is the real boundary
 - `VITE_USDA_API_KEY` — USDA FoodData Central key (falls back to the rate-limited `DEMO_KEY` if absent)
+- `TRANSCRIPT_API_KEY` — transcriptapi.com, **deliberately no `VITE_` prefix.** CLI-only, read by
+  `scripts/yt-transcript.py`; it is never needed in the browser and a `VITE_` prefix would bundle a
+  billable key into the public JS.
 - `ANTHROPIC_API_KEY` — **server-side only, deliberately no `VITE_` prefix.** Read by `api/parse-program.ts`
   and never bundled. Anything with a `VITE_` prefix ends up in the public JS, which for a billable key
   means anyone who opens devtools can spend against it. Vercel exposes *all* env vars to serverless
@@ -200,6 +203,16 @@ note below). It verifies the caller's Supabase token and their `role` server-sid
 that isn't a `coach` or `friend` — a hidden button is not access control, and the endpoint costs money.
 Images are downscaled to 1600px in the browser first (`src/shared/aiImport.ts`): a phone photo alone
 exceeds the serverless request body limit before base64 inflates it by a third.
+
+**YouTube transcripts.** `scripts/yt-transcript.py <url…>` writes clean prose transcripts to
+`docs/transcripts/`, for pulling training-content videos into the doctrine work. Two sources in order:
+`yt-dlp` (free, no key, no quota) and then transcriptapi.com if `TRANSCRIPT_API_KEY` is set. The free path
+runs first and the paid one is only touched when YouTube rate-limits (HTTP 429) or captions are disabled.
+Needs `pip3 install --user yt-dlp certifi` — certifi because the Python.org framework build ships without
+a CA bundle and yt-dlp's TLS fails without one. Two non-obvious things are load-bearing in that script:
+auto-generated captions *roll* (each cue repeats the previous one plus a word, so a naive strip yields
+everything six times), and transcriptapi sits behind Cloudflare, which rejects Python's default
+`Python-urllib/3.x` user agent with error 1010 before the request reaches the API.
 
 **Barcode scanning.** Uses `@zxing/browser`, **not** the native `BarcodeDetector` API. That API is
 Chromium-only; Safari has never shipped it, and this app's real target is an installed iOS PWA. This was
