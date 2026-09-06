@@ -95,7 +95,10 @@ export default function Clients() {
     if (filter === "at-risk") return state.clients.filter((c) => c.status === "at-risk" || c.status === "behind");
     if (filter === "clients") return state.clients.filter((c) => c.role !== "friend");
     if (filter === "friends") return state.clients.filter((c) => c.role === "friend");
-    return state.clients;
+    // Clients lead. They're the paying work; friends and family sit underneath rather than interleaved
+    // by whatever order the roster happens to be in. Stable within each group, so the existing order is
+    // preserved inside them.
+    return [...state.clients].sort((a, b) => Number(a.role === "friend") - Number(b.role === "friend"));
   }, [state.clients, filter]);
 
   return (
@@ -132,7 +135,7 @@ export default function Clients() {
             Needs review {needsReviewCount}
           </button>
           <button className={`chip${filter === "all" ? " on" : ""}`} onClick={() => setFilter("all")}>
-            All
+            All <span className="mono">{state.clients.length}</span>
           </button>
           <button className={`chip${filter === "at-risk" ? " on" : ""}`} onClick={() => setFilter("at-risk")}>
             At risk
@@ -146,7 +149,7 @@ export default function Clients() {
                 Clients <span className="mono">{clientCount}</span>
               </button>
               <button className={`chip${filter === "friends" ? " on" : ""}`} onClick={() => setFilter("friends")}>
-                Friends &amp; family <span className="mono">{friendCount}</span>
+                Friends <span className="mono">{friendCount}</span>
               </button>
             </>
           )}
