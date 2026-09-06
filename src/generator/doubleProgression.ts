@@ -258,6 +258,45 @@ export function holdAndLoad(sets: PerformedSet[], equipment: Equipment): Perform
   }));
 }
 
+/** True when one step on the equipment is a large fraction of what is already loaded.
+ *
+ * > *"Think about what you're doing in terms of percentage load you're adding each week on a teeny tiny
+ * > little muscle. If you're starting at ten pounds for two sets of ten -- second week, two sets of
+ * > twelve. Third week, two sets of fifteen. Then you can even keep them next block if you want, and you
+ * > just go to twelve point five pounds, two sets of ten."*
+ *
+ * A 2.5 lb step on a 10 lb dumbbell is 25%, and a 10 lb stack step on a 20 lb cable is 50%. On a rear
+ * delt fly or a rotator cuff exercise that is not a progression, it is a different exercise. So on these
+ * the **load lever does not exist inside a block**: reps climb to the top of the band, and the load step
+ * waits for the block boundary, where the reps reset to the floor. */
+export const LIGHT_LOAD_STEP_PCT = 20;
+
+export function isLightLoad(load: number | null, equipment: Equipment): boolean {
+  if (load === null || load <= 0) return true;
+  return (stepForEquipment(equipment) / load) * 100 >= LIGHT_LOAD_STEP_PCT;
+}
+
+/** Muscles small enough that adding a set is a legitimate progression in itself.
+ *
+ * > *"With little itty bitty baby exercises like this, where you're barely lifting any weight and you're
+ * > not coming off an injury, it's pretty reasonable to just add another set. That's only with exercises
+ * > that are like super accessory -- like a rotator cuff exercise, or a forearm exercise."* */
+export const SET_ADDABLE_MUSCLES = [
+  "Rear delts", "Side delts", "Forearms", "Calves", "Abs", "Obliques", "Adductors",
+];
+
+export function canAddSet(muscle: string, currentSets: number, maxSets = 4): boolean {
+  return SET_ADDABLE_MUSCLES.includes(muscle) && currentSets < maxSets;
+}
+
+export function addSet(sets: PerformedSet[]): PerformedSet[] {
+  if (!sets.length) return sets;
+  // The new set matches the lightest existing one -- a set added at the top weight would be a load jump
+  // wearing a different hat.
+  const lightest = sets.reduce((a, b) => ((a.load ?? 0) <= (b.load ?? 0) ? a : b));
+  return [...sets, { ...lightest }];
+}
+
 /** One week of Model C.
  *
  * The lever is chosen by the caller, not guessed here, because Jack's own answer to which one to use was

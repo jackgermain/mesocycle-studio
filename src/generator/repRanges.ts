@@ -177,6 +177,12 @@ export function bandForReps(reps: number): [number, number] {
   return [8, 12];
 }
 
+/** The band for a light accessory, where the load lever is closed and the reps carry the block.
+ *
+ * His worked example runs a 10 lb rear delt fly 2x10, 2x12, 2x15 and only then steps to 12.5 lb in the
+ * next block -- so the band is 10 to 15, wider than the 8-12 the zone map would hand it. */
+export const LIGHT_ACCESSORY_BAND: [number, number] = [10, 15];
+
 /** Zones that train muscular endurance alongside their primary quality. */
 export function isEndurance(reps: number): boolean {
   const z = zoneFor(reps);

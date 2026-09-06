@@ -59,10 +59,17 @@ export function equivalentLoadRatio(a: number, b: number): number | undefined {
  * This is the coordinate that makes everything comparable: 60 lb for 7 reps and 52.7 lb for 10 reps are
  * the same point. */
 export function normalisedLoad(set: PerformedSet, ref = REFERENCE_REPS): number | undefined {
-  if (set.load === null) return undefined;
   const r = equivalentLoadRatio(ref, set.reps);
-  return r === undefined ? undefined : set.load * r;
+  if (r === undefined) return undefined;
+  // Bodyweight carries a real load, it just isn't a number anyone writes down. Treating it as one unit
+  // keeps the whole grid working for pull-ups and hanging leg raises -- previously a null load made
+  // gridPointOf return undefined, judgeMove return undefined, and every candidate get silently skipped,
+  // so those exercises could never progress and never explained why.
+  return (set.load ?? BODYWEIGHT_UNIT) * r;
 }
+
+/** A stand-in load for bodyweight movements, so reps changes are measurable on the same axes. */
+export const BODYWEIGHT_UNIT = 1;
 
 export interface GridPoint {
   /** Mean per-set difficulty, in reference-rep pounds. Rises when the sets get harder. */
@@ -85,7 +92,7 @@ export function gridPointOf(sets: PerformedSet[], ref = REFERENCE_REPS): GridPoi
     volume += s.reps * n;
   }
   if (!loads.length) return undefined;
-  const rawLoads = sets.map((x) => x.load ?? 0);
+  const rawLoads = sets.map((x) => x.load ?? BODYWEIGHT_UNIT);
   return {
     intensity: loads.reduce((a, b) => a + b, 0) / loads.length,
     volume,
@@ -125,16 +132,33 @@ export const MAX_SINGLE_STEP_PCT = 30;
  * 2x12 becoming 1x15, or 12 reps becoming 30 -- and both are wrong for the same reason. */
 export const SESSION_REPS_TOLERANCE_PCT = 20;
 
-/** Load and volume move against each other.
+/** Load and volume move against each other. This is **linear periodization**, and he names it as such.
+ *
+ * > *"Where load comes down, volume goes up. And as load goes up, volume comes down."*
  *
  * > *"Why is the load going down and the volume going down? Those two things are contrary. That's how you
- * > lose gains. **Load can only go down if volume rises a lot, and volume only comes down if load goes
- * > up.** In very few situations does volume go up and load go up -- there is, to some degree, but just a
- * > little bit."*
+ * > lose gains."*
  *
  * The failure this catches is the one he called out hardest: a progression that regresses one axis and
  * restores it the next week, netting nothing. *"All you're doing is regressing and then bringing it back
- * to where it was each week. So there's no upwards increase in stress at all."* */
+ * to where it was each week. So there's no upwards increase in stress at all."*
+ *
+ * ## When both may rise
+ *
+ * There is one exception, and it is gated on the rep range rather than on the size of the move:
+ *
+ * > *"Pretty much the only way you can have it where load goes up and volume goes up at the same time is
+ * > if you're working in a rep range of **definitely above six reps at the lowest, eight ideally, and
+ * > definitely at the ten-plus rep range** -- and you're starting the block at a low enough RPE that you
+ * > can continuously add weight every week without missing a session's weight cap by the end, as the
+ * > volume is increasing. That is going to mess you up in terms of getting you sore -- not necessarily in
+ * > a bad way, but you're gonna get a little bit fried from that."*
+ *
+ * Two conditions and a stated cost. Below eight reps both axes rising is refused outright however small
+ * the move; at eight and above it is allowed but capped, and it depends on P10's opening headroom being
+ * real -- start at RIR 0 and there is nothing to spend. */
+export const BOTH_RISING_MIN_REPS = 8;
+export const BOTH_RISING_IDEAL_REPS = 10;
 export const BOTH_RISING_MAX_PCT = 12;
 
 export const GOOD_MOVE = {
@@ -149,7 +173,7 @@ export const GOOD_MOVE = {
 export function judgeMove(
   from: PerformedSet[],
   to: PerformedSet[],
-  opts: { equipment?: Equipment } = {},
+  opts: { equipment?: Equipment; repsAreTheOnlyLever?: boolean } = {},
 ): Move | undefined {
   const a = gridPointOf(from);
   const b = gridPointOf(to);
@@ -177,27 +201,40 @@ export function judgeMove(
   const r = round(((b.totalReps - a.totalReps) / a.totalReps) * 100);
   const base = { intensityPct: i, volumePct: v, loadPct: l, repsPct: r };
 
-  // The landmark first: total reps for the session must stay put.
-  if (Math.abs(r) > SESSION_REPS_TOLERANCE_PCT) {
+  // The landmark first: total reps for the session must stay put -- unless reps are the only lever the
+  // exercise has. On a 10 lb rear delt fly the smallest load step is 25%, so the load axis is closed and
+  // the reps have to carry the whole block: 2x10 to 2x12 to 2x15, which is 50% and correct.
+  const repsCap = opts.repsAreTheOnlyLever ? 60 : SESSION_REPS_TOLERANCE_PCT;
+  if (Math.abs(r) > repsCap) {
     return {
       ...base,
       verdict: "too big",
-      why: `Total reps for this exercise ${r > 0 ? "rise" : "fall"} ${Math.abs(r)}% in one week. Reps per session is a landmark and should stay close.`,
+      why: `Total reps ${r > 0 ? "rise" : "fall"} ${Math.abs(r)}% against week one. Reps per session is a landmark and should stay close.`,
     };
   }
   // Then the direction rule: the two axes move against each other.
   if (l < -1 && r <= 5) {
     return { ...base, verdict: "backwards", why: "Load came down without the reps rising to pay for it." };
   }
-  if (r < -5 && l <= 1) {
+  if (r < -5 && l <= 1 && !opts.repsAreTheOnlyLever) {
     return { ...base, verdict: "backwards", why: "Reps came down without the load going up to pay for it." };
   }
-  if (l > 1 && r > 1 && l + r > BOTH_RISING_MAX_PCT) {
-    return {
-      ...base,
-      verdict: "too big",
-      why: `Load +${l}% and reps +${r}% in the same week. Both may rise, but only a little.`,
-    };
+  if (l > 1 && r > 1) {
+    const reps = Math.round(a.totalReps / from.length);
+    if (reps < BOTH_RISING_MIN_REPS) {
+      return {
+        ...base,
+        verdict: "too big",
+        why: `Load +${l}% and reps +${r}% at ${reps} reps. Both axes may only rise together above eight reps — below that, load up means volume down.`,
+      };
+    }
+    if (l + r > BOTH_RISING_MAX_PCT) {
+      return {
+        ...base,
+        verdict: "too big",
+        why: `Load +${l}% and reps +${r}% in the same week. Both may rise at this rep range, but only a little.`,
+      };
+    }
   }
 
   if (i < GOOD_MOVE.intensity.min && v <= 0) {
@@ -231,8 +268,13 @@ export function judgeMove(
       };
     }
   }
-  if (v < GOOD_MOVE.volume.min) {
-    return { ...base, verdict: "too big", why: `Volume falls ${Math.abs(v)}%, which is more than a modest decline.` };
+  // The volume floor scales with what the load did. A 30% volume drop is a collapse when the bar did not
+  // move and a fair trade when it went up 25% -- that IS linear periodization, and a flat floor was
+  // rejecting the exact move he describes: a light accessory topping out its reps, stepping the load,
+  // and resetting to the bottom of the band.
+  const volumeFloor = Math.max(-40, GOOD_MOVE.volume.min - Math.max(0, l));
+  if (v < volumeFloor) {
+    return { ...base, verdict: "too big", why: `Volume falls ${Math.abs(v)}% and the load only rose ${l}%. Too much given up for what was gained.` };
   }
   if (i <= 0.5 && v <= 2) {
     return { ...base, verdict: "too small", why: "Barely a change from last week." };
