@@ -177,6 +177,15 @@ priority in G5, so the boundary matters.
 1. **Power work always goes first.** *"If you're training for the attribute of power and you have to move
    the bar quickly — like if you're doing a clean or an Olympic lift — you're always gonna do those
    exercises first."* Speed of movement outranks everything; a bar that has to move fast has to move first.
+
+   Restated independently on the landmine press, this time with the reason: *"All power exercises are done
+   early on in the lift when you're not fatigued, because you have to be able to move something quickly in
+   order to develop power."*
+
+   **This applies to intent, not to exercises.** The landmine press is a late accessory when trained for
+   hypertrophy and an opening exercise when trained for power — same movement, opposite ends of the
+   session. So the generator cannot slot an exercise from its identity alone; it needs to know **why** the
+   exercise is there. Any movement trained for power moves to the front.
 2. **Otherwise, hardest first.** *"If you're going to do two compounds in the same day, I would do
    whichever one is hardest first."* Between a squat and a bench, the squat.
 3. **Client priority can override.** *"It also comes down to what's more important to the person. If they
@@ -838,6 +847,60 @@ nothing wrong with high-low cable flies."*
 That distinction is worth holding onto: the objection is to the decline **bench**, not to training the
 lower chest. The same fibres worked from the same direction on a cable are fine. A generator that
 generalised this to "avoid lower-chest work" would be drawing the wrong lesson from it.
+
+---
+
+## Landmine Press — *a shoulder exercise, mis-filed under Chest*
+
+**Library:** `Landmine Press` — **currently tagged `Chest`** in `exerciseLibrary.ts:62`
+**His usage:** zero across the ten programs.
+
+> *"I don't know if we're talking kneeling or standing, but it doesn't matter, they're very similar. I
+> guess you could use them from a bodybuilding perspective as a replacement for some sort of military
+> press — whether that's a standing or seated dumbbell press, standing press, doesn't matter. The landmine
+> makes it nice, I like them a lot."*
+
+**This is an overhead-press substitute, not a chest exercise.** Kneeling and standing are the same entry.
+
+**Rule — it is a second choice.** *"I wouldn't use them super often. No, I'd still rather use one of the
+others, but they're really good nonetheless."* Behind the real overhead presses, but genuinely good.
+
+**Rule — reps 8-12.** A narrower window than most, and no strength band at all.
+**Rule — sets 2-4.**
+**Rule — purpose:** anterior shoulder work. *"A little bit more anterior shoulder work, which isn't a
+massive priority, but still can be nonetheless."*
+
+### Two slots, depending on why it is there
+
+**Rule — as hypertrophy: never first.** *"I would never do them first, these are a late accessory that I
+would do later in the lift."*
+
+**Rule — as power: first.** *"They can also be great in a power setting, of trying to get more explosive
+for push presses and things like that, or a split push where you kind of jump into it… unless I was doing
+it for the purpose of generating power, then all power exercises are done early on in the lift."*
+
+Same exercise, opposite ends of the session, decided entirely by intent. See G5.
+
+### This corrects the "no overhead press" finding
+
+The absence noted at the top of this file — zero overhead presses in 3,490 prescriptions — should not be
+read as Jack rejecting overhead pressing. He names the military press and the seated and standing dumbbell
+presses as the things he would *rather* use than the landmine. They are absent from his ten programs
+because of who those ten clients are, not because the movement is off the table.
+
+---
+
+## Library correction needed
+
+`Landmine Press` is tagged **`Chest`** in `src/coach/exerciseLibrary.ts:62`, and by this entry it is a
+shoulder movement — an overhead-press substitute doing anterior deltoid work.
+
+This is not cosmetic. The muscle tag is what the coverage and weekly-volume modules count, so every
+landmine press currently books its sets to chest and none to front delts. A session built to hit a shoulder
+target could satisfy it with an exercise the generator believes is chest work, and the volume report would
+be wrong in both directions.
+
+`Svend Press` at line 63 is tagged Chest too and has not been discussed.
 
 ---
 
