@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { AuthHero as Hero, InfoBanner } from "./UI";
 
-/** The "put this on your home screen" step, shown once between creating an account and using it.
+/** The "put this on your home screen" step, shown once on the first screen after an account is created.
  *
- * Placed there for a reason that is easy to miss: **an installed iOS PWA has its own storage, separate
- * from Safari's.** Someone who signs in in the browser and installs afterwards has to sign in a second
- * time inside the app, on a screen that looks identical, which reads as the app being broken. Installing
- * first and signing in inside the app means they sign in once, in the place they will actually use.
+ * A PWA is only worth anything installed, and nobody discovers Share -> Add to Home Screen on their own,
+ * so this is the one moment it can be said unmissably: they have just finished signing up and have not
+ * started using anything yet.
+ *
+ * One thing this deliberately does not hide: **an installed iOS PWA has its own storage, separate from
+ * Safari's.** Whoever installs from here is signed in in Safari and will land on a sign-in screen inside
+ * the app. That looks like the app being broken unless they are told to expect it, so the copy says so
+ * outright rather than promising they will not have to sign in again.
  *
  * Renders its children untouched when there is nothing to offer -- already installed, already dismissed,
  * or a browser that cannot add to a home screen at all.
@@ -82,8 +86,8 @@ export default function InstallStep({ children }: { children: React.ReactNode })
     <Hero>
       <div className="h1" style={{ textAlign: "center", fontSize: 21 }}>One thing first</div>
       <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
-        Your account is created. Add Jacked to your home screen <b style={{ color: "var(--color-text)" }}>before</b> you
-        sign in — then you only have to do it once.
+        You're all set up. Put Jacked on your home screen so it opens full screen like a normal app —
+        this is the way you'll use it every day.
       </p>
 
       {mode === "ios" ? (
@@ -96,11 +100,12 @@ export default function InstallStep({ children }: { children: React.ReactNode })
               Scroll down the list and tap <b>Add to Home Screen</b>.
             </li>
             <li style={{ fontSize: 13.5, lineHeight: 1.5 }}>
-              Tap <b>Add</b>, then open Jacked from your home screen and sign in there.
+              Tap <b>Add</b>, then open Jacked from your home screen.
             </li>
           </ol>
           <InfoBanner icon="ph-info">
-            The app keeps you signed in. A browser tab won't, so you'd be typing your password every time.
+            It'll ask you to sign in once more the first time you open it from the home screen — that's
+            normal. After that it keeps you signed in.
           </InfoBanner>
         </>
       ) : (
@@ -109,7 +114,7 @@ export default function InstallStep({ children }: { children: React.ReactNode })
             Add to home screen
           </button>
           <InfoBanner icon="ph-info">
-            The app keeps you signed in and opens full screen, with no address bar.
+            Opens full screen with no address bar, and keeps you signed in.
           </InfoBanner>
         </>
       )}
