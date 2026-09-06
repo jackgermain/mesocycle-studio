@@ -55,6 +55,19 @@ export function pairingKind(a: string, b: string): PairingKind | undefined {
  * hitters"*. Matches STRENGTH_SLOTS in the session structure, and for the same reason. */
 export const FIRST_PAIRABLE_SLOT = 2;
 
+/** Movements that are never paired.
+ *
+ * > *"Don't superset cable lateral raises, or any lateral raises, ever -- for the most part -- unless
+ * > they are looking for conditioning."*
+ *
+ * A lateral raise is a small movement whose whole value is doing it cleanly; rushing it into a pair is
+ * the fastest way to turn it into a shrug. */
+const NEVER_SUPERSET = /lateral raise|lat raise/i;
+
+export function isPairable(name: string, conditioning = false): boolean {
+  return conditioning || !NEVER_SUPERSET.test(name);
+}
+
 export function canSuperset(slotIndex: number, strengthPriority = false): boolean {
   return !strengthPriority && slotIndex >= FIRST_PAIRABLE_SLOT;
 }
@@ -90,11 +103,14 @@ export interface Superset {
  * superset. Leaves anything it cannot pair alone, which is the right answer: *"it doesn't have to be
  * done."* */
 export function proposeSupersets(
-  slots: { index: number; muscle?: string; strengthPriority?: boolean }[],
-  opts: { circuit?: boolean } = {},
+  slots: { index: number; muscle?: string; name?: string; strengthPriority?: boolean }[],
+  opts: { circuit?: boolean; conditioning?: boolean } = {},
 ): Superset[] {
   const eligible = slots.filter(
-    (s) => s.muscle && canSuperset(s.index, s.strengthPriority ?? false),
+    (s) =>
+      s.muscle &&
+      canSuperset(s.index, s.strengthPriority ?? false) &&
+      isPairable(s.name ?? "", opts.conditioning ?? false),
   );
   const out: Superset[] = [];
   const taken = new Set<number>();

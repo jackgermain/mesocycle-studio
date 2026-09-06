@@ -28,6 +28,8 @@ export interface SelectionContext {
   usedLastBlock?: ReadonlySet<string>;
   /** Exercises ruled out for this person -- injury, joint pain, or they simply hate it. */
   exclude?: ReadonlySet<string>;
+  /** Angles already used this week, so a second chest day does not repeat the first one's. */
+  anglesUsedThisWeek?: ReadonlySet<string>;
   /** Defaults to the shipped library; a coach's custom exercises can be appended. */
   library?: readonly LibraryExercise[];
 }
@@ -41,6 +43,17 @@ export interface Selection {
 }
 
 const norm = (s: string) => s.trim().toLowerCase();
+
+/** The angle a pressing or pulling movement is done at, where the name says so. Two chest exercises at
+ * the same angle in one week are close to one exercise done twice. */
+export function angleOf(name: string): string | undefined {
+  const n = name.toLowerCase();
+  if (/incline/.test(n)) return "incline";
+  if (/decline/.test(n)) return "decline";
+  if (/\bflat\b|bench press|chest press/.test(n)) return "flat";
+  if (/overhead|shoulder press|military/.test(n)) return "overhead";
+  return undefined;
+}
 
 function has(set: ReadonlySet<string> | undefined, name: string): boolean {
   if (!set) return false;
@@ -101,6 +114,17 @@ function score(e: LibraryExercise, slot: Slot, ctx: SelectionContext): { n: numb
     n += 2;
     why.push("new since the last block");
   }
+  // "Do incline chest -- your other chest day was flat." Repeating an angle across the week wastes an
+  // exposure, so a movement whose angle is already covered this week is deprioritised.
+  if (ctx.anglesUsedThisWeek?.size) {
+    const angle = angleOf(e.name);
+    if (angle && ctx.anglesUsedThisWeek.has(angle)) {
+      n -= 3;
+    } else if (angle) {
+      n += 2;
+      why.push(`a ${angle} variation, which the week has not had yet`);
+    }
+  }
   if (e.hasVideo) {
     n += 1;
     why.push("has a demo video");
@@ -157,10 +181,15 @@ export interface FilledSlot extends Slot {
 /** Fill a whole week, threading "already used" through so a movement is not repeated across days. */
 export function selectForWeek(week: Slot[][], ctx: SelectionContext = {}): FilledSlot[][] {
   const used = new Set<string>(ctx.usedThisWeek ?? []);
+  const angles = new Set<string>(ctx.anglesUsedThisWeek ?? []);
   return week.map((day) =>
     day.map((slot) => {
-      const selection = selectForSlot(slot, { ...ctx, usedThisWeek: used });
-      if (selection) used.add(selection.exercise.name);
+      const selection = selectForSlot(slot, { ...ctx, usedThisWeek: used, anglesUsedThisWeek: angles });
+      if (selection) {
+        used.add(selection.exercise.name);
+        const a = angleOf(selection.exercise.name);
+        if (a) angles.add(a);
+      }
       return { ...slot, selection };
     }),
   );

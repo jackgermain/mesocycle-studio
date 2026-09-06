@@ -203,9 +203,21 @@ export function maxWeeklyLoadStep(equipment: Equipment): number {
   return stepForEquipment(equipment);
 }
 
-/** True when this week's jump would be the second big one in a row on a stack. */
-export function isRepeatedBigJump(equipment: Equipment, jumpedLastWeek: boolean): boolean {
-  return jumpedLastWeek && stepForEquipment(equipment) >= 10;
+/** True when this week's jump would be the second big one in a row.
+ *
+ * "Big" is a **percentage**, not ten pounds. A 10 lb step on a 160 lb calf raise is 6% and can happen
+ * every week forever; the same 10 lb on a 40 lb cable is 25% and cannot. Keying this off the absolute
+ * step stalled the calf raises for two weeks running -- they took 10 lb once and then sat, because every
+ * machine step is >= 10 lb by definition. */
+export const REPEATABLE_JUMP_MAX_PCT = 8;
+
+export function isRepeatedBigJump(
+  load: number | null,
+  equipment: Equipment,
+  jumpedLastWeek: boolean,
+): boolean {
+  if (!jumpedLastWeek || load === null || load <= 0) return false;
+  return (stepForEquipment(equipment) / load) * 100 > REPEATABLE_JUMP_MAX_PCT;
 }
 
 /** Promote some sets to a higher rep count, one at a time -- the rep-axis twin of `jumpLoad`.
