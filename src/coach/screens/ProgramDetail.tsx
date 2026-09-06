@@ -747,11 +747,18 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
   let workCounter = 0;
   let warmCounter = 0;
 
+  // An extra column only when the mode's own number isn't already the weight.
+  const COLS = loadMode === "lb" ? "22px 1fr 1fr 30px" : "22px 1fr 1fr 1fr 30px";
+
   return (
     <>
-      <div className="scr" style={{ display: "grid", gridTemplateColumns: "22px 1fr 1fr 30px", gap: 8, padding: "4px 0" }}>
+      {/* In lb mode loadValue IS the weight, so one column says everything. In any other mode it's a
+          percentage or an effort, and a coach still needs somewhere to write the weight -- "70% at RPE 8"
+          used to be un-recordable because there was only ever one number per set. */}
+      <div className="scr" style={{ display: "grid", gridTemplateColumns: COLS, gap: 8, padding: "4px 0" }}>
         <span />
         <span style={{ textAlign: "center" }}>reps</span>
+        {loadMode !== "lb" && <span style={{ textAlign: "center" }}>weight</span>}
         <span style={{ textAlign: "center" }}>{LOAD_LABELS[loadMode]}</span>
         <span />
       </div>
@@ -759,7 +766,7 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
       {ex.sets.map((s) => {
         const label = s.warmup ? `W${++warmCounter}` : `${++workCounter}`;
         return (
-          <div key={s.id} className="setrow" style={{ gridTemplateColumns: "22px 1fr 1fr 30px" }}>
+          <div key={s.id} className="setrow" style={{ gridTemplateColumns: COLS }}>
             <span style={{ fontSize: 11, color: s.warmup ? "var(--color-neutral-400)" : "var(--color-neutral-500)" }}>{label}</span>
             <Stepper
               value={typeof s.reps === "number" ? s.reps : parseFloat(String(s.reps)) || 0}
@@ -768,6 +775,17 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
               width={38}
               fontSize={14}
             />
+            {loadMode !== "lb" && (
+              <Stepper
+                value={s.weightLb ?? 0}
+                onChange={(v) => dispatch({ type: "EDIT_PROGRAM_SET", programId, dayId, exerciseId: ex.id, setId: s.id, weightLb: v })}
+                step={5}
+                min={0}
+                max={999}
+                width={52}
+                fontSize={14}
+              />
+            )}
             {/* min/max keep a typed value inside the mode's real range (an RIR of 225 is nonsense), but
                 deliberately don't snap to `step` the way the +/- buttons do -- entering an exact weight
                 the 5 lb grid can't reach is the whole reason for typing it. */}

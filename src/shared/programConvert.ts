@@ -49,25 +49,21 @@ function offsetForSlot(i: number, daysPerWeek: number, dows?: number[]): number 
   return Math.floor((i * 7) / Math.max(1, daysPerWeek));
 }
 
-/** Every program's weekly pattern is authored as if Day 1 (slot 0) always falls on a Monday. If today
- * really is Monday, week 1 just starts today, same as always. Otherwise, week 1 doesn't start until the
- * *next* Monday -- but rather than leaving the rest of this calendar week empty, whichever slots would
- * normally land on or after today (this week) run as a partial "week 0", reusing the exact same day
- * content week 1 will use for that slot. Someone starting on a Wednesday gets that pattern's Wednesday
- * slot today, plus anything later this week, instead of just waiting until Monday to begin. */
+/** Every program's weekly pattern is authored as if Day 1 (slot 0) always falls on a Monday, so week 1
+ * starts today when today is a Monday, and otherwise on the next one.
+ *
+ * There used to be a partial "week 0": the slots from the current week that still lay ahead ran
+ * immediately, so someone assigned a block on a Wednesday trained that Wednesday instead of waiting. It
+ * was removed deliberately. A block that opens on a stub week is a block whose week 1 is not its first
+ * week -- "week 1 of 6" arrives already a few sessions in, a deload lands on the wrong calendar week, and
+ * every count is off by a partial week nobody asked for.
+ *
+ * The cost is real and accepted: assign on a Wednesday and the first session is the following Monday. */
 function scheduleWeeks(daysPerWeek: number, totalWeeks: number, dows?: number[]): { weekNumber: number; slot: number; date: Date }[] {
   const todayDow = TODAY.getDay(); // 0=Sun..6=Sat
   const daysToMonday = todayDow === 1 ? 0 : (8 - todayDow) % 7;
   const week1Monday = addDays(TODAY, daysToMonday);
   const schedule: { weekNumber: number; slot: number; date: Date }[] = [];
-
-  if (daysToMonday > 0) {
-    const thisWeekMonday = addDays(week1Monday, -7);
-    for (let i = 0; i < daysPerWeek; i++) {
-      const date = addDays(thisWeekMonday, offsetForSlot(i, daysPerWeek, dows));
-      if (date >= TODAY) schedule.push({ weekNumber: 0, slot: i, date });
-    }
-  }
 
   for (let weekNumber = 1; weekNumber <= totalWeeks; weekNumber++) {
     for (let i = 0; i < daysPerWeek; i++) {
@@ -102,7 +98,9 @@ export function expandCoachProgramToProgram(cp: CoachProgram, coachName: string)
         type: "straight",
         prescribed: {
           reps: s.reps,
-          load: loadForLoadMode(loadMode, s.loadValue),
+          // In lb mode loadValue is the weight; in every other mode the weight is whatever the coach
+          // typed alongside the percentage or effort, and null when they gave none.
+          load: loadMode === "lb" ? s.loadValue : s.weightLb ?? null,
           effort: effortForLoadMode(loadMode, s.loadValue),
           restSec: s.restSec ?? defaultRestSec(bex.name),
         },
@@ -160,6 +158,9 @@ export interface DraftExercise {
   load?: number;
   /** Defaults to "lb" when absent, matching the coach builder's own per-exercise default. */
   loadMode?: LoadMode;
+  /** The weight, when `load` is already spoken for by a percentage or an effort. Same reason as
+   * BuilderSet.weightLb: one number per set could not hold "70% at 315 lb". */
+  weight?: number;
 }
 export interface DraftDay {
   name: string;
@@ -193,7 +194,7 @@ export function buildProgramFromDraft(name: string, days: DraftDay[], weeksCount
         id: `${id}-s${setIndex}`,
         index: setIndex,
         type: "straight",
-        prescribed: { reps: de.reps ?? 10, load: loadForLoadMode(loadMode, loadValue), effort: effortForLoadMode(loadMode, loadValue), restSec },
+        prescribed: { reps: de.reps ?? 10, load: loadMode === "lb" ? loadValue : de.weight ?? null, effort: effortForLoadMode(loadMode, loadValue), restSec },
         actual: null,
         checked: false,
       }));
@@ -297,7 +298,7 @@ export function mergeEditedDraftIntoProgram(existing: Program, days: DraftDay[],
           id: `${id}-s${setIndex}`,
           index: setIndex,
           type: "straight",
-          prescribed: { reps: de.reps ?? 10, load: loadForLoadMode(loadMode, loadValue), effort: effortForLoadMode(loadMode, loadValue), restSec },
+          prescribed: { reps: de.reps ?? 10, load: loadMode === "lb" ? loadValue : de.weight ?? null, effort: effortForLoadMode(loadMode, loadValue), restSec },
           actual: null,
           checked: false,
         }));

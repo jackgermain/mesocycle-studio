@@ -76,6 +76,13 @@ export interface BuilderSet {
   id: string;
   reps: number; // strength only
   loadValue: number; // strength only — interpreted per the program's loadMode
+  /** The actual weight in the program's units, kept separately from loadValue.
+   *
+   * loadValue means whatever the load mode says, so in %1RM / RPE / RIR it is a percentage or an effort
+   * and there was nowhere left to put a weight -- a coach prescribing "70% at RPE 8" could record one or
+   * the other but not both. Unset means no weight was given, which is the normal case for an effort-only
+   * prescription and stays that way. Ignored in lb mode, where loadValue already is the weight. */
+  weightLb?: number;
   warmup: boolean; // strength only
   workSec?: number; // cardio only — duration of this block/interval
   restSec?: number; // rest after this set/block — strength sets default it by compound vs. isolation, cardio blocks default to 0

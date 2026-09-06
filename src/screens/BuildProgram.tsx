@@ -713,14 +713,20 @@ function DraftExerciseCard({ ex, onChange, onRemove }: { ex: DraftExercise; onCh
         <Seg<LoadMode> value={mode} onChange={(m) => onChange({ loadMode: m, load: undefined })} options={LOAD_MODE_OPTIONS} />
       </div>
 
-      <div className="scr" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: "0 0 4px" }}>
+      {/* A weight column appears whenever the mode's own number isn't the weight, so "70% at 315" is
+          sayable here as well as in the coach builder. */}
+      <div className="scr" style={{ display: "grid", gridTemplateColumns: mode === "lb" ? "1fr 1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 8, padding: "0 0 4px" }}>
         <span style={{ textAlign: "center" }}>sets</span>
         <span style={{ textAlign: "center" }}>reps</span>
+        {mode !== "lb" && <span style={{ textAlign: "center" }}>weight</span>}
         <span style={{ textAlign: "center" }}>{LOAD_LABELS[mode]}</span>
       </div>
       <div className="row" style={{ gap: 8 }}>
         <MiniStepper value={sets} min={1} max={10} step={1} onChange={(v) => onChange({ sets: Math.round(v) })} />
         <MiniStepper value={reps} min={1} max={50} step={1} onChange={(v) => onChange({ reps: Math.round(v) })} />
+        {mode !== "lb" && (
+          <MiniStepper value={ex.weight ?? 0} min={0} max={999} step={5} onChange={(v) => onChange({ weight: Math.max(0, Math.round(v)) })} />
+        )}
         <MiniStepper value={load} min={range.min} max={range.max} step={range.step} onChange={(v) => onChange({ load: clampLoadValue(v, mode) })} />
       </div>
     </div>

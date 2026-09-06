@@ -84,6 +84,9 @@ export function coachProgramToDraft(cp: CoachProgram): { name: string; days: Dra
             // A load only survives if it was already a weight. Carrying "7" across from an RPE-scaled
             // template into a field now labelled LB would silently turn RPE 7 into 7 pounds.
             load: inLb ? e.sets[0]?.loadValue : undefined,
+            // The weight lives in its own field once the mode's number is a percentage or an effort, so
+            // it survives a round trip through the editor instead of being dropped.
+            weight: inLb ? undefined : e.sets[0]?.weightLb,
             loadMode: mode,
           };
         }),
@@ -109,6 +112,8 @@ export function csvDraftDaysToCoachProgram(name: string, days: DraftDay[], weeks
         id: freshSetId(),
         reps: e.reps ?? 10,
         loadValue,
+        // Carried so a weight written alongside a percentage or an effort isn't lost on the way in.
+        weightLb: e.weight,
         warmup: false,
         restSec: defaultRestSec(e.name),
       }));

@@ -54,7 +54,7 @@ type Action =
   | { type: "REORDER_PROGRAM_EXERCISES"; programId: string; dayId: string; order: string[] }
   | { type: "ADD_PROGRAM_SET"; programId: string; dayId: string; exerciseId: string; warmup?: boolean }
   | { type: "REMOVE_PROGRAM_SET"; programId: string; dayId: string; exerciseId: string; setId: string }
-  | { type: "EDIT_PROGRAM_SET"; programId: string; dayId: string; exerciseId: string; setId: string; reps?: number; loadValue?: number; warmup?: boolean; workSec?: number; restSec?: number }
+  | { type: "EDIT_PROGRAM_SET"; programId: string; dayId: string; exerciseId: string; setId: string; reps?: number; loadValue?: number; weightLb?: number; warmup?: boolean; workSec?: number; restSec?: number }
   | { type: "SHOW_TOAST"; message: string }
   | { type: "CLEAR_TOAST" };
 
@@ -361,6 +361,7 @@ function reducer(state: CoachState, action: Action): CoachState {
       if (set) {
         if (action.reps !== undefined) set.reps = action.reps;
         if (action.loadValue !== undefined) set.loadValue = action.loadValue;
+        if (action.weightLb !== undefined) set.weightLb = action.weightLb;
         if (action.warmup !== undefined) set.warmup = action.warmup;
         if (action.workSec !== undefined) set.workSec = action.workSec;
         if (action.restSec !== undefined) set.restSec = action.restSec;
