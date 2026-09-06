@@ -6,6 +6,7 @@ import { claimInvite } from "../lib/accountSetup";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
+import InstallStep from "../components/InstallStep";
 
 /** Every dead-end state on this screen gets a way out.
  *
@@ -72,7 +73,14 @@ export default function AcceptInvite() {
   }
 
   if (session) {
-    return <ClaimStep code={code} invite={invite} onClaimed={refreshAccount} />;
+    // Between creating the account and finishing setup, because of how iOS works: an installed PWA has
+    // its own storage, separate from Safari's. Sign in here first and you sign in again inside the app.
+    // Install first and you sign in once, in the place you will actually use.
+    return (
+      <InstallStep>
+        <ClaimStep code={code} invite={invite} onClaimed={refreshAccount} />
+      </InstallStep>
+    );
   }
 
   return <SignInStep invite={invite} />;
