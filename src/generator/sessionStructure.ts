@@ -18,6 +18,18 @@
  */
 
 import { PATTERNS, REGION_OF, type Pattern, type Region } from "./patterns";
+import { fillAccessories } from "./coverage";
+
+/** What a compound slot already covers, so the accessory slots do not buy it a second time. */
+const PATTERN_MUSCLE: Record<Pattern, string> = {
+  "horizontal push": "Chest",
+  "vertical push": "Front delts",
+  "horizontal pull": "Back",
+  "vertical pull": "Back",
+  squat: "Quads",
+  hinge: "Hamstrings",
+  "single leg": "Quads",
+};
 
 export type SlotRole = "lead" | "second" | "accessory" | "finisher";
 
@@ -30,6 +42,8 @@ export interface Slot {
   wantsErectors?: boolean;
   /** Size tier the accessory slots draw from: 1 is medium, 2 is small. */
   muscleTier?: 1 | 2;
+  /** Which muscle an accessory or finisher slot is for, from the frequency-dependent coverage budget. */
+  muscle?: string;
 }
 
 export type WeekPlan = Slot[][];
@@ -145,6 +159,8 @@ export function planWeek(
     if (!scheduled.has(p)) scheduled.set(p, d);
   });
 
+  // Spread the coverage budget across the week rather than repeating the same accessories daily.
+  const muscleLedger = new Map<string, number>();
   const week: WeekPlan = [];
   for (let d = 0; d < daysPerWeek; d++) {
     const lead = leadPattern[d];
@@ -157,12 +173,21 @@ export function planWeek(
       { index: 0, role: "lead", pattern: lead, wantsErectors: leads[d] === "pull" },
       { index: 1, role: "second", pattern: second },
     ];
-    const accessories = count - 2 - FINISHERS;
-    for (let i = 0; i < accessories; i++) {
-      slots.push({ index: slots.length, role: "accessory", muscleTier: 1 });
+    for (const p of [lead, second]) {
+      const m = PATTERN_MUSCLE[p];
+      muscleLedger.set(m, (muscleLedger.get(m) ?? 0) + 1);
     }
-    for (let i = 0; i < FINISHERS; i++) {
-      slots.push({ index: slots.length, role: "finisher", muscleTier: 2 });
+    const { accessories, finishers } = fillAccessories(
+      Math.max(0, count - 2 - FINISHERS),
+      daysPerWeek,
+      muscleLedger,
+      FINISHERS,
+    );
+    for (const m of accessories) {
+      slots.push({ index: slots.length, role: "accessory", muscleTier: 1, muscle: m });
+    }
+    for (const m of finishers) {
+      slots.push({ index: slots.length, role: "finisher", muscleTier: 2, muscle: m });
     }
     week.push(slots);
   }
@@ -213,9 +238,7 @@ export function describeWeek(week: WeekPlan): string {
           const p = profileFor(s, day.length);
           const what = s.pattern
             ? `${s.pattern}${s.wantsErectors ? " (erectors)" : ""}`
-            : s.role === "finisher"
-              ? "small muscle"
-              : "accessory";
+            : `${s.muscle ?? (s.role === "finisher" ? "small muscle" : "accessory")}`;
           return `  ${s.index + 1}. ${what.padEnd(28)} ${p.sets}x${p.reps}, rest ${p.restSec}s`;
         }),
       ].join("\n"),
