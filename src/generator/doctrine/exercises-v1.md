@@ -409,11 +409,24 @@ being done to bias a muscle or chase a pump — it is being done to **keep absol
 lifter's joints** while still getting a hard set. The generator would otherwise only ever order by priority
 and difficulty (G5) and would never think to demote a lift because the person is too strong for it.
 
+### The substitution when it hurts — dumbbells, not incline
+
+> *"Immediately after the pain from flat pressing, I wouldn't switch to incline pressing. Most of the time
+> I would just switch to a dumbbell press. It matters how bad the pain is too, and what's kind of been
+> going on with it — but for the most part, incline pressing causes less shoulder pain than the flat bar
+> press."*
+
+**Rule:** shoulder pain on the flat barbell bench substitutes to a **dumbbell press**, not to an incline
+barbell press. Incline is genuinely lower-risk, but lower-risk is not the same as the remedy, and the fix
+for a bar problem is to stop using a bar.
+
+This is the first substitution rule recorded, and the shape of it is worth keeping: the substitute is not
+the next-safest thing in the same family, it is the thing that removes the cause.
+
 ### Still open on this one
 
 - Where's the age line — what counts as "really old"?
 - What counts as "really light" for the exception — a band from G2, or a percentage?
-- What replaces it for someone who wants to bench but shouldn't — Smith, or dumbbells?
 - What do you put in front of it to pre-exhaust?
 
 ---
@@ -447,6 +460,39 @@ This is the first **inheriting** entry, and most of the remaining 160 exercises 
 parent, plus the two or three things that differ. That is what makes going through the whole library
 tractable — the expensive entries are the ones that establish a pattern, and the rest are deltas against
 one.
+
+---
+
+## Smith Machine Bench Press — *flat; a bodybuilding lift, not a strength lift*
+
+**Library:** `Smith Machine Bench Press`
+**His usage:** 27 prescriptions. With `Incline Smith Press` (65) it is how his roster presses, against zero
+barbell bench of any kind.
+
+> *"I would say that this is more of a bodybuilding type exercise… I would give it the same sort of
+> parameters as dumbbell presses in regards to the rep range, that being six at the lowest and probably
+> about 15 at the highest, with all the same rep progressions that we've talked about for each subcategory
+> of the 6-15 rep range. I would do no more than probably four sets, unless you're just really in love with
+> the exercise, then maybe you do five. But yeah, this is an unbelievably good exercise."*
+
+**Rule — role:** a bodybuilding exercise. Hypertrophy, not strength.
+
+**Rule — reps 6-15.** The same window as the dumbbell presses, and pointedly *not* the barbell bench's
+1-15. The Smith gives up the entire strength half of the ladder despite being a bar you can load heavily.
+That is consistent with G4, which admits only free barbells as compounds — the Smith is not one, so it does
+not get the low-rep allowance, and here Jack applies that independently rather than by appeal to the rule.
+
+**Rule — sets: 4, or 5 by preference.**
+
+> *"No more than probably four sets, unless you're just really in love with the exercise, then maybe you do
+> five."*
+
+Consistent with C1 and G3 for a non-compound. The exception is notable for what licenses it: **enjoyment**,
+not a physiological argument. A fifth set is allowed because someone likes the exercise, which is a real
+adherence consideration and not something a generator would grant itself.
+
+*Open:* `Incline Smith Press` is his single most-used Smith variant (65 uses) and has not been covered —
+whether it inherits this entry the way incline barbell inherits flat barbell, and whether anything changes.
 
 ---
 
