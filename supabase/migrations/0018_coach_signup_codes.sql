@@ -70,5 +70,5 @@ revoke execute on function public.bootstrap_coach(text) from authenticated;
 
 -- Issue yourself a code to sign up with. Change the string before running.
 insert into public.coach_signup_codes (code, note)
-values ('CHANGE-ME-BEFORE-RUNNING', 'first coach')
+values ('JACKED-COACH-3BHM38', 'first coach')
 on conflict (code) do nothing;
