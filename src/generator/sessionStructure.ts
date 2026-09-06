@@ -19,6 +19,7 @@
 
 import { PATTERNS, REGION_OF, type Pattern, type Region } from "./patterns";
 import { fillAccessories, planCoverage, type EmphasisProfile } from "./coverage";
+import type { GoalPriority } from "./weeklyVolume";
 
 /** What a compound slot already covers, so the accessory slots do not buy it a second time. */
 const PATTERN_MUSCLE: Record<Pattern, string> = {
@@ -156,6 +157,8 @@ export function planWeek(
     exercisesPerSession?: number;
     exclude?: readonly Pattern[];
     profile?: EmphasisProfile;
+    /** Which priority ordering the sets band is spent against. */
+    goal?: GoalPriority;
     /** Optional muscles the client has actually asked for -- calves, traps, forearms, abs. */
     wants?: readonly string[];
   } = {},
@@ -201,6 +204,7 @@ export function planWeek(
       coverage,
       muscleLedger,
       FINISHERS,
+      { goal: opts.goal },
     );
     for (const m of accessories) {
       slots.push({ index: slots.length, role: "accessory", muscleTier: 1, muscle: m });

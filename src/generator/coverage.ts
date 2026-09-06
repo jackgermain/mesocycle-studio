@@ -59,6 +59,8 @@
  * down to match the files.
  */
 
+import { spendOrderFor, PRIORITY_TIERS, WEEKLY_SETS, type GoalPriority } from "./weeklyVolume";
+
 export type EmphasisProfile = "upper-priority" | "glute-priority";
 
 export function defaultProfile(sex: "male" | "female" | undefined): EmphasisProfile {
@@ -110,14 +112,18 @@ export const WEEKLY_TARGETS: Record<EmphasisProfile, Record<string, FrequencyTar
   },
 };
 
-/** Spend order when the schedule cannot buy every target. Mandatory before optional, then by how much of
- * the session's stimulus the muscle carries -- which is P3's ordering, and matches "no matter what, you
- * have to have your pushes, you have to have your pulls, you have to have your compound exercises". */
-const SPEND_ORDER = [
-  "Chest", "Back", "Quads", "Glutes", "Hamstrings",
-  "Triceps", "Biceps", "Side delts", "Rear delts",
-  "Abs", "Obliques", "Traps", "Calves", "Forearms", "Front delts", "Adductors",
-];
+/** Spend order when the schedule cannot buy every target.
+ *
+ * This used to be a flat list of my own devising. It is now Jack's two priority orderings, chosen by the
+ * client's goal -- see PRIORITY_TIERS. The flat version spread the sets band evenly across fourteen muscle
+ * groups and put every single one under the 10-set minimum; concentrating on tier one is what gets
+ * anything into range at all. */
+const DEFAULT_SPEND_ORDER = spendOrderFor("general");
+let SPEND_ORDER: string[] = DEFAULT_SPEND_ORDER;
+
+export function setGoalPriority(goal: GoalPriority): void {
+  SPEND_ORDER = spendOrderFor(goal);
+}
 
 export interface Coverage {
   /** Muscle -> how many sessions a week it gets, after the budget is applied. */
@@ -208,18 +214,32 @@ export function fillAccessories(
   coverage: Coverage,
   used: Map<string, number>,
   finisherCount: number,
+  opts: { goal?: GoalPriority; setsPerExercise?: number } = {},
 ): { accessories: string[]; finishers: string[] } {
-  const owed = (m: string) => (coverage.plan.get(m) ?? 0) - (used.get(m) ?? 0);
-  // Shared across both picks below, so a finisher drawn from the accessory pool cannot land on a muscle
-  // this day has already used. Each pick alone would not catch that.
+  const goal = opts.goal ?? "general";
+  const perExercise = opts.setsPerExercise ?? 3;
+  const tiers = PRIORITY_TIERS[goal];
+
+  // Target sets a week, by tier. Priority muscles have to REACH the band, not merely be first in line --
+  // "these body parts for guys and girls need to be getting hit good every week as priorities". Ranking
+  // by sessions owed spread the budget evenly and left every muscle under the ten-set minimum; ranking by
+  // the set deficit is what actually gets tier one into range.
+  const targetSets = (m: string): number => {
+    const tier = tiers.findIndex((t) => t.includes(m));
+    if (tier === 0) return WEEKLY_SETS.startAt;
+    if (tier === 1) return WEEKLY_SETS.min;
+    return Math.round(WEEKLY_SETS.min / 2);
+  };
+  const deficit = (m: string) => targetSets(m) - (used.get(m) ?? 0) * perExercise;
+
   const placedToday = new Set<string>();
   const pick = (pool: string[], n: number): string[] => {
     const out: string[] = [];
     for (let i = 0; i < n; i++) {
       const ranked = pool
         .filter((m) => !placedToday.has(m))
-        .sort((a, b) => owed(b) - owed(a) || SPEND_ORDER.indexOf(a) - SPEND_ORDER.indexOf(b));
-      const best = ranked.find((m) => owed(m) > 0) ?? ranked[0];
+        .sort((a, b) => deficit(b) - deficit(a) || SPEND_ORDER.indexOf(a) - SPEND_ORDER.indexOf(b));
+      const best = ranked[0];
       if (!best) break;
       out.push(best);
       placedToday.add(best);
@@ -227,12 +247,10 @@ export function fillAccessories(
     }
     return out;
   };
+
   const inPlan = [...coverage.plan.keys()];
   const finisherPool = inPlan.filter((m) => FINISHER_MUSCLES.includes(m));
   const accessoryPool = inPlan.filter((m) => !FINISHER_MUSCLES.includes(m));
-  // Abs and obliques are optional -- a client who never asked for core work has an empty finisher pool,
-  // and the session must not silently shrink below the number of exercises it was asked for. Fall back
-  // to the accessory pool so the slot is still filled with something the week owes.
   const accessories = pick(accessoryPool, count);
   const finishers = pick(finisherPool.length ? finisherPool : accessoryPool, finisherCount);
   return { accessories, finishers };

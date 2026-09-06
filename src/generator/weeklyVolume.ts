@@ -68,6 +68,60 @@ export function weeklySetVolume(
     .sort((a, b) => b.effective - a.effective);
 }
 
+/** Which muscles get the volume first, in tiers.
+ *
+ * Two orderings, and the difference is the client's goal rather than their sex:
+ *
+ * > *"If you were to list body parts in order of importance for most guys: 1. chest / shoulders / arms.
+ * > 2. back. 3. legs. 4. abs. For general public / functional strength / fitness: 1. chest / back / legs.
+ * > 2. shoulders / arms. 3. abs."*
+ *
+ * > *"For girls, if I were to list body parts in order of importance: 1. glutes / quads / hamstrings.
+ * > 2. back / core. 3. chest / shoulders / arms."*
+ *
+ * Named for what they emphasise rather than for who he named them after, the same way the emphasis
+ * profile is -- the variable doing the work is what the client wants, and an intake preference should be
+ * able to pick any of the three.
+ *
+ * This is what the sets band is spent against. Spreading evenly across fourteen muscle groups puts
+ * everything under the 10-set minimum at once, which is what a flat priority list produced; concentrating
+ * on tier one and letting tier three take what is left is what actually gets anything into range.
+ */
+export type GoalPriority = "upper-aesthetic" | "general" | "lower-aesthetic";
+
+export const PRIORITY_TIERS: Record<GoalPriority, string[][]> = {
+  // "Most guys" -- the look-focused ordering.
+  "upper-aesthetic": [
+    ["Chest", "Front delts", "Side delts", "Rear delts", "Biceps", "Triceps"],
+    ["Back", "Traps"],
+    ["Quads", "Hamstrings", "Glutes", "Adductors", "Calves"],
+    ["Abs", "Obliques", "Forearms"],
+  ],
+  // General population, functional strength -- the compounds come first.
+  general: [
+    ["Chest", "Back", "Quads", "Hamstrings", "Glutes"],
+    ["Side delts", "Rear delts", "Front delts", "Biceps", "Triceps", "Traps"],
+    ["Abs", "Obliques", "Calves", "Forearms", "Adductors"],
+  ],
+  // Lower body and posterior chain first, then back and core, then upper.
+  "lower-aesthetic": [
+    ["Glutes", "Quads", "Hamstrings", "Adductors"],
+    ["Back", "Abs", "Obliques", "Traps"],
+    ["Chest", "Side delts", "Rear delts", "Front delts", "Biceps", "Triceps"],
+    ["Calves", "Forearms"],
+  ],
+};
+
+/** The default ordering for an emphasis profile, when the intake says nothing more specific. */
+export function defaultGoalPriority(emphasis: "upper-priority" | "glute-priority"): GoalPriority {
+  return emphasis === "glute-priority" ? "lower-aesthetic" : "upper-aesthetic";
+}
+
+/** The flat spend order for a goal, tier by tier. */
+export function spendOrderFor(goal: GoalPriority): string[] {
+  return PRIORITY_TIERS[goal].flat();
+}
+
 /** Minimum *exercises* per week, which is a separate question from sets.
  *
  * > *"I would add a bit more chest for guys — at least four exercises per week for chest minimum. For
