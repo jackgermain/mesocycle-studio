@@ -35,8 +35,12 @@ function isIosSafari(): boolean {
   return ios && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
 }
 
+function isAndroid(): boolean {
+  return /Android/.test(window.navigator.userAgent);
+}
+
 export default function InstallStep({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState<"checking" | "ios" | "prompt" | "skip">("checking");
+  const [mode, setMode] = useState<"checking" | "ios" | "android" | "prompt" | "skip">("checking");
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
@@ -46,17 +50,28 @@ export default function InstallStep({ children }: { children: React.ReactNode })
     } catch {
       // Private browsing refuses storage; showing the step again is the harmless failure.
     }
-    if (isIosSafari()) return setMode("ios");
 
-    // Chrome fires this shortly after load. If it never comes, this browser cannot install, so fall
-    // through rather than leaving someone stuck on a step with nothing to do.
-    const timer = window.setTimeout(() => setMode((m) => (m === "checking" ? "skip" : m)), 1200);
+    // The one-tap install button needs `beforeinstallprompt`, and waiting for it was previously the only
+    // non-iOS path: no event within 1.2s meant this whole step silently skipped and handed the person
+    // straight through. That is what an invited client actually hit -- the step may as well not have
+    // existed for them. Chrome has historically only fired the event for a site with a service worker,
+    // and this app has none, so on Android it may never fire at all.
+    //
+    // So Android gets written instructions immediately, the same as iOS, and the event is treated as a
+    // bonus that upgrades them to a button if it happens to arrive. Nothing now depends on it.
+    if (isIosSafari()) setMode("ios");
+    else if (isAndroid()) setMode("android");
+
     function onPrompt(e: Event) {
       e.preventDefault();
       setDeferred(e as BeforeInstallPromptEvent);
       setMode("prompt");
     }
     window.addEventListener("beforeinstallprompt", onPrompt);
+
+    // Desktop and anything unrecognised still falls through, since home-screen instructions would be
+    // nonsense there -- but only for a browser that never identified itself as a phone above.
+    const timer = window.setTimeout(() => setMode((m) => (m === "checking" ? "skip" : m)), 1200);
     return () => {
       window.clearTimeout(timer);
       window.removeEventListener("beforeinstallprompt", onPrompt);
@@ -90,7 +105,25 @@ export default function InstallStep({ children }: { children: React.ReactNode })
         this is the way you'll use it every day.
       </p>
 
-      {mode === "ios" ? (
+      {mode === "android" ? (
+        <>
+          <ol style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 9 }}>
+            <li style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+              Tap the <b>⋮</b> menu button at the top right of Chrome.
+            </li>
+            <li style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+              Tap <b>Add to Home screen</b> — on some phones it says <b>Install app</b>.
+            </li>
+            <li style={{ fontSize: 13.5, lineHeight: 1.5 }}>
+              Confirm, then open Jacked from your home screen.
+            </li>
+          </ol>
+          <InfoBanner icon="ph-info">
+            It'll ask you to sign in once more the first time you open it from the home screen — that's
+            normal. After that it keeps you signed in.
+          </InfoBanner>
+        </>
+      ) : mode === "ios" ? (
         <>
           <ol style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 9 }}>
             <li style={{ fontSize: 13.5, lineHeight: 1.5 }}>
