@@ -104,9 +104,30 @@ export function tonnage(sets: PerformedSet[]): number {
   return sets.reduce((n, s) => n + s.reps * (s.load ?? 0), 0);
 }
 
-/** Add a rep to every set still under the ceiling. The plain hypertrophy lever. */
-export function addReps(sets: PerformedSet[], band: RepBand = DEFAULT_REP_BAND): PerformedSet[] {
-  return sets.map((s) => (s.reps < band.max ? { ...s, reps: s.reps + 1 } : s));
+/** Add reps to every set still under the ceiling. The plain hypertrophy lever. */
+export function addReps(
+  sets: PerformedSet[],
+  band: RepBand = DEFAULT_REP_BAND,
+  by = 1,
+): PerformedSet[] {
+  return sets.map((s) => (s.reps < band.max ? { ...s, reps: Math.min(band.max, s.reps + by) } : s));
+}
+
+/** Add reps to only the first `count` sets, leaving the rest where they are.
+ *
+ * This is Jack's third option and it is easy to miss as a distinct lever: *"instead of three sets of ten,
+ * I'm gonna do ten reps, then eight reps, and then eight reps."* Front-loading the extra work rather than
+ * spreading it produces a descending scheme deliberately, which is the same shape fatigue produces on its
+ * own (section 10) -- so it reads as normal to the client and still adds volume. */
+export function addRepsToFirst(
+  sets: PerformedSet[],
+  count: number,
+  band: RepBand = DEFAULT_REP_BAND,
+  by = 2,
+): PerformedSet[] {
+  return sets.map((s, i) =>
+    i < count && s.reps < band.max ? { ...s, reps: Math.min(band.max, s.reps + by) } : s,
+  );
 }
 
 /** Jump the load on some of the sets, and pay for it in reps.
@@ -149,6 +170,21 @@ export function jumpLoad(
   });
 }
 
+/** Bring every set up to the heaviest load already in use, without going past it.
+ *
+ * This is how a staggered jump *finishes*, and it is a different operation from jumping again. After
+ * 2x8 @55 + 1x8 @50, Jack's next step is *"instead of doing fifty-fives for one or two sets, I'm going to
+ * try to do all three sets with fifty-five. Since you did one or two of them last time, that's a
+ * reasonable progression."* The lagging set catches up; nothing moves to 60 yet.
+ *
+ * `jumpLoad` would take the top set to 60 instead, which is a bigger week and skips a rung the stagger
+ * deliberately created. */
+export function levelUp(sets: PerformedSet[]): PerformedSet[] {
+  if (!sets.length || sets.some((s) => s.load === null)) return sets;
+  const top = Math.max(...sets.map((s) => s.load ?? 0));
+  return sets.map((s) => ({ ...s, load: top }));
+}
+
 /** One week of Model C.
  *
  * The lever is chosen by the caller, not guessed here, because Jack's own answer to which one to use was
@@ -170,6 +206,101 @@ export function progress(
   const atCeiling = sets.every((s) => s.reps >= band.max);
   if (opts.lever === "load" && atCeiling) return jumpLoad(sets, { ...opts, band });
   return addReps(sets, band);
+}
+
+/** The named weeks of a four-week block.
+ *
+ * *"We'll talk about four-week programs first -- that being you have your base week, then your load week,
+ * then your peak week, and then your deload week."* His own spreadsheet labels its week pairs BASE and
+ * LOAD, so this is the same vocabulary he already writes down. The deload is conditional on frequency
+ * per C7: below five sessions a week there isn't one, and the block simply ends. */
+export type WeekRole = "base" | "load" | "peak" | "deload";
+
+export const FOUR_WEEK_ROLES: WeekRole[] = ["base", "load", "peak", "deload"];
+
+/** The roles for a block of `weeks`, with the deload appended only when C7 says there is one.
+ *
+ * Jack named four weeks -- base, load, peak, deload -- and then walked a four-week example whose *fourth*
+ * week was the peak, with a 20 lb gain by the end of it. Both are true at once if the deload is a fifth
+ * week that most clients never see: below five sessions a week there is no scheduled deload at all, so
+ * the block is base, load, peak, peak and then simply ends. */
+export function rolesFor(weeks: number, withDeload = false): WeekRole[] {
+  const working = withDeload ? weeks - 1 : weeks;
+  const out: WeekRole[] = [];
+  for (let i = 0; i < working; i++) {
+    out.push(i === 0 ? "base" : i === 1 ? "load" : "peak");
+  }
+  if (withDeload) out.push("deload");
+  return out;
+}
+
+export interface Variation {
+  sets: PerformedSet[];
+  label: string;
+  why: string;
+}
+
+/** The legal next weeks from where a client currently is -- **plural, because there are several and they
+ * are equivalent.**
+ *
+ * This is the part of Jack's method that most resists being written as a single formula. Given three sets
+ * of eight with the 50s, he offers three next weeks and then says: *"why would you pick one over the
+ * other? There isn't really a reason at all. If you care more about load on the bar, I would pick number
+ * one. Number one is usually the one I would go with."*
+ *
+ * So the engine should not produce one answer. It should produce the small set of equivalent ones, in his
+ * preference order, and let a coach take the second if they prefer it. *"It's all about the relative
+ * intensity and keeping the volume close enough that it's very close in terms of stress."*
+ *
+ * The three levers, which are genuinely distinct:
+ *   1. **load on some sets**, reps held -- 3x8 @50 becomes 2x8 @55 + 1x8 @50
+ *   2. **reps on every set**, load held -- 3x8 @50 becomes 3x10 @50
+ *   3. **reps on some sets**, load held -- 3x8 @50 becomes 10, 8, 8 @50
+ */
+export function variationsFor(
+  sets: PerformedSet[],
+  opts: { equipment: Equipment; band?: RepBand; repStep?: number },
+): Variation[] {
+  const band = opts.band ?? DEFAULT_REP_BAND;
+  const by = opts.repStep ?? 2;
+  const out: Variation[] = [];
+  if (!sets.length) return out;
+
+  // When the sets are uneven, the first thing to do is finish the jump that is already half-made --
+  // bring the laggards up to the weight the rest are already using, before reaching for the next one.
+  const levelled = levelUp(sets);
+  if (describe(levelled) !== describe(sets)) {
+    out.push({
+      sets: levelled,
+      label: "finish the jump",
+      why: "The sets left behind catch up to the weight the others already did. A smaller step than jumping again, and the one the stagger was set up for.",
+    });
+  }
+  const heavier = jumpLoad(sets, { equipment: opts.equipment, band, promote: Math.max(1, sets.length - 1) });
+  if (describe(heavier) !== describe(sets) && describe(heavier) !== describe(levelled)) {
+    out.push({
+      sets: heavier,
+      label: "more load",
+      why: "Most of the sets move to the next weight and the reps hold. His default when load on the bar is what matters.",
+    });
+  }
+  const moreReps = addReps(sets, band, by);
+  if (describe(moreReps) !== describe(sets)) {
+    out.push({
+      sets: moreReps,
+      label: "more reps",
+      why: `Every set gains ${by} reps at the same weight.`,
+    });
+  }
+  const frontLoaded = addRepsToFirst(sets, 1, band, by);
+  if (describe(frontLoaded) !== describe(sets) && describe(frontLoaded) !== describe(moreReps)) {
+    out.push({
+      sets: frontLoaded,
+      label: "more reps, front-loaded",
+      why: "Only the first set gains reps, which produces a descending scheme deliberately.",
+    });
+  }
+  return out;
 }
 
 /** Render a week the way Jack says it out loud: "2x8 @ 35, 1x8 @ 30". */
