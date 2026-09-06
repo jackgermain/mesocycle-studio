@@ -288,6 +288,55 @@ Three categories, and they are distinct:
 This aligns with `v1.md` C5 — "only approved exercises" — and gives that constraint a concrete definition
 of *approved*.
 
+**G11 — The load/rep exchange rate: 5 lb costs 2-3 reps.** Given on push-ups, scoped wider by him:
+
+> *"As a good rule of thumb, every 5 pounds that you put on their back is going to decrease their rep count
+> by two or three reps. That is a pretty universal standard for a lot of lifts, but especially push-ups."*
+
+**Rule:** +5 lb ≈ -2 to -3 reps. This is the first stated conversion between load and reps, and it gives
+the generator something it can actually compute with when swapping one for the other — particularly on
+bodyweight movements, where the relative-intensity table in `v1.md` has no 1RM to anchor to.
+
+Note it is a rule of thumb on *absolute* pounds, so it is only sensible near the loads it was given for. On
+a movement where 5 lb is a rounding error it will not hold.
+
+**G12 — A rep is a proportion, not a unit.** The reason low-rep sets progress differently:
+
+> *"Going from 5 to 6 reps is much different from going from 10 to 11 reps."*
+>
+> *"If you can only do one, what you have to do is you have to make the second rep easier in load, because
+> it's a 100% increase in volume. So you have to make the load a little bit lighter so that you can be able
+> to complete a second one, and then you have another one after that that's even a little bit lighter."*
+
+**Rule:** adding one rep is a *percentage* jump, not a fixed one. 1→2 is +100%, 5→6 is +20%, 10→11 is +10%.
+So the same "+1 rep" progression is aggressive at the bottom of the ladder and trivial at the top.
+
+**Rule:** at very low rep counts, **load must come down to allow the extra rep**, and come down again for
+the rep after that. A descending-load ladder is the correct shape for a beginner who can manage one or two
+reps — not a flat load repeated across sets.
+
+This is the mechanism behind a beginner's whole first block, and a generator applying "+1 rep per week"
+uniformly would be prescribing a 100% jump to the person least able to take it.
+
+**G13 — Non-antagonistic supersets.** His own term, and his favourite example:
+
+> *"One of my favourite supersets ever is cable flies for chest supersetted with push-ups. This is called a
+> non-antagonistic superset, because both of the exercises back to back — even though different exercises —
+> are for the same body part. After I do a set of flies and I get close to failure, I drop on the ground and
+> I do push-ups. I may do between four and eight push-ups and they feel amazing, because I'm already
+> fatigued."*
+
+**Rule:** a non-antagonistic superset pairs two exercises for the **same** body part back to back. This is
+distinct from the antagonistic pairing (push/pull) that supersets usually mean.
+
+**Rule — the trigger is strength, not preference:** *"for people who are really strong, or advanced people,
+or anybody who bench presses or dumbbell presses anything more than maybe 75 pound dumbbells."*
+
+The mechanism is pre-exhaustion, and it is the same idea as the 315 lb bench rule but arrived at from the
+other side: there, a strong lifter is pre-exhausted to keep absolute load down. Here, a bodyweight exercise
+that has become too easy for a strong lifter is made hard again by fatiguing the muscle first. Both solve
+"this person is too strong for this exercise."
+
 ---
 
 # Entries
@@ -929,13 +978,93 @@ be wrong in both directions.
 
 ---
 
+## Weighted Dip — *request-only, and narrower than the bodyweight version*
+
+**Library:** `Weighted Dip`
+**His usage:** zero across the ten programs.
+
+> *"That is pretty much the only time somebody should be doing weighted dips — if they're already strong
+> enough to do several bodyweight dips, or a noted goal of theirs is that they want to increase their
+> dips."*
+
+**Rule — two triggers, either sufficient:** already strong enough for several bodyweight dips, or dips are
+a stated goal.
+
+**Rule — reps 6-10.** *"I'd go no more than 10 reps at the highest."* The floor matches the bodyweight
+chest dip; the **ceiling drops from 15 to 10**, which is the only place so far a ceiling has moved rather
+than a floor. Adding external load to a movement already heavy at bodyweight closes the top of the range.
+
+**Rule — sets 2-4, "maybe five if you're really pushing it."**
+
+> *"I still don't like these very much, but some people do use them anyway."*
+
+Inherits the chest dip's shoulder-risk reservation. Not denylisted, but not offered unprompted.
+
+---
+
+## Push-Up — *a progression ladder, not an exercise*
+
+**Library:** `Push-Up`
+**His usage:** zero in the ten programs — but this is the most detailed entry so far, because it is the
+chest movement that survives when nothing else does.
+
+> *"Push-ups are something that people very commonly want to get better at, and most people are really bad
+> at them… If you can do one push-up and that's it, it's gonna be totally different from somebody who can
+> do 10 push-ups."*
+
+**The governing idea: the push-up is not one exercise, it is a ladder**, and where someone stands on it
+changes everything about how it is programmed. Going 0 → 1 is much harder than going 1 → 20.
+
+### The ladder, rung by rung
+
+1. **Kneeling push-up.** *"Your whole torso straight and your knees are just on the ground instead of your
+   toes, so the lever of your body height is basically decreased, thus the torques on your upper body are
+   smaller."* Start at whatever reps they can manage and add reps.
+2. **Weighted kneeling push-up.** At around **7-8 kneeling reps**, add a plate — 5 or 10 lb on the back.
+   Hold the weight and add a rep or two the following week, possibly spread across two sets.
+3. **Full push-up.** The transition is brutal and must be planned for: *"I've seen people who can do 12
+   kneeling push-ups, and then you give them the full bodyweight push-up and maybe they can only do one of
+   them, maybe two, the most I've ever seen is probably like three."*
+
+   **Rule: budget roughly 12 kneeling reps → 1-3 full reps.** A generator carrying rep counts across that
+   transition unchanged would prescribe something impossible.
+4. **Weighted full push-up** — but see the ceiling below.
+
+### At one rep, load descends across sets
+
+Covered by G12. Someone who can do exactly one full push-up cannot be progressed by adding a rep — that is
++100%. The second set is *lighter* (back to knees, or an incline), and the third lighter still. The aim is
+enough total stress, not a flat load held across sets.
+
+### Programming when the count is low (≤10 reps) and improving it is the goal
+
+**Rule — sets 3-6.** *"No more than five sets and as little as two, but I would urge on more, because
+you're trying to get your push-up count up. A minimum of three sets and a maximum of maybe five or six."*
+The floor rises from the usual 2 to **3** precisely because improving the movement is the goal.
+
+**Rule — rep range is wide open.** *"If your total push-up count is really really low, then doing sets of
+one to three, or 5 to 8, or 7 to 10, or 10 to 12 — any range pretty much is good."* Unusually, this
+exercise does not constrain reps; the person's capacity does.
+
+### The ceiling — push-ups expire
+
+> *"The more advanced you get, the stronger you get, push-ups become less and less good for you because
+> they're too easy. So you either have to weight them ridiculously, which isn't very practical, because you
+> have to put a weight plate on your back and doing push-ups like that isn't fun. If you're training by
+> yourself, I would not program weighted push-ups for people — unless it's a small plate on your back, of
+> course, and it's OK."*
+
+**Rule:** the push-up stops being useful as strength rises, and **weighting it is not the answer** —
+impractical to load, and unpleasant to do. A small plate is acceptable; loading it seriously is not.
+
+**Rule:** for a strong lifter, the way to keep using push-ups is the non-antagonistic superset in G13 —
+fatigue the chest first with flies, then 4-8 push-ups. That restores the difficulty without loading the
+movement.
+
+---
+
 ## Deferred — raised, not yet answered
 
-- **Push-Up.** *"Push-ups are really interesting… it depends a lot on the person, there's a lot of variance
-  with push-ups. Let's actually come back to push-ups later."* Worth returning to specifically for
-  equipment-limited clients, where it is one of very few chest options that survive.
-- **Weighted Dip.** *"Totally different as well"* from the bodyweight chest dip, and not covered. The chest
-  dip's 6-rep floor was given as "assuming they aren't weighted", so the weighted version floors lower.
 - **Hammer Strength / Cybex / Life Fitness chest presses.** Asked twice and passed over both times, so
   recorded as **(inferred)**: they inherit the chest press machine entry — accessory, 8-15 reps, 4 sets max,
   slot 2nd or 3rd unless chest is trained 3x/week. Plate-loaded versus selectorized is assumed not to
