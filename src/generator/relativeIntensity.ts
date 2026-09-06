@@ -82,9 +82,8 @@ export function relativeIntensityOf(reps: number, pctOf1rm: number): number | un
 
 /** One week's progression under Model A: same reps, one rung up the ladder.
  *
- * Returns undefined at the top rather than inventing a rung above 100% -- there is no set harder than
- * maximal, and what happens when the ramp tops out is deliberately still an open question in the
- * doctrine rather than a guess made here. */
+ * Returns undefined above 100% rather than inventing a rung -- there is no set harder than maximal.
+ * Where a block should *stop* is `ceilingRelativeIntensity`, which is usually lower than 100%. */
 export function stepUp(relativeIntensity: number, steps = 1): number | undefined {
   const i = RELATIVE_INTENSITIES.indexOf(relativeIntensity as RelativeIntensity);
   if (i < 0) return undefined;
@@ -96,3 +95,77 @@ export function stepUp(relativeIntensity: number, steps = 1): number | undefined
 export const MIN_WORKING_RELATIVE_INTENSITY = 80;
 /** Constraint C1, in the 6-15 rep range. */
 export const MAX_SETS_PER_EXERCISE = 4;
+
+// ---------------------------------------------------------------------------
+// Effort scales, and the ceiling
+// ---------------------------------------------------------------------------
+
+/** RIR expressed on the relative-intensity ladder.
+ *
+ * Anchored at both ends by Jack, not interpolated from nothing: 0 RIR is by definition maximal for that
+ * rep count (100%), and constraint C2 states RIR 3 / RPE 7 is exactly the 80% working-set floor. Three
+ * reps in reserve across twenty points puts each one at 6.67 pp, snapped to the nearest real rung. */
+const RIR_LADDER: Record<number, number> = { 0: 100, 1: 92.5, 2: 87.5, 3: 80 };
+
+export function relativeIntensityForRir(rir: number): number | undefined {
+  return RIR_LADDER[rir];
+}
+
+/** RPE is the same scale read from the other end: RPE 10 is 0 RIR. */
+export function relativeIntensityForRpe(rpe: number): number | undefined {
+  return RIR_LADDER[10 - rpe];
+}
+
+/** The ceiling is a cap on **absolute load**, not on difficulty.
+ *
+ * Jack's reasoning, verbatim in substance: at three reps the bar is loaded so heavily that going to a
+ * true maximum is an injury risk, so a triple stops at RPE 9 / 1 RIR. At twelve reps "the total amount
+ * of weight on the bar would have to be significantly less and thus injury won't happen", so a set of
+ * twelve may finish a block at a genuine 100%. The variable doing the work in both sentences is pounds
+ * on the bar, so that is what the cap is written against.
+ *
+ * 87.5% of 1RM is the number that reproduces *both* of those statements from the table alone:
+ *   - 3 reps: 95% RI would be 88.0% of 1RM (over), 92.5% RI is 85.8% (under) -> ceiling 92.5% = 1 RIR.
+ *   - 12 reps: 100% RI is 67.0% of 1RM, nowhere near the cap -> ceiling 100%.
+ * Two independent anchors, one parameter, no fudging. Which is also why it is worth distrusting until
+ * more of his examples are checked against it. */
+export const MAX_ABSOLUTE_INTENSITY = 87.5;
+
+/** The hardest rung a set of `reps` is allowed to finish a block on.
+ *
+ * Note what this returns across the hypertrophy range of C3 (6-30 reps): 100%, every time. The cap only
+ * ever binds at five reps and below, which is strength work. So for the hypertrophy engine the ceiling
+ * is simply "maximal", and this function exists for the strength branch and to keep the reasoning
+ * visible rather than assumed. */
+export function ceilingRelativeIntensity(reps: number): number | undefined {
+  for (const ri of RELATIVE_INTENSITIES) {
+    const abs = absoluteIntensity(reps, ri);
+    if (abs !== undefined && abs <= MAX_ABSOLUTE_INTENSITY) return ri;
+  }
+  return undefined;
+}
+
+/** Where a block has to open so that its last week lands exactly on the ceiling.
+ *
+ * The ramp is derived, not stored. Jack's rule is that the top of the ramp *is* the final week before a
+ * deload -- "I don't think there's anything wrong at all going to a 100% relative intensity set by the
+ * end of the mesocycle before a deload" -- so block length and ramp length are the same quantity, and
+ * the starting point falls out of counting backwards from the ceiling.
+ *
+ * Returns undefined when the block is too long to ramp in one piece: at 2.5 pp a week from a 100%
+ * ceiling, week one of a ten-week block would open at 77.5%, below the C2 working-set floor. Long blocks
+ * need an internal reset, and that reset is not yet specified, so this refuses rather than inventing one. */
+export function rampStart(reps: number, weeks: number, stepPp = 2.5): number | undefined {
+  const ceiling = ceilingRelativeIntensity(reps);
+  if (ceiling === undefined || weeks < 1) return undefined;
+  const start = ceiling - (weeks - 1) * stepPp;
+  if (start < MIN_WORKING_RELATIVE_INTENSITY) return undefined;
+  return RELATIVE_INTENSITIES.includes(start as RelativeIntensity) ? start : undefined;
+}
+
+/** How many weeks of unbroken ramp a rep scheme affords before it would break the C2 floor. */
+export function maxRampWeeks(reps: number, stepPp = 2.5): number {
+  const ceiling = ceilingRelativeIntensity(reps);
+  if (ceiling === undefined) return 0;
+  return Math.floor((ceiling - MIN_WORKING_RELATIVE_INTENSITY) / stepPp) + 1;
+}
