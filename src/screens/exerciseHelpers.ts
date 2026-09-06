@@ -4,9 +4,16 @@ export function fmtLoad(load: number | null, units: string) {
   return load === null ? "BW" : `${load} ${units}`;
 }
 
-/** The actual weights a commercial dumbbell rack comes in — irregular jumps below 27.5 lb (fixed pairs), then a clean 5 lb jump the rest of the way. */
+/** The actual weights a commercial dumbbell rack comes in — 2.5 lb steps at the light end, then a clean
+ * 5 lb jump from 30 up.
+ *
+ * The 15s, 20s and 7.5s were missing here, which is wrong: they are among the most common dumbbells in
+ * any gym. Jack's own warm-up example runs straight through them — *"I'd go for the fifteens... then I'd
+ * go up to twenty two point five if they had them, but most gyms don't, so I'll just say twenty."* Note
+ * which one he treats as unusual: 22.5 is the rare one, not 15 or 20. With those absent, every load
+ * snapped for a light dumbbell exercise landed on a weight the rack doesn't have or skipped one it does. */
 export const DUMBBELL_WEIGHTS = [
-  2.5, 5, 10, 12.5, 17.5, 22.5, 25, 27.5, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150,
+  2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 27.5, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150,
 ];
 
 /** An empty barbell — you can never load below this. */

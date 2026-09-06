@@ -47,6 +47,7 @@
 
 import type { Equipment } from "../data/types";
 import { DUMBBELL_WEIGHTS, BARBELL_WEIGHT, stepForEquipment } from "../screens/exerciseHelpers";
+import { patternOf } from "./patterns";
 
 /** What a given rung is buying. Cutting a warm-up short should drop priming, never temperature. */
 export type WarmupPurpose = "temperature" | "range" | "priming";
@@ -65,8 +66,12 @@ export type WarmupContext =
   | "first-for-muscle"
   /** A later exercise for a body part already warmed up. */
   | "subsequent"
-  /** A heavy barbell squat or bench, opening a body part -- more load on the frame, so more rungs. */
+  /** A big lift that is also the first thing that day -- the only case that gets four rungs. */
+  | "big-first"
+  /** A big lift, or a row leading a body part. Three rungs. */
   | "big"
+  /** Isolation work. Three short rungs, the last a single at the working weight. */
+  | "accessory"
   /** A big compound arriving after the body part is already warm. His "one, maybe two at the most". */
   | "subsequent-big";
 
@@ -75,17 +80,40 @@ export type WarmupContext =
  * The three-rung version is his stated default. The four-rung version is his own worked example, and the
  * extra rung goes in near the top rather than the bottom -- the singles and doubles are what get denser
  * as the bar gets heavy, not the light work. */
-const RAMPS: Record<WarmupContext, { pct: number; reps: number; purpose: WarmupPurpose }[]> = {
+const RAMPS: Record<
+  WarmupContext,
+  { pct: number; reps: number; purpose: WarmupPurpose; atWorkingWeight?: boolean }[]
+> = {
+  // "Bench, squat, deadlift get at least three, or even four with a single -- especially if they are the
+  // first thing that day."
+  "big-first": [
+    { pct: 0.5, reps: 10, purpose: "temperature" },
+    { pct: 0.75, reps: 6, purpose: "range" },
+    { pct: 0.85, reps: 2, purpose: "priming" },
+    { pct: 0.95, reps: 1, purpose: "priming" },
+  ],
+  big: [
+    { pct: 0.5, reps: 10, purpose: "temperature" },
+    { pct: 0.75, reps: 6, purpose: "range" },
+    { pct: 0.9, reps: 2, purpose: "priming" },
+  ],
   "first-for-muscle": [
     { pct: 0.5, reps: 10, purpose: "temperature" },
     { pct: 0.75, reps: 6, purpose: "range" },
     { pct: 0.9, reps: 2, purpose: "priming" },
   ],
-  big: [
+  // Isolation. His worked example, 3x10 lateral raises with the 30s: "I'd go for the fifteens and do
+  // maybe seven reps really quick, then wait a second and another three or four, so totaling about ten.
+  // Then I'd go up to twenty two point five if they had them -- most gyms don't, so twenty -- and do
+  // another five reps. And then I would maybe do a single or double WITH THE WORKING WEIGHT, since the
+  // total amount isn't that high."
+  //
+  // That last rung is the one that makes this ramp different: it sits *at* the working load, not below
+  // it. On a light isolation movement there is nothing to be gained by approaching from underneath.
+  accessory: [
     { pct: 0.5, reps: 10, purpose: "temperature" },
-    { pct: 0.75, reps: 6, purpose: "range" },
-    { pct: 0.85, reps: 2, purpose: "priming" },
-    { pct: 0.95, reps: 1, purpose: "priming" },
+    { pct: 0.7, reps: 5, purpose: "range" },
+    { pct: 1.0, reps: 2, purpose: "priming", atWorkingWeight: true },
   ],
   // The tissue is already warm and has already been through its range, so the one rung left to buy is
   // priming for a movement the nervous system has not done yet today.
@@ -109,7 +137,7 @@ const RAMPS: Record<WarmupContext, { pct: number; reps: number; purpose: WarmupP
  * this is a property of the exercise, not a threshold on the number -- though a caller may still force
  * the long ramp for an unusually strong lifter, which is what Jack does for himself on a dumbbell press
  * at 100 lb a hand. */
-const ALWAYS_BIG = /squat|bench press|deadlift|\bclean\b|snatch|\bjerk\b|overhead press|push press|hip thrust/i;
+const ALWAYS_BIG = /squat|bench press|deadlift|\bclean\b|snatch|\bjerk\b|overhead press|military press|shoulder press|push press|hip thrust/i;
 const BIG_WHEN_LEADING = /barbell row|bent-?over row|t-?bar row|pendlay|meadows|cable row|gorilla row/i;
 
 /** Always worth the long ramp, whatever else the session has done. A loaded barbell squat or bench is
@@ -164,7 +192,8 @@ export function warmupFor(
     const load = snapDown(equipment, workingLoad * rung.pct);
     // Skip a rung that lands on the same weight as the one before it, or on the working load itself --
     // both are a set that does nothing.
-    if (load <= previous || load >= workingLoad || load <= 0) continue;
+    const tooHigh = rung.atWorkingWeight ? load > workingLoad : load >= workingLoad;
+    if (load <= previous || tooHigh || load <= 0) continue;
     out.push({ load, reps: rung.reps, pctOfWorking: rung.pct, purpose: rung.purpose });
     previous = load;
   }
@@ -180,21 +209,31 @@ export function warmupsForSession(
   exercises: { name: string; muscle: string; equipment: Equipment; workingLoad: number | null; big?: boolean }[],
 ): WarmupSet[][] {
   const warmed = new Set<string>();
-  return exercises.map((ex) => {
+  return exercises.map((ex, i) => {
     // A big compound arriving after the body part is warm still wants more than one rung -- it is
     // heavier and recruits more widely -- but not the full four, because the temperature and range were
     // already bought. His qualifier was "*super heavy* barbell rows or T-bar rows or cable rows", and a
     // moderate cable row after a heavy barbell row is not that. Pass `big` to force the long ramp.
     const alreadyWarm = warmed.has(ex.muscle);
-    const context: WarmupContext = ex.big || isAlwaysBig(ex.name)
-      ? "big"
-      : !alreadyWarm
+    const isFirstOfDay = i === 0;
+    const big = ex.big || isAlwaysBig(ex.name);
+    // Isolation -- no movement pattern means no compound. These get the short ramp that finishes at the
+    // working weight rather than below it.
+    const isolation = !patternOf(ex.name);
+
+    const context: WarmupContext = big
+      ? isFirstOfDay
+        ? "big-first"
+        : "big"
+      : alreadyWarm
         ? isBigWhenLeading(ex.name)
-          ? "big"
-          : "first-for-muscle"
-        : isBigWhenLeading(ex.name)
           ? "subsequent-big"
-          : "subsequent";
+          : "subsequent"
+        : isBigWhenLeading(ex.name)
+          ? "big"
+          : isolation
+            ? "accessory"
+            : "first-for-muscle";
     warmed.add(ex.muscle);
     return warmupFor(ex.workingLoad, ex.equipment, context);
   });
