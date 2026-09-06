@@ -204,7 +204,7 @@ export function ExerciseSection({
 
       <div className="scr" style={{ display: "grid", gridTemplateColumns: COLS, gap: 8, alignItems: "center", padding: "6px 0" }}>
         <span />
-        <span style={{ textAlign: "center" }}>weight</span>
+        <span style={{ textAlign: "center" }}>{mode === "pct1rm" ? "weight · %1RM" : "weight"}</span>
         <span style={{ textAlign: "center" }}>reps</span>
         {/* RPE and RIR get their own column: they're the coach's prescription, not something to log
             against, so they read out and cannot be edited here. %1RM instead rides alongside the weight,

@@ -21,7 +21,7 @@ const STATUS_DOT: Record<ClientStatus, string> = {
   unassigned: "var(--color-neutral-700)",
 };
 
-type Filter = "review" | "all" | "at-risk";
+type Filter = "review" | "all" | "at-risk" | "clients" | "friends";
 
 export default function Clients() {
   const { state, dispatch } = useCoachStore();
@@ -87,10 +87,14 @@ export default function Clients() {
   const needsReviewCount = state.clients.filter((c) => c.flags.length > 0).length;
   const atRiskCount = state.clients.filter((c) => c.status === "at-risk" || c.status === "behind").length;
   const acceptedCount = state.clients.filter((c) => c.accountId).length;
+  const clientCount = state.clients.filter((c) => c.role !== "friend").length;
+  const friendCount = state.clients.filter((c) => c.role === "friend").length;
 
   const filtered = useMemo(() => {
     if (filter === "review") return state.clients.filter((c) => c.flags.length > 0);
     if (filter === "at-risk") return state.clients.filter((c) => c.status === "at-risk" || c.status === "behind");
+    if (filter === "clients") return state.clients.filter((c) => c.role !== "friend");
+    if (filter === "friends") return state.clients.filter((c) => c.role === "friend");
     return state.clients;
   }, [state.clients, filter]);
 
@@ -121,7 +125,9 @@ export default function Clients() {
         </HeroStat>
       </HeroHeader>
       <div className="screen-scroll">
-        <div className="row" style={{ gap: 6 }}>
+        {/* hscroll because the admin view has five chips, which overflow a phone -- without it they
+            squash rather than scroll. */}
+        <div className="row hscroll" style={{ gap: 6 }}>
           <button className={`chip${filter === "review" ? " on" : ""}`} onClick={() => setFilter("review")}>
             Needs review {needsReviewCount}
           </button>
@@ -131,6 +137,19 @@ export default function Clients() {
           <button className={`chip${filter === "at-risk" ? " on" : ""}`} onClick={() => setFilter("at-risk")}>
             At risk
           </button>
+          {/* Splitting the roster by role is only offered to the platform owner. Every coach can invite
+              friend/family accounts, but nobody else has a roster mixed enough for the split to earn its
+              place -- two extra chips on a list of four people is noise. */}
+          {account?.is_platform_admin && (
+            <>
+              <button className={`chip${filter === "clients" ? " on" : ""}`} onClick={() => setFilter("clients")}>
+                Clients <span className="mono">{clientCount}</span>
+              </button>
+              <button className={`chip${filter === "friends" ? " on" : ""}`} onClick={() => setFilter("friends")}>
+                Friends &amp; family <span className="mono">{friendCount}</span>
+              </button>
+            </>
+          )}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
