@@ -40,28 +40,49 @@ const LEAD_ROTATION: Record<number, Region[]> = {
   2: ["push", "pull"],
   3: ["push", "pull", "legs"],
   4: ["push", "pull", "legs", "push"],
+  5: ["push", "pull", "legs", "push", "pull"],
+  6: ["push", "pull", "legs", "push", "pull", "legs"],
 };
 
-/** How many exercises a session gets, by how often the person trains.
+/** A *hint* at how many exercises a session gets. Deliberately not a rule.
  *
- * Jack said "somewhere between nine and twelve". His own programs say that is the *two-day* number:
- * across ten real clients the two-day sessions average 9.8 exercises, the three-day 8.4, and the
- * four-day 6.8. Fewer sessions means more work in each one, which is the sensible reading. */
-export const EXERCISES_PER_SESSION: Record<number, number> = { 2: 10, 3: 9, 4: 7 };
+ * Jack's correction, after seeing this derived from training frequency: *"definitely don't measure [it]
+ * for the amount of days per week, because that just goes with how serious you are about training."* The
+ * causal variable is commitment; frequency is only correlated with it.
+ *
+ * The correlation is nonetheless strong enough to seed a default, across his ten clients plus his own
+ * 6x program:
+ *
+ * | Days/week | Mean exercises/session | Weekly total |
+ * |---|---|---|
+ * | 2 | 9.8 | 19.6 |
+ * | 3 | 8.4 | 25.2 |
+ * | 4 | 6.8 | 27.2 |
+ * | 6 (his own) | **5.5** | **33.0** |
+ *
+ * Per-session count falls, weekly total climbs. So this is what to *offer*, and the caller overrides it
+ * from what the person will actually do. */
+export const EXERCISES_PER_SESSION: Record<number, number> = { 2: 10, 3: 8, 4: 7, 5: 6, 6: 6 };
 
 /** The last N slots of a session go to small muscles -- abs, calves, forearms. */
 const FINISHERS = 2;
 
 /** Patterns kept out of the compound slots by default.
  *
- * Overhead pressing is excluded, and the reason is empirical rather than a stated rule. Jack's own week
- * puts a *second horizontal* press on day two -- *"if we did incline dumbbell press on Monday, I'd
- * probably have it be a flat variation"* -- rather than reaching for the untouched vertical push, and
- * the same choice cascades into day three taking the vertical pull he specified. With overhead pressing
- * in the pool this planner disagrees with him on two of six compound slots; with it out, it reproduces
- * his week exactly. Which is a strong hint, not a confirmation: it may be a considered choice about
- * shoulders in a middle-aged general-population client, or it may be an artifact of one example. Flagged
- * in the doctrine as an open question rather than settled here. */
+ * Overhead pressing, and now for a stated reason rather than an inference from one example:
+ *
+ * > *"There's nothing wrong with overhead pressing, but I don't like it very much, because it primarily
+ * > just works the anterior deltoid, which gets a lot of work from regular chest work -- especially
+ * > incline pressing, which will get your upper chest. And it's not going to cosmetically change that
+ * > much. It's more of a very strength-based exercise. If I was working with an athlete, we might be
+ * > doing some shoulder presses if he's a basketball player and he needs strength in that specific
+ * > motion. But the chest is just of much more importance."*
+ *
+ * So it is excluded on a **cost-benefit** basis, not a safety one: the anterior delt is already paid for
+ * by incline work, and the marginal cosmetic return does not justify the slot. That makes the exception
+ * precise -- restore it when the goal is sport strength in that motion, not when the client is younger
+ * or healthier. With it excluded this planner reproduces his worked week on all six compound slots.
+ */
 export const DEFAULT_EXCLUDED: readonly Pattern[] = ["vertical push"];
 
 /** Pick the second compound of a day.
@@ -148,14 +169,54 @@ export function planWeek(
   return week;
 }
 
+
+/** Reps, sets and rest as a function of where in the session a slot sits.
+ *
+ * Measured off Jack's own 6x program -- 41 sessions, tiered T1 through T7 in his own notation, which is
+ * the same "top down by importance" idea written out explicitly:
+ *
+ * | Slot | Mean reps | Mean sets | Mean rest |
+ * |---|---|---|---|
+ * | 1 | **5.6** | 3.1 | 98 s |
+ * | 2 | 10.4 | 2.7 | 72 s |
+ * | 3 | 10.6 | 2.1 | 45 s |
+ * | 4-5 | ~11 | 2.3 | — |
+ * | last | **20.6** | 2.1 | — |
+ *
+ * Three distinct zones, not a smooth gradient: **one heavy low-rep opener, a long middle around ten to
+ * twelve, and a high-rep finisher.** Sets and rest both descend monotonically.
+ *
+ * Note the opener is 5.6 reps in *his* training and would be higher for a general-population client --
+ * C3 puts hypertrophy at 6-30 and his clients' programs run 10-20. The shape transfers; the absolute
+ * numbers are an advanced lifter's. `strengthBias` scales the opener toward it. */
+export interface SlotProfile {
+  reps: number;
+  sets: number;
+  restSec: number;
+}
+
+export function profileFor(slot: Slot, total: number, strengthBias = 0): SlotProfile {
+  const i = slot.index;
+  const isLast = i === total - 1;
+  if (i === 0) return { reps: Math.round(12 - 6 * strengthBias), sets: 3, restSec: 120 };
+  if (i === 1) return { reps: Math.round(12 - 2 * strengthBias), sets: 3, restSec: 75 };
+  if (isLast) return { reps: 20, sets: 2, restSec: 45 };
+  return { reps: 12, sets: 2, restSec: 45 };
+}
+
 export function describeWeek(week: WeekPlan): string {
   return week
     .map((day, i) =>
       [
         `Day ${i + 1}`,
         ...day.map((s) => {
-          if (s.pattern) return `  ${s.index + 1}. ${s.pattern}${s.wantsErectors ? " (erectors)" : ""}`;
-          return `  ${s.index + 1}. ${s.role === "finisher" ? "small muscle" : "accessory"}`;
+          const p = profileFor(s, day.length);
+          const what = s.pattern
+            ? `${s.pattern}${s.wantsErectors ? " (erectors)" : ""}`
+            : s.role === "finisher"
+              ? "small muscle"
+              : "accessory";
+          return `  ${s.index + 1}. ${what.padEnd(28)} ${p.sets}x${p.reps}, rest ${p.restSec}s`;
         }),
       ].join("\n"),
     )
