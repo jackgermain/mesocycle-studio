@@ -26,6 +26,32 @@ interface Row {
  * Only the three JSON paths this needs are selected. A client's blob holds their whole program, every meal
  * and every logged set; pulling all of that for every client to count dates would be enormously wasteful.
  * RLS scopes the read to this coach's own clients (client_state_select in migration 0001). */
+/** One key per lapse, so ignoring Tuesday does not also silence next Tuesday. Same shape and same
+ * reasoning as `complianceKeys`. */
+export function weighInKeys(gap: ClientWeighInGap): string[] {
+  return gap.entries.map((e) => `${gap.accountId}|weighin|${e.date}`);
+}
+
+export function applyWeighInDismissals(
+  gaps: ClientWeighInGap[],
+  dismissed: readonly string[],
+): ClientWeighInGap[] {
+  if (!dismissed.length) return gaps;
+  const off = new Set(dismissed);
+  const out: ClientWeighInGap[] = [];
+  for (const g of gaps) {
+    const entries = g.entries.filter((e) => !off.has(`${g.accountId}|weighin|${e.date}`));
+    if (!entries.length) continue;
+    out.push({
+      ...g,
+      entries,
+      missedCount: entries.filter((e) => e.kind === "missed").length,
+      skippedCount: entries.filter((e) => e.kind === "skipped").length,
+    });
+  }
+  return out;
+}
+
 export async function loadWeighInGaps(days = 14): Promise<ClientWeighInGap[]> {
   const { data, error } = await supabase
     .from("client_state")

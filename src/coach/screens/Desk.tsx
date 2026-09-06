@@ -4,7 +4,7 @@ import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
-import { loadWeighInGaps, type ClientWeighInGap } from "../weighInWatch";
+import { loadWeighInGaps, applyWeighInDismissals, weighInKeys, type ClientWeighInGap } from "../weighInWatch";
 import { loadComplianceGaps, totalComplianceItems, applyDismissals, complianceKeys, type ClientComplianceGap } from "../complianceWatch";
 import { listFormChecks, type FormCheck } from "../../shared/formChecks";
 import { CoachFormCheckSheet } from "../components/FormCheckSheet";
@@ -44,7 +44,7 @@ export default function Desk() {
   const nav = useNavigate();
   const [showAccount, setShowAccount] = useState(false);
   const [allSignals, setAllSignals] = useState<ClientSignal[]>([]);
-  const [weighInGaps, setWeighInGaps] = useState<ClientWeighInGap[]>([]);
+  const [allWeighInGaps, setAllWeighInGaps] = useState<ClientWeighInGap[]>([]);
   const [allCompliance, setAllCompliance] = useState<ClientComplianceGap[]>([]);
   const [formChecks, setFormChecks] = useState<FormCheck[]>([]);
   const [watching, setWatching] = useState<FormCheck | null>(null);
@@ -59,7 +59,7 @@ export default function Desk() {
     void refreshOpenSignalCount(true);
     loadWeighInGaps().then((gaps) => {
       if (!active) return;
-      setWeighInGaps(gaps);
+      setAllWeighInGaps(gaps);
       setWeighInGapCount(gaps.length);
     });
     // Unanswered only: an answered one has had its decision made and belongs in history, not on a desk
@@ -104,6 +104,17 @@ export default function Desk() {
 
   // Recomputed rather than filtered once on load, so an "Ignore" takes effect immediately without
   // refetching the whole roster's state.
+  const weighInGaps = useMemo(
+    () => applyWeighInDismissals(allWeighInGaps, state.dismissedCompliance ?? []),
+    [allWeighInGaps, state.dismissedCompliance],
+  );
+
+  function ignoreWeighIn(gap: ClientWeighInGap, clientName: string) {
+    dispatch({ type: "DISMISS_COMPLIANCE", keys: weighInKeys(gap) });
+    dispatch({ type: "SHOW_TOAST", message: `Ignored for ${clientName}.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+  }
+
   const compliance = useMemo(
     () => applyDismissals(allCompliance, state.dismissedCompliance ?? []),
     [allCompliance, state.dismissedCompliance],
@@ -140,19 +151,23 @@ export default function Desk() {
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
   }
 
-  function remindLog(clientId: string, clientName: string, what: "session" | "food") {
+  /** `accountId` and not a local client id, because get_my_thread matches the thread's clientId against
+   * the signed-in client's auth.uid(). A thread keyed on the coach's own local id is one the client can
+   * never read, so the message looked sent and simply never arrived. */
+  function remindLog(accountId: string, clientName: string, what: "session" | "food") {
     const first = clientName.split(" ")[0];
     const text =
       what === "session"
         ? `Hey ${first}, I noticed a session isn't logged — can you fill it in when you get a sec? Helps me set next week properly 👍`
         : `Hey ${first}, your food log has a gap — even a rough entry helps me see what's going on 👍`;
-    dispatch({ type: "SEND_MESSAGE", threadId: clientId, text });
+    dispatch({ type: "SEND_MESSAGE", threadId: accountId, text, clientName });
     dispatch({ type: "SHOW_TOAST", message: `Reminder sent to ${clientName}.` });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
   }
 
-  function remindWeighIn(clientId: string, clientName: string) {
-    dispatch({ type: "SEND_MESSAGE", threadId: clientId, text: `Hey ${clientName.split(" ")[0]}, quick reminder to log your weigh-in when you get a chance 👍` });
+  /** Same rule as remindLog: the thread has to be keyed on the client's account id to be readable. */
+  function remindWeighIn(accountId: string, clientName: string) {
+    dispatch({ type: "SEND_MESSAGE", threadId: accountId, clientName, text: `Hey ${clientName.split(" ")[0]}, quick reminder to log your weigh-in when you get a chance 👍` });
     dispatch({ type: "SHOW_TOAST", message: `Reminder sent to ${clientName}.` });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
   }
@@ -258,12 +273,13 @@ export default function Desk() {
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {compliance.map((g) => {
                 const client = state.clients.find((c) => c.accountId === g.accountId);
+                const name = client?.name ?? "A client";
                 const lastSession = g.missedSessions[0];
                 return (
                   <div key={g.accountId} className="cell elev-sm">
                     <div className="row">
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div className="name">{client?.name ?? "A client"}</div>
+                        <div className="name">{name}</div>
                         <div className="mu" style={{ marginTop: 1 }}>
                           {lastSession
                             ? `${lastSession.title} not logged on ${lastSession.date}`
@@ -287,23 +303,30 @@ export default function Desk() {
                         {g.missedSessions.length > 0 ? "sessions" : "food"}
                       </span>
                     </div>
-                    {client && (
-                      <div className="row" style={{ gap: 8, marginTop: 9 }}>
-                        <button
-                          className="btn btn-solid"
-                          style={{ flex: 1, height: 36, fontSize: 12.5 }}
-                          onClick={() => remindLog(client.accountId ?? client.id, client.name, g.missedSessions.length > 0 ? "session" : "food")}
-                        >
-                          Remind
-                        </button>
-                        <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
-                          Open
-                        </button>
-                        <button className="btn btn-ghost" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => ignoreCompliance(g, client.name)}>
-                          Ignore
-                        </button>
-                      </div>
-                    )}
+                    {/* Not gated on finding a client record any more. The gap already carries the
+                        account id, which is both the thread key and the only thing Remind needs -- so
+                        hiding the buttons for an unmatched client removed the one action that would
+                        still have worked. Open falls back to the roster, since without a record there is
+                        no detail page to open. */}
+                    <div className="row" style={{ gap: 8, marginTop: 9 }}>
+                      <button
+                        className="btn btn-solid"
+                        style={{ flex: 1, height: 36, fontSize: 12.5 }}
+                        onClick={() => remindLog(g.accountId, name, g.missedSessions.length > 0 ? "session" : "food")}
+                      >
+                        Remind
+                      </button>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ flex: 1, height: 36, fontSize: 12.5 }}
+                        onClick={() => nav(client ? `/coach/clients/${client.id}` : "/coach/clients")}
+                      >
+                        Open
+                      </button>
+                      <button className="btn btn-ghost" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => ignoreCompliance(g, name)}>
+                        Ignore
+                      </button>
+                    </div>
                   </div>
                 );
               })}
@@ -337,16 +360,14 @@ export default function Desk() {
                         {g.missedCount > 0 ? `${g.missedCount} missed` : `${g.skippedCount} skipped`}
                       </span>
                     </div>
-                    {client && (
-                      <div className="row" style={{ gap: 8, marginTop: 9 }}>
-                        <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => remindWeighIn(client.accountId ?? client.id, client.name)}>
-                          Remind
-                        </button>
-                        <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
-                          Open
-                        </button>
-                      </div>
-                    )}
+                    <div className="row" style={{ gap: 8, marginTop: 9 }}>
+                      <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => remindWeighIn(g.accountId, client?.name ?? "A client")}>
+                        Remind
+                      </button>
+                      <button className="btn btn-ghost" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => ignoreWeighIn(g, client?.name ?? "A client")}>
+                        Ignore
+                      </button>
+                    </div>
                   </div>
                 );
               })}
