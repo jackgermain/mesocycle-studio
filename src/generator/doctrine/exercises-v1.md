@@ -418,4 +418,36 @@ and difficulty (G5) and would never think to demote a lift because the person is
 
 ---
 
+## Incline Barbell Bench Press — *inherits from flat barbell bench*
+
+**Library:** `Incline Barbell Bench Press`
+**His usage:** zero across the ten programs, same as the flat barbell.
+
+> *"Incline barbell press is amazing. I would apply the same rules to it as flat barbell pressing, with a
+> little bit less risk on the shoulder-pain sort of thing. But the only thing that I would change is that
+> below three reps on incline barbell press is very unusual, so I would gauge the rep range or boundary
+> between three reps and 15 at the most. But yeah, everything else should hold with it."*
+
+**Rule:** inherits the flat barbell bench entry in full — compound status (G4), the set-cap curve (G3),
+first-slot ordering (G5), the maximiser trigger, the joint/age gate, and the 315 lb pre-exhaust rule.
+
+**Two changes:**
+
+1. **Reps 3-15**, not 1-15. Below 3 is very unusual on an incline. In G2 terms it gives up the bottom of
+   the peak-strength band — it can be a strength lift, but not a true singles lift.
+2. **Slightly lower shoulder risk** than the flat bench.
+
+*Open:* whether that lower risk actually moves the gate — i.e. whether someone with mild shoulder pain who
+is excluded from flat barbell benching can do incline barbell instead, or whether the gate is the same and
+the difference only matters at the margins.
+
+### A note on the shape of this entry
+
+This is the first **inheriting** entry, and most of the remaining 160 exercises will be this shape: a
+parent, plus the two or three things that differ. That is what makes going through the whole library
+tractable — the expensive entries are the ones that establish a pattern, and the rest are deltas against
+one.
+
+---
+
 *Entries continue as we go.*
