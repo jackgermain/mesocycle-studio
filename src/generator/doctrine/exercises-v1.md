@@ -64,6 +64,10 @@ An exercise's rep range says which schemes are **legal** for it. Choosing among 
 progression models in `v1.md` §3, which include holding reps constant for a whole block. The generator
 must never read a range as an instruction to walk from its floor to its ceiling across a block.
 
+**Permitted, not forbidden.** G1 rules out ramping as a *default*, not as an option. On the cable fly:
+*"You can even start at 12 and end at 15, it doesn't really matter."* Walking part of a range across a
+block is one legal scheme among several — what G1 forbids is treating it as the thing a range means.
+
 **G2 — The five rep bands.** Stated while talking about the bench press, and explicitly scoped to
 everything:
 
@@ -591,6 +595,39 @@ requires a third slot to exist before it is worth picking.
 
 ---
 
+## Cable Fly — *all three angles; accessory, third or last*
+
+**Library:** `Cable Fly — Mid` · `Cable Fly — Low to High` · `Cable Fly — High to Low`
+**His usage:** zero across the ten programs.
+
+Answered for the cable flies in general rather than per angle.
+
+> *"If we're talking cable flies in general, I would do no more than four sets, usually two or three is the
+> sweet spot. I would do no less than 10 reps pretty much ever, although I would still encourage the higher
+> rep range — 15 reps being a really good place for these. You can even start at 12 and end at 15, it
+> doesn't really matter. But I would put the upper parameter on 20 and the lower parameter on 10."*
+
+**Rule — reps 10-20**, and the useful part of that window is the top of it. 15 is called out as a really
+good place; the encouragement runs high, not low.
+
+**Rule — sets 2-4, with 2-3 the sweet spot.** The first entry to name a sweet spot inside its own set range
+rather than just a ceiling.
+
+### Slot — never first, third or last
+
+> *"I would never do these first, and if I would group them I'd probably do them third or last."*
+
+**Rule:** never first; **3rd or last** by default. A shade more restrictive than the dumbbell fly, which is
+merely never-first.
+
+### Its floor is higher than the dumbbell fly's
+
+Cable flies floor at **10**; dumbbell flies floor at **8**. Both are accessories for the same muscle, so
+the difference is the implement — constant cable tension has even less use for a low-rep set than a
+dumbbell does. This extends the pattern below rather than breaking it.
+
+---
+
 ## The rep floor tracks the implement — (inferred)
 
 Six chest entries in, the low end of each rep range lines up with what the exercise is, not with what it
@@ -602,6 +639,7 @@ trains:
 | 3 | Incline barbell bench |
 | 6 | Dumbbell presses (flat and incline), Smith presses (flat and incline) |
 | 8 | Chest press machine, dumbbell flies |
+| 10 | Cable flies |
 
 The ceiling barely moves — almost everything tops out at 15. **It is the floor that carries the
 information**, and it falls as the exercise gets more loadable and more stable. Free barbell reaches the
@@ -626,6 +664,7 @@ quote — but every line traces to an entry above.
 | Smith bench (flat / incline) | 1st or 2nd | Never 3rd. Demoted off 1st if very strong. |
 | Chest press machine | 2nd or 3rd | 1st only when chest is trained 3x/week. |
 | Dumbbell fly (flat / incline) | Never 1st | Needs a 3rd slot to exist before it is worth picking. |
+| Cable fly (all angles) | 3rd or last | Never 1st. |
 
 Two things fall out of it:
 
