@@ -85,9 +85,21 @@ naming which of these bands the exercise is allowed to occupy — the incline du
 the top of middle-strength through middle-hypertrophy; the chest press machine's 8-15 spans bottom through
 upper hypertrophy and never touches strength at all.
 
-*Reconciliation needed with `v1.md`:* C3 there states the hypertrophy range as 6-30. G2 puts hypertrophy at
-7-20 with 20+ as special cases, and calls 4-6 middle **strength**. G2 is later and more specific, but the
-two should be squared explicitly rather than left to whichever a reader hits first.
+*Squared with `v1.md` C3 — there is no conflict.* Asked which wins:
+
+> *"This is all range — anything between six and 30 reps grows the same amount of muscle if the set is
+> taken close to failure. I'm just dividing that 6 to 30 rep range into smaller groups to make it easier to
+> categorize."*
+
+**Rule:** C3 stands. **6-30 reps all grow the same amount of muscle, provided the set is taken close to
+failure.** The bands are a naming scheme for talking about that span, not a claim that some part of it
+builds more muscle than another.
+
+This has a consequence the generator has to respect: **rep selection inside 6-30 is not a hypertrophy
+decision, because hypertrophy is flat across it.** So reps get chosen on everything else — what the
+exercise tolerates, joint stress, the load available, how long the session can run, what the person will
+actually do. Anything that picks reps by chasing a "best hypertrophy range" is optimising a variable that
+is already flat.
 
 **G3 — Set cap falls as reps rise. (Stated for the bench press; generality unconfirmed.)**
 
@@ -355,13 +367,54 @@ reps, never fewer than 2.
 **Rule:** the bench takes the first slot whenever it appears, yielding only to power work. See G5 for the
 full ordering, which was given while talking about this exercise.
 
+### The reason the barbell earns it
+
+> *"The very specific reason is if the person is really trying to get everything that they can out of their
+> lifting, and the risk-to-reward of them using it is high enough that being really risky isn't that big of
+> an issue."*
+
+**Rule:** the trigger is a person maximising — someone who wants everything available from their training
+and for whom the risk is worth it. Not a goal setting, an attitude to risk.
+
+The gate is joint history and age, not experience:
+
+> *"If the person doesn't have any shoulder pain or anything like that, they're not really old or anything
+> like that — unless the load is really light and they don't have to work very hard relatively. There's
+> nothing wrong with bench pressing, you just have to be mindful about who's doing it."*
+
+**Rule:** shoulder pain or advanced age rules it out **at meaningful loads**. It does not rule it out at
+light loads and low relative effort — the risk lives in the load, not the movement.
+
+And once past that gate, it is broadly encouraged rather than reserved:
+
+> *"If we're talking to somebody who is an intermediate lifter, or even a beginner, I would strongly
+> encourage bench pressing, just because it's a very foundational exercise that should be used very
+> often."*
+
+**Rule:** for a healthy beginner or intermediate, strongly encouraged. This widens the earlier "staple if
+they're trying to get strong" — the strength goal makes it a staple, but foundational value alone is
+enough to prescribe it.
+
+### The one reason not to put it first — pre-exhaustion as load management
+
+> *"The only time I would ever use bench press not first is if the person I'm working with is super strong
+> already — as in, if they did it first they'd have to be lifting 315+ pounds on the bar, and I don't want
+> them to have to lift that much load, so I have something before that to pre-exhaust them."*
+
+**Rule:** if benching first would put roughly **315 lb or more** on the bar, put something before it to
+pre-exhaust, so the working load lands lower.
+
+This is worth flagging as a principle, because it inverts the usual reason for pre-exhaustion. It is not
+being done to bias a muscle or chase a pump — it is being done to **keep absolute load off a strong
+lifter's joints** while still getting a hard set. The generator would otherwise only ever order by priority
+and difficulty (G5) and would never think to demote a lift because the person is too strong for it.
+
 ### Still open on this one
 
-- What is the "very specific reason to be doing barbell pressing"? That reason is the trigger the generator
-  needs, and it is the one thing here I do not have.
-- Where's the age line — what counts as "younger"?
-- Does an existing shoulder or pec issue rule it out outright, or just push it down the list?
+- Where's the age line — what counts as "really old"?
+- What counts as "really light" for the exception — a band from G2, or a percentage?
 - What replaces it for someone who wants to bench but shouldn't — Smith, or dumbbells?
+- What do you put in front of it to pre-exhaust?
 
 ---
 
