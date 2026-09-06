@@ -45,6 +45,27 @@ Anything he hasn't said is left blank rather than guessed. Where something is in
 
 ---
 
+## General rules, stated while talking about specific exercises
+
+These came up inside individual entries but are not about one exercise. Recorded here so the generator
+applies them everywhere rather than only where they happened to be said.
+
+**G1 — A rep range is a boundary, not a trajectory.** Stated twice, unprompted, on two different
+exercises:
+
+> *"What I'm not saying is — I don't mean that you have to start every block at the eight rep range and
+> then finish at the 15 range."* (chest press machine)
+>
+> *"That doesn't mean that you have to start at the six rep range and end at the 15 rep range. Remember,
+> we sort of grouped different ways how we could progress — whether that's keeping the reps the same the
+> entire block, or adding reps over the course of the block."*  (incline dumbbell press)
+
+An exercise's rep range says which schemes are **legal** for it. Choosing among them is the job of the
+progression models in `v1.md` §3, which include holding reps constant for a whole block. The generator
+must never read a range as an instruction to walk from its floor to its ceiling across a block.
+
+---
+
 # Entries
 
 ## Chest Press Machine — *flat, seated, selectorized or plate-loaded*
@@ -111,6 +132,68 @@ session is built around.
 - What replaces it when the gym has no chest press machine — incline dumbbell? Smith bench? Push-up?
 - How do you progress it, and what do you do when someone stalls on it?
 - Any cue you always end up giving on it?
+
+---
+
+## Incline Dumbbell Press — *compound or accessory*
+
+**Library:** `Incline Dumbbell Press`
+**His usage:** 118 prescriptions — his single most-prescribed chest movement, in nearly every program.
+
+### Role — either a compound or an accessory
+
+> *"This can either be a compound or an accessory."*
+
+**Rule:** dual role. Unlike the chest press machine, which is accessory-only, this one can lead a session
+or fill it in. Which it is depends on what else is in the session — see ordering below.
+
+### Who it's for — everyone
+
+> *"It's one of the few exercises — unbelievably good exercise. I use it all the time. It pretty much
+> works for anybody, all ages, all demographics, all goals."*
+
+**Rule:** no population restriction. This is the safe default chest movement, and the one to reach for
+when nothing about the client argues for something more specific.
+
+### Ordering — first, unless a barbell bench is present
+
+> *"If I'm doing dumbbell presses and I'm not doing any bench press — as in barbell bench press, whether
+> that's flat or incline — dumbbell press will be done first. Maybe second, but most of the time first."*
+
+**Rule:** with **no barbell bench press (flat or incline) in the session**, the incline dumbbell press
+takes the first chest slot. Second is allowed but first is the default.
+
+*Open:* where it goes when a barbell bench **is** in the session.
+
+### Reps — floor 6, ceiling 15, sweet spot 6-12
+
+> *"If it's going to be done first — if you're gonna be training for more strength — I would never use
+> this exercise anything less than six reps at the lowest, maybe even five reps at the lowest in this
+> context at least, unless the person really specifically says they want to get really really strong on
+> their dumbbell presses. Even then I would still not go under six reps for the most part. On the upper
+> end of the range I would keep it around 15 at the highest, although I would say that the sweet spot for
+> sure is the 6 to 12 rep range."*
+
+**Rule:** 6-15 legal, **6-12 preferred**. Below 6 is off the table, with one narrow exception: a client who
+explicitly asks to get strong on dumbbell pressing may see 5 — and even then Jack would mostly still hold
+at 6. Treat 5 as a request-only floor, never a default.
+
+Note the asymmetry with the chest press machine: the machine floors at 8, this floors at 6. A dumbbell
+press can carry heavier relative work; a machine accessory is not asked to.
+
+### Sets — two to four, when done first
+
+> *"If you're gonna do these first I would do no more than four sets and no less than two, with the same
+> sort of rep schemes as what we've discussed already."*
+
+**Rule:** 2-4 sets in the leading slot. Same scheme vocabulary as `v1.md`.
+
+### Still open on this one
+
+- Where does it sit when a barbell bench press **is** in the session?
+- What replaces it when there are no adjustable dumbbells heavy enough?
+- How do you progress it, and what happens at a stall?
+- Any cue you always end up giving?
 
 ---
 
