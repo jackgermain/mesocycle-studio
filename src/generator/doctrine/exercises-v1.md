@@ -208,6 +208,28 @@ that it is about the movement pattern rather than those two implements — that 
 the dumbbell fly entry, is equally excluded alongside either. Not yet confirmed, and the generalisation to
 non-fly patterns (two rows, two curls) is entirely unasked.
 
+**G7 — Arm work sits in the last two-thirds of a session.** Given while placing bench dips:
+
+> *"…probably closer to the end, or about the same time where I would start doing biceps and triceps, which
+> usually occurs in the later 3/4 of the session, or later 2/3 of the session."*
+
+**Rule:** direct biceps and triceps work belongs in the final **2/3 to 3/4** of a session. It is a
+position defined against the session's length rather than a fixed slot number, so it scales with a 6-
+exercise day and a 10-exercise day alike.
+
+**G8 — Triceps implement ranking: cable first, dumbbell second.** Stated while dismissing bench dips:
+
+> *"I think the best tricep exercises are, for sure, done with cables, and in second place I'd rate
+> dumbbells."*
+
+**Rule:** for triceps, cable > dumbbell > everything else. Recorded here rather than in a triceps entry
+because it is a claim about the whole muscle group, and it will govern selection across every triceps
+exercise in the library.
+
+Worth noting it runs *opposite* to the chest hierarchy, where the implement order is barbell > dumbbell >
+Smith > machine and cables barely feature. So implement preference is **per muscle group**, not a global
+ranking — a generator must not carry the chest ordering across to the arms.
+
 ---
 
 # Entries
@@ -669,6 +691,54 @@ on paper. The dumbbell fly floors at 8, the cable fly at 10, and Jack put the pe
 
 ---
 
+## Chest Dip — *bodyweight, not on a bench; largely avoided*
+
+**Library:** `Weighted Dip` · `Nautilus Chest Dip Machine` · `Matrix Assisted Pull-Up/Dip Machine`
+**His usage:** zero across the ten programs.
+
+Naming, consistent with the convention at the top of this file: a **dip** is the chest version, done between
+bars. A dip *on a bench* is a different exercise entirely — see bench dip below.
+
+> *"I honestly don't like them very much, unless somebody specifically really wants to get better at them.
+> I've noticed that they cause a lot of problems with shoulder pain, and I just think that there are other
+> chest exercises that will help out more, so I tend not to use it very much unless people really want
+> it."*
+
+**Rule:** avoid by default. Shoulder pain is the reason, and the judgement is that other chest exercises do
+the job better — so it is not a risk being taken for a unique benefit.
+
+**Rule:** prescribe only on **client request** — someone who specifically wants to get better at dips. Same
+shape as the barbell bench's trigger: an unlocked option, never an imposed one.
+
+**Rule — reps 6-15**, unweighted. Never below 6.
+**Rule — sets 2-4.**
+**Rule — slot 2nd or 3rd.** Never first. *"If I were to use dips, I would not do them first."*
+
+*Open:* weighted dips are *"totally different as well"* and were not covered. The 6-rep floor is explicitly
+"assuming they aren't weighted", so a weighted dip presumably floors lower.
+
+---
+
+## Bench Dip — *triceps; an equipment-limited fallback*
+
+**Library:** `Bench Dip`
+**His usage:** zero across the ten programs.
+
+> *"I still don't use them that often… but there's nothing wrong with bench dips. I think they're amazing
+> for if you're limited on equipment. So that's pretty much the only time I would ever use them."*
+
+**Rule:** a triceps exercise, not a chest one.
+**Rule:** prescribe **only when equipment is limited.** This is the first exercise whose trigger is a
+property of the gym rather than of the person — it is what you use when the cables and dumbbells that G8
+prefers aren't there.
+
+**Rule — reps 8-15.** Two higher at the floor than the chest dip, which is the loading difference: a bench
+dip carries a fraction of bodyweight, a chest dip carries all of it.
+**Rule — sets 2-4.**
+**Rule — slot:** late, in the last 2/3 to 3/4 of the session, with the rest of the arm work (G7).
+
+---
+
 ## The rep floor tracks the implement — (inferred)
 
 Six chest entries in, the low end of each rep range lines up with what the exercise is, not with what it
@@ -681,6 +751,11 @@ trains:
 | 6 | Dumbbell presses (flat and incline), Smith presses (flat and incline) |
 | 8 | Chest press machine, dumbbell flies, pec deck |
 | 10 | Cable flies |
+
+The chest dip floors at **6** despite being an accessory, and the bench dip at **8**. Both are bodyweight,
+so the implement is identical — what differs is how much of the body is being lifted. That suggests the
+floor tracks **how heavily loaded the movement is**, with implement being a proxy for that rather than the
+cause: a bodyweight dip is a heavy set for most people, a bench dip is not.
 
 The ceiling barely moves — almost everything tops out at 15. **It is the floor that carries the
 information**, and it falls as the exercise gets more loadable and more stable. Free barbell reaches the
@@ -707,6 +782,7 @@ quote — but every line traces to an entry above.
 | Dumbbell fly (flat / incline) | Never 1st | Needs a 3rd slot to exist before it is worth picking. |
 | Cable fly (all angles) | 3rd or last | Never 1st. |
 | Pec deck | Never 1st | As the dumbbell fly. |
+| Chest dip | 2nd or 3rd | Never 1st, and only on client request. |
 
 Two things fall out of it:
 
