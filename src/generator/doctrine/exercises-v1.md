@@ -796,4 +796,16 @@ and past a point that load is the risk. This is the opposite of how a generator 
 
 ---
 
+## Deferred — raised, not yet answered
+
+- **Push-Up.** *"Push-ups are really interesting… it depends a lot on the person, there's a lot of variance
+  with push-ups. Let's actually come back to push-ups later."* Worth returning to specifically for
+  equipment-limited clients, where it is one of very few chest options that survive.
+- **Weighted Dip.** *"Totally different as well"* from the bodyweight chest dip, and not covered. The chest
+  dip's 6-rep floor was given as "assuming they aren't weighted", so the weighted version floors lower.
+- **Hammer Strength / Cybex / Life Fitness chest presses.** Presumed to inherit the chest press machine
+  entry, unconfirmed.
+
+---
+
 *Entries continue as we go.*
