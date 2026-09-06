@@ -93,3 +93,38 @@ structure. Those belong in the doctrine as defaults, not in an intake form.
   exercise the generator cannot prescribe and the validator will reject.
 - These nine are *client programs*, not templates. Turning them into templates means stripping the person
   out and naming what each is for — which is what `intendedFor` on a template is now there to hold.
+
+---
+
+## The counterexample: Jasper
+
+Added after the nine. A 26-year-old skier / hiker / climber training at home with **bands and adjustable
+dumbbells to 50s**. It differs from the other nine in every way that matters, which makes it the useful
+one.
+
+**It's a different spreadsheet format entirely.** Not the grid the nine use — this is the RP-style tiered
+layout: STAGE / PROGRAM / PHASE headers, DAY 1 / WEEK 1 / SESSION A, tier codes (T1, T2, T3), and
+SET / REP / LOAD / TIME as columns with one row per set. So the importer has to read two shapes, not one.
+
+**The reps go lower.** Pull-ups at 8 / 6 / 6, against the 10–20 that the country-club nine never leave.
+Demographic drives rep range, which is exactly why rep range belongs in doctrine keyed off intake rather
+than as a fixed default.
+
+**Equipment is the whole constraint.** Incline push-up, goblet lunge, half-kneeling band chop, supine
+dumbbell tricep extension. None of the nine could run here and this could run in none of their gyms. It
+confirms equipment as the highest-value intake question — and the library has essentially **no band
+exercises**, which is a real gap for anyone not in a commercial gym.
+
+### Two things this surfaced that the app has nowhere to put
+
+1. **Coaching cues live inline.** "FEET UP ON BENCH, HANDS ON", "PALMS DOWN GRIP", "ELBOWS VERTICAL",
+   "2 COUNT PAUSE AT BOTTOM". These sit under the exercise as their own rows and are real coaching
+   content — often the difference between the movement working and not. The program model has no
+   per-exercise note field, so an import drops them on the floor.
+2. **Tier codes (T1/T2/T3)** carry ordering and priority that nothing in the model represents.
+
+### Also worth a look
+
+The STAGE, PROGRAM and PHASE cells in Jasper all contain the word "GAY" — presumably junk left in
+whatever file it was copied from. Harmless in a spreadsheet, but it would be imported as real content.
+
