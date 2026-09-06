@@ -18,7 +18,7 @@
  */
 
 import { PATTERNS, REGION_OF, type Pattern, type Region } from "./patterns";
-import { fillAccessories } from "./coverage";
+import { fillAccessories, planCoverage, type EmphasisProfile } from "./coverage";
 
 /** What a compound slot already covers, so the accessory slots do not buy it a second time. */
 const PATTERN_MUSCLE: Record<Pattern, string> = {
@@ -50,12 +50,23 @@ export type WeekPlan = Slot[][];
 
 /** Which region leads each day. Three days is the case Jack described in full; the others are extended
  * from the same idea and are the least confident thing in this file. */
-const LEAD_ROTATION: Record<number, Region[]> = {
-  2: ["push", "pull"],
-  3: ["push", "pull", "legs"],
-  4: ["push", "pull", "legs", "push"],
-  5: ["push", "pull", "legs", "push", "pull"],
-  6: ["push", "pull", "legs", "push", "pull", "legs"],
+const LEAD_ROTATION: Record<EmphasisProfile, Record<number, Region[]>> = {
+  "upper-priority": {
+    2: ["push", "pull"],
+    3: ["push", "pull", "legs"],
+    4: ["push", "pull", "legs", "push"],
+    5: ["push", "pull", "legs", "push", "pull"],
+    6: ["push", "pull", "legs", "push", "pull", "legs"],
+  },
+  // "For girls, I always have at least two leg days -- a lot of them want three." So legs lead twice
+  // even in a three-day week, and chest drops to one exposure, which is what he prescribes.
+  "glute-priority": {
+    2: ["legs", "pull"],
+    3: ["legs", "pull", "legs"],
+    4: ["legs", "pull", "legs", "push"],
+    5: ["legs", "pull", "legs", "push", "pull"],
+    6: ["legs", "pull", "legs", "push", "pull", "legs"],
+  },
 };
 
 /** A *hint* at how many exercises a session gets. Deliberately not a rule.
@@ -141,9 +152,16 @@ function secondFor(
 
 export function planWeek(
   daysPerWeek: number,
-  opts: { exercisesPerSession?: number; exclude?: readonly Pattern[] } = {},
+  opts: {
+    exercisesPerSession?: number;
+    exclude?: readonly Pattern[];
+    profile?: EmphasisProfile;
+    /** Optional muscles the client has actually asked for -- calves, traps, forearms, abs. */
+    wants?: readonly string[];
+  } = {},
 ): WeekPlan | undefined {
-  const leads = LEAD_ROTATION[daysPerWeek];
+  const profile = opts.profile ?? "upper-priority";
+  const leads = LEAD_ROTATION[profile][daysPerWeek];
   if (!leads) return undefined;
   const exclude = opts.exclude ?? DEFAULT_EXCLUDED;
   const count = opts.exercisesPerSession ?? EXERCISES_PER_SESSION[daysPerWeek] ?? 9;
@@ -159,7 +177,8 @@ export function planWeek(
     if (!scheduled.has(p)) scheduled.set(p, d);
   });
 
-  // Spread the coverage budget across the week rather than repeating the same accessories daily.
+  // Spread the week's coverage plan across its days rather than repeating the same accessories daily.
+  const coverage = planCoverage(daysPerWeek, count, profile, opts.wants ?? []);
   const muscleLedger = new Map<string, number>();
   const week: WeekPlan = [];
   for (let d = 0; d < daysPerWeek; d++) {
@@ -179,7 +198,7 @@ export function planWeek(
     }
     const { accessories, finishers } = fillAccessories(
       Math.max(0, count - 2 - FINISHERS),
-      daysPerWeek,
+      coverage,
       muscleLedger,
       FINISHERS,
     );

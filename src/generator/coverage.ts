@@ -1,116 +1,226 @@
-/** What gets trained, and what gets dropped when there isn't time.
+/** How often each muscle should be trained in a week, and what happens when there isn't room.
  *
- * > *"When you have three days a week, you need to make sure you hit your most important parts first
- * > before accessories get covered. If you've got five or six days a week, you've got more time for real
- * > customisation in prioritising small body parts... No matter what, you have to have your pushes, you
- * > have to have your pulls, you have to have your compound exercises, and you need to do those well,
- * > because they provide so much stimulus for the time you spend doing them."*
+ * Two rules that compose. The **targets** are what to aim for; the **budget** is what the schedule can
+ * actually buy. A client training twice a week cannot hit two chest days, two back days, two leg days
+ * and two arm days -- that is eight days of work in two sessions -- so the targets get spent in order
+ * and the tail is what gets dropped.
  *
- * So session count is a **budget**, and the budget is spent in a fixed order. The compounds are bought
- * first at every frequency; small muscles are what the leftover buys.
+ * ## The targets
  *
- * The order below is measured, not guessed. Counting exercises per week by muscle across nine client
- * programs (146 weeks) plus his own 6x program (16 weeks):
+ * > *"Pretty much the goal each week for each person is that every muscle gets trained at least two
+ * > times. At least two, and at most four -- four is pushing it. But for muscles that are much more of a
+ * > priority, ideally three, assuming they're training five or six days a week, maybe even four."*
  *
- * | Muscle | 2x/week | 3x/week | 6x/week |
- * |---|---|---|---|
- * | Back | 3.10 | 4.37 | 5.38 |
- * | Quads | 3.13 | 3.46 | 2.00 |
- * | Chest | 2.20 | 1.26 | 3.25 |
- * | Abs | 2.39 | 2.72 | 2.25 |
- * | Biceps | 2.59 | 2.31 | 4.50 |
- * | Triceps | 1.87 | 2.18 | 2.12 |
- * | Side delts | 1.27 | 2.38 | 1.75 |
- * | Obliques | 1.01 | 1.49 | 1.00 |
- * | Glutes | 0.10 | 0.97 | 0.12 |
- * | Hamstrings | 0.37 | 0.46 | 1.00 |
- * | **Rear delts** | **0.00** | 0.46 | 1.00 |
- * | **Traps** | **0.00** | 0.17 | 0.50 |
- * | **Forearms** | 0.08 | 0.00 | 0.62 |
- * | **Calves** | 0.03 | 0.00 | 2.25 |
+ * And then, specifically:
  *
- * The four in bold are the luxury tier and they are the exact four he named — *"if you've got six days a
- * week you can spend a lot of time training things like forearms, traps, calves"*, and at two days
- * *"you're not gonna be doing much posterior deltoid, lower traps. Some things will be neglected."* At
- * two sessions a week rear delts and traps are **literally zero** across 71 weeks of real programming.
+ * > *"Guys: pretty much mandatory, have to train chest twice per week, have to train back twice per
+ * > week, have to train legs at least once per week, ideally two. Biceps, triceps and shoulders at least
+ * > two times per week. Some guys don't care about abs, but if you do, train abs somewhere between two
+ * > and four times a week at most. For hamstrings I would say at least once per week. For calves, they
+ * > don't have to unless they really want to -- same with traps and forearms."*
+ *
+ * > *"For girls, I always have at least two leg days -- a lot of them want three. And what that entails
+ * > is two of the leg days being very glute focused, so glute exercises early on. Usually one of them is
+ * > some type of a hip thrust, or a heavy lunge or a squat, and then some RDLs. Back at least twice per
+ * > week, chest once per week, maybe twice if they like it. And then biceps, triceps and shoulders --
+ * > some of them want a little bit, usually once a week, maybe twice if they really want to."*
+ *
+ * ## On naming
+ *
+ * Jack states these as "guys" and "girls", and they are recorded here as he gave them. They are modelled
+ * as an **emphasis profile** rather than as sex directly, because the variable actually doing the work is
+ * what the client wants trained -- glutes and legs forward, or chest and arms forward. `defaultProfile`
+ * maps his defaults; an intake preference should override it, so a woman who wants to bench heavily gets
+ * that rather than a glute program she did not ask for.
+ *
+ * ## How it checks out
+ *
+ * Days per week each muscle is actually trained, measured across nine client programs (45 client-weeks of
+ * men, 101 of women), against the targets above:
+ *
+ * | Muscle | Men, measured | target | Women, measured | target |
+ * |---|---|---|---|---|
+ * | Chest | 1.91 | 2 | 1.89 | 1-2 |
+ * | Back | 2.09 | 2 | 2.34 | 2 |
+ * | Quads | 1.98 | 1-2 | 2.34 | 2-3 |
+ * | Glutes | **0.00** | — | **1.27** | 2 |
+ * | Biceps | 1.93 | 2 | 1.72 | 1-2 |
+ * | Triceps | 1.33 | 2 | 1.89 | 1-2 |
+ * | Hamstrings | **0.29** | 1 | **0.45** | 2-3 |
+ *
+ * Chest, back, quads and biceps land on target. The glute split is exactly as described -- zero for the
+ * men, 1.27 for the women. **Hamstrings are the one real gap**: well under target in both groups, and
+ * worth raising rather than quietly encoding the practice over the intent.
  */
 
-/** The frequency at which each muscle starts getting deliberate accessory work.
- *
- * 2 and 3 and 6 are measured. **4 and 5 are his verbal ordering, not data** -- the four-day sample is
- * only ten weeks from two clients and is too thin to rank: *"if you've got four, you're gonna start
- * losing out on things like front deltoid, forearms."* */
-export const ADMITTED_AT: Record<string, number> = {
-  // Bought first at every frequency -- these are the compounds and their direct accessories.
-  Chest: 2, Back: 2, Quads: 2, Abs: 2, Triceps: 2, Biceps: 2, "Side delts": 2, Obliques: 2,
-  // Affordable from three sessions. Hamstrings and glutes do appear at two (0.37 and 0.10 a week) but
-  // that is roughly one week in three, which is incidental rather than deliberate coverage.
-  Glutes: 3, Hamstrings: 3, "Rear delts": 3,
-  // The luxury tier, in the order he drops them.
-  Traps: 4,
-  Calves: 5,
-  Forearms: 6, "Front delts": 6, Adductors: 6,
+export type EmphasisProfile = "upper-priority" | "glute-priority";
+
+export function defaultProfile(sex: "male" | "female" | undefined): EmphasisProfile {
+  return sex === "female" ? "glute-priority" : "upper-priority";
+}
+
+export interface FrequencyTarget {
+  /** Sessions a week this muscle must appear in for the program to be considered complete. */
+  min: number;
+  /** What to give it when there is room. */
+  ideal: number;
+  /** Above this is counterproductive. Four is his ceiling for everything. */
+  max: number;
+  /** Trained only if the client asks -- "they don't have to unless they really want to". */
+  optional?: boolean;
+}
+
+/** The global envelope, before any per-muscle detail. */
+export const GLOBAL_FREQUENCY = { min: 2, priorityIdeal: 3, max: 4 } as const;
+
+const t = (min: number, ideal: number, max = 4, optional = false): FrequencyTarget => ({
+  min,
+  ideal,
+  max,
+  ...(optional ? { optional: true } : {}),
+});
+
+export const WEEKLY_TARGETS: Record<EmphasisProfile, Record<string, FrequencyTarget>> = {
+  "upper-priority": {
+    Chest: t(2, 2), Back: t(2, 2),
+    Quads: t(1, 2), Hamstrings: t(1, 2), Glutes: t(0, 1, 4, true),
+    Biceps: t(2, 2), Triceps: t(2, 2),
+    "Side delts": t(2, 2), "Rear delts": t(2, 2), "Front delts": t(0, 1, 4, true),
+    Abs: t(0, 2, 4, true), Obliques: t(0, 2, 4, true),
+    Calves: t(0, 1, 4, true), Traps: t(0, 1, 4, true), Forearms: t(0, 1, 4, true),
+    Adductors: t(0, 1, 4, true),
+  },
+  "glute-priority": {
+    // "I always have at least two leg days -- a lot of them want three... two of the leg days being
+    // very glute focused, so glute exercises early on."
+    Glutes: t(2, 3), Quads: t(2, 3), Hamstrings: t(2, 3),
+    Back: t(2, 2),
+    Chest: t(1, 2),
+    Biceps: t(1, 2), Triceps: t(1, 2), "Side delts": t(1, 2), "Rear delts": t(1, 2),
+    "Front delts": t(0, 1, 4, true),
+    Abs: t(0, 2, 4, true), Obliques: t(0, 2, 4, true),
+    Calves: t(0, 1, 4, true), Traps: t(0, 1, 4, true), Forearms: t(0, 1, 4, true),
+    Adductors: t(0, 1, 4, true),
+  },
 };
 
-/** Priority order within whatever is admitted -- biggest and most stimulus-dense first, per P3 and the
- * session shape in section 7 of the doctrine. */
-const PRIORITY = [
-  "Chest", "Back", "Quads", "Hamstrings", "Glutes",
-  "Triceps", "Biceps", "Side delts", "Rear delts", "Traps",
-  "Abs", "Obliques", "Calves", "Forearms", "Front delts", "Adductors",
+/** Spend order when the schedule cannot buy every target. Mandatory before optional, then by how much of
+ * the session's stimulus the muscle carries -- which is P3's ordering, and matches "no matter what, you
+ * have to have your pushes, you have to have your pulls, you have to have your compound exercises". */
+const SPEND_ORDER = [
+  "Chest", "Back", "Quads", "Glutes", "Hamstrings",
+  "Triceps", "Biceps", "Side delts", "Rear delts",
+  "Abs", "Obliques", "Traps", "Calves", "Forearms", "Front delts", "Adductors",
 ];
 
-/** Which muscles get deliberate work at this training frequency, in the order they should be filled. */
-export function coverageBudget(daysPerWeek: number): string[] {
-  return PRIORITY.filter((m) => (ADMITTED_AT[m] ?? 99) <= daysPerWeek);
+export interface Coverage {
+  /** Muscle -> how many sessions a week it gets, after the budget is applied. */
+  plan: Map<string, number>;
+  /** Muscles whose `min` could not be met at this training frequency. */
+  short: string[];
 }
 
-/** What this frequency gives up relative to training six days a week. Worth surfacing to a coach at
- * program-creation time, since it is a real cost of the schedule rather than a flaw in the plan. */
-export function neglectedAt(daysPerWeek: number): string[] {
-  return coverageBudget(6).filter((m) => !coverageBudget(daysPerWeek).includes(m));
+/** Work out what this many sessions a week can actually cover.
+ *
+ * `slotsPerSession` counts only the slots available to a muscle -- the two compound slots plus the
+ * accessories. The compounds are bought first at every frequency; what is left buys the tail. */
+export function planCoverage(
+  daysPerWeek: number,
+  slotsPerSession: number,
+  profile: EmphasisProfile = "upper-priority",
+  wants: readonly string[] = [],
+): Coverage {
+  const targets = WEEKLY_TARGETS[profile];
+  let budget = daysPerWeek * slotsPerSession;
+  const plan = new Map<string, number>();
+  const short: string[] = [];
+
+  const included = SPEND_ORDER.filter((m) => {
+    const spec = targets[m];
+    return spec && (!spec.optional || wants.includes(m));
+  });
+
+  // Pass one: everyone's minimum, in spend order. Pass two: top up toward ideal with what is left.
+  for (const m of included) {
+    const spec = targets[m];
+    const want = Math.min(spec.min, daysPerWeek);
+    const give = Math.min(want, budget);
+    if (give < spec.min) short.push(m);
+    if (give > 0) {
+      plan.set(m, give);
+      budget -= give;
+    }
+  }
+  for (const m of included) {
+    const spec = targets[m];
+    const have = plan.get(m) ?? 0;
+    const room = Math.min(spec.ideal, spec.max, daysPerWeek) - have;
+    if (room <= 0) continue;
+    const give = Math.min(room, budget);
+    if (give > 0) {
+      plan.set(m, have + give);
+      budget -= give;
+    }
+  }
+  return { plan, short };
 }
 
-/** Muscles small enough to close a session with. Matches the observed final slot -- high reps, low load,
- * and nothing that competes with a compound for energy. */
+/** What a given schedule gives up.
+ *
+ * Asks for **everything** -- every optional muscle included -- and reports what the budget could not
+ * buy. That is the honest form of the question: the mandatory list is affordable at almost any
+ * frequency, and what a two-day week really costs you is the tail. Which is exactly what the programs
+ * show: at two sessions a week rear delts and traps are zero across 71 weeks, while chest and back sit
+ * on target at 1.91 and 2.09.
+ *
+ * Worth putting in front of a coach at program-creation time. Choosing two days a week is choosing what
+ * to neglect, and they should see which rather than find out a year later. */
+export function neglectedAt(
+  daysPerWeek: number,
+  slotsPerSession: number,
+  profile: EmphasisProfile = "upper-priority",
+): string[] {
+  const targets = WEEKLY_TARGETS[profile];
+  const everything = Object.keys(targets);
+  const full = planCoverage(daysPerWeek, slotsPerSession, profile, everything);
+  const missing = everything.filter((m) => {
+    const spec = targets[m];
+    const got = full.plan.get(m) ?? 0;
+    return got < Math.min(spec.ideal, daysPerWeek);
+  });
+  return SPEND_ORDER.filter((m) => missing.includes(m)).reverse();
+}
+
+/** Muscles small enough to close a session with -- high reps, low load, nothing that competes with a
+ * compound for energy. */
 export const FINISHER_MUSCLES = ["Abs", "Obliques", "Calves", "Forearms"];
 
-/** Fill the accessory and finisher slots of one day.
- *
- * `alreadyThisWeek` is what earlier days have already used, so the week spreads across the budget rather
- * than hammering the first few entries every session. The two compound slots are chosen by pattern
- * elsewhere; this only fills what is left. */
+/** Fill one day's accessory and finisher slots from the week's coverage plan, least-served first so the
+ * week spreads across the plan instead of hammering the front of it every session. */
 export function fillAccessories(
   count: number,
-  daysPerWeek: number,
-  alreadyThisWeek: Map<string, number>,
+  coverage: Coverage,
+  used: Map<string, number>,
   finisherCount: number,
 ): { accessories: string[]; finishers: string[] } {
-  const budget = coverageBudget(daysPerWeek);
+  const owed = (m: string) => (coverage.plan.get(m) ?? 0) - (used.get(m) ?? 0);
   const pick = (pool: string[], n: number): string[] => {
     const out: string[] = [];
     for (let i = 0; i < n; i++) {
-      // Least-used first; PRIORITY order breaks ties, so the important things come round again sooner.
-      let best = pool[0];
-      let bestN = Infinity;
-      for (const m of pool) {
-        const used = (alreadyThisWeek.get(m) ?? 0) + out.filter((x) => x === m).length;
-        if (used < bestN) {
-          best = m;
-          bestN = used;
-        }
-      }
+      const ranked = pool
+        .filter((m) => !out.includes(m))
+        .sort((a, b) => owed(b) - owed(a) || SPEND_ORDER.indexOf(a) - SPEND_ORDER.indexOf(b));
+      const best = ranked.find((m) => owed(m) > 0) ?? ranked[0];
       if (!best) break;
       out.push(best);
+      used.set(best, (used.get(best) ?? 0) + 1);
     }
     return out;
   };
-  const finisherPool = budget.filter((m) => FINISHER_MUSCLES.includes(m));
-  const accessoryPool = budget.filter((m) => !FINISHER_MUSCLES.includes(m));
+  const inPlan = [...coverage.plan.keys()];
+  const finisherPool = inPlan.filter((m) => FINISHER_MUSCLES.includes(m));
+  const accessoryPool = inPlan.filter((m) => !FINISHER_MUSCLES.includes(m));
   const finishers = pick(finisherPool.length ? finisherPool : ["Abs"], finisherCount);
   const accessories = pick(accessoryPool, count);
-  for (const m of [...accessories, ...finishers]) {
-    alreadyThisWeek.set(m, (alreadyThisWeek.get(m) ?? 0) + 1);
-  }
   return { accessories, finishers };
 }
