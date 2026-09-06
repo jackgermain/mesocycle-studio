@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { getInvite } from "../shared/invites";
 import type { PublicInvite } from "../shared/invites";
 import { claimInvite } from "../lib/accountSetup";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
+
+/** Every dead-end state on this screen gets a way out.
+ *
+ * Both of the terminal states here used to tell the user what to do -- "just sign in from the home page"
+ * -- and give them nothing to do it with, on a phone, with no visible navigation. A screen that names the
+ * next step has to offer it. */
+function SignInWayOut({ label = "Sign in" }: { label?: string }) {
+  const nav = useNavigate();
+  return (
+    <button className="btn btn-solid btn-block" style={{ height: 48, fontSize: 14 }} onClick={() => nav("/", { replace: true })}>
+      {label}
+    </button>
+  );
+}
 
 export default function AcceptInvite() {
   const { code = "" } = useParams();
@@ -28,11 +42,19 @@ export default function AcceptInvite() {
     );
   }
 
+  // Checked before the invite's own state: someone who already has an account and reopens their own
+  // used invite link is exactly the "if that was you" case, and should land in the app rather than on a
+  // screen telling them to go and sign in.
+  if (account) {
+    return <Navigate to={account.role === "coach" ? "/coach/desk" : "/block"} replace />;
+  }
+
   if (!invite) {
     return (
       <Hero>
         <div className="h1" style={{ textAlign: "center" }}>Invite not found</div>
         <InfoBanner icon="ph-link-break">This invite link isn't valid. Ask your coach to send you a new one.</InfoBanner>
+        <SignInWayOut label="Sign in instead" />
       </Hero>
     );
   }
@@ -42,15 +64,11 @@ export default function AcceptInvite() {
       <Hero>
         <div className="h1" style={{ textAlign: "center" }}>Already used</div>
         <InfoBanner icon="ph-check-circle" tone="accent">
-          This invite has already been claimed. If that was you, just sign in from the home page instead.
+          This invite has already been claimed. If that was you, sign in below.
         </InfoBanner>
+        <SignInWayOut />
       </Hero>
     );
-  }
-
-  if (account) {
-    // Already has an account (e.g. reopened an old invite link) — just go to the app.
-    return <Navigate to={account.role === "coach" ? "/coach/desk" : "/block"} replace />;
   }
 
   if (session) {
