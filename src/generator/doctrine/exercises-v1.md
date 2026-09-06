@@ -521,9 +521,41 @@ slot 1st or 2nd.
 **The only difference is preference, and it is a strong one.** Incline Smith is the default of the two;
 flat Smith is almost never prescribed despite being perfectly acceptable. The usage backs it: 65 to 27.
 
-This is the second time incline has beaten flat on his own preference — incline dumbbell (118) over flat
-dumbbell, incline Smith (65) over flat Smith. **(inferred)** There may be a general incline bias worth
-asking about directly rather than recording three times separately.
+This is a preference specific to the Smith, **not** a general incline bias — he rates the flat and incline
+dumbbell presses as equal ("just as good in every single way"). So incline beats flat on the Smith and
+nowhere else so far, and the generator should not generalise an incline preference across implements.
+
+---
+
+## Flat Dumbbell Bench Press — *inherits incline dumbbell, and equal to it*
+
+**Library:** `Dumbbell Bench Press`
+
+> *"For flat dumbbell press I would give this the exact same parameters as incline dumbbell press. It's
+> just as good in every single way. Although the only difference to note is, if you've got a client with
+> pain in the front of their shoulder from flat barbell pressing — usually pretty heavy — sometimes the
+> flat dumbbell press can still be a little bit irritating. Although most of the time this doesn't happen."*
+
+**Rule:** identical to the incline dumbbell press — 6-15 reps with a 6-12 sweet spot, 2-4 sets, dual
+compound/accessory role, no population restriction, first slot when no barbell bench is present.
+
+**Rule:** the two are **equal in value**. Neither is the better exercise; this is the parent that the Smith
+entries mean when they say "same parameters as dumbbell presses."
+
+### The one exception, and it refines the substitution rule
+
+**Anterior shoulder pain is the case where "switch to dumbbells" is not automatically enough.** For a
+client whose front-of-shoulder pain came from heavy flat barbell pressing, the flat dumbbell press can
+still irritate it — usually not, but sometimes.
+
+**(inferred, worth confirming)** That implies the substitution recorded under the barbell bench should be
+more specific when the pain is anterior: *flat barbell → **incline** dumbbell*, rather than to the flat
+dumbbell, since the incline is the one that changes the shoulder angle rather than just removing the bar.
+Jack said the flat dumbbell may still irritate; he did not say to go incline instead, so this is a
+reasonable reading and not his instruction.
+
+The general shape still holds — the substitute removes the cause — but the cause here is the pressing angle
+as well as the bar, and only the incline changes both.
 
 ---
 
