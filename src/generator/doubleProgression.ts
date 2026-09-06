@@ -44,6 +44,18 @@ export interface RepBand {
 
 export const DEFAULT_REP_BAND: RepBand = { min: 8, max: 12 };
 
+/** Sessions per week below which a deload is simply not scheduled.
+ *
+ * *"I definitely wouldn't deload anybody who is training anything less than four times a week. Even four
+ * times a week, it's not really needed."* This is why two real clients ran 41 and 47 weeks unbroken --
+ * not because the deload was hidden somewhere the analysis missed, but because there wasn't one. Most of
+ * the roster trains 2-4x, so for most of the roster the answer to "when do we deload" is "we don't". */
+export const DELOAD_FREQUENCY_THRESHOLD = 5;
+
+export function needsScheduledDeload(sessionsPerWeek: number): boolean {
+  return sessionsPerWeek >= DELOAD_FREQUENCY_THRESHOLD;
+}
+
 /** The next load the equipment actually has. Dumbbells are a rack with irregular gaps at the bottom, not
  * an arithmetic series -- 2.5, 5, 10, 12.5, 17.5 -- so this walks the real lattice. */
 export function nextLoadUp(equipment: Equipment, current: number): number {
@@ -99,30 +111,42 @@ export function addReps(sets: PerformedSet[], band: RepBand = DEFAULT_REP_BAND):
 
 /** Jump the load on some of the sets, and pay for it in reps.
  *
- * The stagger is the part worth having. Jack does not move all three sets at once -- he moves two and
- * leaves one behind: *"two sets of eight with the thirty fives and then one set of eight with the
+ * The stagger is the part worth having. Jack does not move all three sets at once -- he moves some and
+ * leaves the rest behind: *"two sets of eight with the thirty fives and then one set of eight with the
  * thirties. That way, the load increase, even though it's not very small relatively in percentage, is
  * slightly offsetted by the volume being ever so slightly lower."*
  *
  * That is how you get an increment finer than the rack has. A 5 lb dumbbell step applied to two of three
- * sets is an effective 3.3 lb, and the leftover set is what next week promotes. `promote` defaults to
- * all-but-one for that reason; pass the set count to move everything at once. */
+ * sets is an effective 3.3 lb, and the leftover sets are what next week promotes. `promote` defaults to
+ * all-but-one for that reason; pass the set count to move everything at once.
+ *
+ * **The promoted sets always land on the band floor**, however big the jump, because of P11 -- the first
+ * exposure to an unfamiliar load is inhibited and simply will not produce the reps the arithmetic says
+ * it should. *"They'd probably only be able to do eight partly because of this."*
+ *
+ * What happens to the sets left behind is `holdRemainder`, and Jack has done it both ways:
+ *   - 3x10 @ 30  ->  2x8 @ 35, **1x8** @ 30   (dropped them too)
+ *   - 3x12 @ 35  ->  1x8 @ 40, **1x12, 1x10** @ 35   (held them)
+ * Holding defaults on, because it protects the session's total work (P5) and the second example is both
+ * the more recent and the more detailed. His own comment on it: *"you don't literally have to do that,
+ * but I'm playing around with the reps and the relative intensities."* Which rule applies when is an
+ * open question, not a solved one. */
 export function jumpLoad(
   sets: PerformedSet[],
-  equipment: Equipment,
-  band: RepBand = DEFAULT_REP_BAND,
-  promote?: number,
+  opts: { equipment: Equipment; band?: RepBand; promote?: number; holdRemainder?: boolean },
 ): PerformedSet[] {
+  const band = opts.band ?? DEFAULT_REP_BAND;
+  const hold = opts.holdRemainder ?? true;
   if (!sets.length || sets.some((s) => s.load === null)) return sets;
   const heaviest = Math.max(...sets.map((s) => s.load ?? 0));
-  const target = nextLoadUp(equipment, heaviest);
+  const target = nextLoadUp(opts.equipment, heaviest);
   if (target <= heaviest) return sets;
 
-  // Every set drops to the band floor, not just the promoted ones -- "two sets of eight with the thirty
-  // fives and then one set of eight with the thirties". The exercise resets as a unit; what is staggered
-  // is the load, not the reps.
-  const n = promote ?? Math.max(1, sets.length - 1);
-  return sets.map((s, i) => ({ load: i < n ? target : s.load, reps: band.min }));
+  const n = opts.promote ?? Math.max(1, sets.length - 1);
+  return sets.map((s, i) => {
+    if (i < n) return { load: target, reps: band.min };
+    return hold ? { ...s } : { load: s.load, reps: band.min };
+  });
 }
 
 /** One week of Model C.
@@ -133,13 +157,18 @@ export function jumpLoad(
  * earlier still adds reps, which is what keeps a jump from landing on a set that has not earned it. */
 export function progress(
   sets: PerformedSet[],
-  opts: { equipment: Equipment; lever: Lever; band?: RepBand; promote?: number },
+  opts: {
+    equipment: Equipment;
+    lever: Lever;
+    band?: RepBand;
+    promote?: number;
+    holdRemainder?: boolean;
+  },
 ): PerformedSet[] {
   const band = opts.band ?? DEFAULT_REP_BAND;
   if (!sets.length) return sets;
   const atCeiling = sets.every((s) => s.reps >= band.max);
-  if (opts.lever === "load" && atCeiling) return jumpLoad(sets, opts.equipment, band, opts.promote);
-  if (opts.lever === "load" && !atCeiling) return addReps(sets, band);
+  if (opts.lever === "load" && atCeiling) return jumpLoad(sets, { ...opts, band });
   return addReps(sets, band);
 }
 
