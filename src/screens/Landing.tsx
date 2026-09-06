@@ -55,6 +55,7 @@ export default function Landing() {
 }
 
 function ResetPassword({ onDone }: { onDone: () => void }) {
+  const { signOut } = useAuth();
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,6 +88,12 @@ function ResetPassword({ onDone }: { onDone: () => void }) {
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
       <button className="btn btn-solid btn-block" style={{ height: 54, fontSize: 14, opacity: password.length >= 6 && !busy ? 1 : 0.5 }} disabled={password.length < 6 || busy} onClick={save}>
         {busy ? "Saving…" : "Save password"}
+      </button>
+      {/* Clicking a reset email by mistake used to strand you here: the only control set a new password,
+          and this session is not usable for anything else. Signing out rather than only clearing the flag,
+          because a recovery session should not quietly become a real one. */}
+      <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={() => void signOut()}>
+        Cancel and sign in instead
       </button>
     </Hero>
   );
@@ -223,9 +230,12 @@ function SignIn({ startInSignup }: { startInSignup?: boolean }) {
 }
 
 function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
+  const { signOut } = useAuth();
+  const nav = useNavigate();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
+  const [code, setCode] = useState("");
 
   async function setUpAsCoach() {
     setBusy(true);
@@ -243,8 +253,35 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
   return (
     <Hero>
       <InfoBanner icon="ph-info">
-        You're signed in, but nothing's set up for this email yet. If a coach invited you, open the invite link they sent (or enter its code) instead of signing in here directly.
+        You're signed in, but nothing's set up for this email yet. If a coach invited you, enter your invite code below.
       </InfoBanner>
+
+      {/* This screen's only control used to be "Set up as the coach", which is the wrong answer for the
+          most likely visitor: an invited client who signed up here instead of opening their link. Going
+          to /invite/<code> while already signed in lands straight on the claim step, so the code field
+          finishes the job rather than starting over. */}
+      <div className="field">
+        <label>Invite code</label>
+        <input
+          className="input"
+          style={{ height: 50, fontSize: 14 }}
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder="Paste the code from your coach"
+          onKeyDown={(e) => e.key === "Enter" && code.trim() && nav(`/invite/${code.trim()}`)}
+        />
+      </div>
+      <button
+        className="btn btn-solid btn-block"
+        style={{ height: 48, fontSize: 14, opacity: code.trim() ? 1 : 0.5 }}
+        disabled={!code.trim()}
+        onClick={() => nav(`/invite/${code.trim()}`)}
+      >
+        Continue with invite code
+      </button>
+
+      <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
+
       <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
         Setting this up for yourself as the coach for the first time? Name yourself below.
       </p>
@@ -253,8 +290,12 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
         <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" autoFocus onKeyDown={(e) => e.key === "Enter" && setUpAsCoach()} />
       </div>
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-      <button className="btn btn-solid btn-block" style={{ height: 54, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={setUpAsCoach}>
+      <button className="btn btn-secondary btn-block" style={{ height: 48, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={setUpAsCoach}>
         {busy ? "Setting up…" : "Set up as the coach"}
+      </button>
+      {/* And a way out for the wrong email entirely, which otherwise had none. */}
+      <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={() => void signOut()}>
+        Use a different email
       </button>
     </Hero>
   );

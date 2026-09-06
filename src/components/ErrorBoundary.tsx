@@ -57,13 +57,24 @@ export class ErrorBoundary extends React.Component<Props, State> {
         >
           {error.message || String(error)}
         </div>
-        <button
-          className="btn btn-primary"
-          style={{ marginTop: 6, height: 36, padding: "0 18px" }}
-          onClick={() => window.location.reload()}
-        >
-          Reload
-        </button>
+        <div style={{ display: "flex", gap: 8, marginTop: 6, flexWrap: "wrap", justifyContent: "center" }}>
+          <button className="btn btn-primary" style={{ height: 36, padding: "0 18px" }} onClick={() => window.location.reload()}>
+            Reload
+          </button>
+          {/* Reload on its own loops forever when the crash belongs to the route rather than to the app --
+              a bad day id, a program that failed to hydrate. Going home first escapes that; the session is
+              left alone, because losing it is not the fix for a render error. */}
+          <button
+            className="btn btn-secondary"
+            style={{ height: 36, padding: "0 18px" }}
+            onClick={() => {
+              window.location.hash = "#/";
+              window.location.reload();
+            }}
+          >
+            Back to start
+          </button>
+        </div>
       </div>
     );
   }

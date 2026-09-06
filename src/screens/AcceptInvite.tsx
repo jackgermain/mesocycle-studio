@@ -138,6 +138,7 @@ function SignInStep({ invite }: { invite: PublicInvite }) {
 }
 
 function ClaimStep({ code, invite, onClaimed }: { code: string; invite: PublicInvite; onClaimed: () => Promise<void> }) {
+  const { signOut } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -167,6 +168,10 @@ function ClaimStep({ code, invite, onClaimed }: { code: string; invite: PublicIn
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
       <button className="btn btn-solid btn-block" style={{ height: 48, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={claim}>
         {busy ? "Setting up…" : "Create account & start"}
+      </button>
+      {/* If the claim keeps failing there is otherwise nothing else on the screen to press. */}
+      <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={() => void signOut()}>
+        Use a different email
       </button>
     </Hero>
   );
