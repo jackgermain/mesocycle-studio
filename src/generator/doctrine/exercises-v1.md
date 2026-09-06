@@ -491,8 +491,63 @@ Consistent with C1 and G3 for a non-compound. The exception is notable for what 
 not a physiological argument. A fifth set is allowed because someone likes the exercise, which is a real
 adherence consideration and not something a generator would grant itself.
 
-*Open:* `Incline Smith Press` is his single most-used Smith variant (65 uses) and has not been covered —
-whether it inherits this entry the way incline barbell inherits flat barbell, and whether anything changes.
+### Slot — first or second, never third
+
+Given for both the flat and incline Smith:
+
+> *"You can do it first, nothing wrong with doing that. If the person is really really really strong, like
+> I said before, I might ease away from it. But there's nothing wrong with doing it second. I wouldn't, in
+> most cases, do it third if you're gonna do three chest exercises in one day. But yeah, I would usually do
+> it first or second."*
+
+**Rule:** slots **1st or 2nd**. Third is ruled out. The same strength-based demotion that applies to the
+barbell bench applies here — a very strong lifter gets it moved off the opening slot.
+
+---
+
+## Incline Smith Press — *inherits the flat Smith, and preferred over it*
+
+**Library:** `Incline Smith Machine Press`
+**His usage:** 65 prescriptions — his most-used Smith variant, and more than twice the flat Smith's 27.
+
+> *"I would give incline Smith press an even higher rating than flat Smith press — I just like it more. I
+> usually almost never do flat Smith press, to be honest, but there's nothing wrong with it, it's still
+> great. But I am a massive fan of the incline Smith specifically. I would give it the exact same
+> parameters as the flat."*
+
+**Rule:** identical parameters to the flat Smith — 6-15 reps, 4 sets (5 by preference), bodybuilding role,
+slot 1st or 2nd.
+
+**The only difference is preference, and it is a strong one.** Incline Smith is the default of the two;
+flat Smith is almost never prescribed despite being perfectly acceptable. The usage backs it: 65 to 27.
+
+This is the second time incline has beaten flat on his own preference — incline dumbbell (118) over flat
+dumbbell, incline Smith (65) over flat Smith. **(inferred)** There may be a general incline bias worth
+asking about directly rather than recording three times separately.
+
+---
+
+## The chest slot hierarchy, as it stands
+
+Enough chest entries now exist to see the ordering rule they collectively encode. This is synthesis, not a
+quote — but every line traces to an entry above.
+
+| Exercise | Slot | Condition |
+|---|---|---|
+| Barbell bench (flat / incline) | 1st | Yields only to power work. Demoted if benching first means 315+ lb. |
+| Incline dumbbell press | 1st | When no barbell bench is in the session. 2nd otherwise. |
+| Smith bench (flat / incline) | 1st or 2nd | Never 3rd. Demoted off 1st if very strong. |
+| Chest press machine | 2nd or 3rd | 1st only when chest is trained 3x/week. |
+
+Two things fall out of it:
+
+**The hierarchy is by implement, not by muscle.** Barbell outranks dumbbell outranks Smith outranks
+machine, and that ordering holds regardless of which part of the chest is being trained. Incline versus
+flat never changes the slot — only the implement does.
+
+**"Too strong" demotes, twice.** Both the barbell bench and the Smith press get moved off the opening slot
+for a lifter who is very strong, for the same reason: the opening slot means the heaviest absolute load,
+and past a point that load is the risk. This is the opposite of how a generator would order by default.
 
 ---
 
