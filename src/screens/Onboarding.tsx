@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
 import type { Units } from "../data/types";
 import { InfoBanner } from "../components/UI";
+import InstallPrompt from "../components/InstallPrompt";
 
 export default function Onboarding() {
   const { state, dispatch } = useStore();
@@ -98,6 +99,10 @@ export default function Onboarding() {
             ? "We convert both ways, so nothing has to be re-entered if you switch units later."
             : `${state.program.coachName} writes programs in kg. We convert both ways, so nothing has to be re-entered.`}
         </InfoBanner>
+
+        {/* The best moment to ask: they are set up, it works, and they are about to start using it every
+            day. Renders nothing if it is already installed or has been dismissed. */}
+        <InstallPrompt />
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
           <button className="btn btn-solid btn-block" style={{ height: 48 }} onClick={finish}>

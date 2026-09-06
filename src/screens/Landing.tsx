@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 import { bootstrapCoach } from "../lib/accountSetup";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
+import InstallPrompt from "../components/InstallPrompt";
+
+/** Set when someone arrives on the coach signup link, so the "set up as the coach" path is only ever
+ * offered to people who came looking for it. */
+export const COACH_SIGNUP_INTENT = "jacked:coach-signup-intent";
+
+function cameForCoachSignup(): boolean {
+  try {
+    return sessionStorage.getItem(COACH_SIGNUP_INTENT) === "1";
+  } catch {
+    return false;
+  }
+}
 
 export default function Landing() {
   const { loading, session, account, recovering, clearRecovering, revoked, clearRevoked, refreshAccount } = useAuth();
@@ -11,6 +24,21 @@ export default function Landing() {
   // -- window.location.search is the real query string and holds the magic-link `invite` param instead.
   const [params] = useSearchParams();
   const wantsSignup = params.get("signup") === "1";
+
+  // Remember that this visit began from the coach signup link, because the flag is gone by the time they
+  // come back signed in -- especially after an email confirmation round trip. Without it, NoAccountYet
+  // has no way to tell a real coach from an invited client who signed up on the wrong screen, and it was
+  // offering "Set up as the coach" to both.
+  useEffect(() => {
+    if (wantsSignup) {
+      try {
+        sessionStorage.setItem(COACH_SIGNUP_INTENT, "1");
+      } catch {
+        // Private browsing can refuse storage. The coach falls back to the invite-code screen and can
+        // reopen the signup link, which is a better failure than showing everyone the coach button.
+      }
+    }
+  }, [wantsSignup]);
 
   // Coming back from a magic-link email sent from the invite-accept screen — forward to it (it handles
   // its own loading/auth state) rather than falling through to the plain sign-in form here.
@@ -145,6 +173,9 @@ function SignIn({ startInSignup }: { startInSignup?: boolean }) {
         <button className="btn btn-ghost" style={{ fontSize: 12.5 }} onClick={() => { setStep("form"); setShowInviteField(true); }}>
           Have an invite code instead?
         </button>
+        {/* Shown before sign-in on purpose: a new client arrives here from a link on their phone, in a
+            browser tab, which is exactly the moment to say this. */}
+        <InstallPrompt compact />
       </Hero>
     );
   }
@@ -236,6 +267,7 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
+  const forCoach = cameForCoachSignup();
 
   async function setUpAsCoach() {
     setBusy(true);
@@ -280,19 +312,26 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
         Continue with invite code
       </button>
 
-      <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
-
-      <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
-        Setting this up for yourself as the coach for the first time? Name yourself below.
-      </p>
-      <div className="field">
-        <label>Your name</label>
-        <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" autoFocus onKeyDown={(e) => e.key === "Enter" && setUpAsCoach()} />
-      </div>
-      {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-      <button className="btn btn-secondary btn-block" style={{ height: 48, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={setUpAsCoach}>
-        {busy ? "Setting up…" : "Set up as the coach"}
-      </button>
+      {/* The coach path is only offered to someone who arrived on the coach signup link. It used to be
+          shown to everyone who signed in without an account, which meant an invited client who signed up
+          on the home page instead of using their link had exactly one button -- and it made them a coach. */}
+      {forCoach && (
+        <>
+          <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
+          <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
+            Setting this up for yourself as the coach for the first time? Name yourself below.
+          </p>
+          <div className="field">
+            <label>Your name</label>
+            <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" onKeyDown={(e) => e.key === "Enter" && setUpAsCoach()} />
+          </div>
+          {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+          <button className="btn btn-secondary btn-block" style={{ height: 48, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={setUpAsCoach}>
+            {busy ? "Setting up…" : "Set up as the coach"}
+          </button>
+        </>
+      )}
+      {!forCoach && error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
       {/* And a way out for the wrong email entirely, which otherwise had none. */}
       <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={() => void signOut()}>
         Use a different email
