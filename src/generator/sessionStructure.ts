@@ -219,16 +219,16 @@ export function planWeek(
  * Measured off Jack's own 6x program -- 41 sessions, tiered T1 through T7 in his own notation, which is
  * the same "top down by importance" idea written out explicitly:
  *
- * | Slot | Mean reps | Mean sets | Mean rest |
- * |---|---|---|---|
- * | 1 | **5.6** | 3.1 | 98 s |
- * | 2 | 10.4 | 2.7 | 72 s |
- * | 3 | 10.6 | 2.1 | 45 s |
- * | 4-5 | ~11 | 2.3 | — |
- * | last | **20.6** | 2.1 | — |
+ * | Slot | Mean reps | Mean sets |
+ * |---|---|---|
+ * | 1 | **5.6** | 3.1 |
+ * | 2 | 10.4 | 2.7 |
+ * | 3 | 10.6 | 2.1 |
+ * | 4-5 | ~11 | 2.3 |
+ * | last | **20.6** | 2.1 |
  *
  * Three distinct zones, not a smooth gradient: **one heavy low-rep opener, a long middle around ten to
- * twelve, and a high-rep finisher.** Sets and rest both descend monotonically.
+ * twelve, and a high-rep finisher.** Sets descend monotonically.
  *
  * Note the opener is 5.6 reps in *his* training and would be higher for a general-population client --
  * C3 puts hypertrophy at 6-30 and his clients' programs run 10-20. The shape transfers; the absolute
@@ -239,13 +239,58 @@ export interface SlotProfile {
   restSec: number;
 }
 
-export function profileFor(slot: Slot, total: number, strengthBias = 0): SlotProfile {
+/** Rest, which is a range rather than a number, and is prescribed for a reason.
+ *
+ * > *"I usually don't go too crazy about rest times -- it's usually when the other person is ready... In
+ * > your first two exercises, maybe your first three, those are the ones you're trying to get pretty
+ * > strong on, so you want rest to be a little bit longer. I usually err on the side of a minute thirty
+ * > at the lowest to three minutes, or three thirty even on occasions. The reason for that is the ATP
+ * > regeneration between sets -- for strength specifically, stressing your ATP-creatine phosphate
+ * > system. It takes about 3 to 5 minutes to fully replenish it, so somewhere around two, two and a
+ * > half is around 80%, which is decent."*
+ *
+ * So the number is not arbitrary and it is not a comfort setting: **it is buying phosphocreatine back.**
+ * Full replenishment takes 3-5 minutes; roughly 2:00-2:30 recovers about 80% of it, and that is the
+ * trade he is making on the exercises where strength matters.
+ *
+ * > *"But it also really depends on the client. If they don't care about that as much, I might keep it
+ * > between 45 seconds at the very lowest -- and that's pretty uncommon -- to somewhere around two
+ * > minutes... And then as the session goes on the rest can come down a little bit, so probably around a
+ * > minute to a minute and a half, for smaller muscles that don't require as much energy and are more
+ * > accessory-type muscles."*
+ *
+ * Note what is *not* here: a rule that pins the second down. His actual instruction is "when the other
+ * person is ready", and these are the bounds he keeps that inside. */
+export const REST_BANDS = {
+  /** First two or three exercises, for someone who wants to get strong on them. */
+  strength: { min: 90, target: 150, max: 210 },
+  /** The same slots, for a client who does not care about strength as much. */
+  general: { min: 45, target: 90, max: 120 },
+  /** Later in the session -- smaller, accessory muscles that cost less energy. */
+  accessory: { min: 60, target: 75, max: 90 },
+} as const;
+
+/** How many opening slots count as the strength end of the session. *"Your first two exercises, maybe
+ * your first three."* */
+export const STRENGTH_SLOTS = 2;
+
+export function restFor(slotIndex: number, strengthEmphasis = false): number {
+  if (slotIndex >= STRENGTH_SLOTS) return REST_BANDS.accessory.target;
+  return strengthEmphasis ? REST_BANDS.strength.target : REST_BANDS.general.target;
+}
+
+export function profileFor(
+  slot: Slot,
+  total: number,
+  opts: { strengthBias?: number; strengthEmphasis?: boolean } = {},
+): SlotProfile {
+  const bias = opts.strengthBias ?? 0;
   const i = slot.index;
-  const isLast = i === total - 1;
-  if (i === 0) return { reps: Math.round(12 - 6 * strengthBias), sets: 3, restSec: 120 };
-  if (i === 1) return { reps: Math.round(12 - 2 * strengthBias), sets: 3, restSec: 75 };
-  if (isLast) return { reps: 20, sets: 2, restSec: 45 };
-  return { reps: 12, sets: 2, restSec: 45 };
+  const restSec = restFor(i, opts.strengthEmphasis ?? bias > 0.5);
+  if (i === 0) return { reps: Math.round(12 - 6 * bias), sets: 3, restSec };
+  if (i === 1) return { reps: Math.round(12 - 2 * bias), sets: 3, restSec };
+  if (i === total - 1) return { reps: 20, sets: 2, restSec };
+  return { reps: 12, sets: 2, restSec };
 }
 
 export function describeWeek(week: WeekPlan): string {

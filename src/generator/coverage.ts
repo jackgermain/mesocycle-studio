@@ -204,15 +204,19 @@ export function fillAccessories(
   finisherCount: number,
 ): { accessories: string[]; finishers: string[] } {
   const owed = (m: string) => (coverage.plan.get(m) ?? 0) - (used.get(m) ?? 0);
+  // Shared across both picks below, so a finisher drawn from the accessory pool cannot land on a muscle
+  // this day has already used. Each pick alone would not catch that.
+  const placedToday = new Set<string>();
   const pick = (pool: string[], n: number): string[] => {
     const out: string[] = [];
     for (let i = 0; i < n; i++) {
       const ranked = pool
-        .filter((m) => !out.includes(m))
+        .filter((m) => !placedToday.has(m))
         .sort((a, b) => owed(b) - owed(a) || SPEND_ORDER.indexOf(a) - SPEND_ORDER.indexOf(b));
       const best = ranked.find((m) => owed(m) > 0) ?? ranked[0];
       if (!best) break;
       out.push(best);
+      placedToday.add(best);
       used.set(best, (used.get(best) ?? 0) + 1);
     }
     return out;
@@ -220,7 +224,10 @@ export function fillAccessories(
   const inPlan = [...coverage.plan.keys()];
   const finisherPool = inPlan.filter((m) => FINISHER_MUSCLES.includes(m));
   const accessoryPool = inPlan.filter((m) => !FINISHER_MUSCLES.includes(m));
-  const finishers = pick(finisherPool.length ? finisherPool : ["Abs"], finisherCount);
+  // Abs and obliques are optional -- a client who never asked for core work has an empty finisher pool,
+  // and the session must not silently shrink below the number of exercises it was asked for. Fall back
+  // to the accessory pool so the slot is still filled with something the week owes.
   const accessories = pick(accessoryPool, count);
+  const finishers = pick(finisherPool.length ? finisherPool : accessoryPool, finisherCount);
   return { accessories, finishers };
 }
