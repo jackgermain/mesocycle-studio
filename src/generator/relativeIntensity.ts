@@ -145,27 +145,140 @@ export function ceilingRelativeIntensity(reps: number): number | undefined {
   return undefined;
 }
 
-/** Where a block has to open so that its last week lands exactly on the ceiling.
+// ---------------------------------------------------------------------------
+// Planning a block: pick the two ends, then fill the gaps
+// ---------------------------------------------------------------------------
+
+/** Where a block opens by default: RIR 3 / RPE 7, which is exactly the C2 working-set floor. */
+export const DEFAULT_START_RELATIVE_INTENSITY = 80;
+
+/** How many weeks a span of the ladder can carry before a week would have to repeat.
  *
- * The ramp is derived, not stored. Jack's rule is that the top of the ramp *is* the final week before a
- * deload -- "I don't think there's anything wrong at all going to a 100% relative intensity set by the
- * end of the mesocycle before a deload" -- so block length and ramp length are the same quantity, and
- * the starting point falls out of counting backwards from the ceiling.
- *
- * Returns undefined when the block is too long to ramp in one piece: at 2.5 pp a week from a 100%
- * ceiling, week one of a ten-week block would open at 77.5%, below the C2 working-set floor. Long blocks
- * need an internal reset, and that reset is not yet specified, so this refuses rather than inventing one. */
-export function rampStart(reps: number, weeks: number, stepPp = 2.5): number | undefined {
-  const ceiling = ceilingRelativeIntensity(reps);
-  if (ceiling === undefined || weeks < 1) return undefined;
-  const start = ceiling - (weeks - 1) * stepPp;
-  if (start < MIN_WORKING_RELATIVE_INTENSITY) return undefined;
-  return RELATIVE_INTENSITIES.includes(start as RelativeIntensity) ? start : undefined;
+ * P1 says stress rises *every* week, so two weeks may not land on the same rung. The span from the C2
+ * floor to a 100% ceiling is eight rungs, hence nine weeks -- which is why the 12/16/24-week presets and
+ * the two clients who ran 41 and 47 weeks unbroken cannot be one ramp. */
+export function maxRampWeeks(startRelativeIntensity: number, endRelativeIntensity: number): number {
+  const from = RELATIVE_INTENSITIES.indexOf(startRelativeIntensity as RelativeIntensity);
+  const to = RELATIVE_INTENSITIES.indexOf(endRelativeIntensity as RelativeIntensity);
+  if (from < 0 || to < 0 || to > from) return 0;
+  return from - to + 1;
 }
 
-/** How many weeks of unbroken ramp a rep scheme affords before it would break the C2 floor. */
-export function maxRampWeeks(reps: number, stepPp = 2.5): number {
-  const ceiling = ceilingRelativeIntensity(reps);
-  if (ceiling === undefined) return 0;
-  return Math.floor((ceiling - MIN_WORKING_RELATIVE_INTENSITY) / stepPp) + 1;
+/** The whole progression rule, in one function.
+ *
+ * *"First, when deciding to program, you need to decide where you're gonna start and where you want to
+ * finish. And then you fill in the gaps. So if you've got four weeks, you want to have appropriate
+ * progressions each week such that they're a similar size step forward."*
+ *
+ * So the weekly step is an **output**, not a setting -- it falls out of the two ends and the length. A
+ * four-week block spanning the full legal range steps 80 -> 87.5 -> 92.5 -> 100, which is exactly the
+ * RIR 3 -> 2 -> 1 -> 0 progression Jack described in the same breath, arrived at independently.
+ *
+ * Walks the ladder by index rather than by percentage, so every week lands on a rung that really exists
+ * instead of on an interpolated value the table cannot price. Returns undefined when the block is longer
+ * than the span can carry -- see `maxRampWeeks`. */
+export function fillRamp(
+  startRelativeIntensity: number,
+  endRelativeIntensity: number,
+  weeks: number,
+): number[] | undefined {
+  const from = RELATIVE_INTENSITIES.indexOf(startRelativeIntensity as RelativeIntensity);
+  const to = RELATIVE_INTENSITIES.indexOf(endRelativeIntensity as RelativeIntensity);
+  if (from < 0 || to < 0 || to > from || weeks < 1) return undefined;
+  if (weeks === 1) return from === to ? [startRelativeIntensity] : undefined;
+  if (weeks > maxRampWeeks(startRelativeIntensity, endRelativeIntensity)) return undefined;
+
+  const span = from - to;
+  const out: number[] = [];
+  for (let w = 0; w < weeks; w++) {
+    const i = from - Math.round((span * w) / (weeks - 1));
+    // P1: never two weeks on the same rung. Rounding can collide even when the span technically fits.
+    if (out.length && i >= RELATIVE_INTENSITIES.indexOf(out[out.length - 1] as RelativeIntensity)) {
+      return undefined;
+    }
+    out.push(RELATIVE_INTENSITIES[i]);
+  }
+  return out;
+}
+
+/** The same thing said in reps-in-reserve, which is how Jack says it out loud. */
+export function fillRampByRir(startRir: number, endRir: number, weeks: number): number[] | undefined {
+  const start = relativeIntensityForRir(startRir);
+  const end = relativeIntensityForRir(endRir);
+  if (start === undefined || end === undefined) return undefined;
+  return fillRamp(start, end, weeks);
+}
+
+export interface BlockWeek {
+  week: number;
+  reps: number;
+  sets: number | undefined;
+  relativeIntensity: number;
+  pctOf1rm: number | undefined;
+}
+
+/** A whole block, priced week by week.
+ *
+ * `reps` may be one number (Model A -- hold reps, walk difficulty up) or one per week (Model B -- reps
+ * descend as difficulty climbs). Sets are passed through rather than computed: the real programs flex
+ * them upward as reps fall (3, 3, 4, 4) to stop volume collapsing, but the rule behind that is not yet
+ * pinned down, so nothing here invents one.
+ *
+ * The end defaults to the C6 ceiling *for the final week's rep count*, which matters when reps change:
+ * a block finishing on fives is capped at 100% only because five reps at maximal is 87.5% of 1RM.
+ *
+ * Two ways to space the weeks, and Jack uses both:
+ *   - **difficulty mode** (default) spaces relative intensity evenly. This is Model A, and it is what
+ *     "RIR 3, then 2, then 1, then 0" means.
+ *   - **load mode** spaces % of 1RM evenly and lets difficulty land where the table puts it. This is
+ *     Model B, where the progression is carried by the falling rep count and the rising bar weight
+ *     rather than by the set getting subjectively harder. */
+export function planBlock(spec: {
+  weeks: number;
+  reps: number | number[];
+  sets?: number | number[];
+  /** Difficulty mode: even steps up the relative-intensity ladder. Model A, and the RIR 3->0 phrasing. */
+  startRelativeIntensity?: number;
+  endRelativeIntensity?: number;
+  /** Load mode: even steps in % of 1RM, difficulty following wherever the table puts it. Model B. */
+  startPctOf1rm?: number;
+  endPctOf1rm?: number;
+}): BlockWeek[] | undefined {
+  const { weeks } = spec;
+  if (weeks < 1) return undefined;
+  const repsFor = (w: number) => (Array.isArray(spec.reps) ? spec.reps[w] : spec.reps);
+  const setsFor = (w: number) => (Array.isArray(spec.sets) ? spec.sets[w] : spec.sets);
+  if (Array.isArray(spec.reps) && spec.reps.length !== weeks) return undefined;
+  const week = (w: number, ri: number): BlockWeek => ({
+    week: w + 1,
+    reps: repsFor(w),
+    sets: setsFor(w),
+    relativeIntensity: ri,
+    pctOf1rm: absoluteIntensity(repsFor(w), ri),
+  });
+
+  // Load mode. Only reachable when both ends are given in %1RM, because there is no sensible default
+  // for "what load should this person start at" that doesn't require knowing the person.
+  if (spec.startPctOf1rm !== undefined && spec.endPctOf1rm !== undefined) {
+    const out: BlockWeek[] = [];
+    for (let w = 0; w < weeks; w++) {
+      const target =
+        weeks === 1
+          ? spec.startPctOf1rm
+          : spec.startPctOf1rm + ((spec.endPctOf1rm - spec.startPctOf1rm) * w) / (weeks - 1);
+      const ri = relativeIntensityOf(repsFor(w), target);
+      // C2: a week that snaps below the floor is not a block, it's a warm-up.
+      if (ri === undefined || ri < MIN_WORKING_RELATIVE_INTENSITY) return undefined;
+      out.push(week(w, ri));
+    }
+    return out;
+  }
+
+  const start = spec.startRelativeIntensity ?? DEFAULT_START_RELATIVE_INTENSITY;
+  const end = spec.endRelativeIntensity ?? ceilingRelativeIntensity(repsFor(weeks - 1));
+  if (end === undefined) return undefined;
+
+  const ramp = fillRamp(start, end, weeks);
+  if (!ramp) return undefined;
+  return ramp.map((ri, w) => week(w, ri));
 }
