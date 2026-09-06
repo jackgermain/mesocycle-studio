@@ -50,8 +50,8 @@ Anything he hasn't said is left blank rather than guessed. Where something is in
 These came up inside individual entries but are not about one exercise. Recorded here so the generator
 applies them everywhere rather than only where they happened to be said.
 
-**G1 — A rep range is a boundary, not a trajectory.** Stated twice, unprompted, on two different
-exercises:
+**G1 — An exercise's rep range is not the block's rep trajectory.** Stated twice, unprompted, on two
+different exercises:
 
 > *"What I'm not saying is — I don't mean that you have to start every block at the eight rep range and
 > then finish at the 15 range."* (chest press machine)
@@ -60,13 +60,21 @@ exercises:
 > we sort of grouped different ways how we could progress — whether that's keeping the reps the same the
 > entire block, or adding reps over the course of the block."*  (incline dumbbell press)
 
-An exercise's rep range says which schemes are **legal** for it. Choosing among them is the job of the
-progression models in `v1.md` §3, which include holding reps constant for a whole block. The generator
-must never read a range as an instruction to walk from its floor to its ceiling across a block.
+Two separate things are being confused when this goes wrong:
 
-**Permitted, not forbidden.** G1 rules out ramping as a *default*, not as an option. On the cable fly:
-*"You can even start at 12 and end at 15, it doesn't really matter."* Walking part of a range across a
-block is one legal scheme among several — what G1 forbids is treating it as the thing a range means.
+- **The exercise's rep range** — which reps are legal on this movement at all. `8-15` on the chest press
+  machine, `1-15` on the barbell bench.
+- **The block's rep trajectory** — what actually happens week to week, which is chosen from the progression
+  models in `v1.md` §3.
+
+**Rule: the range's endpoints are not the block's endpoints.** An exercise legal from 8 to 15 does not
+imply a block that starts at 8 and finishes at 15.
+
+Ramping is emphatically *not* forbidden — it is half of the recorded doctrine. `v1.md` §3 Model B walks
+reps **down** across a block as load rises (3x10 → 3x8 → 4x6 → 4x5), and Jack describes walking them **up**
+on the cable fly (*"you can even start at 12 and end at 15, it doesn't really matter"*). Model A holds them
+flat. All three are legal; which one runs is a block-level decision, and the exercise's range only says
+which of them will fit inside it.
 
 **G2 — The five rep bands.** Stated while talking about the bench press, and explicitly scoped to
 everything:
