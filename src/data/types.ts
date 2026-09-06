@@ -67,6 +67,9 @@ export interface WorkExercise {
   id: string;
   name: string;
   muscle: string;
+  /** Which unit this exercise's sets were prescribed in. Absent on programs built before this existed --
+   * see loadModeOf in ExerciseSection for the fallback that reads it back off the sets. */
+  loadMode?: import("../coach/types").LoadMode;
   metaLine: string;
   hasVideo: boolean;
   equipment?: Equipment;

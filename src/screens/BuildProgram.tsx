@@ -21,7 +21,7 @@ import { writeTemplateToCoach } from "../coach/assignProgram";
 import { useAuth } from "../lib/auth";
 
 const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
-  { value: "lb", label: "LB" },
+  { value: "lb", label: "None" },
   { value: "pct1rm", label: "%1RM" },
   { value: "rpe", label: "RPE" },
   { value: "rir", label: "RIR" },

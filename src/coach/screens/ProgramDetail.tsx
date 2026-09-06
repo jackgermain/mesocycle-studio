@@ -325,7 +325,7 @@ export default function ProgramDetail() {
             value={program.effortScale}
             onChange={(loadMode) => dispatch({ type: "SET_PROGRAM_LOAD_MODE", programId: program.id, loadMode })}
             options={[
-              { value: "lb", label: "LB" },
+              { value: "lb", label: "None" },
               { value: "pct1rm", label: "%1RM" },
               { value: "rpe", label: "RPE" },
               { value: "rir", label: "RIR" },
@@ -707,7 +707,7 @@ function BuilderExerciseCard({
             value={effectiveLoadMode}
             onChange={(m) => dispatch({ type: "SET_EXERCISE_LOAD_OVERRIDE", programId, dayId, exerciseId: ex.id, loadMode: m })}
             options={[
-              { value: "lb", label: "LB" },
+              { value: "lb", label: "None" },
               { value: "pct1rm", label: "%1RM" },
               { value: "rpe", label: "RPE" },
               { value: "rir", label: "RIR" },

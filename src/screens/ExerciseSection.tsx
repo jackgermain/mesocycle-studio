@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
 import type { WorkExercise, WorkSet } from "../data/types";
+import type { LoadMode } from "../coach/types";
 import { isSpecialSet, specialSummary, stepLoad, typeLabel } from "./exerciseHelpers";
 
 /** A set's weight/reps value, editable by tapping the +/- buttons OR tapping the number itself and typing
@@ -53,6 +54,20 @@ function InlineNumberInput({ value, onCommit, placeholder, color, locked }: { va
  * sessions are read-only after 24 hours" rule -- editing history isn't safe to allow here. Either way the
  * set-count menu and "+Extra set" are hidden, since changing how many sets exist isn't a same-screen action
  * for a day you're not actively logging. */
+/** Which unit an exercise was prescribed in.
+ *
+ * Programs built before WorkExercise carried loadMode have to be read back off their sets, and the tell is
+ * `load`: loadForLoadMode only returns a number for lb, so a null load with an RPE/RIR/%1RM scale means
+ * that scale was the real prescription. Reading `effort` alone would not do -- effortForLoadMode fills in
+ * {RIR, 2} for lb as a placeholder, which would print "RIR 2" under every barbell lift in the app. */
+function loadModeOf(ex: { loadMode?: LoadMode; sets: WorkSet[] }): LoadMode {
+  if (ex.loadMode) return ex.loadMode;
+  const first = ex.sets.find((s) => !s.removed) ?? ex.sets[0];
+  if (!first || first.prescribed.load !== null) return "lb";
+  const scale = first.prescribed.effort?.scale;
+  return scale === "RPE" ? "rpe" : scale === "%1RM" ? "pct1rm" : scale === "RIR" ? "rir" : "lb";
+}
+
 export function ExerciseSection({
   index,
   dayId,
@@ -109,6 +124,12 @@ export function ExerciseSection({
 
   let workCounter = 0;
   let warmCounter = 0;
+
+  const mode = loadModeOf(ex);
+  // RPE and RIR earn a column; %1RM and lb do not.
+  const effortColumn = mode === "rpe" ? "RPE" : mode === "rir" ? "RIR" : null;
+  const COLS = effortColumn ? "16px 1fr 1fr 46px 34px" : "16px 1fr 1fr 34px";
+  const COLS_ROW = effortColumn ? "22px 1fr 1fr 46px 34px" : "22px 1fr 1fr 34px";
 
   return (
     <div className="cell elev-sm" style={{ position: "relative" }}>
@@ -181,10 +202,14 @@ export function ExerciseSection({
         )}
       </div>
 
-      <div className="scr" style={{ display: "grid", gridTemplateColumns: "16px 1fr 1fr 34px", gap: 8, alignItems: "center", padding: "6px 0" }}>
+      <div className="scr" style={{ display: "grid", gridTemplateColumns: COLS, gap: 8, alignItems: "center", padding: "6px 0" }}>
         <span />
         <span style={{ textAlign: "center" }}>weight</span>
         <span style={{ textAlign: "center" }}>reps</span>
+        {/* RPE and RIR get their own column: they're the coach's prescription, not something to log
+            against, so they read out and cannot be edited here. %1RM instead rides alongside the weight,
+            because it IS the weight -- a percentage of a max rather than a separate instruction. */}
+        {effortColumn && <span style={{ textAlign: "center" }}>{effortColumn}</span>}
         <span />
       </div>
 
@@ -234,7 +259,7 @@ export function ExerciseSection({
         const checkboxBg = s.checked ? (s.isWarmup ? "var(--color-neutral-600)" : "var(--color-accent)") : "none";
 
         return (
-          <div key={s.id} className="setrow" style={{ gridTemplateColumns: "22px 1fr 1fr 34px", background: rowBg, borderRadius: s.checked ? 8 : 0, padding: s.checked ? "0 6px" : 0, margin: s.checked ? "2px -6px" : 0 }}>
+          <div key={s.id} className="setrow" style={{ gridTemplateColumns: COLS_ROW, background: rowBg, borderRadius: s.checked ? 8 : 0, padding: s.checked ? "0 6px" : 0, margin: s.checked ? "2px -6px" : 0 }}>
             <span className="mono" style={{ fontSize: 13, fontWeight: 700, color: numColor }}>{label}</span>
             <div className="row" style={{ justifyContent: "center", gap: 6, color: controlColor }}>
               {!locked && (
@@ -249,6 +274,13 @@ export function ExerciseSection({
                 locked={locked}
                 onCommit={(n) => dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, load: n })}
               />
+              {/* A percentage IS the weight -- it says what to put on the bar, not how hard to push -- so it
+                  sits against the number rather than in a column of its own. */}
+              {mode === "pct1rm" && s.prescribed.effort?.value !== undefined && (
+                <span className="mono" style={{ fontSize: 12.5, fontWeight: 700, color: "var(--color-neutral-500)", flex: "none" }}>
+                  {s.prescribed.effort.value}%
+                </span>
+              )}
               {!locked && (
                 <button onClick={() => editLoad(s, 1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
                   <i className="ph ph-plus" style={{ fontSize: 12 }} />
@@ -273,6 +305,11 @@ export function ExerciseSection({
                 </button>
               )}
             </div>
+            {effortColumn && (
+              <span className="mono" style={{ textAlign: "center", fontSize: 15, fontWeight: 700, color: "var(--color-neutral-400)" }}>
+                {s.prescribed.effort?.value ?? "—"}
+              </span>
+            )}
             <button
               onClick={readOnly ? undefined : () => toggle(s)}
               disabled={!!readOnly}
