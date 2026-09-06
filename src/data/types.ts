@@ -161,6 +161,13 @@ export interface ClientProfile {
 
 export interface LoggedFoodItem {
   id: string;
+  /** ISO yyyy-mm-dd this was logged on.
+   *
+   * Meals were previously one undated running list that was never cleared, so nothing could tell what
+   * was eaten on which day -- food logged on Monday was still sitting there on Thursday, and a coach had
+   * no way to ask whether someone logged anything yesterday. Optional because entries made before this
+   * existed have no date and must not be counted as either logged or missed. */
+  loggedAt?: string;
   foodId: string;
   name: string;
   servingLabel: string;

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { findDay, useStore } from "../state/store";
 import { useAuth } from "../lib/auth";
 import { WeighInDue } from "../components/WeighInDue";
-import { IntakeDue } from "../components/IntakeDue";
 import { FormCheckSheet } from "../shared/FormCheckSheet";
 import { formChecksAvailable } from "../shared/formChecks";
 import { BackHeader, InfoBanner } from "../components/UI";
@@ -115,7 +114,6 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
         onBack={selfDirected ? () => nav("/build") : undefined}
       />
       <div className="screen-scroll" onClick={() => openMenu && setOpenMenu(null)}>
-        <IntakeDue />
         <WeighInDue />
 
         {allResolved && (

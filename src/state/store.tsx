@@ -8,7 +8,7 @@ import type { FoodItem } from "../data/foodDatabase";
 import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { supabase } from "../lib/supabase";
-import { withDerivedStatuses } from "../shared/dayStatus";
+import { withDerivedStatuses, isoToday } from "../shared/dayStatus";
 import { insertWarmupSet } from "../shared/programEdits";
 
 export interface AppState {
@@ -347,7 +347,10 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, program };
     }
     case "ADD_FOOD_ITEM": {
-      const meals = state.meals.map((m) => (m.id === action.mealId ? { ...m, items: [...m.items, action.item] } : m));
+      // Stamped here rather than at the call site so every path that logs food is dated, including the
+      // barcode scanner and the AI import.
+      const item = { ...action.item, loggedAt: action.item.loggedAt ?? isoToday() };
+      const meals = state.meals.map((m) => (m.id === action.mealId ? { ...m, items: [...m.items, item] } : m));
       return { ...state, meals };
     }
     case "REMOVE_FOOD_ITEM": {

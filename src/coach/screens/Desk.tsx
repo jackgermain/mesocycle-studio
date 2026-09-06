@@ -5,6 +5,7 @@ import { useAuth } from "../../lib/auth";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
 import { loadWeighInGaps, type ClientWeighInGap } from "../weighInWatch";
+import { loadComplianceGaps, totalComplianceItems, type ClientComplianceGap } from "../complianceWatch";
 import { listFormChecks, type FormCheck } from "../../shared/formChecks";
 import { CoachFormCheckSheet } from "../components/FormCheckSheet";
 import { HeroHeader, HeroStat, SetPasswordCard, SignOutButton, ActionGroup, ActionRow } from "../../components/UI";
@@ -44,6 +45,7 @@ export default function Desk() {
   const [showAccount, setShowAccount] = useState(false);
   const [allSignals, setAllSignals] = useState<ClientSignal[]>([]);
   const [weighInGaps, setWeighInGaps] = useState<ClientWeighInGap[]>([]);
+  const [compliance, setCompliance] = useState<ClientComplianceGap[]>([]);
   const [formChecks, setFormChecks] = useState<FormCheck[]>([]);
   const [watching, setWatching] = useState<FormCheck | null>(null);
   const [actingOn, setActingOn] = useState<ClientSignal | null>(null);
@@ -63,6 +65,9 @@ export default function Desk() {
     // Unanswered only: an answered one has had its decision made and belongs in history, not on a desk
     // that is supposed to be a list of things still owed.
     listFormChecks(true).then((rows) => active && setFormChecks(rows));
+    // Sessions and food logs nobody filled in. Pulled rather than pushed for the same reason as the
+    // weigh-in gaps: a client who has gone quiet is exactly the one whose app is not reporting anything.
+    loadComplianceGaps().then((rows) => active && setCompliance(rows));
     return () => {
       active = false;
     };
@@ -101,7 +106,11 @@ export default function Desk() {
   const counts = {
     volume: allFlags.filter((f) => f.flag.type === "volume-proposal").length,
     joint: allFlags.filter((f) => f.flag.type === "joint").length,
-    weighin: allFlags.filter((f) => f.flag.type === "weigh-in-missed").length,
+    // Was allFlags.filter(type === "weigh-in-missed") -- the seeded demo flags on coach_state, not the
+    // real gaps computed from client state. A real roster's number sat at zero however many weigh-ins
+    // were actually missed, which is worse than showing nothing.
+    weighin: weighInGaps.length,
+    unlogged: totalComplianceItems(compliance),
   };
   const decideNow = allFlags.slice(0, 3);
   const assigned = state.clients.filter((c) => c.status !== "unassigned");
@@ -113,6 +122,17 @@ export default function Desk() {
   function applyProposal(clientId: string, flagId: string, tagLabel: string) {
     dispatch({ type: "APPLY_FLAG", clientId, flagId });
     dispatch({ type: "SHOW_TOAST", message: `Applied ${tagLabel} — next week's numbers updated.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+  }
+
+  function remindLog(clientId: string, clientName: string, what: "session" | "food") {
+    const first = clientName.split(" ")[0];
+    const text =
+      what === "session"
+        ? `Hey ${first}, I noticed a session isn't logged — can you fill it in when you get a sec? Helps me set next week properly 👍`
+        : `Hey ${first}, your food log has a gap — even a rough entry helps me see what's going on 👍`;
+    dispatch({ type: "SEND_MESSAGE", threadId: clientId, text });
+    dispatch({ type: "SHOW_TOAST", message: `Reminder sent to ${clientName}.` });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
   }
 
@@ -143,7 +163,7 @@ export default function Desk() {
           </button>
         }
       >
-        <HeroStat value={allFlags.length + signals.length + weighInGaps.length + formChecks.length} label={<>decisions<br />waiting</>}>
+        <HeroStat value={allFlags.length + signals.length + weighInGaps.length + formChecks.length + compliance.length} label={<>decisions<br />waiting</>}>
           <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
             <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{counts.volume}</span>
@@ -155,6 +175,10 @@ export default function Desk() {
           <div className="row" style={{ fontSize: 12.5 }}>
             <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Missed weigh-ins</span>
             <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.weighin}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Sessions &amp; meals not logged</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.unlogged}</span>
           </div>
         </HeroStat>
       </HeroHeader>
@@ -207,6 +231,62 @@ export default function Desk() {
                     </div>
                     <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)", flex: "none" }} />
                   </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {compliance.length > 0 && (
+          <div>
+            <div className="sh">Not logged · {compliance.length} {compliance.length === 1 ? "client" : "clients"}</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {compliance.map((g) => {
+                const client = state.clients.find((c) => c.accountId === g.accountId);
+                const lastSession = g.missedSessions[0];
+                return (
+                  <div key={g.accountId} className="cell elev-sm">
+                    <div className="row">
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="name">{client?.name ?? "A client"}</div>
+                        <div className="mu" style={{ marginTop: 1 }}>
+                          {lastSession
+                            ? `${lastSession.title} not logged on ${lastSession.date}`
+                            : g.neverLoggedFood
+                              ? "Nutrition is on but nothing has ever been logged"
+                              : `No food logged on ${g.missedFoodDays[0]}`}
+                        </div>
+                        {/* Both counts on one line when both apply -- a client who has stopped doing
+                            everything is a different conversation from one who trains and forgets to eat. */}
+                        {(g.missedSessions.length + g.missedFoodDays.length > 1 || g.neverLoggedFood) && (
+                          <div className="mu" style={{ marginTop: 2, fontSize: 11.5 }}>
+                            {[
+                              g.missedSessions.length ? `${g.missedSessions.length} session${g.missedSessions.length === 1 ? "" : "s"}` : null,
+                              g.missedFoodDays.length ? `${g.missedFoodDays.length} food day${g.missedFoodDays.length === 1 ? "" : "s"}` : null,
+                            ].filter(Boolean).join(" · ")}
+                            {g.missedSessions.length || g.missedFoodDays.length ? " in the last 14 days" : ""}
+                          </div>
+                        )}
+                      </div>
+                      <span className={`tag ${g.missedSessions.length > 0 ? "tag-warning" : "tag-neutral"}`} style={{ flex: "none" }}>
+                        {g.missedSessions.length > 0 ? "sessions" : "food"}
+                      </span>
+                    </div>
+                    {client && (
+                      <div className="row" style={{ gap: 8, marginTop: 9 }}>
+                        <button
+                          className="btn btn-solid"
+                          style={{ flex: 1, height: 36, fontSize: 12.5 }}
+                          onClick={() => remindLog(client.accountId ?? client.id, client.name, g.missedSessions.length > 0 ? "session" : "food")}
+                        >
+                          Remind
+                        </button>
+                        <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => nav(`/coach/clients/${client.id}`)}>
+                          Open
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
