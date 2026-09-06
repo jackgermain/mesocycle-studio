@@ -189,6 +189,25 @@ Rule 4 is the one a generator would never invent. Session order is not a per-ses
 each time; it is a decision made **across** sessions, so that a movement repeatedly relegated to second
 gets its turn in the opening slot. Whatever always goes second is always trained tired.
 
+**G6 — Mutual exclusion: two exercises of the same pattern don't share a session.** First stated of the
+flies:
+
+> *"Pretty much in no cases would I ever do dumbbell flies and cable flies in the same day — unless I was
+> doing like four exercises for chest, and even then it would still be unlikely."*
+
+**Rule:** two fly-pattern movements in one session is effectively never. It requires **4+ chest exercises**
+to even be considered, and is unlikely even then.
+
+This is a different *kind* of rule from everything above it. Every other rule so far constrains an exercise
+on its own — its reps, its sets, its slot, who it suits. This one constrains a **pair**: two exercises can
+each be individually correct and still be wrong together. A generator filling slots one at a time, each
+one locally optimal, produces exactly the session this rule forbids.
+
+**(inferred, worth confirming)** Jack named dumbbell and cable flies specifically. The natural reading is
+that it is about the movement pattern rather than those two implements — that a pec deck, which inherits
+the dumbbell fly entry, is equally excluded alongside either. Not yet confirmed, and the generalisation to
+non-fly patterns (two rows, two curls) is entirely unasked.
+
 ---
 
 # Entries
@@ -636,6 +655,20 @@ dumbbell does. This extends the pattern below rather than breaking it.
 
 ---
 
+## Pec Deck — *inherits the dumbbell fly*
+
+**Library:** `Pec Deck Machine`
+**His usage:** zero across the ten programs.
+
+> *"Pec deck, I would give the exact same parameters as a dumbbell fly."*
+
+**Rule:** identical to the dumbbell fly — 8-15 reps (20 a stretch), 2-4 sets, accessory, **never first**.
+
+Note that it does *not* inherit the cable fly, despite both being cable-resisted and looking near-identical
+on paper. The dumbbell fly floors at 8, the cable fly at 10, and Jack put the pec deck with the dumbbell.
+
+---
+
 ## The rep floor tracks the implement — (inferred)
 
 Six chest entries in, the low end of each rep range lines up with what the exercise is, not with what it
@@ -646,7 +679,7 @@ trains:
 | 1 | Flat barbell bench |
 | 3 | Incline barbell bench |
 | 6 | Dumbbell presses (flat and incline), Smith presses (flat and incline) |
-| 8 | Chest press machine, dumbbell flies |
+| 8 | Chest press machine, dumbbell flies, pec deck |
 | 10 | Cable flies |
 
 The ceiling barely moves — almost everything tops out at 15. **It is the floor that carries the
@@ -673,6 +706,7 @@ quote — but every line traces to an entry above.
 | Chest press machine | 2nd or 3rd | 1st only when chest is trained 3x/week. |
 | Dumbbell fly (flat / incline) | Never 1st | Needs a 3rd slot to exist before it is worth picking. |
 | Cable fly (all angles) | 3rd or last | Never 1st. |
+| Pec deck | Never 1st | As the dumbbell fly. |
 
 Two things fall out of it:
 
