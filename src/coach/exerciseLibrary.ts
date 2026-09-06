@@ -210,6 +210,34 @@ export const libraryExercises: LibraryExercise[] = [
   exCardio("Jump Rope"),
   exCardio("Stair Climber"),
   exCardio("Ski Erg"),
+
+  // — from nine real client programs —
+  // Movements Jack prescribes regularly that the library had no name for. An exercise the app cannot name
+  // is one a coach ends up re-typing as a custom every time, and one the generator can never prescribe.
+  ex("Reverse Lunge", "Quads", false),
+  ex("Dumbbell Reverse Lunge", "Quads", false),
+  ex("Smith Machine Lunge", "Quads", false),
+  ex("Smith Machine Split Lunge", "Quads", false),
+  ex("Elevated Smith Machine Lunge", "Quads", false),
+  ex("Smith Machine Reverse Lunge", "Quads", false),
+  ex("Incline Smith Machine Press", "Chest", false),
+  ex("Smith Machine Hip Thrust", "Glutes", false),
+  ex("Chest Supported Row Machine", "Back", false),
+  ex("Seated Row Machine", "Back", false),
+  ex("Dumbbell Skullcrusher", "Triceps", false),
+  ex("Freemotion Y Raise", "Rear delts", false),
+  ex("Cable Rotation", "Obliques", false),
+  ex("V-Up", "Abs", false),
+  ex("Twisted V-Up", "Obliques", false),
+  ex("Starfish Crunch", "Abs", false),
+  ex("Heel Tap", "Obliques", false),
+  ex("Plank Leg Lift", "Abs", false),
+  ex("Plank Hip Twist", "Obliques", false),
+  ex("Plank Alternating Limb Touch", "Abs", false),
+  ex("Lat Prayer", "Back", false),
+  ex("Glute Deadlift", "Glutes", false),
+  ex("Med Ball Toss", "Full body", false),
+  ex("Ball Squat Jump Toss", "Full body", false),
 ];
 
 export function normalizeExerciseName(s: string): string {
@@ -221,6 +249,42 @@ export function normalizeExerciseName(s: string): string {
     .trim();
 }
 
+/** Word-level normalisation on top of the string-level pass above.
+ *
+ * Coaches write the same movement a dozen ways -- "Cable Curls" and "Cable Curl", "PullUps" and
+ * "Pull-Up", "Incline DB Press" and "Incline Dumbbell Press". Across nine real programs, 87 of 201 names
+ * were already in the library under another spelling and were being missed, which is what turns an import
+ * into a pile of unrecognised custom exercises. */
+const ABBREV: Record<string, string> = {
+  db: "dumbbell", bb: "barbell", kb: "kettlebell", rdl: "romanian deadlift",
+  ohp: "overhead press", bw: "bodyweight", "1arm": "single arm", alt: "alternating",
+  ext: "extension", raises: "raise", machines: "machine",
+  // Written as one word about as often as two, and the hyphen is gone by the time this runs.
+  pullup: "pull up", chinup: "chin up", pushup: "push up", situp: "sit up", stepup: "step up",
+  // "Abductor Machine" and "Hip Abduction Machine" are the same machine; the stems differ by two letters.
+  abductor: "abduction", adductor: "adduction",
+};
+
+/** Words that say what you're holding rather than what you're doing. Used only to break ties. */
+const GENERIC_WORDS = new Set(["barbell", "dumbbell", "cable", "machine", "smith", "seated", "standing", "bodyweight"]);
+
+function words(name: string): Set<string> {
+  const out = new Set<string>();
+  for (const raw of normalizeExerciseName(name).split(" ")) {
+    if (!raw) continue;
+    // Singularise first: "pullups" has to become "pullup" before the map can turn it into "pull up".
+    // Length > 2, not > 3: "ups" and "abs" are three letters and both needed singularising. "ss" endings
+    // are left alone so "press" and "cross" survive.
+    const singular = raw.length > 2 && raw.endsWith("s") && !raw.endsWith("ss") ? raw.slice(0, -1) : raw;
+    const expanded = ABBREV[singular] ?? ABBREV[raw] ?? singular;
+    for (const w of expanded.split(" ")) {
+      // Crude singularisation, enough for exercise names: "curls" -> "curl", "press" stays "press".
+      out.add(w.length > 2 && w.endsWith("s") && !w.endsWith("ss") ? w.slice(0, -1) : w);
+    }
+  }
+  return out;
+}
+
 /** A spreadsheet's own muscle-group tag next to an exercise is often stale -- copy-pasted from a previous
  * row and never updated (a real, common issue in hand-maintained templates, not something we can fix by
  * parsing more carefully). Matching the exercise name against the app's own library gives a more reliable
@@ -228,7 +292,31 @@ export function normalizeExerciseName(s: string): string {
 export function guessMuscleFromLibrary(name: string): string | undefined {
   const norm = normalizeExerciseName(name);
   if (!norm) return undefined;
-  const tokens = new Set(norm.split(" ").filter(Boolean));
+  const tokens = words(name);
+  if (!tokens.size) return undefined;
+
+  // A name that is entirely contained in a library entry, or entirely contains one, is that movement:
+  // "Lat Pulldown" against "Lat Pulldown - Wide Grip", or "Seated Leg Curls" against "Seated Leg Curl
+  // (Cybex)". Scored matching below never caught these because the extra qualifier drags the ratio down.
+  // Most-specific wins. "Barbell RDL" contains both "Barbell Deadlift" and "Romanian Deadlift"; taking
+  // whichever came first in the file returned Back instead of Hamstrings -- the right answer is the one
+  // that uses more of what was actually written.
+  let subset: { muscle: string; matched: number; generic: number } | undefined;
+  for (const ex of libraryExercises) {
+    const exTokens = words(ex.name);
+    if (!exTokens.size) continue;
+    const smaller = tokens.size <= exTokens.size ? tokens : exTokens;
+    const larger = smaller === tokens ? exTokens : tokens;
+    if (![...smaller].every((t) => larger.has(t))) continue;
+    // Ties are broken toward the name carrying more meaning. "Barbell RDL" contains both "Romanian
+    // Deadlift" and "Barbell Deadlift" at two tokens each; the first is the movement and the second is
+    // just the bar it's held with, so the one with fewer equipment words wins.
+    const generic = [...exTokens].filter((t) => GENERIC_WORDS.has(t)).length;
+    if (!subset || smaller.size > subset.matched || (smaller.size === subset.matched && generic < subset.generic)) {
+      subset = { muscle: ex.muscle, matched: smaller.size, generic };
+    }
+  }
+  if (subset) return subset.muscle;
 
   let best: { muscle: string; score: number } | undefined;
   for (const ex of libraryExercises) {
@@ -236,7 +324,7 @@ export function guessMuscleFromLibrary(name: string): string | undefined {
     if (!exNorm) continue;
     if (exNorm === norm) return ex.muscle;
 
-    const exTokens = exNorm.split(" ").filter(Boolean);
+    const exTokens = [...words(ex.name)];
     const overlap = exTokens.filter((t) => tokens.has(t)).length;
     // Requiring 2+ shared words (not just a single generic one like "press" or "raise") before counting
     // it as a match keeps this from confidently mislabeling an exercise the library doesn't actually have.
