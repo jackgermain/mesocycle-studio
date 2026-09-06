@@ -230,6 +230,22 @@ Worth noting it runs *opposite* to the chest hierarchy, where the implement orde
 Smith > machine and cables barely feature. So implement preference is **per muscle group**, not a global
 ranking — a generator must not carry the chest ordering across to the arms.
 
+**G9 — Some library exercises are never to be prescribed.** The library is a catalogue of what exists, not
+a list of what is endorsed. The first entry on the denylist:
+
+> *"Decline pressing is a terrible exercise. I've never ever ever given somebody it, ever… we're never
+> gonna use decline dumbbell presses, or barbell presses, or flies for that matter."*
+
+**Rule — the decline angle is excluded outright**, on every implement:
+
+- `Decline Barbell Bench Press` — never
+- `Decline Dumbbell Press` — never
+- Decline flies, on any implement — never
+
+This is a harder rule than "avoid by default". The chest dip is avoided but unlocked by client request; the
+decline has no unlock. The generator should treat these as absent from the library rather than as
+low-ranked options, and the validator should reject them outright.
+
 ---
 
 # Entries
@@ -793,6 +809,24 @@ flat never changes the slot — only the implement does.
 **"Too strong" demotes, twice.** Both the barbell bench and the Smith press get moved off the opening slot
 for a lifter who is very strong, for the same reason: the opening slot means the heaviest absolute load,
 and past a point that load is the risk. This is the opposite of how a generator would order by default.
+
+---
+
+## Decline Press — *excluded; see G9*
+
+**Library:** `Decline Barbell Bench Press` · `Decline Dumbbell Press`
+**His usage:** zero, and by his own account zero in his entire coaching career.
+
+> *"Decline pressing is a terrible exercise. I've never ever ever given somebody it, ever."*
+
+Never prescribed, on any implement, to anyone. No rep range, no slot, no conditions — there is no case in
+which it is selected.
+
+*Open — and it matters for the library as it stands:* the exclusion was stated to cover flies as well, but
+the library has no exercise named "decline fly." It does have **`Cable Fly — High to Low`**, which trains
+the same lower-sternal fibres from the same downward angle and is a decline fly in everything but name.
+That exercise was covered under the cable fly entry at 10-20 reps with no exclusion attached. One of the
+two records is wrong and it needs settling.
 
 ---
 
