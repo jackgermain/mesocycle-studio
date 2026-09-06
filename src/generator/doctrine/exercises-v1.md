@@ -117,8 +117,53 @@ And a floor that holds everywhere:
 **Rule:** never prescribe a single set of anything. Two is the floor.
 
 This is consistent with `v1.md` C1 rather than in conflict with it — C1 caps the 6-15 rep range at 4 sets,
-and G3 agrees there while extending the curve below 6 reps, where the cap rises to 5 and then 6. Whether
-the curve applies to every exercise or only to the bench is **still open**.
+and G3 agrees there while extending the curve below 6 reps, where the cap rises to 5 and then 6.
+
+**Scope: compounds only.** Asked whether the curve generalises:
+
+> *"No, this does not generalize for every exercise, but it does generalize for every compound… The bench
+> gets more sets at low reps because it's an exercise that is used for peak strength, and that's the only
+> time. Heavy compounds — as in the group of compound exercises I've just listed — are ones that can get
+> more sets at low reps, and the reason for that is they produce a ton of strength."*
+
+**Rule:** the extended low-rep portion of the curve (5 reps and below, 5-6 sets) is available **only to the
+compounds in G4**. Everything else stays capped at 4 sets, and in practice everything else also floors at
+6-8 reps anyway, so it never reaches the part of the curve that would matter.
+
+**G4 — What counts as a compound.** Given as an explicit list, not a definition:
+
+> *"Your compounds are your barbell presses, your front squat, back squat, Zercher squat if you choose to
+> do that, your Olympic lifts — so your cleans, pulls, snatches, hang cleans, any version of any Olympic
+> lift — and that also includes deadlifts, and hex bar deadlifts or trap bar deadlifts."*
+
+- Barbell presses (bench, incline, overhead)
+- Back squat, front squat, Zercher squat
+- Every Olympic lift and its variants — clean, snatch, hang clean, pulls
+- Deadlift, hex/trap bar deadlift
+
+Worth noting what is **absent**: no Smith machine, no dumbbell press, no machine, no lunge, no RDL. This is
+a barbell-only list. Membership grants an exercise the low-rep set allowance in G3 and the ordering
+priority in G5, so the boundary matters.
+
+**G5 — Ordering when a session has more than one compound.** Four rules, applied in order:
+
+> *"If you're going to bench press, do it first. There are some cases in which you don't, but I think
+> that's a pretty good rule of thumb."*
+
+1. **Power work always goes first.** *"If you're training for the attribute of power and you have to move
+   the bar quickly — like if you're doing a clean or an Olympic lift — you're always gonna do those
+   exercises first."* Speed of movement outranks everything; a bar that has to move fast has to move first.
+2. **Otherwise, hardest first.** *"If you're going to do two compounds in the same day, I would do
+   whichever one is hardest first."* Between a squat and a bench, the squat.
+3. **Client priority can override.** *"It also comes down to what's more important to the person. If they
+   care more about their chest, I might consider doing the bench press first."*
+4. **Rotate across sessions.** *"You also have to take into consideration what they did last time. If
+   you're gonna make them squat second, what did they do first for legs last time — because you wanna make
+   sure that everything gets a lot of stimulus."*
+
+Rule 4 is the one a generator would never invent. Session order is not a per-session decision made fresh
+each time; it is a decision made **across** sessions, so that a movement repeatedly relegated to second
+gets its turn in the opening slot. Whatever always goes second is always trained tired.
 
 ---
 
@@ -301,6 +346,14 @@ pick inside that span is a goal decision, read off G2.
 
 The full set-cap curve above was given while talking about this exercise: 6 singles down to 4 sets at 9+
 reps, never fewer than 2.
+
+### Ordering — first, unless something faster is in the way
+
+> *"I would pretty much always do this first if you're going to do it, unless there's another compound
+> exercise that you're doing before that has to be done."*
+
+**Rule:** the bench takes the first slot whenever it appears, yielding only to power work. See G5 for the
+full ordering, which was given while talking about this exercise.
 
 ### Still open on this one
 
