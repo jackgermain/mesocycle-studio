@@ -12,11 +12,22 @@ export const DUMBBELL_WEIGHTS = [
 /** An empty barbell — you can never load below this. */
 export const BARBELL_WEIGHT = 45;
 
+/** Movements loaded by the body rather than by equipment. Checked *after* the explicit equipment words,
+ * so "Weighted Dip" and "Smith Machine Row" still resolve to what they are actually loaded with, and
+ * before the machine fallback, which previously swallowed every one of these.
+ *
+ * This mattered in two places: `stepForEquipment` was handing pull-ups and hanging leg raises a 10 lb
+ * machine-stack increment, and an equipment filter for a client who owns only dumbbells was excluding
+ * every bodyweight movement in the library along with the machines. */
+const BODYWEIGHT = /\bpull-?up|\bchin-?up|push-?up|\bdip\b|hanging|captain|plank|\bsit-?up|crunch|nordic|sissy|\bbody ?weight|\bbw\b|air squat|toe touch|leg raise|leg lift|hollow|dead ?bug|glute bridge|back extension|hyperextension|calf raise — bodyweight/;
+
 function nameHeuristic(ex: { name: string }): Equipment {
   const n = ex.name.toLowerCase();
-  if (n.includes("dumbbell")) return "dumbbell";
-  if (n.includes("barbell") || n.includes("deadlift")) return "barbell";
+  if (n.includes("dumbbell") || n.includes("goblet") || n.includes("kettlebell")) return "dumbbell";
+  if (n.includes("barbell") || n.includes("deadlift") || n.includes("ez-bar") || n.includes("trap bar") || n.includes("hex bar")) return "barbell";
   if (n.includes("cable")) return "cable";
+  if (n.includes("machine") || n.includes("smith") || n.includes("hammer strength") || n.includes("cybex") || n.includes("nautilus") || n.includes("pec deck") || n.includes("leg press") || n.includes("hack squat")) return "machine";
+  if (BODYWEIGHT.test(n)) return "bodyweight";
   return "machine";
 }
 
