@@ -31,6 +31,10 @@ export interface ZoneSpec {
   max: number;
   /** Where inside the band he actually spends most of the time, when he narrowed it. */
   typical?: [number, number];
+  /** True where the zone also trains muscular endurance. Not a separate zone -- a second quality the
+   * same sets buy. *"Add to the upper hypertrophy range as muscular endurance. And metabolic as well is
+   * definitely some endurance, that being the twenty-thirty rep range."* */
+  endurance?: boolean;
   note: string;
 }
 
@@ -68,17 +72,19 @@ export const REP_ZONES: ZoneSpec[] = [
   },
   {
     zone: "upper-hypertrophy",
-    label: "Upper hypertrophy",
+    label: "Upper hypertrophy / muscular endurance",
     min: 15,
     max: 20,
-    note: "Where his own sessions finish -- the last slot averages 20.6 reps.",
+    endurance: true,
+    note: "Where his own sessions finish -- the last slot averages 20.6 reps. Also trains muscular endurance.",
   },
   {
     zone: "metabolic",
-    label: "Cluster and metabolic work",
+    label: "Cluster / metabolic / endurance",
     min: 20,
     max: 30,
-    note: "Reserved for cluster sets, forearms and calves. Not a general-purpose band.",
+    endurance: true,
+    note: "Reserved for cluster sets, forearms and calves. Definitely endurance work too.",
   },
 ];
 
@@ -111,8 +117,15 @@ export function isHypertrophy(reps: number): boolean {
   return z === "lower-hypertrophy" || z === "mid-hypertrophy" || z === "upper-hypertrophy";
 }
 
+/** Zones that train muscular endurance alongside their primary quality. */
+export function isEndurance(reps: number): boolean {
+  const z = zoneFor(reps);
+  return !!z && !!specFor(z).endurance;
+}
+
 /** The band to write for a given goal, when nothing more specific is known. Lower hypertrophy is the
- * default because it is his stated gold standard and "a very common goal for most individuals". */
+ * default because it is his stated gold standard and "a very common goal for most individuals";
+ * endurance maps to the upper hypertrophy band, which is where that quality actually lives. */
 export function defaultBandFor(goal: "strength" | "hypertrophy" | "endurance"): [number, number] {
   if (goal === "strength") return [3, 6];
   if (goal === "endurance") return [15, 20];

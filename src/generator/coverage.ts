@@ -49,8 +49,14 @@
  * | Hamstrings | **0.29** | 1 | **0.45** | 2-3 |
  *
  * Chest, back, quads and biceps land on target. The glute split is exactly as described -- zero for the
- * men, 1.27 for the women. **Hamstrings are the one real gap**: well under target in both groups, and
- * worth raising rather than quietly encoding the practice over the intent.
+ * men, 1.27 for the women.
+ *
+ * **Hamstrings and rear delts were put to him, and the answer was "those are just errors on both of
+ * those ends."** So the targets stand and the programs were the mistake -- which means a generator built
+ * on these numbers will write more hamstring and rear delt work than his own files contain, and that is
+ * the point rather than a divergence to flag. Recorded because it is the one case so far where the data
+ * was wrong and the stated rule was right, and a later reader might otherwise "correct" the targets back
+ * down to match the files.
  */
 
 export type EmphasisProfile = "upper-priority" | "glute-priority";

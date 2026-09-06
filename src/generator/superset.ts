@@ -59,6 +59,23 @@ export function canSuperset(slotIndex: number, strengthPriority = false): boolea
   return !strengthPriority && slotIndex >= FIRST_PAIRABLE_SLOT;
 }
 
+/** Rest between the exercises *inside* a round. Zero, and not as an approximation.
+ *
+ * > *"You don't rest in between sets of a superset. That's why it's called a superset."*
+ *
+ * So the rest figures in `sessionStructure` apply **once per round**, not once per exercise. A pair of
+ * accessory slots that would each have taken 75 seconds becomes one 75-second rest, which is most of why
+ * pairing buys volume without buying time -- and why exercises per session is 9-12 only "if you're not
+ * planning on supersetting". */
+export const REST_INSIDE_SUPERSET_SEC = 0;
+
+/** Rest for a paired block: none between its exercises, then the normal rest once the round is done. */
+export function restForRound(perExerciseRestSec: number, exerciseCount: number): number[] {
+  return Array.from({ length: exerciseCount }, (_, i) =>
+    i === exerciseCount - 1 ? perExerciseRestSec : REST_INSIDE_SUPERSET_SEC,
+  );
+}
+
 export interface Superset {
   /** Slot indexes in the round, in order. Two for a pair, three or more for a circuit. */
   slots: number[];
