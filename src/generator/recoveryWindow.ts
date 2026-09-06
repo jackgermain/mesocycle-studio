@@ -69,11 +69,22 @@ export function judgeFromSoreness(score: number): VolumeVerdict {
   return "ambiguous";
 }
 
-/** How to act on a verdict, as a multiplier on the muscle's working sets for its next session.
+/** How to act on a verdict, as a change to the muscle's working sets next session.
  *
- * Deliberately small. P2 -- small and predictable beats large and surprising -- applies to volume as much
- * as to load, and one session's soreness reading carries a lot of noise: a bad night's sleep moves it as
- * much as a mis-set volume does. One set at a time, inside C1's cap of four. */
+ * **Deliberately asymmetric.** Cutting happens on a single reading; adding requires two. Jack's reason
+ * is that the two errors do not cost the same thing:
+ *
+ * > *"We want to edge on the side of caution, because too much each week can result in injury. If you're
+ * > a little bit sore and you train once like that, it's fine. But it's bad when it happens repeatedly --
+ * > mostly because if you're training when you're not fully healed, you still have damage done to the
+ * > muscle and then you redo the damage again. But it also puts a lot of extra stress on the tendon
+ * > complex, since **the tendon complex already takes longer to heal than the muscle belly itself.**"*
+ *
+ * Under-dosing costs a day of growth. Over-dosing compounds, and it compounds onto the slowest-healing
+ * tissue in the joint. So the downside is not symmetric and the response should not be either.
+ *
+ * Adjustments are one set at a time in both directions -- P2 applies to volume as much as to load, and a
+ * single soreness reading is noisy enough that a bad night's sleep moves it as much as mis-set volume. */
 export function volumeAdjustment(verdict: VolumeVerdict): number {
   switch (verdict) {
     case "add-volume":
@@ -83,6 +94,63 @@ export function volumeAdjustment(verdict: VolumeVerdict): number {
     default:
       return 0;
   }
+}
+
+/** How many consecutive readings before volume is allowed to go **up**. One is not enough. */
+export const CONFIRMATIONS_TO_ADD = 2;
+
+/** How many consecutive under-recovered sessions before this stops being a volume problem and becomes a
+ * tendon problem -- at which point the answer is a different exercise, not fewer sets.
+ *
+ * *"That's certainly... that's partly why exercises need to be swapped for individuals."* Repeated
+ * training on an unhealed muscle loads a tendon that has not caught up, and section 10's swap rule is
+ * the remedy: same pattern, different torque curve, different wear pattern. */
+export const UNDER_RECOVERED_SESSIONS_TO_SWAP = 3;
+
+export interface VolumeAction {
+  /** Change to working sets for this muscle next session. */
+  sets: number;
+  /** True when the exercise itself should change, not just its volume. */
+  swap: boolean;
+  reason: string;
+}
+
+/** Read a muscle's recent soreness history, most recent first, and say what to do.
+ *
+ * Cuts immediately on one bad reading; adds only on a run of clear ones; escalates to a swap when the
+ * muscle keeps arriving unhealed, because by then the tendon is the thing accumulating, not the muscle. */
+export function volumeActionFor(recent: VolumeVerdict[]): VolumeAction {
+  const [latest] = recent;
+  if (latest === undefined) return { sets: 0, swap: false, reason: "No soreness history yet." };
+
+  const underRecovered = recent.findIndex((v) => v !== "reduce-volume");
+  const run = underRecovered === -1 ? recent.length : underRecovered;
+  if (run >= UNDER_RECOVERED_SESSIONS_TO_SWAP) {
+    return {
+      sets: -1,
+      swap: true,
+      reason: `Unhealed going into ${run} sessions in a row. Cutting sets again, but at this point the tendon is accumulating faster than the muscle -- change the exercise for one with a different loading profile.`,
+    };
+  }
+  if (latest === "reduce-volume") {
+    return { sets: -1, swap: false, reason: "Still sore at the next session. Take a set off now." };
+  }
+  const clear = recent.slice(0, CONFIRMATIONS_TO_ADD);
+  if (clear.length === CONFIRMATIONS_TO_ADD && clear.every((v) => v === "add-volume")) {
+    return {
+      sets: 1,
+      swap: false,
+      reason: `Recovered early ${CONFIRMATIONS_TO_ADD} sessions running. Add a set.`,
+    };
+  }
+  if (latest === "add-volume") {
+    return {
+      sets: 0,
+      swap: false,
+      reason: "Recovered early, but one reading is noise. Hold, and add if it repeats.",
+    };
+  }
+  return { sets: 0, swap: false, reason: "Recovery is where it should be. Leave the volume alone." };
 }
 
 export function explainVolume(verdict: VolumeVerdict, muscle: string, gapDays: number): string {
