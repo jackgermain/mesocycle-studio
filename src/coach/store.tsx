@@ -34,6 +34,7 @@ type Action =
   | { type: "ASSIGN_PROGRAM"; clientId: string; programId: string; programName: string; totalWeeks: number; mode: "now" | "queued"; sourceProgramId?: string; reason?: string }
   | { type: "SET_PROGRAM_NAME"; programId: string; name: string }
   | { type: "SET_PROGRAM_TEMPLATE"; programId: string; isTemplate: boolean }
+  | { type: "SET_TEMPLATE_META"; programId: string; intendedFor?: string; automatable?: boolean }
   | { type: "SET_PROGRAM_VISIBILITY"; programId: string; visibility: "private" | "public" }
   | { type: "SEND_MESSAGE"; threadId: string; text: string; clientName?: string }
   | { type: "MARK_READ"; threadId: string }
@@ -138,6 +139,18 @@ function reducer(state: CoachState, action: Action): CoachState {
     }
     case "SET_PROGRAM_NAME": {
       const programs = state.programs.map((p) => (p.id === action.programId ? { ...p, name: action.name } : p));
+      return { ...state, programs };
+    }
+    case "SET_TEMPLATE_META": {
+      const programs = state.programs.map((p) =>
+        p.id === action.programId
+          ? {
+              ...p,
+              ...(action.intendedFor !== undefined ? { intendedFor: action.intendedFor } : {}),
+              ...(action.automatable !== undefined ? { automatable: action.automatable } : {}),
+            }
+          : p,
+      );
       return { ...state, programs };
     }
     case "SET_PROGRAM_TEMPLATE": {

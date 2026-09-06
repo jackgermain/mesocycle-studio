@@ -184,6 +184,40 @@ export default function ProgramDetail() {
           </label>
 
           {program.isTemplate && (
+            <div style={{ marginTop: 12 }}>
+              <div className="field">
+                <label>Who is this template for?</label>
+                <textarea
+                  className="input"
+                  style={{ minHeight: 58, lineHeight: 1.5 }}
+                  value={program.intendedFor ?? ""}
+                  onChange={(e) => dispatch({ type: "SET_TEMPLATE_META", programId: program.id, intendedFor: e.target.value })}
+                  placeholder="e.g. 3 days, home gym, 2–5 years training, coming back from a layoff"
+                />
+                <div className="mu" style={{ marginTop: 6 }}>
+                  What this suits is the thing template selection actually runs on, and it's only obvious
+                  while you're writing it.
+                </div>
+              </div>
+
+              <label className="row" style={{ gap: 10, cursor: "pointer", marginTop: 4 }}>
+                <input
+                  type="checkbox"
+                  checked={!!program.automatable}
+                  onChange={(e) => dispatch({ type: "SET_TEMPLATE_META", programId: program.id, automatable: e.target.checked })}
+                  style={{ width: 17, height: 17, flex: "none", accentColor: "var(--color-accent)" }}
+                />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12.5 }}>Let the builder generate from this</div>
+                  <div className="mu" style={{ marginTop: 1, lineHeight: 1.5 }}>
+                    Off by default. A template becomes a candidate because you said so, not because it exists.
+                  </div>
+                </div>
+              </label>
+            </div>
+          )}
+
+          {program.isTemplate && (
             <label className="row" style={{ gap: 10, cursor: "pointer", marginTop: 12 }}>
               <input
                 type="checkbox"

@@ -131,6 +131,15 @@ export interface CoachProgram {
   days: BuilderDay[];
   /** A personal template stays private to you — it can never be set to a public listing, only assigned to your own clients. */
   isTemplate?: boolean;
+  /** Who this template suits, in the coach's own words -- "3 days, home gym, coming back from a layoff".
+   *
+   * A template has a name and a list of exercises and nothing that says what it is FOR, which is the one
+   * thing selection actually runs on. Recorded here because it is knowable while writing the template and
+   * guesswork afterwards, the same reason ProgramAssignment records why someone was put on one. */
+  intendedFor?: string;
+  /** Whether the generator may build from this template. Off by default: a template becomes a candidate
+   * because its author said so, not because it happened to exist. */
+  automatable?: boolean;
   /** Templates are always "private"; a non-template can be published to a public listing. Defaults to "private" when absent. */
   visibility?: "private" | "public";
   /** A working copy built for one specific client's assignment — hidden from the main Programs list so
