@@ -64,6 +64,62 @@ An exercise's rep range says which schemes are **legal** for it. Choosing among 
 progression models in `v1.md` §3, which include holding reps constant for a whole block. The generator
 must never read a range as an instruction to walk from its floor to its ceiling across a block.
 
+**G2 — The five rep bands.** Stated while talking about the bench press, and explicitly scoped to
+everything:
+
+> *"Remember this is an absolute staple and you can apply this to every single exercise… the 1 to 3 rep
+> range, the 4 to 6 rep range, the 7 to 9 rep range, the 10 to 13 rep range, the 14 to 20 rep range, and
+> then the 20 and above reserved for special cases."*
+
+| Reps | Band |
+|---|---|
+| 1-3 | Peak strength |
+| 4-6 | Middle strength |
+| 7-9 | Bottom hypertrophy |
+| 10-13 | Middle hypertrophy |
+| 14-20 | Upper hypertrophy |
+| 20+ | Special cases only |
+
+This is a coordinate system, not a preference. Every per-exercise rep range in this file should be read as
+naming which of these bands the exercise is allowed to occupy — the incline dumbbell press's 6-12 spans
+the top of middle-strength through middle-hypertrophy; the chest press machine's 8-15 spans bottom through
+upper hypertrophy and never touches strength at all.
+
+*Reconciliation needed with `v1.md`:* C3 there states the hypertrophy range as 6-30. G2 puts hypertrophy at
+7-20 with 20+ as special cases, and calls 4-6 middle **strength**. G2 is later and more specific, but the
+two should be squared explicitly rather than left to whichever a reader hits first.
+
+**G3 — Set cap falls as reps rise. (Stated for the bench press; generality unconfirmed.)**
+
+> *"If I'm gonna be doing singles for bench press, the most I would do is working up to six. If I was doing
+> doubles, no more than probably five or six. Three reps per set, no more than five or six triples. Four
+> reps, no more than five sets. Five reps, no more than five sets. Six reps, no more than four sets. Seven
+> reps, no more than four. Eight reps, no more than four. Nine reps or anything above, no more than four at
+> the top of the boundary."*
+
+| Reps per set | Max sets | Min sets |
+|---|---|---|
+| 1 | 6 | 2-3 |
+| 2 | 5-6 | 2 |
+| 3 | 5-6 | 2 |
+| 4 | 5 | 2 |
+| 5 | 5 | 2 |
+| 6 | 4 | 2 |
+| 7 | 4 | 2 |
+| 8 | 4 | 2 |
+| 9+ | 4 | 2 |
+
+And a floor that holds everywhere:
+
+> *"Doing one set is never enough… I would pretty much keep the bottom range of set volume at two sets
+> minimum."*
+
+**Rule:** never prescribe a single set of anything. Two is the floor.
+
+This is consistent with `v1.md` C1 rather than in conflict with it — C1 caps the 6-15 rep range at 4 sets,
+and G3 agrees there while extending the curve below 6 reps, where the cap rises to 5 and then 6. Whether
+the curve applies to every exercise or only to the bench is **still open**.
+
 ---
 
 # Entries
@@ -194,6 +250,65 @@ press can carry heavier relative work; a machine accessory is not asked to.
 - What replaces it when there are no adjustable dumbbells heavy enough?
 - How do you progress it, and what happens at a stall?
 - Any cue you always end up giving?
+
+---
+
+## Barbell Bench Press — *flat; incline barbell is a separate entry*
+
+**Library:** `Barbell Bench Press`
+**His usage:** **zero.** Not prescribed once in 3,490 sets across ten programs.
+
+### Role — a staple, but only for getting strong
+
+> *"This exercise is an absolute staple if the person is really trying to get strong."*
+
+**Rule:** the barbell bench earns its slot on a strength goal. It is not the default chest builder.
+
+### The risk that keeps it off most programs
+
+> *"Even though it's this good, there is some benefit-risk that comes with it, and that is sometimes you
+> have more shoulder pain, and pec injuries. It is a very common exercise people can get hurt on, so I like
+> to use it with people that are usually younger."*
+
+**Rule:** skew young. Shoulder and pec injury risk is the deciding factor, and it is why a roster of
+middle-aged general-population clients has zero barbell bench between them — the Smith and the machine
+carry that work instead.
+
+> *"That's not a golden rule of thumb. For guys who are serious about wanting to get their chest to grow I
+> would encourage it, but it's not mandatory."*
+
+**Rule:** for a younger man serious about chest growth, encouraged — never mandatory. The generator should
+treat it as an option that a goal unlocks, not a requirement any goal imposes.
+
+### Default: use dumbbells instead
+
+> *"Usually I would opt in doing a dumbbell press instead of a barbell bench press, but there's a very
+> specific reason to be doing barbell pressing."*
+
+**Rule:** dumbbell press is the default; the barbell needs a reason. This closes the loop with the incline
+dumbbell press entry, whose ordering rule is written against "if I'm not doing any barbell bench press" —
+that condition is the normal case, not the exception.
+
+### Reps — the full ladder, 1 to 15
+
+> *"It can be used in all rep ranges, so if somebody wants to train for max strength, that's amazing —
+> anywhere between the one rep range to even the 15 rep range, which is a very wide boundary."*
+
+**Rule:** 1-15. The only exercise so far that reaches into the peak-strength band at all. Which band to
+pick inside that span is a goal decision, read off G2.
+
+### Sets — see G3
+
+The full set-cap curve above was given while talking about this exercise: 6 singles down to 4 sets at 9+
+reps, never fewer than 2.
+
+### Still open on this one
+
+- What is the "very specific reason to be doing barbell pressing"? That reason is the trigger the generator
+  needs, and it is the one thing here I do not have.
+- Where's the age line — what counts as "younger"?
+- Does an existing shoulder or pec issue rule it out outright, or just push it down the list?
+- What replaces it for someone who wants to bench but shouldn't — Smith, or dumbbells?
 
 ---
 
