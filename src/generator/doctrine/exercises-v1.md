@@ -236,11 +236,20 @@ a list of what is endorsed. The first entry on the denylist:
 > *"Decline pressing is a terrible exercise. I've never ever ever given somebody it, ever… we're never
 > gonna use decline dumbbell presses, or barbell presses, or flies for that matter."*
 
-**Rule — the decline angle is excluded outright**, on every implement:
+**Rule — the decline angle is excluded** on presses and on dumbbell flies:
 
 - `Decline Barbell Bench Press` — never
 - `Decline Dumbbell Press` — never
-- Decline flies, on any implement — never
+- Decline **dumbbell** flies — never
+
+**Cables are not covered by this.** Asked directly whether `Cable Fly — High to Low` falls under it:
+
+> *"Don't worry about the cable flies. There's nothing wrong with high-low cable flies. I'm just referring
+> to [decline] dumbbell flies specifically."*
+
+So all three cable fly angles stand as recorded, high-to-low included. The exclusion is about the decline
+**bench** and the dumbbell fly done at that angle — not about training the lower chest, which the cable
+does from the same direction and is fine.
 
 This is a harder rule than "avoid by default". The chest dip is avoided but unlocked by client request; the
 decline has no unlock. The generator should treat these as absent from the library rather than as
@@ -822,11 +831,13 @@ and past a point that load is the risk. This is the opposite of how a generator 
 Never prescribed, on any implement, to anyone. No rep range, no slot, no conditions — there is no case in
 which it is selected.
 
-*Open — and it matters for the library as it stands:* the exclusion was stated to cover flies as well, but
-the library has no exercise named "decline fly." It does have **`Cable Fly — High to Low`**, which trains
-the same lower-sternal fibres from the same downward angle and is a decline fly in everything but name.
-That exercise was covered under the cable fly entry at 10-20 reps with no exclusion attached. One of the
-two records is wrong and it needs settling.
+**Scope, settled.** The exclusion covers the decline bench on both implements, and the dumbbell fly done at
+a decline. It does **not** cover `Cable Fly — High to Low`, which was raised directly and cleared — *"there's
+nothing wrong with high-low cable flies."*
+
+That distinction is worth holding onto: the objection is to the decline **bench**, not to training the
+lower chest. The same fibres worked from the same direction on a cable are fine. A generator that
+generalised this to "avoid lower-chest work" would be drawing the wrong lesson from it.
 
 ---
 
@@ -837,8 +848,10 @@ two records is wrong and it needs settling.
   equipment-limited clients, where it is one of very few chest options that survive.
 - **Weighted Dip.** *"Totally different as well"* from the bodyweight chest dip, and not covered. The chest
   dip's 6-rep floor was given as "assuming they aren't weighted", so the weighted version floors lower.
-- **Hammer Strength / Cybex / Life Fitness chest presses.** Presumed to inherit the chest press machine
-  entry, unconfirmed.
+- **Hammer Strength / Cybex / Life Fitness chest presses.** Asked twice and passed over both times, so
+  recorded as **(inferred)**: they inherit the chest press machine entry — accessory, 8-15 reps, 4 sets max,
+  slot 2nd or 3rd unless chest is trained 3x/week. Plate-loaded versus selectorized is assumed not to
+  matter. Cheap to correct later if it does.
 
 ---
 
