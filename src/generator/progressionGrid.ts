@@ -204,7 +204,11 @@ export function judgeMove(
   // The landmark first: total reps for the session must stay put -- unless reps are the only lever the
   // exercise has. On a 10 lb rear delt fly the smallest load step is 25%, so the load axis is closed and
   // the reps have to carry the whole block: 2x10 to 2x12 to 2x15, which is 50% and correct.
-  const repsCap = opts.repsAreTheOnlyLever ? 60 : SESSION_REPS_TOLERANCE_PCT;
+  // A sanity bound on a single week, NOT the landmark. The landmark is "similar by the end of the
+  // block", so it is measured against week one by the caller. Enforcing it week-to-week as well rejected
+  // his own strength ladder, whose last step is 5x4 to 5x3 -- a 25% drop in one week that lands only 17%
+  // from where the block began.
+  const repsCap = opts.repsAreTheOnlyLever ? 60 : 35;
   if (Math.abs(r) > repsCap) {
     return {
       ...base,
@@ -219,7 +223,11 @@ export function judgeMove(
   if (r < -5 && l <= 1 && !opts.repsAreTheOnlyLever) {
     return { ...base, verdict: "backwards", why: "Reps came down without the load going up to pay for it." };
   }
-  if (l > 1 && r > 1) {
+  // The gate is about adding reps to sets while also adding load. A descending ladder -- 3x6 to 4x5 --
+  // raises the rep TOTAL while lowering reps per set, and that is linear periodization working, not an
+  // exception to it. Without this the gate rejected his own strength ladder at every step.
+  const repsPerSetFell = b.totalReps / to.length < a.totalReps / from.length;
+  if (l > 1 && r > 1 && !repsPerSetFell) {
     const reps = Math.round(a.totalReps / from.length);
     if (reps < BOTH_RISING_MIN_REPS) {
       return {

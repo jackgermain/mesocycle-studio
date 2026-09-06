@@ -26,8 +26,13 @@ import { patternOf } from "./patterns";
 const MAJOR_LIFTS =
   /squat|bench press|deadlift|power clean|\bclean\b|snatch|\bjerk\b|overhead press|military press|push press/i;
 
+/** His list is barbell work -- "squat, bench, deadlift, power clean, snatch, front squat, overhead press,
+ * hex bar deadlift". A dumbbell bench press matches the words and is not the same lift: it does not load
+ * heavily enough for the sub-six rep range to make sense, and its increments are the rack's. */
+const NOT_MAJOR = /dumbbell|machine|smith|cable|hammer strength|goblet|sissy|split squat|pistol/i;
+
 export function isMajorLift(name: string): boolean {
-  return MAJOR_LIFTS.test(name);
+  return MAJOR_LIFTS.test(name) && !NOT_MAJOR.test(name);
 }
 
 /** The fewest reps this exercise should ever be prescribed for.
