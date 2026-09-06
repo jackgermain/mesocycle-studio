@@ -23,6 +23,7 @@ import AllLifts from "./screens/AllLifts";
 import LiftDetail from "./screens/LiftDetail";
 import BuildProgram from "./screens/BuildProgram";
 import { AiScopeProvider, useRegisterAiScope } from "./shared/aiScope";
+import IntakeForm from "./screens/IntakeForm";
 import { AiFabHost } from "./shared/AiFabHost";
 import { CoachAiFab } from "./coach/components/CoachAiFab";
 import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "./shared/liveProgramAiEdit";
@@ -233,6 +234,7 @@ export default function App() {
 
             <Route element={<RequireRole role="member"><ClientProviders /></RequireRole>}>
               <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/intake" element={<Gate><IntakeForm /></Gate>} />
               <Route path="/block" element={<Gate><TodayRedirect /></Gate>} />
               <Route path="/block/calendar" element={<Gate><AllDaysCalendar /></Gate>} />
               <Route path="/block/day/:dayId" element={<Gate><DayDetail /></Gate>} />

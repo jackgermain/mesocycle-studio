@@ -8,6 +8,8 @@ import { ActionGroup, ActionRow, InfoBanner } from "../../components/UI";
 import { DeleteAccountSheet } from "../components/DeleteAccountSheet";
 import { readClientProgram, saveClientProgram } from "../clientProgramEdits";
 import { appendWeeks } from "../../shared/programConvert";
+import { summariseIntake, type Intake } from "../../shared/intake";
+import { supabase as sb } from "../../lib/supabase";
 import { createInvite } from "../../shared/invites";
 import { shareBaseUrl } from "../../shared/appUrl";
 import type { TrainingDay } from "../../data/types";
@@ -30,6 +32,21 @@ export default function ClientDetail() {
   const [revoking, setRevoking] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [extending, setExtending] = useState(false);
+  const [intake, setIntake] = useState<Intake | null>(null);
+
+  // Read straight from their client_state, selecting only that path -- their blob holds a whole program
+  // and every logged meal, and none of it is needed to show what they told us about themselves.
+  useEffect(() => {
+    if (!foundAccountId) return;
+    let active = true;
+    sb.from("client_state").select("intake:data->intake").eq("account_id", foundAccountId).maybeSingle()
+      .then(({ data }) => {
+        if (active) setIntake(((data as { intake?: Intake } | null)?.intake) ?? null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [foundAccountId]);
 
   /** Adds four weeks onto whatever this client is currently running.
    *
@@ -281,6 +298,25 @@ export default function ClientDetail() {
         {accepted && (
           <div>
             <div className="sh">Actions</div>
+            {/* What they said about themselves, read-only. The coach acts on it; the client owns it. */}
+            {intake?.completedAt && summariseIntake(intake).length > 0 && (
+              <div className="cell">
+                <div className="sh">What {client.name.split(" ")[0]} told us</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                  {summariseIntake(intake).map((line, i) => (
+                    <div key={i} className="mu" style={{ lineHeight: 1.5 }}>{line}</div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {client.accountId && !intake?.completedAt && (
+              <InfoBanner icon="ph-clipboard-text">
+                {client.name.split(" ")[0]} hasn't filled in their intake yet — it's the first thing on their
+                Train tab.
+              </InfoBanner>
+            )}
+
             <ActionGroup>
               <ActionRow
                 icon="ph-stack"

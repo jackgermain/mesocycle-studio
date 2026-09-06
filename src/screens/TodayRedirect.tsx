@@ -7,6 +7,7 @@ import { InfoBanner } from "../components/UI";
 import { canSelfBuildProgram } from "../shared/canBuild";
 import { repeatProgram } from "../shared/programConvert";
 import { WeighInDue } from "../components/WeighInDue";
+import { IntakeDue } from "../components/IntakeDue";
 
 /** The "Train" tab's landing spot — always today's lift, no overview page in between. */
 export default function TodayRedirect() {
@@ -88,7 +89,8 @@ export default function TodayRedirect() {
           </div>
         </div>
         <div className="screen-scroll">
-          <WeighInDue />
+          <IntakeDue />
+        <WeighInDue />
 
           {canBuild ? (
             <>

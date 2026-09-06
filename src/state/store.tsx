@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo, useReducer, useRe
 import { buildSelfProfile } from "../data/mockData";
 import type { ClientProfile, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, TrainingDay, WeighIn, WorkSet } from "../data/types";
 import type { WeighInSkip } from "../shared/weighIns";
+import { blankIntake, type Intake } from "../shared/intake";
 import { appendWeeks } from "../shared/programConvert";
 import type { FoodItem } from "../data/foodDatabase";
 import { nearestValidLoad } from "../screens/exerciseHelpers";
@@ -32,6 +33,10 @@ export interface AppState {
    * `unread` flag means "unread by the coach", so the client side needs its own mark. Null means they
    * have never opened it, and every coach message counts as new. */
   inboxReadAt: string | null;
+  /** What this person told us about themselves. The input the program builder individualises from --
+   * see docs/WORKOUT-GENERATOR.md. Lives on the client because it is theirs and follows them between
+   * coaches; a snapshot is copied onto each ProgramAssignment so a past decision stays explicable. */
+  intake: Intake;
   toast: string | null;
 }
 
@@ -44,6 +49,7 @@ function buildBlankState(ownerName: string, coachName: string): AppState {
     program: { name: "Your program", totalWeeks: 0, coachName, weeks: [] },
     nextProgram: null,
     inboxReadAt: null,
+    intake: blankIntake(),
     removals: [],
     meals: [],
     weighIns: [],
@@ -82,6 +88,7 @@ type Action =
   | { type: "TOGGLE_PORTION"; mealId: string; category: import("../data/types").PortionCategory }
   | { type: "EXTEND_PROGRAM"; weeks: number }
   | { type: "SKIP_WEIGH_IN"; date: string; reason: string }
+  | { type: "SET_INTAKE"; intake: Intake }
   | { type: "MARK_INBOX_READ" }
   | { type: "SHOW_TOAST"; message: string }
   | { type: "CLEAR_TOAST" };
@@ -389,6 +396,8 @@ function reducer(state: AppState, action: Action): AppState {
       const rest = state.weighInSkips.filter((s) => s.date !== action.date);
       return { ...state, weighInSkips: [...rest, { date: action.date, reason: action.reason }] };
     }
+    case "SET_INTAKE":
+      return { ...state, intake: action.intake };
     case "MARK_INBOX_READ":
       return { ...state, inboxReadAt: new Date().toISOString() };
     case "CLEAR_TOAST":
