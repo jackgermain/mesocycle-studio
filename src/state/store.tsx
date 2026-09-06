@@ -77,7 +77,7 @@ type Action =
   | { type: "REMOVE_EXERCISE"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "DROP_SET"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "SET_FEEDBACK_DONE"; dayId: string }
-  | { type: "SET_SORENESS_DONE"; dayId: string }
+  | { type: "SET_SORENESS_DONE"; dayId: string; answers?: TrainingDay["sorenessAnswers"] }
   | { type: "ADD_FOOD_ITEM"; mealId: string; item: LoggedFoodItem }
   | { type: "REMOVE_FOOD_ITEM"; mealId: string; itemId: string }
   | { type: "ADD_MEAL"; name: string }
@@ -341,6 +341,7 @@ function reducer(state: AppState, action: Action): AppState {
         const day = week.days.find((d) => d.id === action.dayId);
         if (!day) continue;
         day.sorenessDone = true;
+        if (action.answers) day.sorenessAnswers = action.answers;
         if (day.status === "visible") day.status = "today";
       }
       return { ...state, program };

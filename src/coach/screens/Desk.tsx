@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
-import { acknowledgeSignal, isJointUrgent, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
+import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
 import { loadWeighInGaps, type ClientWeighInGap } from "../weighInWatch";
 import { listFormChecks, type FormCheck } from "../../shared/formChecks";
@@ -86,7 +86,14 @@ export default function Desk() {
 
   function signalText(s: ClientSignal): string {
     if (s.kind === "joint") return `Joint pain${s.note ? ` — ${s.note}` : ""}${s.exercise ? ` on ${s.exercise}` : ""}`;
-    if (s.kind === "soreness") return `${s.muscle} still sore${s.note ? ` — ${s.note.toLowerCase()}` : ""}`;
+    // Soreness signals now run both ways: still sore (volume too high) and healed early (room for more).
+    // The high-severity ones are the second kind, and reading them as "still sore" would be backwards.
+    if (s.kind === "soreness") {
+      if (isSorenessAlerting(s.severity)) {
+        return `${s.muscle} still sore${s.note ? ` — ${s.note.toLowerCase()}` : ""}`;
+      }
+      return `${s.muscle} recovered early${s.note ? ` — ${s.note.toLowerCase()}` : ""}`;
+    }
     return `${s.muscle} pump was low`;
   }
 

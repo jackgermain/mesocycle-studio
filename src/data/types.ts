@@ -101,6 +101,13 @@ export interface TrainingDay {
   log?: DayLog;
   feedbackDone?: boolean;
   sorenessDone?: boolean;
+  /** The pre-session soreness check, kept rather than discarded once answered.
+   *
+   * `recoveredOnDay` is how many days after the last session the soreness stopped, and it is the number
+   * the volume rule needs: the target is to finish healing one day before the muscle is trained again,
+   * so anything earlier means there was room for more work. 0 means it never got sore. Absent when the
+   * client was still sore, which needs no follow-up -- that case is already unambiguous. */
+  sorenessAnswers?: Record<string, { severity: number; lastTrainedDaysAgo: number; recoveredOnDay?: number }>;
 }
 
 export interface TrainingWeek {
