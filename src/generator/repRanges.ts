@@ -158,6 +158,25 @@ export function leverPreferenceFor(reps: number): LeverPreference {
   return "reps-strongly-preferred";
 }
 
+/** The band an exercise should float inside, given where it currently works.
+ *
+ * A global 8-12 was wrong and generation exposed it immediately: a 12-rep accessory taking a load jump
+ * was being dropped to 8 reps, which is a third of the work gone in one week. The band belongs to the
+ * zone the exercise is already in -- 8-12 at ten reps, 12-15 at twelve, 15-20 at eighteen. Section 19 is
+ * explicit that high-rep work progresses *within* the high-rep range. */
+export function bandForReps(reps: number): [number, number] {
+  // Prefer the zone this rep count has ROOM TO GROW IN. Twelve sits at the top of lower hypertrophy
+  // (8-12) and the bottom of middle (12-15); an exercise already working at twelve has earned the first
+  // band and is heading into the second, so its band is 12-15. Taking the lower zone instead put the
+  // band floor at 8, and generation promptly dropped a 12-rep accessory to 8 reps on its first load
+  // jump -- a third of the work gone in a week, which is not what section 19 describes at all.
+  const withHeadroom = REP_ZONES.find((z) => reps >= z.min && reps < z.max);
+  if (withHeadroom) return [withHeadroom.min, withHeadroom.max];
+  const any = REP_ZONES.find((z) => reps >= z.min && reps <= z.max);
+  if (any) return [any.min, any.max];
+  return [8, 12];
+}
+
 /** Zones that train muscular endurance alongside their primary quality. */
 export function isEndurance(reps: number): boolean {
   const z = zoneFor(reps);

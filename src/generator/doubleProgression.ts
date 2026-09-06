@@ -13,6 +13,7 @@
 
 import type { Equipment } from "../data/types";
 import { DUMBBELL_WEIGHTS, BARBELL_WEIGHT, stepForEquipment } from "../screens/exerciseHelpers";
+import { bandForReps, leverPreferenceFor } from "./repRanges";
 
 export interface PerformedSet {
   reps: number;
@@ -333,7 +334,9 @@ export function variationsFor(
   sets: PerformedSet[],
   opts: { equipment: Equipment; band?: RepBand; repStep?: number },
 ): Variation[] {
-  const band = opts.band ?? DEFAULT_REP_BAND;
+  const here = sets[0]?.reps ?? 10;
+  const [lo, hi] = bandForReps(here);
+  const band = opts.band ?? { min: lo, max: hi };
   const by = opts.repStep ?? 2;
   const out: Variation[] = [];
   if (!sets.length) return out;
@@ -371,6 +374,12 @@ export function variationsFor(
       label: "more reps, front-loaded",
       why: "Only the first set gains reps, which produces a descending scheme deliberately.",
     });
+  }
+  // Section 18: which lever leads depends on what one rep costs. At twelve reps and above, reps are the
+  // cheaper and safer move and should be offered before load; below six, load is the only option at all.
+  const pref = leverPreferenceFor(here);
+  if (pref === "reps-preferred" || pref === "reps-strongly-preferred") {
+    out.sort((a, b) => Number(b.label.includes("reps")) - Number(a.label.includes("reps")));
   }
   return out;
 }

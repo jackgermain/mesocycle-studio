@@ -96,6 +96,10 @@ export interface Move {
  * His rule of thumb, made checkable: *"the decrease in reps accommodates enough that the increase in load
  * isn't too big of a relative percentage increase."* A good move raises difficulty by a little and does
  * not gut the volume doing it. */
+/** Beyond this, one equipment step is too big a jump to wave through -- the exercise is simply too light
+ * for its own hardware, and reps are the only lever it has. */
+export const MAX_SINGLE_STEP_PCT = 30;
+
 export const GOOD_MOVE = {
   /** Calibrated against his own examples, which span +1.2% to +10.1%. The strength ladder sits at +1.6 to
    * +2% a week, which is P2 -- small and predictable -- with a number attached at last. */
@@ -139,17 +143,24 @@ export function judgeMove(
     return { intensityPct: i, volumePct: v, verdict: "backwards", why: "Both difficulty and volume fell." };
   }
   if (i > GOOD_MOVE.intensity.max) {
-    // One step on the equipment is the smallest move that exists. On a light dumbbell that step is
-    // already a large percentage -- 40 to 45 lb is 12.5% -- and refusing it would mean the exercise can
-    // never take load at all. So a single-step jump is legal however it scores, which is exactly Jack's
-    // "keep it three sets of ten the entire block and add five pounds a week".
+    // One step on the equipment is the smallest move that exists, and on a light dumbbell that step is
+    // already a large percentage -- 40 to 45 lb is 12.5% -- so refusing it outright would mean the
+    // exercise could never take load. But the exception has a limit: a 10 lb cable step on a 10 lb
+    // lateral raise is a 100% jump, and generation produced exactly that before this cap existed. Above
+    // MAX_SINGLE_STEP_PCT the honest answer is that this exercise cannot progress on load at all, and
+    // the reps have to move instead.
     const singleStep =
       opts.equipment !== undefined &&
       from.length === to.length &&
       from.every((s, k) => s.reps === to[k].reps) &&
       to.every((s, k) => {
         const before = from[k].load;
-        return before !== null && s.load !== null && s.load - before <= stepForEquipment(opts.equipment!) + 0.01;
+        if (before === null || s.load === null) return false;
+        const delta = s.load - before;
+        return (
+          delta <= stepForEquipment(opts.equipment!) + 0.01 &&
+          (before === 0 || (delta / before) * 100 <= MAX_SINGLE_STEP_PCT)
+        );
       });
     if (!singleStep) {
       return {
