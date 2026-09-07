@@ -115,6 +115,7 @@ export function expandCoachProgramToProgram(cp: CoachProgram, coachName: string)
         loadMode,
         metaLine: `${sets.length} sets`,
         hasVideo: false,
+        timed: bex.timed,
         equipment: equipmentOf({ name: bex.name }),
         sets,
       };

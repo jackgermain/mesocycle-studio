@@ -96,6 +96,12 @@ export interface BuilderExercise {
   sets: BuilderSet[];
   /** When set, this exercise ignores the program's load mode and uses its own — for the one exercise you always track differently. */
   loadModeOverride?: LoadMode;
+  /** Measure this exercise in seconds rather than reps — planks, carries, holds.
+   *
+   * `BuilderSet.reps` then holds seconds, the same way `loadValue` already means whatever the load mode
+   * says it means. One number per set either way, so nothing downstream has to carry two fields and keep
+   * them in step. */
+  timed?: boolean;
 }
 
 export interface BuilderDay {

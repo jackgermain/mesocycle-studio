@@ -28,6 +28,12 @@ export function blankState(): CoachState {
   return { clients: [], programs: [], threads: [], customExercises: [], dismissedCompliance: [], toast: null };
 }
 
+/** Defaults applied when an exercise is switched between reps and seconds. The number on a set means
+ * whichever unit the exercise is in, so it has to be reset -- a 3 left over from "3 reps" would read as a
+ * 3-second plank. */
+const TIMED_DEFAULT_SEC = 30;
+const REPS_DEFAULT = 10;
+
 type Action =
   | { type: "HYDRATE"; state: CoachState }
   | { type: "ADD_CLIENT"; client: CoachClient }
@@ -64,6 +70,7 @@ type Action =
   | { type: "ADD_PROGRAM_SET"; programId: string; dayId: string; exerciseId: string; warmup?: boolean }
   | { type: "REMOVE_PROGRAM_SET"; programId: string; dayId: string; exerciseId: string; setId: string }
   | { type: "EDIT_PROGRAM_SET"; programId: string; dayId: string; exerciseId: string; setId: string; reps?: number; loadValue?: number; weightLb?: number; warmup?: boolean; workSec?: number; restSec?: number }
+  | { type: "SET_EXERCISE_TIMED"; programId: string; dayId: string; exerciseId: string; timed: boolean }
   | { type: "SHOW_TOAST"; message: string }
   | { type: "CLEAR_TOAST" };
 
@@ -322,6 +329,21 @@ function reducer(state: CoachState, action: Action): CoachState {
             for (const set of ex.sets) set.loadValue = defaultValue;
           }
         }
+      }
+      return { ...state, programs };
+    }
+    case "SET_EXERCISE_TIMED": {
+      const programs = structuredClone(state.programs);
+      const ex = programs
+        .find((p) => p.id === action.programId)
+        ?.days.find((d) => d.id === action.dayId)
+        ?.exercises.find((e) => e.id === action.exerciseId);
+      if (ex) {
+        ex.timed = action.timed || undefined;
+        // The number means something different now, so a rep count left in place would read as a
+        // duration -- "3 reps" becoming a 3-second plank. Reset to a sane default in whichever unit
+        // the exercise has just switched to.
+        for (const set of ex.sets) set.reps = action.timed ? TIMED_DEFAULT_SEC : REPS_DEFAULT;
       }
       return { ...state, programs };
     }

@@ -107,9 +107,12 @@ export function ExerciseSection({
   function toggle(s: WorkSet) {
     dispatch({ type: "SET_CHECKED", dayId, exerciseId: ex.id, setId: s.id, checked: !s.checked });
   }
+  // On a timed exercise the number is seconds, so the nudge is five at a time -- a one-second step on a
+  // plank is not a meaningful adjustment.
+  const repStep = ex.timed ? 5 : 1;
   function editReps(s: WorkSet, delta: number) {
     const current = s.actual?.reps ?? (typeof s.prescribed.reps === "number" ? s.prescribed.reps : 0);
-    dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, reps: Math.max(0, current + delta) });
+    dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, reps: Math.max(0, current + delta * repStep) });
   }
   function editLoad(s: WorkSet, direction: 1 | -1) {
     const current = s.actual?.load ?? s.prescribed.load ?? 0;
@@ -205,7 +208,7 @@ export function ExerciseSection({
       <div className="scr" style={{ display: "grid", gridTemplateColumns: COLS, gap: 8, alignItems: "center", padding: "6px 0" }}>
         <span />
         <span style={{ textAlign: "center" }}>{mode === "pct1rm" ? "weight · %1RM" : "weight"}</span>
-        <span style={{ textAlign: "center" }}>reps</span>
+        <span style={{ textAlign: "center" }}>{ex.timed ? "time" : "reps"}</span>
         {/* RPE and RIR get their own column: they're the coach's prescription, not something to log
             against, so they read out and cannot be edited here. %1RM instead rides alongside the weight,
             because it IS the weight -- a percentage of a max rather than a separate instruction. */}
@@ -299,6 +302,9 @@ export function ExerciseSection({
                 locked={locked}
                 onCommit={(n) => dispatch({ type: "EDIT_SET_TARGET", dayId, exerciseId: ex.id, setId: s.id, reps: Math.max(0, n) })}
               />
+              {ex.timed && (
+                <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: valueColor, marginLeft: -4 }}>s</span>
+              )}
               {!locked && (
                 <button onClick={() => editReps(s, 1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex" }}>
                   <i className="ph ph-plus" style={{ fontSize: 12 }} />

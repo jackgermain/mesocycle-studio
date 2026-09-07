@@ -747,6 +747,16 @@ function BuilderExerciseCard({
               { value: "rir", label: "RIR" },
             ]}
           />
+          {/* Reps or seconds, in the panel that already holds the other per-exercise overrides rather than
+              as another icon in the header. */}
+          <Seg<"reps" | "time">
+            value={ex.timed ? "time" : "reps"}
+            onChange={(m) => dispatch({ type: "SET_EXERCISE_TIMED", programId, dayId, exerciseId: ex.id, timed: m === "time" })}
+            options={[
+              { value: "reps", label: "Reps" },
+              { value: "time", label: "Time" },
+            ]}
+          />
           {ex.loadModeOverride && (
             <button
               onClick={() => {
@@ -791,7 +801,7 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
           used to be un-recordable because there was only ever one number per set. */}
       <div className="scr" style={{ display: "grid", gridTemplateColumns: COLS, gap: 8, padding: "4px 0" }}>
         <span />
-        <span style={{ textAlign: "center" }}>reps</span>
+        <span style={{ textAlign: "center" }}>{ex.timed ? "time (s)" : "reps"}</span>
         {loadMode !== "lb" && <span style={{ textAlign: "center" }}>weight</span>}
         <span style={{ textAlign: "center" }}>{LOAD_LABELS[loadMode]}</span>
         <span />
@@ -802,11 +812,14 @@ function StrengthSets({ programId, dayId, ex, loadMode }: { programId: string; d
         return (
           <div key={s.id} className="setrow" style={{ gridTemplateColumns: COLS }}>
             <span style={{ fontSize: 11, color: s.warmup ? "var(--color-neutral-400)" : "var(--color-neutral-500)" }}>{label}</span>
+            {/* One number per set, meaning reps or seconds depending on ex.timed -- so the step and the
+                floor move with it. Nudging a plank one second at a time would be useless. */}
             <Stepper
               value={typeof s.reps === "number" ? s.reps : parseFloat(String(s.reps)) || 0}
               onChange={(v) => dispatch({ type: "EDIT_PROGRAM_SET", programId, dayId, exerciseId: ex.id, setId: s.id, reps: v })}
-              min={1}
-              width={38}
+              step={ex.timed ? 5 : 1}
+              min={ex.timed ? 5 : 1}
+              width={ex.timed ? 46 : 38}
               fontSize={14}
             />
             {loadMode !== "lb" && (

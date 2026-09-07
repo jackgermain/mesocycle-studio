@@ -72,6 +72,9 @@ export interface WorkExercise {
   loadMode?: import("../coach/types").LoadMode;
   metaLine: string;
   hasVideo: boolean;
+  /** Sets on this exercise are measured in seconds, not reps -- planks, carries, holds. `reps` on each
+   * set holds the duration. Set by the coach per exercise; see BuilderExercise.timed. */
+  timed?: boolean;
   equipment?: Equipment;
   setup?: ExerciseSetup;
   sets: WorkSet[];
