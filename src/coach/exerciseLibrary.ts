@@ -193,6 +193,9 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Trap Bar Shrug", "Traps", false),
   ex("Barbell Wrist Curl", "Forearms", false),
   ex("Reverse Wrist Curl", "Forearms", false),
+  ex("Dumbbell Reverse Curl", "Forearms", false),
+  ex("Barbell Reverse Curl", "Forearms", false),
+  ex("Standing Dumbbell Wrist Curl", "Forearms", false),
   ex("Farmer's Carry", "Forearms", false),
 
   // Olympic / full body / conditioning

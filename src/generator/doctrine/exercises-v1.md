@@ -4929,6 +4929,63 @@ allow heavier load or more total reps, and here they exist to **rotate a variabl
 
 ---
 
+# Forearms
+
+## Wrist Curls — *flexors, and a finisher*
+
+**Library:** `Barbell Wrist Curl` · `Reverse Wrist Curl` · `Standing Dumbbell Wrist Curl` *(added)*
+**His usage:** zero across the ten programs.
+
+**Rule — reps 10 and above, always.** And per G48, 15+ when the goal is vascularity.
+
+**Rule — a finisher.** *"If you're gonna do these, these are a finisher, or something you do at the end or
+right before the end."*
+
+**Rule — mind them against hanging work.** *"If you're gonna do a lot of hanging that day, I would be careful
+on the usage of your forearm flexors."* A fifth entry for the indirect-work table: **hanging cooks the forearm
+flexors**, so grip-dependent work — hanging leg raises, pull-ups, heavy rows — costs forearm capacity.
+
+**The three wrist movements differ by what they train:**
+
+| Movement | Palm | Trains |
+|---|---|---|
+| Wrist curl | Up | **Flexors** |
+| Reverse wrist curl | Down | **Extensors** |
+| Standing dumbbell wrist curl | Up | Flexors |
+
+---
+
+## Reverse Curl — *his favourite forearm exercise*
+
+**Library:** `Dumbbell Reverse Curl` · `Barbell Reverse Curl` *(both added — neither existed)*
+**His usage:** 14 prescriptions as `Cable Rev Curl`.
+
+> *"You've got the dumbbell reverse curl, which I'm gonna add in here — which is pretty much a hammer curl but
+> your palm is facing towards the ground. You could do this with either a barbell or a dumbbell. These are both
+> unbelievably amazing exercises… For people who are obsessed with forearms like I am, these are my favourite
+> forearm exercise."*
+
+**Rule:** an elbow curl with a pronated grip. Trains the **extensors and the brachialis**, *"very very similar
+to the hammer curl."*
+
+**Rule — programmed like a regular curl or a hammer curl.** Same parameters.
+
+**Rule — clusters and high reps apply.** *"You can use clusters, lots of reps."*
+
+**Library addition:** neither the dumbbell nor barbell reverse curl existed. This is the second time one of
+his named favourites was absent from the app, after the single-leg RDL.
+
+---
+
+## Farmer's Carry — *not covered*
+
+> *"Don't worry about the farmer's carry."*
+
+Set aside. Not generatable under G10. Worth returning to, since it is one of the only anti-lateral-flexion
+options in the library — movements #5 and #6 of the core coverage model, which are also deferred.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
