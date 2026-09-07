@@ -462,6 +462,44 @@ qualifies, pull-up ↔ pulldown does not, despite both being vertical pulls for 
 are not simply "two similar exercises" — they are two exercises of *equivalent difficulty*, which is why
 progress on either carries to the other.
 
+**G19 — Width comes from vertical pulls, thickness from horizontal pulls.**
+
+> *"Pulldowns will get your back to be a lot wider, and then rows — specifically rows — will get your back
+> to be a lot thicker."*
+
+**Rule:** the two back patterns build different things and are not substitutes for one another.
+
+| Pattern | Builds |
+|---|---|
+| Vertical pull — pull-up, chin-up, pulldown | Width |
+| Horizontal pull — every row | Thickness |
+
+This is the second reason not to treat back exercises as interchangeable. G17 already said transfer runs
+one way *within* the vertical pull family; G19 says the vertical and horizontal families do different jobs
+entirely. A back allocation that satisfies its set count purely from rows produces a thick, narrow back.
+
+**G20 — Elbow flare selects upper versus mid back.**
+
+> *"Depending on where you're pulling the bar to will also affect what part of your back is working. If
+> you're trying to work your mid back, these exercises — all of them we've talked about — are amazing for
+> that. But if you wanted to work your upper back more, you'd have to flare your elbows out a little bit
+> more, so your elbows are a little bit closer to horizontal rather than vertical at the end of the pull."*
+
+**Rule:** on any row, elbow path is the regional selector.
+
+- **Elbows tucked, travelling vertically** → mid back. This is the default, and every row covered so far is
+  a mid-back exercise as normally performed.
+- **Elbows flared toward horizontal** → upper back.
+
+So "upper back" is not a separate list of exercises — it is the same exercises cued differently. That is a
+prescription the model has no way to express today: the program model has no per-exercise note field, which
+`TEMPLATE-ANALYSIS.md` already flagged when Jasper's sheet turned out to carry cues like "ELBOWS VERTICAL"
+as their own rows.
+
+**Both of these are invisible to the library.** All 24 back exercises carry the single tag `Back`. Nothing
+in the data distinguishes vertical from horizontal, width from thickness, or upper from mid — so the
+generator currently cannot tell that a session of five rows has trained one thing five times.
+
 ---
 
 # Entries
@@ -1378,6 +1416,44 @@ supported row."*
 
 *Open:* that inheritance points at a number that has not been given yet — the seated cable row's own rep
 range is still unstated, so both entries are waiting on the same answer.
+
+---
+
+## Barbell Bent-Over Row and T-Bar Row — *compounds, and the main thickness builders*
+
+**Library:** `Barbell Bent-Over Row` · `T-Bar Row`
+**His usage:** zero across the ten programs.
+
+> *"I'll talk about bent-over rows and T-bar rows at the same time because they're very similar. But these
+> are both compound exercises. They can be loaded really heavy."*
+
+**Rule:** both are compounds — stated flatly here, not electively as with the seated cable row.
+
+**Rule — slot 1st or 2nd.** *"I definitely would want to do them first or second. I would not want to do
+them third for the most part — I guess it's not that big of a deal, but I definitely would never do them
+anything later than that in the session."* So 3rd is tolerable, 4th is not.
+
+**Rule — reps, and the two differ:**
+
+| Exercise | Reps |
+|---|---|
+| Barbell bent-over row | **1-15** |
+| T-Bar row | **6-15** |
+
+The barbell row reaches the full peak-strength band; the T-bar floors at 6. Same pattern as the barbell
+bench (1-15) against the Smith (6-15) — the freer, more loadable implement gets the bottom of the ladder.
+
+**Rule — in practice, triples are the floor.** *"It's not uncommon to see, for guys looking for peak peak
+peak strength — a lot of athletes do things like this — but they'll be doing sets of even 1 to 3, maybe a
+single by the end of a block. But I would say triples for the most part, or sets of three, as the lowest.
+Although it's not the most ridiculous thing I've heard to do singles."*
+
+So 1 is legal and 3 is the practical floor, with singles reserved for genuine peak-strength work on
+athletes.
+
+**Rule — grip does not change any of this.** *"That goes for both a supinated grip and a pronated grip."*
+
+**Rule — purpose:** *"a major mass builder for thickness in your back."* See G19.
 
 ---
 
