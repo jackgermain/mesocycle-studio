@@ -360,6 +360,36 @@ generator would happily add a full biceps allocation on top. The real budget is 
 a **different exercise**, not from more sets of the same one. The set caps throughout this file are
 therefore not volume caps: they cap *this exercise*, and the muscle's remaining volume is spent elsewhere.
 
+**G16 — Interchangeable pairs rotate between blocks.** Given for pull-ups and chin-ups, and extended by him:
+
+> *"You can switch them interchangeably, so I might like to rotate exercises each block. If somebody really
+> wants to get good at pull-ups, on the first day I might start with a chin-up grip — a neutral grip chin —
+> with a band, and then on the other day I do a regular pull-up on the assisted pull-up machine. I might run
+> those two for the block, and then maybe the next block I swap it: so instead of the pull-up on the assisted
+> machine, I'm doing the chin-up on the assisted machine, and I'm doing the regular pull-up with the band."*
+
+> *"The variation in stimulus is very similar, so it will transfer to the other exercise, but it's enough of
+> a change that it won't get stale. And the same thing goes between front squat and back squat — I like to
+> use them interchangeably like that."*
+
+**Rule:** certain exercises form **interchangeable pairs**, and the pair is rotated block to block rather
+than one member being chosen and kept. Confirmed pairs so far:
+
+- Pull-up ↔ chin-up (including neutral grip)
+- Front squat ↔ back squat
+
+**The criterion is a balance of two things:** stimulus close enough that progress on one carries to the
+other, and different enough that neither goes stale. Both halves matter — an exercise too different would
+not transfer, and an identical one would not refresh.
+
+**What actually rotates is the pairing, not the exercise.** In the example there are two variables — grip
+(pull vs chin) and assistance (band vs machine) — held across two weekly slots. The block swaps *which grip
+goes with which assistance*, so both grips and both assistance methods are present in every block; only
+their pairing changes.
+
+This does not violate `v1.md` C4 (*one variable at a time*). C4 governs change **within** a block, week to
+week. G16 is a change **between** blocks, which is where variation is supposed to happen.
+
 ---
 
 # Entries
@@ -1113,6 +1143,14 @@ Two assistance methods, and the order between them is the point:
 where the movement is hardest, which is what a beginner needs. The machine assists evenly, which is the
 harder and more honest version of the same exercise. The progression is not band → less band → nothing; it
 is band → machine, a change in the *shape* of the assistance rather than only its size.
+
+**Sequential for a beginner, concurrent for a goal.** The two assistance methods are used two different
+ways, and they should not be confused:
+
+- **Getting a first pull-up:** band for a block or two, then switch to the machine when it goes stale. One
+  method at a time, in sequence.
+- **Training pull-ups as a goal, 2x/week:** both methods in the *same* block, one per day — band on one
+  day, machine on the other — with the grips swapped between blocks per G16.
 
 This is the second time a force curve has decided something, and a generator has no access to that
 reasoning from muscle tags and equipment alone.
