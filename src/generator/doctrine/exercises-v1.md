@@ -2945,23 +2945,47 @@ pounds on the bar."*
 Third instance of the same rule, after the barbell bench at 315 lb and the Smith press. A very strong lifter
 is moved *off* the opening slot so the absolute load comes down. The threshold here is roughly **500 lb**.
 
-### Sets by rep count — partially recovered
+### Sets by rep count
 
-The recording was significantly degraded through this section. What is unambiguous:
+Restated in full after the first recording degraded:
 
-| Reps | Max sets |
-|---|---|
-| 8 | 4-5 |
-| 10 | 4-5 |
-| 12 | 4 |
-| 15 | 4 |
+| Reps | Max sets | Note |
+|---|---|---|
+| 1-2 | **8** | |
+| 3 | 5-6 | *"six is pushing it"* |
+| 4-5 | 5, maybe 6 | |
+| 6-8 | 4-5 | *"four is good, but five is also OK"* |
+| 8-10 | 4-5, up to 6 | |
+| 10 | 4-5 | |
+| 12-15 | 4-5 | *"probably four"* |
 
-And the floor, restated as universal: *"no less than two on anything, on any exercise — no less than two
+Floor throughout, restated as universal: *"no less than two on anything, on any exercise — no less than two
 sets."*
 
-The low-rep end of the table (singles through six) did not survive transcription clearly enough to record.
-He described a ceiling of five, six, or seven sets there, with **seven reserved for the end of a block** —
-which is what G38 above generalises. **The specific low-rep set numbers should be asked again.**
+Per G38, the top of each row is the block's **final or second-to-last week**, not a value available from
+week one.
+
+### The squat's curve is not the bench's
+
+G3 recorded this same shape from the bench press. The two do not match:
+
+| Reps | Bench max sets | Squat max sets |
+|---|---|---|
+| 1 | 6 | **8** |
+| 2 | 5-6 | **8** |
+| 3 | 5-6 | 5-6 |
+| 4-5 | 5 | 5-6 |
+| 6-8 | 4 | 4-5 |
+| 10+ | 4 | 4-5 |
+
+**The squat tolerates meaningfully more sets at the bottom of the ladder** — eight singles against the
+bench's six — and slightly more everywhere else. So G3's curve is **per exercise, not one curve shared by
+all compounds.** The likely reason is where the risk sits: the bench's ceiling is shoulder and pec injury
+(see that entry), while the squat has no equivalent single point of failure, so its limit is fatigue rather
+than damage.
+
+**Consequence:** the generator cannot hold one set-cap table for the compound class. Each compound needs its
+own, and only two of them are known.
 
 ---
 
