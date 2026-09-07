@@ -283,6 +283,13 @@ Unlike the decline press and the rack pull, no reason was given — he did not c
 will never prescribe them. The effect on the generator is identical, so they sit here rather than under
 G10; but the *reason* is unrecorded, and a later reader should not infer one.
 
+**⚠ This entry needs confirming.** Immediately afterwards, introducing concentration curls, he said
+*"concentration curls are cool, like I said about the preacher curls… these exercises are all great if
+you're limited on equipment."* That either means the preacher curl is **not** a hard exclusion and unlocks
+on limited equipment the way the concentration curl does, or it means only that both are exercises he
+personally rarely uses. The two readings differ on whether the generator may ever prescribe a preacher curl.
+Recorded as denylisted because that is what he said explicitly, and flagged rather than quietly softened.
+
 **Cables are not covered by this.** Asked directly whether `Cable Fly — High to Low` falls under it:
 
 > *"Don't worry about the cable flies. There's nothing wrong with high-low cable flies. I'm just referring
@@ -2510,9 +2517,32 @@ Nothing else changes from the dumbbell curl entry.
 
 ---
 
+## Concentration Curl — *for limited equipment, and for variation*
+
+**Library:** `Concentration Curl`
+**His usage:** zero across the ten programs.
+
+> *"Concentration curls are cool. I don't really do them that much, but these exercises are all great if
+> you're limited on equipment or whatever. Any dumbbell exercise you can do is another form of variation, so
+> if you're at home, or you have a limited amount of space, concentration curls are great."*
+
+**Rule — two triggers: limited equipment, and variation.** The second is the general point worth extracting:
+
+**Rule — a dumbbell exercise is always available as a variation.** *"Any dumbbell exercise you can do is
+another form of variation."* Dumbbells need no station, no cable stack and almost no floor space, so the
+dumbbell version of a movement is the variation that survives every equipment constraint.
+
+This is the second exercise whose trigger is a property of the **gym rather than the client** — the bench
+dip was the first, and the reverse hyper is its inverse. For the home-gym case that `TEMPLATE-ANALYSIS.md`
+flagged as unserved (Jasper, training with bands and dumbbells to 50s), this is the shape of the answer:
+the dumbbell variant of whatever the commercial-gym prescription would have been.
+
+**Rule — reps and sets as the dumbbell curl.** Nothing was said to change them.
+
+---
+
 ## Deferred — raised, not yet answered
 
-- **Concentration Curl.** Not covered while going through the biceps group.
 - **Hammer Strength / Cybex / Life Fitness chest presses.** Asked twice and passed over both times, so
   recorded as **(inferred)**: they inherit the chest press machine entry — accessory, 8-15 reps, 4 sets max,
   slot 2nd or 3rd unless chest is trained 3x/week. Plate-loaded versus selectorized is assumed not to
