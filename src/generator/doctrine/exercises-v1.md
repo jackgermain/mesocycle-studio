@@ -4596,6 +4596,33 @@ across a session.
 
 ---
 
+## Starfish Crunch — *interchangeable with the V-up*
+
+**Library:** `Starfish Crunch`
+**His usage:** 57 prescriptions — his most-used ground-based ab movement.
+
+> *"Starfish crunches are amazing. I'd put them in the same category as the V-up. I use them interchangeably a
+> lot. Use the same parameters."*
+
+**Rule:** identical to the V-up — 8-15 reps, up to 4 sets alone or once in a circuit, placed after the hanging
+work, and the unweighted rep-floor exception applies.
+
+**Rule — it forms an interchangeable pair with the V-up** (G16). Same stimulus, enough difference not to go
+stale, and progress on one carries to the other. That satisfies G16's requirement of symmetric transfer,
+unlike the pull-up/pulldown pairing which fails it.
+
+### ⚠ What the movement is has not been established
+
+Like the glute deadlift before it, this is a name from Jack's own vocabulary rather than a standard one. It
+appears 57 times in his spreadsheets and is in the library, but nothing recorded says what the body actually
+does — start position, what moves, what "starfish" refers to.
+
+Its parameters are fully known and the movement is not, so it could be prescribed correctly to a client who
+would have no idea what to perform, and it cannot be substituted because nothing is known about what it is a
+version of.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
