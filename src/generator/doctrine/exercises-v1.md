@@ -4311,6 +4311,54 @@ sanctioned — see G3's floor.
 
 ---
 
+## The core coverage model — *the box and the X*
+
+Given unprompted, and it is a complete taxonomy of what the core can do. Everything else about ab selection
+follows from it.
+
+> *"I'll break down any ab exercise you can possibly do into a very easy system. If you're looking at
+> somebody's torso, where their six-pack is — picture an X with a cross through it and a box around it, all
+> connecting."*
+
+The box's four corners are the **two hips** and the **two ribs**. The X is the diagonals between opposite
+corners. Every core action is one of six things:
+
+| # | Movement | Plain description | Example exercises |
+|---|---|---|---|
+| 1 | **Ribs → pelvis** | Crunching down | Cable crunch, sit-up, crunch machine |
+| 2 | **Pelvis → ribs** | Lifting the pelvis up | Hanging leg raise, captain's chair, reverse crunch |
+| 3 | **Left hip → right rib** | Diagonal, one way | Twisted V-up, bicycle, cable chop |
+| 4 | **Right hip → left rib** | Diagonal, the other way | Same, mirrored |
+| 5 | **Resist lateral flexion, left** | Anti side-bend | Suitcase carry, side plank |
+| 6 | **Resist lateral flexion, right** | Anti side-bend, mirrored | Same, mirrored |
+
+> *"That is all the capabilities of your core."*
+
+**Rule — cover a variety of the six.** *"You want to make sure that you have a variety of those amongst the
+exercises that you choose."*
+
+**Rule — but not at the compounds' expense.** *"…without compromising the compounds."* Coverage is a
+secondary objective. The hanging leg work still opens the session (see the structure below), and the variety
+is filled in around it.
+
+### Why this matters more than most things in this file
+
+This is a **coverage model the generator can check against directly.** Every other selection rule here is a
+judgement — is this the right exercise for this client. This one is arithmetic: take the session's core
+exercises, map each to one or more of the six, and see what is missing.
+
+It also exposes a real bias in his own programming. His most-used core movements are the captain's chair and
+hanging leg raise (#2), crunches and V-ups (#1), and cable rotations and twists (#3 and #4). **Anti-lateral
+flexion — #5 and #6 — barely appears**, and the library's only real entries for it are the plank and the
+farmer's carry. So the sixth of the model that resists rather than produces movement is the thinnest, both in
+his programs and in the app.
+
+Note also that the model is stated in terms of **what the torso does**, not which muscle is worked. The
+library splits core into `Abs` and `Obliques` by muscle tag, which cuts across this taxonomy rather than
+along it — a diagonal is obliques, but so is anti-lateral flexion, and they are different jobs.
+
+---
+
 ## How ab training is structured — *the first session template in this file*
 
 Given unprompted, and it is a complete structure rather than a rule about one exercise.
