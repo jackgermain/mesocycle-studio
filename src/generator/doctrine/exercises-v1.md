@@ -1554,6 +1554,69 @@ that novelty is a real input, not a tiebreaker of last resort.
 
 ---
 
+## Single-Arm Dumbbell Row — *heavy free-weight rowing without the spinal load*
+
+**Library:** `Single-Arm Dumbbell Row`
+**His usage:** 25 prescriptions across two-arm and one-arm dumbbell row spellings.
+
+> *"Single-arm dumbbell rows can be an absolute staple. They're one of the other ways that you can get a
+> free weight, a dumbbell, and do a heavy row without loading your spinal erectors in the way that they
+> would have to resist sagittal spinal flexion."*
+
+**Rule:** a staple. It is the way to row **heavy with a free weight** while sparing the erectors the
+flexion demand that a bent-over row imposes.
+
+### But it trades one spinal demand for another
+
+> *"You do have to resist the torque pulling your body to rotate a little bit, so you have to be a little
+> bit mindful of that. If you've got somebody who hurt their spinal erectors, they might re-irritate that
+> area from the single-arm row — pulling that side of your body down towards the ground, and thus you
+> having to resist that. But if that's not an issue, then this exercise is amazing."*
+
+**Rule:** it removes the **sagittal flexion** demand and adds an **anti-rotation** demand. So it is not
+simply the safer bent-over row. A client with an erector injury may still be irritated by it, and the
+question to ask is which demand their back tolerates, not how heavy the exercise is.
+
+**Rule — reps: 6 at the floor** (uncommon), **8-12 is the sweet spot**, up to 15 without hesitation.
+**Rule — sets: 2 minimum, 4 the sweet spot, 6 maximum.**
+
+---
+
+## Smith Machine Row — *inherits the barbell row, minus the strength band*
+
+**Library:** `Smith Machine Row`
+**His usage:** zero across the ten programs.
+
+> *"Smith machine rows get a very similar place to the barbell row, other than the fact that the lowest rep
+> range I would put on it is six reps."*
+
+**Rule:** identical to the barbell bent-over row except **reps 6-15** rather than 1-15.
+
+This is the third time the Smith has given up the bottom of the ladder and landed on exactly 6 — Smith
+bench, incline Smith, and now the Smith row, each against a free-barbell parent that reaches 1 or 3. The
+pattern is consistent enough to be a default: **a Smith version of a barbell lift keeps everything except
+the strength band, and floors at 6.**
+
+---
+
+## Rowing and the spine — the real selection axis
+
+Four rows, four different demands on the lower back. This is the axis that actually separates them, and
+none of it is visible in the library, where all four carry the tag `Back`.
+
+| Exercise | Erector demand | Right for |
+|---|---|---|
+| Seated cable row *with forward lean* | **Uses them deliberately** | Stiff lower back, tight erectors — it is prescribed *to help* |
+| Barbell / T-bar / Pendlay row | Full sagittal flexion resistance | Healthy backs; restricted for the very old (G21) |
+| Single-arm dumbbell row | No flexion demand, but **anti-rotation** demand | Backs that can't take flexion but can brace against rotation |
+| Chest supported row | **None** | Backs that are spent, injured, or can't brace at all |
+
+The generator currently picks between these four on muscle tag, which makes them interchangeable. They are
+not — they are four answers to the question *what can this person's lower back do today*, and the seated
+cable row is at the opposite end from where its "safe cable machine" appearance would place it.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Hammer Strength / Cybex / Life Fitness chest presses.** Asked twice and passed over both times, so
