@@ -519,6 +519,7 @@ rather than incidental:
 | Compound work | Also trains and fatigues | Consequence |
 |---|---|---|
 | Any pulling — rows, pulldowns, pull-ups | **Biceps** (chin-ups most) | Direct biceps work counts against the week's back volume |
+| Deadlifts (straight or hex bar) and Olympic lifts | **Traps** | *"Those can get your traps sore — be mindful of your placement around those exercises"* |
 | Rowing specifically | **Rear delts** | *"You don't always have to isolate them like that"* |
 | Chest pressing | **Front delts** | *"Your front delt gets a lot of work already from chest"* — direct front delt work is usually redundant |
 
@@ -4874,6 +4875,57 @@ squeezed out when there are not enough sessions, and calves are the clearest cas
 any other rep scheming of that nature"* — which reads more naturally as **can**. Calves are a machine exercise
 with easy re-entry, which is exactly G42's condition, and 20+ rep work is where clusters are most useful. The
 sentence is left unresolved rather than recorded either way.
+
+---
+
+# Traps
+
+## Shrugs — *one entry for every version*
+
+**Library:** `Barbell Shrug` · `Dumbbell Shrug` · `Trap Bar Shrug`
+**His usage:** zero across the ten programs.
+
+> *"We'll just talk about all shrugs at the same time — barbell shrug, dumbbell shrug, trap bar shrug, Smith
+> machine shrug, or any shrug machine at all."*
+
+**Rule — machines and the Smith are for going heavy**, when available: *"these are really nice if you want to
+be able to go really heavy and you have them. But for the most part, most places usually just have a Smith
+machine, a barbell, or dumbbells."*
+
+**Rule — reps depend on how the set is executed:**
+
+| Execution | Reps |
+|---|---|
+| Straight sets | **10-15.** *"If you're just doing straight sets, I wouldn't do more than fifteen reps"* |
+| Clustered | **10-20**, and higher is fine |
+
+Second time a rep ceiling has moved with execution rather than with the exercise — the lateral raise loses its
+ceiling entirely when clustered. **The ceiling belongs to the set structure, not the movement.**
+
+**Rule — sets 2-6.**
+**Rule — never first.** An accessory, done later in the session — or inside one of the three-exercise circuits
+in a strength-conditioning session.
+
+**Rule — mind the placement against deadlifts and Olympic lifts**, which make the traps sore. See the
+indirect-work table under G14; this is the fourth such relationship recorded.
+
+### Grip varies *within* a clustered set
+
+> *"You can train traps a lot of different ways — wide grip, narrow grip, middle grip. And even if you use
+> clusters on traps, you can do one of those clusters with a different grip than another. So you could have
+> seven shrugs with a narrow grip, then in the next cluster you do seven wide-grip shrugs, or seven
+> middle-grip. You can play around with that variation when you're programming them."*
+
+**Rule:** the grip can change between cluster blocks inside a single set — 7 narrow, then 7 wide, then 7
+middle.
+
+**This is not expressible today.** `ClusterSpec` carries `clusters`, `repsPerCluster[]` and `intraRestSec` —
+a rep count per block but no attribute per block. A per-cluster grip would need either a parallel array or a
+free-text note. `ExerciseSetup.cue` could carry it as prose, but nothing structured records it, and nothing
+displays `.setup` to the client in any case.
+
+It is also a genuinely different use of clusters from every other one recorded: elsewhere the blocks exist to
+allow heavier load or more total reps, and here they exist to **rotate a variable mid-set.**
 
 ---
 
