@@ -4224,6 +4224,56 @@ changed here — a rename affects any program already referencing the name, same
 
 ---
 
+## Hip Abduction and Adduction Machines — *same parameters, different reasons*
+
+**Library:** `Life Fitness Hip Abduction Machine` · `Hip Adduction Machine`
+**His usage:** abduction 37, adduction 10, across two programs.
+
+> *"I would treat the hip abduction machine and the hip adduction machine the same."*
+
+**Rule — reps 8-20.**
+**Rule — sets 2-6.** *"I've seen anywhere of two sets, three sets, four sets, all the way up to six sets even
+sometimes."*
+**Rule — a major accessory, late.** *"Later in the lift, if not last, second to last."*
+
+### Abduction — a staple for women
+
+> *"For girls, especially, the abductor machine is very very commonly used, massively so… It's nice to have a
+> little bit of a variation for your glute medius and your hip external rotators here and there."*
+
+**Rule:** commonly prescribed for women. Trains the **glute medius and hip external rotators**, which nothing
+else in the leg vocabulary covers — the squats, hinges and lunges are all sagittal-plane movements.
+
+### Adduction — conditional, and sometimes contraindicated by the goal
+
+> *"I wouldn't really do this a whole lot, unless somebody was super stiff in their legs, and were just really
+> weak — like their whole leg musculature. So maybe if they're middle-aged and older and they're just a little
+> bit weak, I might use something like that as a major accessory."*
+
+**Rule — three unlocks:** stiffness through the legs, general leg weakness, or an older client who is weak.
+
+**Rule — and a fourth, which is aesthetic:** *"If you want your adductors to get bigger — which might be a more
+common thing for guys."*
+
+### The first exercise excluded for what it would build
+
+> *"A lot of girls like their thigh gap, so they might not like the adductor machine as much."*
+
+**Rule:** avoid the adductor machine for a client whose aesthetic goal is a thigh gap, because developing the
+adductors works directly against it.
+
+This is a kind of rule nothing else in the file contains. Every other exclusion is about **risk** (the decline
+press, upright rows), **redundancy** (front delt work), **equipment** (the reverse hyper) or **coachability**
+(the front squat). This one excludes an exercise because it **works** — and the result is not what the client
+wants.
+
+It sharpens G30's "aesthetics" goal considerably. Aesthetics is not one target and it is not only additive:
+two clients can both want to look better and want **opposite things from the same muscle.** A generator
+treating aesthetics as "grow the prioritised muscles" would prescribe adductor work to a woman who
+specifically does not want it.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
