@@ -606,6 +606,26 @@ G24 says what is legal *for the person*, and the prescription is the intersectio
 becomes 6-15 for a 55-year-old general-population client — which is how a roster with zero barbell benching
 and zero sub-6 work is generated from a doctrine that permits both.
 
+**G25 — There are only three ways to train the spinal erectors.**
+
+> *"The only way that you work your spinal erectors is from either heavy hinging, resisting flexion through
+> a row, or doing either back extensions or reverse hypers."*
+
+**Rule:** erector work comes from exactly three sources:
+
+1. **Heavy hinging** — deadlift, RDL
+2. **Resisting flexion in a row** — the bent-over family (see the spinal-demand table below)
+3. **Back extensions and reverse hypers** — the only *direct* option
+
+**Consequence:** the erectors are the one muscle whose training is a side effect of other choices. A program
+built entirely from chest-supported rows, cable rows, machines and pulldowns — which is what the
+joint-friendly selection this doctrine favours tends to produce — trains them **not at all**. If they are
+wanted, route 3 has to be added deliberately, because routes 1 and 2 are exactly what gets removed for a
+client with a bad back.
+
+That is the tension worth naming: the client most likely to need erector work is the client whose program
+has had every source of it stripped out.
+
 ---
 
 # Entries
@@ -1737,6 +1757,32 @@ never have somebody who is of age actually work crazy crazy hard on a deadlift."
 - Reps **≥ 6**
 - At 6 reps, **RIR ≥ 2 / RPE ≤ 8**
 - **≤ 4 sets** when working that hard
+
+---
+
+## Back Extension and Reverse Hyperextension — *the only direct erector work*
+
+**Library:** `Back Extension` · `Reverse Hyperextension`
+**His usage:** zero across the ten programs.
+
+> *"Back extensions and reverse hypers are both amazing accessories that all just help with your spinal
+> erectors."*
+
+**Rule:** both are accessories, and they are the only **direct** route to the erectors (G25).
+
+**Rule — slot late.** *"If I do these at all, they're usually done later in the lift — usually second to
+last or last."*
+
+**Rule — reps 8-15 on both.** *"I would keep the reps above eight at all times… nothing higher than 15 on
+either one of those."*
+
+Six is mentioned twice and rejected twice: *"unless you're doing some heavy back extensions for sets of six
+— which I still wouldn't do. I've heard of it before, but that's not really something I would do."* And on
+the reverse hyper: *"six is not the most ridiculous thing I've heard of, but eight for the most part."*
+So 6 is real, known, and declined.
+
+**Rule — sets 2-6**, with 2 or 3 the usual. *"The most amount of sets I would do is probably six, and the
+least I would do is two or three — probably two."*
 
 ---
 
