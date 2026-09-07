@@ -741,6 +741,29 @@ Tier membership is not final — he undertook to flag any other muscle that belo
 lists above as what is confirmed rather than as complete. The lateral delts are notably **not** in tier 2
 despite being a small muscle: nothing else trains them, which is exactly why they need their own volume.
 
+### Biceps are not a tier, they are a function of back volume
+
+> *"I've heard of less biceps depending on how much back you do — like if you're really crazy about back,
+> just because your back musculature is so big. I've heard of people doing 20 sets per session for back, and
+> training your back at least twice per week. So in that case it would definitely affect your bicep volume a
+> lot."*
+
+**Rule:** direct biceps volume is **derived from back volume**, not allocated as a fixed number. The more
+back work in a week, the less direct biceps work — and at the extreme (a reported 20 sets per session,
+twice a week) it comes down a great deal.
+
+So the model has three shapes, not two:
+
+| Shape | Muscles | How volume is set |
+|---|---|---|
+| Fixed band | Chest, back, quads, hamstrings, glutes, lateral delts | 10-25 sets/week in its own right |
+| Small fixed allocation | Front delts, rear delts | ~4, up to 8 with priority and frequency |
+| **Derived** | **Biceps** | A function of the week's back volume; falls as back volume rises |
+
+The 20-sets-per-session figure is reported, not endorsed — *"I've heard of people doing"* — and at twice a
+week it implies roughly 40 back sets weekly, well above the 10-25 band. It is recorded as the scale at which
+the biceps effect becomes large, not as a recommendation.
+
 Note the second row is conjunctive: higher volume needs the priority **and** the frequency. Wanting bigger
 front delts on a 2-day split does not unlock 8 sets — G18 again.
 
