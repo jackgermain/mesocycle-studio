@@ -4793,6 +4793,44 @@ Diagonal work — movements #3 and #4.
 
 ---
 
+## Leg Extension — *the axial-sparing accessory*
+
+**Library:** `Leg Extension Machine (Cybex)` · `Nautilus Leg Extension Machine`
+**His usage:** 74 prescriptions, concentrated in two of ten programs.
+
+> *"Leg extensions are cool. They're another one of the only exercises, other than the leg press, that won't
+> load your spine at all… I'm not against them completely, and I do use them a fair amount. There's nothing
+> wrong with them at all."*
+
+**Rule — an accessory.** Not a compound, so it goes later in the session (G28).
+
+**Rule — the trigger is a quad emphasis.** *"If somebody wants a little bit more quad work, I think the leg
+extension machine can be great… if the emphasis is quads, this can be a great exercise."* That explains why it
+appears heavily in two programs and not at all in the other eight — it is added when quads are being pushed,
+not as a default.
+
+**Rule — reps 8-20.**
+**Rule — sets 2-6, sweet spot 4.** Six is *"kind of pushing it."*
+**Rule — clusters apply.** *"You can absolutely apply clusters to this exercise."* It satisfies G42's
+easy-re-entry constraint, being a machine.
+
+### It completes the axial-sparing group
+
+The other members are all compounds or near-compounds. This is the **accessory** of the group:
+
+| Exercise | Pattern | Role |
+|---|---|---|
+| Leg press | Knee-dominant | Compound |
+| Belt squat | Squat | Compound |
+| Hip thrust | Hip extension | Compound |
+| Cable pull-through | Hinge | Accessory-compound |
+| **Leg extension** | **Knee extension** | **Accessory** |
+
+That matters for a back-limited client wanting quad volume beyond what the leg press alone provides: the leg
+extension is the only way to add quad sets without adding any spinal load at all.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
