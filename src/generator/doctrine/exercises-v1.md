@@ -272,6 +272,17 @@ a list of what is endorsed. The first entry on the denylist:
 
 - `Rack Pull` — never
 
+**Third — the preacher curl:**
+
+> *"Preacher curls, I am never going to prescribe them, so let's skip those altogether."*
+
+- `Preacher Curl — Barbell` — never
+- `Cybex Preacher Curl Machine` — never
+
+Unlike the decline press and the rack pull, no reason was given — he did not call them bad, only that he
+will never prescribe them. The effect on the generator is identical, so they sit here rather than under
+G10; but the *reason* is unrecorded, and a later reader should not infer one.
+
 **Cables are not covered by this.** Asked directly whether `Cable Fly — High to Low` falls under it:
 
 > *"Don't worry about the cable flies. There's nothing wrong with high-low cable flies. I'm just referring
@@ -2477,8 +2488,31 @@ careful of how it affects your back training."*
 
 ---
 
+## Spider Curl — *fine, but only as a cure for boredom*
+
+**Library:** `Spider Curl`
+**His usage:** zero across the ten programs.
+
+> *"Spider curls are cool. I don't do them often. I wouldn't really prescribe them unless somebody's really
+> bored of bicep training… There's nothing wrong with them, they're just a little bit odd. I don't think you
+> need to do them, but they're still cool nonetheless."*
+
+**Rule — the trigger is boredom.** Not a physical property of the client, not a goal, not an equipment
+constraint — the exercise exists in the rotation to relieve tedium. That is G22 operating as a *selection*
+reason rather than as a set-count adjustment, and it lines up with `v1.md` P4, which holds that novelty is
+itself a stimulus.
+
+**Rule — reps: same scheme as the dumbbell curl, floor 8-10, ceiling 20.** *"I'd give them the same sort of
+scheme as dumbbell curls in terms of reps, but I would keep the low end on 10 reps, or even eight reps, and
+no more than 20."*
+
+Nothing else changes from the dumbbell curl entry.
+
+---
+
 ## Deferred — raised, not yet answered
 
+- **Concentration Curl.** Not covered while going through the biceps group.
 - **Hammer Strength / Cybex / Life Fitness chest presses.** Asked twice and passed over both times, so
   recorded as **(inferred)**: they inherit the chest press machine entry — accessory, 8-15 reps, 4 sets max,
   slot 2nd or 3rd unless chest is trained 3x/week. Plate-loaded versus selectorized is assumed not to
