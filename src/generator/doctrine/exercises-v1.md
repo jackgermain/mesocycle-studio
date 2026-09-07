@@ -529,6 +529,23 @@ neither.
 **Consequence:** matching a force curve to a population is a real selection axis, and it is not derivable
 from muscle tags, equipment names, or anything else in the library.
 
+**G22 — Enjoyment is a legitimate input.** It has now decided three separate things:
+
+> *"No more than probably four sets, unless you're just really in love with the exercise, then maybe you do
+> five."* (Smith bench)
+>
+> *"Maybe even six if you're crazy about them."* (pull-ups)
+>
+> *"Exercises like this can be fun… they're a bit unique so people find them fun."* (Meadows row)
+
+**Rule:** how much someone likes an exercise legitimately affects what is prescribed — it can buy an extra
+set past the normal cap, and it can justify selecting a merely-good exercise over a better one.
+
+This is not a softness in the doctrine. Adherence is the thing every other rule depends on, and an exercise
+someone will actually do hard beats a better one they resent. But it only ever operates at the **margins**:
+it moves a set count by one, or picks between comparable options. It has never overridden a slot rule, a
+rep floor, or a safety restriction.
+
 ---
 
 # Entries
@@ -1497,9 +1514,43 @@ the range.
 **Rule:** the barbell row remains available to this group with a caveat — *"nonetheless doing barbell rows
 is fine, especially if you keep them light at first."*
 
-*Transcription note:* the recording reads "late at first", which is either **light** or **late**. "Light"
-fits the surrounding risk argument and is recorded on that basis; "late" would contradict the slot rule
-above, which puts these first or second and never past third. Worth one word of confirmation.
+Confirmed as **light**, not late — the slot rule above still stands, and the caveat is about load.
+
+---
+
+## Pendlay Row — *inherits the barbell bent-over row*
+
+**Library:** `Pendlay Row`
+**His usage:** zero across the ten programs.
+
+> *"Pendlay, I'd give them the same category as a barbell row. They're pretty much the exact same thing."*
+
+**Rule:** identical to the barbell bent-over row — compound, 1-15 reps with triples the practical floor,
+slot 1st or 2nd, restricted for very old clients, thickness builder.
+
+---
+
+## Meadows Row — *the landmine press of back work*
+
+**Library:** `Meadows Row`
+**His usage:** zero across the ten programs.
+
+> *"Meadows rows are cool. I would group them in the same kind of category as a landmine press, but for
+> your back — use them the exact same way. Exercises like this can be fun, and I would use them in a
+> context of like functional fitness, and they're a bit unique so people find them fun."*
+
+**Rule:** inherits the **landmine press** entry, redirected at the back. Literally as well as
+figuratively — the Meadows row is performed on a landmine.
+
+That carries over:
+
+- **A second choice.** Good, but behind the real rows.
+- **Reps 8-12**, no strength band.
+- **Sets 2-4.**
+- **Never first** when trained for hypertrophy; first if trained for power (G5).
+
+**Rule — two additional reasons to pick it:** a **functional fitness** context, and **novelty**. Per G22
+that novelty is a real input, not a tiebreaker of last resort.
 
 ---
 
