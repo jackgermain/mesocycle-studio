@@ -1343,7 +1343,11 @@ depends on the state of the person's lower back.
 
 **Rule — slot: never first**, *"unless you're just really trying to grow a certain part of your back."*
 
-*Open:* reps and sets were not given.
+**Rule — reps: same as the seated cable row.** *"I'd keep the rep ranges pretty similar on the chest
+supported row."*
+
+*Open:* that inheritance points at a number that has not been given yet — the seated cable row's own rep
+range is still unstated, so both entries are waiting on the same answer.
 
 ---
 
