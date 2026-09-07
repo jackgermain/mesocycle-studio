@@ -363,9 +363,39 @@ that has become too easy for a strong lifter is made hard again by fatiguing the
 **Rule:** pulling volume draws down the biceps' recoverable volume. Direct biceps work must be counted
 *against* the week's back work, not budgeted independently of it. Chin-ups cost more than pull-ups.
 
+**And it cuts both ways — the same work also *provides* stimulus.** On rear delts:
+
+> *"Whenever you do a lot of rowing exercises for your back, your rear delts get some work, so you don't
+> always have to isolate them like that."*
+
+**Rule:** a compound both **fatigues** and **trains** the small muscles it involves. So direct small-muscle
+work is adjusted against compound volume in two directions at once: less of it is *needed*, because the
+stimulus is partly already delivered, and less of it is *affordable*, because the recovery is partly
+already spent.
+
 This breaks an assumption the volume model would otherwise make. `weeklyVolume.ts` counts sets per muscle
-from the `muscle` tag, one tag per exercise — so a week of heavy rowing books zero biceps sets and the
-generator would happily add a full biceps allocation on top. The real budget is shared.
+from the `muscle` tag, one tag per exercise — so a week of heavy rowing books zero biceps sets and zero
+rear delt sets, and the generator would happily add full allocations of both on top of a budget already
+partly spent and a stimulus already partly delivered.
+
+**G18 — Small muscle groups are a function of training frequency.**
+
+> *"The frequency of rear delt training specifically becomes less and less with the amount of days per week
+> you get to train. The more days you train, the more of a chance you have for little muscle groups."*
+
+**Rule:** direct work for small muscle groups scales with **training days per week**. At low frequency the
+slots go to the muscles that matter most and the small groups are dropped first; as frequency rises they
+become affordable.
+
+This is the allocation rule behind the shape of his own programs, and it explains an absence noted at the
+top of this file: rear delt work appears in only five of ten programs, and those ten are mostly 2- and
+3-day splits. It is not a judgement about rear delts, it is what fits.
+
+**Two overrides put small-muscle work back regardless of frequency:**
+
+- **Bad posture** — *"if somebody's got bad posture or things like that nature, then doing some rear delts
+  might help."*
+- **Sex** — *"girls will definitely do way more hamstrings."*
 
 **G15 — Past a point, another exercise beats more sets.** On the fifth and sixth set of pull-ups:
 
