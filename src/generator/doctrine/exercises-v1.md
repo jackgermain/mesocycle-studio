@@ -1401,8 +1401,46 @@ concept is amazing"* — and biceps work on cable, barbell and dumbbell curls. *
 corrected himself on mid-sentence; consistent with that entry's stretch caution.
 
 This is a fourth progression model alongside `v1.md` §3's three. Model A holds reps and walks intensity;
-Model B walks load up and reps down; this one **holds sets and load-per-rep roughly constant and grows the
-work by restructuring the set** — first more reps per cluster, then more clusters.
+Model B walks load up and reps down; this one **holds sets constant and grows the work by restructuring the
+set** — first more reps per cluster, then more clusters.
+
+### Load progression inside a cluster block
+
+Reps are not the only thing moving. Load rises too, and it has to be handled carefully:
+
+> *"When you have to factor in load progressions into this, you have to be a little bit more conservative
+> with weight increases. It depends on the exercise, actually."*
+
+**Rule — be more conservative with load than you would be without clusters.** The cluster structure is
+already adding work through reps; adding load at a normal rate on top over-reaches.
+
+**Rule — the weekly increment scales with the size of the exercise:**
+
+> *"For lateral delts, biceps, triceps, traps, calves — the weight increases won't be as drastic as they
+> would compared to using clusters on something that's more of a compound exercise, like the hip thrust. On
+> the hip thrust, the total amount of load you'll add each week is just more, because the amount of weight
+> you can hip thrust anyway is just a lot higher."*
+
+| Exercise class | Weekly load increment |
+|---|---|
+| Small muscles — lateral delts, biceps, triceps, traps, calves | Small |
+| Compounds — hip thrust and similar | Larger in absolute terms |
+
+This is consistent with G11's absolute-pounds rule of thumb, and it says the same thing from the other side:
+a fixed poundage increment means something completely different on a lateral raise than on a hip thrust, so
+the increment has to scale with the load already on the bar.
+
+**⚠ One number needs clarifying before this is implementable.** He gave a figure — *"somewhere in the realm
+of maybe forty, fifty, or even sixty percent, maybe thirty percent at the lowest, but that's kind of pushing
+it"* — but not what it is a percentage **of**. The two readings are:
+
+1. **A fraction of the normal load increase.** When clustering, add 40-60% of the jump you would otherwise
+   make, with 30% being over-cautious.
+2. **A percentage of 1RM**, i.e. the working load band for cluster work.
+
+The first fits the surrounding argument about being conservative; the second fits the numbers being in a
+range that looks like intensity. **Recorded as unresolved rather than guessed, because a generator acting on
+the wrong reading would either stall progress or overshoot every week.**
 
 **G43 — Eccentric loading causes more muscle damage.** Given on the Nordic curl:
 
