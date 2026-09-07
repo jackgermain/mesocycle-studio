@@ -1052,6 +1052,35 @@ places body parts across the week by frequency and recovery windows; this adds a
 constraint — an ordering rule between days rather than within one. Deadlifts appearing on that list is the
 non-obvious part, since nothing tags them as biceps work.
 
+### The axial case, and it is a strategy rather than a prohibition
+
+Given on the RDL, and it is the most operational rule in this file:
+
+> *"They will cook the heck out of your spinal erectors. So whenever you program RDLs — especially heavy ones
+> — you have to treat them like a deadlift. If you do heavy RDLs one day, and then the next day, or very soon
+> after, you're gonna train back, you're gonna have to be mindful about your spinal erector load on that back
+> day."*
+
+> *"I would ideally argue towards — if you're going to RDL, do it earlier in the week, so that you can have
+> another back day later in the week where you can load your spine erectors more. So I would have the middle
+> day be a chest-supported back day, if you're going to RDL the day before."*
+
+**Rule — a three-part weekly sequence:**
+
+| When | What | Why |
+|---|---|---|
+| Early week | Heavy RDL | Axial fatigue starts its clock as early as possible |
+| Next day / mid-week | **Chest-supported** back day | The row that demands nothing of the erectors — see the spinal-demand table |
+| Later in the week | Heavier back work, free rows, hinging | Erectors have recovered enough to be loaded again |
+
+This is different in kind from the biceps rule above. That one says *don't put these next to each other*.
+This one says **put them in this order, and use the specific exercise that removes the conflict.** The
+chest-supported row's whole reason for existing — it is the row that spares the erectors — turns out to be
+what makes the week schedulable.
+
+**Rule — heavy RDLs are treated as deadlifts** for scheduling purposes, regardless of being a lighter
+movement.
+
 **G33 — Beginners start in the higher rep ranges, for connective tissue.**
 
 > *"As a general rule of thumb, if people are more beginners in lifting, I try to keep them on the higher rep
@@ -3578,6 +3607,45 @@ also splits progression history across two names, exactly as the spelling varian
 
 Not changed — merging library entries affects any program already referencing the removed name. Worth doing
 deliberately rather than as a side effect of this file.
+
+---
+
+# Hamstrings and glutes
+
+## Romanian Deadlift — *the posterior chain compound, and nothing replaces it*
+
+**Library:** `Romanian Deadlift` · `Stiff-Leg Deadlift`
+**His usage:** 133 prescriptions across RDL spellings and variants — his most-used hinge by a wide margin,
+and the only place a free barbell survives in his programming.
+
+> *"RDLs are an absolute staple for posterior chain glute and hamstring development. Everybody does these,
+> pretty much, and there's a reason for that — they're unbelievably good."*
+
+**Rule — it is *the* compound for glutes and hamstrings.** *"I would prioritise them as the compound exercise
+for glutes and hamstrings."*
+
+**Rule — irreplaceable, and barbell specifically.** *"There's pretty much nothing else that replicates an
+RDL, specifically with the barbell. Dumbbells are cool too, but with barbell specifically."*
+
+That is a strong claim and worth marking: most exercises in this file have a substitute or a family. This one
+is stated as having none. It also explains an observation from the first analysis — the RDL is the only free
+barbell movement that survives in a roster where everything else went to Smith, cable or machine.
+
+**Rule — used like the squat.** *"I pretty much use them in all instances, pretty much the exact same way the
+squat would be used."* So: compound, slot first or second, full rep ladder, and the same demotion logic if a
+lifter is strong enough that the opening slot means too much absolute load.
+
+**Rule — women should almost always be doing them.** *"Girls pretty much always should be doing RDLs, because
+they're such a massive glute developer and a hamstring builder."*
+
+Combined with the lunge and the Bulgarian split squat — both also named as top-tier glute work for women —
+this gives a female client's lower body a clear spine: hinge, lunge, split squat, plus a squat pattern.
+
+### The cost, and it shapes the whole week
+
+RDLs cook the spinal erectors, and heavy ones are scheduled like deadlifts. The full weekly sequencing rule
+is recorded under G32 above, because it governs more than this exercise: **RDL early in the week,
+chest-supported back work the day after, heavier back work later once the erectors have recovered.**
 
 ---
 
