@@ -900,6 +900,17 @@ placing front raises:
 **Rule:** compound status (G4) determines the front of the session; everything else fills the back of it,
 ordered by the client's priorities.
 
+**And the reason, given later on the RDL:**
+
+> *"Every single compound exercise has a very high raw stimulus magnitude, and because of that, oftentimes
+> you like doing them earlier in the session."*
+
+So G28 is not an arbitrary convention. A compound delivers the most stimulus available per exercise, and
+stimulus is best spent while the lifter is fresh — putting it late means paying its full fatigue cost for a
+fraction of its stimulus, which is an SFR argument (see Vocabulary). That also explains why the exceptions
+are what they are: a priority muscle, or an exercise whose loading is light enough that fatigue barely
+matters.
+
 This unifies most of the individual slot rules already recorded — the chest press machine at 2nd-3rd, the
 flies never first, the straight-arm pulldown at 3rd, back extensions second-to-last. They are all one rule.
 
@@ -3640,6 +3651,36 @@ they're such a massive glute developer and a hamstring builder."*
 
 Combined with the lunge and the Bulgarian split squat — both also named as top-tier glute work for women —
 this gives a female client's lower body a clear spine: hinge, lunge, split squat, plus a squat pattern.
+
+### Reps and sets
+
+**Rule — reps 6-15, sweet spot 8-10.** *"For most usage, for most people, I'd say between six and 15 reps at
+the most, with a sweet spot of probably around eight to ten. Twelve is fine too, but eight to ten is really
+nice. Even down to the six rep range can be cool."*
+
+**Rule — 1-2 reps exists but is rare.** *"The lowest I've seen is down to one or two, in massive strength
+development cycles, but that's uncommon."* Legal, not a default.
+
+**Rule — and the reason to respect the floor is absolute load.** *"You can load it really heavy, so the
+relative load of what you are putting on the bar is very high. It's a lot of weight on the bar, so be
+mindful of that."* Same reasoning as the 315 lb bench and 500 lb squat demotions: the risk is the weight
+itself, not the rep count.
+
+**Rule — sets 2-6, with 4 the middle ground.** *"The most I've seen with RDLs is six, seven, eight even, but
+somewhere between two and six is a good place, with four being a good middle ground."*
+
+### A block can hold one rep range the whole way — but then something else has to move
+
+> *"With all these rep ranges — you don't have to finish [somewhere different]. You can stay at one rep range
+> the entire block, like I've stated in some examples. If you're going to do that, though, you just have to
+> play with other variables other than just sets, if you're going to increase the stress week over week."*
+
+**Rule:** holding reps constant for a whole block is legal (it is `v1.md` Model A), but then **load or another
+variable must carry the progression.** Something has to increase week over week; fixing reps only decides
+which variable does the work.
+
+This is `v1.md` C4 — one variable at a time — seen from the other side. C4 says only one thing may change.
+This says at least one thing *must*.
 
 ### The cost, and it shapes the whole week
 
