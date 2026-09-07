@@ -1315,6 +1315,40 @@ be stored as one.
 Three inputs, all needed before a session can be ordered: the exercise's class, the intent behind it, and
 its loading for that block.
 
+**G42 — Myo-reps.** A second set-execution technique alongside clusters, given on the leg curl:
+
+> *"A myo-rep is essentially rest-pause. Say I do a set — you train that set to a certain proximity to
+> failure, like one RIR, two RIR, whatever it's programmed. Usually they're better when you train pretty
+> close to failure, so two or one. And then you wait about ten seconds, or five seconds even, or three
+> seconds, or whatever you like, and then you add another two or three reps on top of it."*
+
+**Definition:** one set taken to 1-2 RIR, then 3-10 seconds' rest, then 2-3 more reps.
+
+**How it differs from a cluster (G26):**
+
+| | Cluster | Myo-rep |
+|---|---|---|
+| Purpose | Hold a **heavier load** across the same total reps | **Extend** a set past where it would have ended |
+| Structure | Even mini-sets — 18 becomes 9 + 9 | One long set, then short top-ups |
+| Rest between | 10-15s | 3-10s |
+| Effort in the first block | Submaximal | **1-2 RIR — close to failure** |
+
+**Rule — both share one hard constraint: easy re-entry.**
+
+> *"I would pretty much only use them on exercises that are machines, or exercises where you don't have to
+> pick up really heavy dumbbells or pick up a really heavy weight in order to do those last three reps…
+> Keep it on exercises that it's easy to get back into position to complete the last couple of reps."*
+
+**Rule:** myo-reps and clusters belong on **machines and cables**, not on heavy free weights. Named as a bad
+fit: heavy dumbbell presses. Barbell bench is borderline — *"I guess you could."*
+
+That is a selection constraint the generator needs alongside the technique itself: prescribing myo-reps on a
+heavy dumbbell press is asking someone to unrack 90s four times in thirty seconds.
+
+**The schema already supports this.** `ClusterSpec` carries `clusters`, `repsPerCluster[]` and
+`intraRestSec` — so a myo-rep is representable as a cluster with an uneven rep distribution and a short
+intra-rest: 12 + 3 + 2 + 2 at 10 seconds. No schema change is needed, only the vocabulary to describe it.
+
 ---
 
 # Entries
@@ -3687,6 +3721,44 @@ This says at least one thing *must*.
 RDLs cook the spinal erectors, and heavy ones are scheduled like deadlifts. The full weekly sequencing rule
 is recorded under G32 above, because it governs more than this exercise: **RDL early in the week,
 chest-supported back work the day after, heavier back work later once the erectors have recovered.**
+
+---
+
+## Seated and Lying Leg Curl — *one entry, and the pre-stretch difference*
+
+**Library:** `Seated Leg Curl (Cybex)` · `Lying Leg Curl (Nautilus)`
+**His usage:** 106 prescriptions, seated exclusively — he has never written the lying version.
+
+> *"When it comes to hamstring training, you've pretty much got four exercises that are really really good,
+> which are seated hamstring curls and lying hamstring curls. And I would use both of these the exact same
+> way."*
+
+**Rule:** identical prescriptions. The choice between them is not a programming decision.
+
+### The mechanical difference, which does not change the prescription
+
+> *"The only difference is that by sitting down and being in a more hinged position — when you're laying
+> down, your body's straighter, you don't have a pre-stretch on your hamstring. But when you're sitting, your
+> hamstrings are slightly stretched already. So on the seated leg curl you're already in a pre-stretched
+> position a little bit, and you do get a little bit deeper of a stretch at the end of the range of motion
+> than you would on a lying leg curl."*
+
+**The seated version is the stretch-biased one** — hip flexion lengthens the hamstring before the curl starts.
+
+**And notably, the rep floor does *not* rise for it**, even though the stretched-position pattern says it
+should. Both stay at the same range. **(inferred)** The likely reason is that the pattern's mechanism is load
+at long muscle length, and a leg curl machine's load is small in absolute terms and fully controlled — there
+is no unracking, no balance, no spinal involvement. So the pattern appears to be gated on absolute load, not
+on the stretch alone. Worth confirming, because it bounds a rule now applied in five places.
+
+**Rule — reps 6-20**, with **12-15 the middle ground** and 8-10 equally fine. *"No less than six, and even
+that's pushing it… any rep range works pretty well."*
+
+**Rule — a prime candidate for clusters and myo-reps.** *"This is a great exercise to do things like clusters
+on, or myo-reps."* It satisfies the easy-re-entry constraint in G42 exactly.
+
+*Open:* he named **four** really good hamstring exercises and listed two here, with the RDL covered
+separately. The fourth was not named.
 
 ---
 
