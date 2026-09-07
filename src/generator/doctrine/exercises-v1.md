@@ -706,6 +706,30 @@ session — *"as a true bodybuilder, if you have an isolated shoulder day, it wo
 start with lateral raises."* So G28 is the default and a strong enough priority overrides it. Ordering is
 compound status first, client priority second, and priority can win.
 
+**G30 — Ordering is decided by the client's goal, and there are four of them.**
+
+> *"When choosing what's first you have to think of your compounds of course, and the whole day schedule —
+> but you also have to prioritise. What's most important? Is it aesthetics? Is it strength? Is it feeling
+> good? Is it being really strong?"*
+
+**Rule:** after compound status and the shape of the training week, the tiebreaker is the client's goal:
+
+| Goal | What it prioritises |
+|---|---|
+| **Aesthetics** | The muscles the client wants to look bigger — lateral delts for "bigger shoulders" (see lateral raise), chest for a man wanting a bigger chest |
+| **Strength** | Compounds, and the strength bands of G2 |
+| **Feeling good** | The general-population case of G24 — nothing below 6 reps, effort capped, joint-friendly selection |
+| **Being really strong** | Peak strength: the 1-3 band, the athletic unlocks on the standing press and barbell row |
+
+The third and fourth are the poles this doctrine mostly runs between. **"Feeling good" is the goal all ten
+of his real programs serve**, and it is the goal G24 was written for. **"Being really strong"** is what
+unlocks the barbell bench, the standing military press, singles and doubles, and the extended set caps of
+G3 — and it is what almost none of his clients want.
+
+So a generator needs the goal *before* it can order a session, and arguably before it can select anything
+at all: the same client, same equipment, same days per week produces a different program under each of
+these four.
+
 **G29 — Direct volume for an indirectly-trained muscle is small.** The first explicit weekly set target
 given for any muscle, and it is far below the general band:
 
