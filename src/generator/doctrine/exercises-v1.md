@@ -695,9 +695,60 @@ to use as a default for exercises not yet covered:
 | Straight-arm pulldown *(dislocation history)* | Overhead shoulder position | Higher reps, as the condition of use |
 | Elevated Smith lunge | Deeper hip and knee flexion | Rep floor rises from 6 to 7-8 |
 
-**Rule (inferred):** when a variation increases the stretch on the working muscle at its loaded position,
-raise the rep floor rather than dropping the exercise. Higher reps mean lighter loads, and it is the load at
-long muscle length that does the damage.
+**Rule:** when a variation increases the stretch on the working muscle at its loaded position, raise the rep
+floor rather than dropping the exercise. Higher reps mean lighter loads, and it is the load at long muscle
+length that does the damage.
+
+### Why — the mechanism, in his words
+
+No longer inferred. Asked about the pattern above, he gave the physiology behind it:
+
+> *"For the most part, when muscles are in lengthened positions — or the leverage is higher in the lengthened
+> position — muscles produce less force in the lengthened position."*
+
+> *"If your muscle's force-producing capability is lower, because there's less overlap between actin and
+> myosin filaments to be able to pull on each other at a long length, you're gonna be weaker. And if you're
+> gonna be weaker, then the reason you're doing that variation or exercise in the first place is because
+> you're trying to grow more muscle, as opposed to create more strength."*
+
+**The rule this yields:** a stretch-biased variation is a **hypertrophy tool, not a strength tool** — by
+construction. You are weaker there, so loading it heavily is not what it is for. Raising the rep floor is not
+a safety compromise imposed on the exercise; it is the exercise being used for its actual purpose.
+
+**The costs, and they are the reason the floor exists:**
+
+> *"Muscles are a little bit more vulnerable in lengthened positions. You can grow muscle more that way, but
+> it also [increases] DOMS, and it's a little bit more stressful on your joints and tendons."*
+
+So the trade is: more growth stimulus, against more soreness and more joint and tendon stress. *(The
+recording is ambiguous on the DOMS word — "inhibits" is what was transcribed, but it sits inside a list of
+downsides introduced by "but", and loading at length is well established to increase soreness. Recorded as
+increases, flagged as worth one word of confirmation.)*
+
+**The peak contraction principle, and why machines matter here:**
+
+> *"A lot of plate-loaded machines that are available — pretty much all of them other than Prime Fitness and
+> a couple of others who have a patent — allow for weight to be distributed in such a way on the machine,
+> with a different peg, such that the torque of the machine is the heaviest on the stretched position for
+> that specific muscle group."*
+
+**Rule:** where a machine's resistance peaks is a **design property that varies by manufacturer**, and some
+machines (Prime Fitness among them) let the user select it. So "machine chest press" is not one exercise
+mechanically — two machines training the same muscle can load opposite ends of the range.
+
+**The library cannot express this.** Exercises are a name, a muscle and a video flag. Nothing records where a
+machine's torque peaks, or that a given machine is adjustable. For a doctrine in which force-curve shape
+decides selection for older clients, injury cases and hypertrophy bias, that is a real gap — and it is why
+the same nominal exercise on two gym floors can warrant different prescriptions.
+
+**The one exception — deliberate deficits on compounds:**
+
+> *"The only instance where that's not true is in a compound exercise, like a front squat or back squat, where
+> you're purposefully putting yourself in a little bit of a deficit so you can overcome it. But that's really
+> rare."*
+
+**Rule:** on a compound, training the weak lengthened position *is* sometimes the point — the deficit is the
+training effect. Rare, and it does not generalise to isolation work.
 
 **G22 — Enjoyment is a legitimate input.** It has now decided three separate things:
 
