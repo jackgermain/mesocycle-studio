@@ -4013,6 +4013,41 @@ it, exactly as the leg press is chosen for a bad back.
 
 ---
 
+## Glute Bridge — *the hip thrust's stand-in*
+
+**Library:** `Glute Bridge`
+**His usage:** zero across the ten programs.
+
+> *"Glute bridges, I would put them in the same category as a hip thrust — but I still don't like them as
+> much, just because I'd rather just do a regular hip thrust. They're okay, I'd use them here and there.
+> They're pretty good for general strength. I wouldn't use them in a bodybuilding setting too much, but
+> there's nothing wrong with them."*
+
+**Rule:** same category as the hip thrust, ranked below it. Better suited to general strength than to
+bodybuilding.
+
+**Rule — reps 6-15**, floor stated as *"no less than six or eight"*.
+**Rule — sets 2-5.**
+
+### Its actual job: covering a break from hip thrusting
+
+> *"They can be a good variation of hip thrust if you're trying to take a break from doing a barbell hip
+> thrust or a Smith machine hip thrust — but you're trying to preserve your hip thrust gains. It can be
+> useful then."*
+
+**Rule:** the glute bridge is what you run when the hip thrust needs a rest but its progress must be held.
+
+That is two rules meeting. G37 says varying an exercise redistributes tendon wear and is worth doing *while
+it is still working*. G40 says a substitute is chosen for how well it preserves transfer to the lift it
+replaces. The glute bridge satisfies both — same pattern, lower load, transfer intact — which is exactly the
+role the close-grip bench plays for the bench press.
+
+So the file now has two worked examples of the same manoeuvre on different lifts, which makes it a pattern
+worth looking for elsewhere: **every heavily-used compound wants a lower-cost variant that holds its
+specificity.**
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
