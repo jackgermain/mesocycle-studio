@@ -151,6 +151,7 @@ export const libraryExercises: LibraryExercise[] = [
   // Hamstrings / Glutes
   ex("Romanian Deadlift", "Hamstrings", true),
   ex("Stiff-Leg Deadlift", "Hamstrings", false),
+  ex("Single-Leg Romanian Deadlift", "Hamstrings", false),
   ex("Seated Leg Curl (Cybex)", "Hamstrings", true),
   ex("Lying Leg Curl (Nautilus)", "Hamstrings", true),
   ex("Standing Leg Curl", "Hamstrings", false),

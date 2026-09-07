@@ -3757,8 +3757,30 @@ that's pushing it… any rep range works pretty well."*
 **Rule — a prime candidate for clusters and myo-reps.** *"This is a great exercise to do things like clusters
 on, or myo-reps."* It satisfies the easy-re-entry constraint in G42 exactly.
 
-*Open:* he named **four** really good hamstring exercises and listed two here, with the RDL covered
-separately. The fourth was not named.
+### The four hamstring exercises
+
+Named in full:
+
+1. **Seated leg curl**
+2. **Lying leg curl**
+3. **Barbell or dumbbell RDL**
+4. **Single-leg RDL**
+
+**Rule:** hamstring selection is a choice among these four. That is an unusually small vocabulary — compare
+the chest, which has a dozen live options — and it means a hamstring allocation is mostly a decision about
+*how much*, not *which*.
+
+The `Standing Leg Curl` and `Nordic Hamstring Curl` in the library are not on that list and have no entry, so
+by G10 they are not generatable.
+
+**Library addition:** the single-leg RDL was **not in the library** and has been added at
+`exerciseLibrary.ts:154`, tagged `Hamstrings`. It is the first case of one of his named best-in-class
+exercises being absent from the app entirely — the belt squat looked like this and turned out to already
+exist; this one genuinely did not.
+
+*Open:* the single-leg RDL has no parameters yet — reps, sets, slot, and whether it inherits the barbell
+RDL's scheduling cost. Given it is loaded far lighter than a barbell RDL, the axial sequencing rule in G32
+may not apply to it.
 
 ---
 
