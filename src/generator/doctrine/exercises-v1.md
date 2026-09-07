@@ -376,6 +376,15 @@ a list of what is endorsed. The first entry on the denylist:
 
 - `Rack Pull` — never
 
+**Fifth — the ab wheel rollout:**
+
+> *"Won't do ab rollouts."*
+
+- `Ab Wheel Rollout` — never
+
+*(A first, softer statement — "I don't do much unless somebody requests it" — was clarified immediately
+afterwards to a flat no. The denylist entry reflects the clarification.)*
+
 **Fourth — the sissy squat:**
 
 > *"Sissy squats I would never use. Let's not even worry about that."*
@@ -4623,20 +4632,17 @@ version of.
 
 ---
 
-## Ab Wheel Rollout — *request-only*
+## Ab Wheel Rollout — *denylisted*
 
 **Library:** `Ab Wheel Rollout`
 **His usage:** zero across the ten programs.
 
-> *"Ab wheel rollout — I don't do much, unless somebody requests it or really really wants to."*
+> *"Won't do ab rollouts."*
 
-**Rule:** prescribed only when the client asks for it. Third exercise with that trigger, after the chest dip
-and the cable crunch — and in all three cases the exercise is fine, it simply loses to something he would
-rather use.
+**Rule:** never prescribed. See G9.
 
-That is a distinct category from the denylist (G9), where there is no unlock at all, and from a fallback like
-the concentration curl, which is unlocked by circumstance rather than by preference. Client request is its own
-gate.
+An earlier phrasing put it at request-only, and he corrected it to a flat no straight away. Recorded as
+denylisted on the clarification.
 
 ---
 
