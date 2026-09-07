@@ -254,19 +254,22 @@ Worth noting it runs *opposite* to the chest hierarchy, where the implement orde
 Smith > machine and cables barely feature. So implement preference is **per muscle group**, not a global
 ranking — a generator must not carry the chest ordering across to the arms.
 
-**The biceps rank the same way.** *"Personally, I like cable curls even more than I like barbell curls."*
-And the machine is explicitly last: *"I would only pick that if I wasn't doing a cable curl or a dumbbell
-curl or an incline curl or a barbell curl."* So:
+**The biceps rank cables high but not first.** Given explicitly:
+
+> *"I'd put dumbbell curls and cable curls in line with each other. My favourite is for sure dumbbell curls,
+> cable curls are a close second, then barbell curls and incline curls tied next."*
+
+With the machine last — *"I would only pick that if I wasn't doing a cable curl, or a dumbbell curl, or an
+incline curl, or a barbell curl."* So:
 
 | Muscle | Implement order |
 |---|---|
 | Chest | Barbell → dumbbell → Smith → machine |
 | Triceps | Cable → dumbbell → everything else |
-| Biceps | Cable → barbell → dumbbell/incline → machine |
+| Biceps | **Dumbbell → cable → barbell = incline → machine** |
 
-**Both arms prefer cables and rank the machine last; the chest is the opposite on both counts.** That is
-the shape of the split — big compound-trained muscles favour free weights, the small isolated arm muscles
-favour constant cable tension.
+**Both arms rate cables highly and rank the machine last; the chest is the opposite on both counts.** The
+triceps put the cable first outright, the biceps put it a close second behind the dumbbell.
 
 **G9 — Some library exercises are never to be prescribed.** The library is a catalogue of what exists, not
 a list of what is endorsed. The first entry on the denylist:
@@ -2568,8 +2571,21 @@ the dumbbell variant of whatever the commercial-gym prescription would have been
 **Rule — reps a little higher, floor 8.** *"I'd keep them a little higher on the cable curls, no less than
 eight."*
 
-**Rule — the preferred biceps exercise.** Ranked above the barbell curl on his own preference, and his usage
-agrees at 114 to 32 over dumbbells.
+**Rule — second-favourite, behind the dumbbell curl.** *"My favourite is for sure dumbbell curls, cable
+curls are a close second."* Above the barbell and incline curls, which tie for third.
+
+### Stated preference and actual prescription diverge here
+
+He prescribes cable curls **114 times** against the dumbbell curl's **32** — a 3.5:1 lead for the exercise he
+ranks *second*. The favourite is the one he writes least.
+
+That gap is worth holding onto, because it means **usage counts are not a proxy for preference.** The likely
+explanation is the gym: his roster trains in a full commercial facility where a cable station is always
+free, and the cable curl is the version that fits the client in front of him. Which is the doctrine working
+as intended — preference is one input, and it loses to what the room and the client actually support.
+
+It also cautions against a tempting shortcut: training exercise selection on his historical frequencies
+would learn the cable curl as his favourite biceps exercise, and it is not.
 
 ---
 
