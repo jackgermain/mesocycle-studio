@@ -724,9 +724,22 @@ given for any muscle, and it is far below the general band:
 **Rule:** a muscle that receives substantial indirect work (G14) needs only a fraction of the direct volume
 that a primary muscle does. Four sets a week is a complete front delt allocation for most clients.
 
-This matters against `weeklyVolume.ts`, which applies a **10-25 sets/week** band. That band cannot be right
-for the front delts, the rear delts, or arguably the biceps — the muscles already fed by compounds. The
-band belongs to muscles trained primarily by their own direct work.
+**Confirmed: weekly volume is two-tier.** Put to him directly — whether the 10-25 band holds for chest,
+back and quads with the small indirectly-fed muscles exempt at 4-8 — he answered *"definitely, so I'll make
+a note of it if anything else isn't like that."*
+
+| Tier | Muscles | Direct sets / week |
+|---|---|---|
+| **Primary** — trained mainly by their own direct work | Chest, back, quads, hamstrings, glutes | **10-25** |
+| **Indirectly fed** — substantially trained by compounds (G14) | Front delts, rear delts, and arguably biceps | **~4, up to 8** with priority and frequency |
+
+**Rule:** `weeklyVolume.ts` applies its 10-25 band to every muscle group equally. That is wrong for tier 2
+by a factor of three or more, and it is the reason a naively-generated program would bury a client in
+isolation work for muscles their compounds already covered.
+
+Tier membership is not final — he undertook to flag any other muscle that belongs in tier 2, so treat the
+lists above as what is confirmed rather than as complete. The lateral delts are notably **not** in tier 2
+despite being a small muscle: nothing else trains them, which is exactly why they need their own volume.
 
 Note the second row is conjunctive: higher volume needs the priority **and** the frequency. Wanting bigger
 front delts on a 2-day split does not unlock 8 sets — G18 again.
