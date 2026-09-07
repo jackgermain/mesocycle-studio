@@ -283,12 +283,9 @@ Unlike the decline press and the rack pull, no reason was given — he did not c
 will never prescribe them. The effect on the generator is identical, so they sit here rather than under
 G10; but the *reason* is unrecorded, and a later reader should not infer one.
 
-**⚠ This entry needs confirming.** Immediately afterwards, introducing concentration curls, he said
-*"concentration curls are cool, like I said about the preacher curls… these exercises are all great if
-you're limited on equipment."* That either means the preacher curl is **not** a hard exclusion and unlocks
-on limited equipment the way the concentration curl does, or it means only that both are exercises he
-personally rarely uses. The two readings differ on whether the generator may ever prescribe a preacher curl.
-Recorded as denylisted because that is what he said explicitly, and flagged rather than quietly softened.
+**Confirmed on a direct question:** *"Preacher curls I'm never prescribing."* The denylist entry stands, and
+the ambiguity raised by the concentration curl answer is resolved — the two were grouped only as exercises
+he rarely reaches for, not as sharing an equipment unlock.
 
 **Cables are not covered by this.** Asked directly whether `Cable Fly — High to Low` falls under it:
 
@@ -2525,6 +2522,9 @@ Nothing else changes from the dumbbell curl entry.
 > *"Concentration curls are cool. I don't really do them that much, but these exercises are all great if
 > you're limited on equipment or whatever. Any dumbbell exercise you can do is another form of variation, so
 > if you're at home, or you have a limited amount of space, concentration curls are great."*
+
+**Rule — a fallback, not a default.** *"Concentration curls are pretty good, but I still wouldn't use them
+that much unless I had to."* Available when something forces it; not selected otherwise.
 
 **Rule — two triggers: limited equipment, and variation.** The second is the general point worth extracting:
 
