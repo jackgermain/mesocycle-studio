@@ -4111,6 +4111,16 @@ entirely.
 | Hip thrust | Hip extension, supine | None |
 | **Cable pull-through** | **Hinge** | **None** |
 
+**Rule — and it is tunable.** *"You can make it safe by changing that angle of how vertical it is."* The more
+upright the torso, the closer to perpendicular the line of tension sits, and the less compression there is.
+So the exercise's spinal demand is not fixed — it is set by how vertical the lifter stands, which makes it
+adjustable for a client whose back needs more or less protection.
+
+That puts it in the same family as the elbow flare (G20), the overhead elbow position (G35) and the grip
+rotation (G36): **a joint or body position that the coach sets, which changes what the exercise costs or
+trains.** Fourth member, and like the others it is storable in `ExerciseSetup` — which has a `stance` field —
+but never shown to the client, since nothing in the client screens reads `.setup`.
+
 **Consequence for the weekly schedule.** G32's whole sequencing rule — RDL early, chest-supported back work
 the day after, heavier back later — exists because the RDL loads the erectors. **A client training the hinge
 through pull-throughs has no such constraint**, and their week can be ordered freely. That turns an exercise
