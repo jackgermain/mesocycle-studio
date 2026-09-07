@@ -1261,6 +1261,7 @@ better and supinated better still. The modification is the grip, not the exercis
 | G20 | Elbow flare on a row | Upper vs mid back |
 | G35 | Elbow overhead on a triceps extension | Long head vs the rest |
 | G36 | Grip rotation on a triceps extension | How much the elbow is stressed |
+| G47 | **Knee flexion on a calf raise** | **Gastrocnemius + soleus, or soleus alone** |
 
 Two of the three choose *what* is trained; this one chooses *what it costs*.
 
@@ -4828,6 +4829,51 @@ The other members are all compounds or near-compounds. This is the **accessory**
 
 That matters for a back-limited client wanting quad volume beyond what the leg press alone provides: the leg
 extension is the only way to add quad sets without adding any spinal load at all.
+
+---
+
+# Calves
+
+## Calf Raises — *one entry; standing is prioritised, seated is additive*
+
+**Library:** `Standing Calf Raise Machine` · `Seated Calf Raise Machine (Cybex)` · `Leg Press Calf Raise` ·
+`Donkey Calf Raise` · `Smith Machine Calf Raise`
+**His usage:** zero across the ten programs — but see below, this is a frequency effect, not a judgement.
+
+> *"The standing calf raise machine is an unbelievably amazing calf builder… Any standing calf raise is
+> amazing."*
+
+**Rule — prioritise any straight-leg version** (standing machine, donkey, Smith), because those train both
+calf muscles (G47).
+
+**Rule — the seated calf raise takes the same parameters**, and its role is as a **second** calf exercise:
+*"I would still prioritise the standing calf raise, or any version where your leg is straight, pretty much all
+the time — unless somebody wants to do two calf exercises, maybe then I'd pick a seated calf raise."*
+
+**Rule — donkey and Smith machine calf raises group with the standing version.** *"All of these can go
+together."*
+
+**Rule — reps 8-20, biased high.** *"For calves in general I would always keep the reps on the higher side —
+so even 15 to 20, and even the 20-plus rep range on occasion. Not very often though."*
+
+**Rule — sets: no more than 4 in a session.**
+
+**Rule — frequency can be high.** *"Some people can train calves three, four times a week, like I have for many
+many years."* So the per-session cap of 4 is not a weekly cap; calves tolerate frequent training.
+
+**Rule — slot: last or second to last**, and *"it doesn't matter if you do abs before them or after them."*
+The only explicit statement in the file that two things' relative order does not matter.
+
+### Their absence from his programs is frequency, not judgement
+
+He trains calves himself, three to four times a week, for years. They appear zero times in the ten client
+programs — which are mostly 2- and 3-day splits. That is G18 exactly: small muscle groups are the first thing
+squeezed out when there are not enough sessions, and calves are the clearest case of it in the whole dataset.
+
+*⚠ One word to confirm:* the recording has *"you can't apply clusters to these"*, immediately followed by *"or
+any other rep scheming of that nature"* — which reads more naturally as **can**. Calves are a machine exercise
+with easy re-entry, which is exactly G42's condition, and 20+ rep work is where clusters are most useful. The
+sentence is left unresolved rather than recorded either way.
 
 ---
 
