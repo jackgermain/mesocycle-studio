@@ -1535,15 +1535,22 @@ is the worked example — reps climb steeply, so load rises at 40-60% of its nor
 raises reps, adds a set and increases load by its usual increment has spent the budget three times over,
 and each decision looked reasonable alone. The check has to be on the combination.
 
-## G59 — Intensity techniques appended to a set
+## G59 — Tempo variations
 
-A family of techniques found across a real advanced program (Lara, 6x/week) that the doctrine did not
-contain. Each is written as a note attached to an exercise, and each modifies how the set finishes rather
-than how it is loaded.
+His own term for the whole family:
+
+> *"Tempos are a totally different thing that we haven't even talked about yet — as in timing eccentrics,
+> timing holds in reps, including partials or half reps, which usually are referred to as **lengthened
+> partials**, or including bodyweight [finishers] at the end of each set. It's kind of like push-ups after
+> flies. These are pretty much their own spec, and I'd give them just tempo. That's what they're called,
+> tempo variations."*
+
+Found across a real advanced program (Lara, 6x/week) before being named. Each modifies how a set is executed
+rather than how it is loaded.
 
 | Technique | As written | What it is |
 |---|---|---|
-| **Partials + hold** | `8 REP 8 PARTIALS 8 HOLD` | Full reps, then partial-range reps, then an isometric hold |
+| **Lengthened partials** | `8 REP 8 PARTIALS 8 HOLD` | Full reps, then partial-range reps at the stretched position, then an isometric hold |
 | **Terminal isometric** | `8 SECOND HOLD AT TOP OF LAST REP` | Hold the contracted position at the end of the set |
 | **Per-rep pause** | `3 SECOND HOLD AT TOP EVERY REP` | An isometric inside every rep, not just the last |
 | **Last-rep pause** | `PAUSE ON LAST REP` | The lightest version — one pause, at the end |
@@ -1551,17 +1558,34 @@ than how it is loaded.
 | **Mechanical drop set** | `FIRST 8 INCLINE 17.5; LAST 10 STANDING 7.5` | Change position *and* load mid-set to extend it |
 | **Assistance ramp** | `1 BW, 2 ASSISTED` | First set unassisted, remaining sets assisted |
 
-**Rule:** these are how an advanced program adds difficulty without adding load. They cluster on machines and
-cables — the same easy-re-entry condition that governs clusters and myo-reps (G42).
+**Rule:** tempo variations are how an advanced program adds difficulty **without adding load**. They cluster
+on machines and cables — the same easy-re-entry condition that governs clusters and myo-reps (G42).
 
-**None of them are representable.** `ClusterSpec` handles clusters and myo-reps because those are rep blocks
-with rest between. These are different: partials are reps of a different range, holds are time inside a set,
-a bodyweight finisher is a second exercise inside a set, and a mechanical drop set changes the exercise
-mid-set. `ExerciseSetup.cue` can carry them as prose — which is exactly what the spreadsheet does — and
-nothing shows `.setup` to the client.
+**Why lengthened partials specifically:** partials taken at the stretched position are the peak-contraction
+principle applied deliberately. A muscle is weakest at length, so partials there are hard at a load the full
+range could not sustain — which is the same trade the stretch-biased exercises make, applied inside a set
+rather than by choosing a different exercise.
 
-That is the third distinct thing blocked by that one unrendered field, after the position cues and the
-per-cluster grip.
+### What the app can and cannot hold
+
+**`TempoSpec` already exists** and covers the timing half: `eccentric`, `isometric`, `concentric` and
+`holdAt: "bottom" | "top" | "mid"`. So *"3 second hold at top every rep"* and any eccentric timing are
+representable today and simply unused.
+
+**What it does not cover** is the other half of what he calls tempo:
+
+| Technique | Representable? |
+|---|---|
+| Timed eccentric, concentric, isometric | **Yes** — `TempoSpec` |
+| Per-rep hold at top or bottom | **Yes** — `TempoSpec.holdAt` |
+| Lengthened partials after full reps | No — partials are reps of a different range |
+| Terminal isometric after the last rep | No — a hold at the end of a set, not inside a rep |
+| Bodyweight finisher appended to each set | No — a second exercise inside a set |
+| Mechanical drop set | No — position and load change mid-set |
+
+So the fix is smaller than it first looked: **`TempoSpec` needs extending, not inventing.** Adding a
+terminal hold, a partials count and an appended-finisher reference to the existing spec would cover the
+family — and unlike the position cues, this one has somewhere to live already.
 
 ---
 
@@ -1620,8 +1644,19 @@ rules the doctrine did not contain, several of which it should have caught.
 > quite the same because it's a horizontal pull, it still does a little bit. So take note: you have fourteen
 > sets of back in one session, which is quite a bit."*
 
-**Rule:** ~14 sets for one muscle in a single session is too many. Every rule in this file until now was
-either per-exercise or per-week; nothing governed how much could land in one day.
+**Rule:** ~14 sets for one muscle in a single session is **a lot, and worth flagging — not a hard cap.**
+Resolved against a real program carrying 15:
+
+> *"It is quite a bit in Marcus's program. And if Marcus was healing from this and it worked, then it would
+> work. Lara needed this much volume, so it's appropriate. It's not the craziest thing I've seen, but it is a
+> lot — so it's worth noting."*
+
+So the test is **recovery, not arithmetic.** High per-session volume is a signal to check whether the client
+is actually healing from it, which is what the soreness feedback exists to answer (G34, and MRV per body part
+in the Vocabulary). A generator should surface it, not refuse it.
+
+Every rule in this file until now was either per-exercise or per-week; nothing governed how much could land
+in one day, and this is a flag rather than the missing cap.
 
 **Rule — horizontal and vertical pulls partially share a budget.** They are different jobs (G19) but not
 independent allocations: *"even though rows aren't quite the same… it still does a little bit."*
@@ -4697,8 +4732,12 @@ order to assemble a session rather than just select for one.
 **Library:** `Cable Crunch`
 **His usage:** zero across the ten programs.
 
-**Rule:** not prescribed unless a client specifically asks for it. His view is that other ab exercises cover
-the same job and he would rather use those. Not denylisted — it works, he just would not reach for it.
+**Rule:** a legitimate exercise he simply does not reach for first. *"There's still nothing wrong with it at
+all, so it works."*
+
+An earlier note here recorded it as request-only. That was too strong — his own advanced programs use it
+twice a week, supersetted with hanging knee lifts. It is behind his preferred ab work, not gated behind a
+client asking.
 
 Movement #1 in the core coverage model (ribs toward pelvis), which is the best-covered of the six, so nothing
 is lost by leaving it out.
