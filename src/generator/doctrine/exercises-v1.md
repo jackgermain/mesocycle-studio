@@ -1349,6 +1349,61 @@ heavy dumbbell press is asking someone to unrack 90s four times in thirty second
 `intraRestSec` — so a myo-rep is representable as a cluster with an uneven rep distribution and a short
 intra-rest: 12 + 3 + 2 + 2 at 10 seconds. No schema change is needed, only the vocabulary to describe it.
 
+### The cluster progression system — three blocks
+
+Given in full on the hip thrust, and it is a complete progression model in its own right. Sets stay constant
+throughout; **what progresses is reps per cluster, and then the number of clusters.**
+
+**Block 1 — double clusters, growing the reps**
+
+| Week | Prescription | Total reps |
+|---|---|---|
+| 1 | 2 × 9, ~15s intra-rest | 18 |
+| 2 | 2 × 10 | 20 |
+| 3 | 2 × 11 | 22 |
+| 4 | Deload | |
+
+**Block 2 — stepping up to triple clusters**
+
+| Week | Prescription | Total reps |
+|---|---|---|
+| 1 | 2 × 10 | 20 |
+| 2 | 3 × 7 | 21 |
+| 3 | 3 × 8 | 24 |
+| 4 | 3 × 9 | 27 |
+
+The move from two clusters to three is made at a **lower rep-per-cluster count** (10 → 7), so total volume
+barely rises across the transition. The structure changes before the load does.
+
+**Block 3 — triple clusters throughout**
+
+Either 3 × 7 → 3 × 8 → 3 × 9, or start at 3 × 8 and run to **3 × 10 = 30 reps**.
+
+> *"The top of the thirty rep range I would reserve for very small exercises — like lateral raises, maybe
+> biceps if you really need to cook your biceps, but that would be pushing it."*
+
+**Rule — 30-rep clusters are for small muscles only.** Lateral raises above all.
+
+**Rule — glutes cluster between 10 and 20 reps**, not at the top of the range.
+
+### Where clusters belong
+
+> *"If you like reps on exercises that burn — which is really good for a lot of machine exercises, just
+> because you don't have to go anywhere, you can tolerate a lot of pain, because all you have to do is press
+> the weight or move it. You don't have to worry about stabilising like you would on a dumbbell press or a
+> back squat, at least in these high-rep instances."*
+
+**Rule:** clusters belong where **stabilisation is not the limiting factor**. Machines and cables. Explicitly
+poor fits: dumbbell presses and back squats at high reps.
+
+**Named as excellent fits:** his three bread-and-butter lateral delt exercises — *"applying this cluster
+concept is amazing"* — and biceps work on cable, barbell and dumbbell curls. **Not** incline curls, which he
+corrected himself on mid-sentence; consistent with that entry's stretch caution.
+
+This is a fourth progression model alongside `v1.md` §3's three. Model A holds reps and walks intensity;
+Model B walks load up and reps down; this one **holds sets and load-per-rep roughly constant and grows the
+work by restructuring the set** — first more reps per cluster, then more clusters.
+
 **G43 — Eccentric loading causes more muscle damage.** Given on the Nordic curl:
 
 > *"It can also do some muscle damage, because you can load the eccentric so hard — and eccentrics are known
@@ -3844,6 +3899,62 @@ muscle damage than concentric or isometric work, so the same set count is more e
 
 **Library addition:** the glute ham raise was missing and has been added under `Hamstrings`. The Nordic curl
 was already present and now has doctrine, so it is generatable where it previously was not.
+
+---
+
+## Hip Thrust — *barbell, Smith and plate-loaded machine*
+
+**Library:** `Barbell Hip Thrust` · `Smith Machine Hip Thrust` · plate-loaded hip thrust machines *(not in
+the library)*
+**His usage:** 80 prescriptions across five of ten programs.
+
+**Rule — it is a glute compound.** All three versions.
+
+**Rule — for a woman training glutes 3x/week, a hip thrust appears in at least two of those sessions.**
+*"If I was training a girl and she wanted to train glutes three times a week, I would be doing some form of a
+hip thrust at least two of those three times."* That is the most specific frequency prescription in the file.
+
+**Rule — it is one of the very few exercises that loads the glutes heavily with no spinal erector demand at
+all.** That places it beside the leg press and belt squat in the axial-sparing group — and unlike those, it
+is a glute exercise rather than a quad one.
+
+### The three versions
+
+| Version | Where it wins |
+|---|---|
+| **Barbell** | Sports performance and athletics — *"usually you're doing it with a free barbell"*. Setup is *"a little bit annoying"* |
+| **Smith** | *"Amazing, unbelievably amazing. I would argue just as good, especially for bodybuilding"* |
+| **Plate-loaded machine** | *"Fantastic"* — Nautilus named. Mostly the plate-loaded ones rather than selectorized |
+
+**Rule — reps differ by version:**
+
+- **Barbell: the full compound ladder, from 1-3 upward.** Takes the compound set-cap curve — 8 sets at
+  singles, working down from there, as with the squat.
+- **Smith and machine: floor of 5**, and *"even that's kind of pushing it"*. **Sweet spot 6-15, up to 20.**
+
+Fifth confirmation that a machine version of a barbell lift gives up the bottom of the ladder — though this
+one floors at 5 rather than the Smith's usual 6.
+
+**Rule — sets: 2-8, with 4 the middle ground.** *"I've heard of people doing six, seven, eight sets of hip
+thrust, but I would put a middle ground on four. Even three and two sometimes, depending on the training age
+and experience."*
+
+**Rule — clusters are excellent here**, at **10-20 reps** rather than the top of the cluster range.
+
+### For men, it is conditional
+
+> *"For guys, I don't do hip thrusts much at all really — unless they really want to specifically, or they
+> have some weird lower back problems, or if their glutes are just really really weak. In functional
+> training I definitely would do them here and there, not all the time, nowhere near what I would do with
+> girls."*
+
+**Rule — three unlocks for male clients:** they ask for it, they have lower back problems, or their glutes are
+notably weak. Plus occasional use in functional training.
+
+The lower-back unlock is worth noting: it is the axial-sparing property being used as the *reason* to select
+it, exactly as the leg press is chosen for a bad back.
+
+*Library gap:* no plate-loaded hip thrust machine exists in the library, only the barbell and Smith versions.
 
 ---
 
