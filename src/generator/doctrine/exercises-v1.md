@@ -3338,6 +3338,10 @@ that 15 reps there is fine precisely because *"your whole body isn't cooked comp
 squat."* There is a systemic-cost ordering emerging: **squat > high-rep lunge > leg press**, independent of
 how hard the target muscle is worked.
 
+**But that cost is also a use.** See the Bulgarian split squat entry — the same cardiovascular demand is
+deliberately prescribed as conditioning. Whether it is a cost or a benefit depends on what the session is
+for, which means the generator cannot treat systemic cost as a penalty term to minimise.
+
 **Rule — reps 6-15.** *"The lowest amount of reps I would do on a front lunge is six, and that's really
 pushing it, in a strength setting. Ideally I would still do probably eight… nothing wrong with the 12 rep
 range, or the 15 range at all, for hypertrophy especially. All the ranges can be good."*
@@ -3361,6 +3365,55 @@ single-leg strength.
 
 **Rule — the athletic case.** *"They can be used a lot in a strength context too, for single-leg strength,
 which can contribute a lot to running power."*
+
+---
+
+## Bulgarian Split Squat — *a glute staple, and three different jobs*
+
+**Library:** `Bulgarian Split Squat`
+**His usage:** zero across the ten programs, despite being a staple by his own account.
+
+> *"The Bulgarian split squat — or referred to, with dumbbells — is an absolute staple in training,
+> especially for girls looking for glutes. This is an absolute staple."*
+
+**Rule:** dumbbells are the implement. A staple, and specifically a **glute** exercise for women — the same
+placement lunges got, which puts it in the top tier for a client whose priority ordering starts with glutes.
+
+**Rule — reps 6-15, sweet spot 8-12.**
+**Rule — sets 2-6.**
+
+### Three distinct jobs, and they change the prescription
+
+**1. Glute building.** The default use, for women especially.
+
+**2. Conditioning — deliberately.**
+
+> *"I do like using different variations of lunges, or single-leg — just the lunge family — as a way of
+> conditioning as well. Lunges get your heart rate up a lot, they'll make you breathe quite hard. They're
+> phenomenal for that part, so I like them a lot for that too. I like high-rep lunge variations quite a lot
+> for people who are even a little bit older — even if the load is light, it gets them moving, the muscle is
+> working, they're breathing hard, gets the blood pumping. They're phenomenal."*
+
+**Rule:** high-rep lunge work is prescribed **for** its cardiovascular effect, not despite it — and
+specifically for older clients, where light load plus high reps delivers conditioning without joint stress.
+
+This inverts something recorded earlier. The lunge entry notes cardiovascular demand as a systemic *cost*
+that limits high-rep work. It is the same property, and whether it is a cost or a benefit depends entirely
+on what the session is for. **A generator treating systemic fatigue as a penalty to minimise would remove
+the exercise from exactly the client it was chosen for.**
+
+It may also indicate a goal beyond the four named in G30, whose list ended in "etc" — conditioning is a
+reason to train that none of aesthetics, strength, feeling good or being really strong quite covers.
+
+**3. Single-leg strength, as an addition rather than a replacement.**
+
+> *"They're also amazing for strength development through the lower extremity — of course, you can load
+> these pretty heavy. A lot of athletes like them, guys looking to get strong through their legs. They're
+> already squatting, they're already doing their other stuff — these are a really great addition to involve
+> some single-leg work."*
+
+**Rule:** for athletes and strong lifters, it is added **on top of** squatting, not instead of it. The
+selection reason is that it is single-leg, which bilateral work does not cover.
 
 ---
 
