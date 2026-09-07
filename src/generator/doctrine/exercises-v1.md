@@ -3008,6 +3008,54 @@ it would be a different call for an in-person client.
 
 ---
 
+## Leg Press and Hack Squat — *compounds on a machine*
+
+**Library:** `Leg Press — 45° (Cybex)` · `Leg Press — Horizontal (Life Fitness)` · `Hack Squat Machine`
+**His usage:** leg press 8, hack squat 21.
+
+> *"I'm gonna group hack squat and leg press together, because in a way they're compound exercises, but
+> they're on a machine."*
+
+**Rule — which leg press.** The **45° plate-loaded** version, not the pin-loaded one, which he dislikes.
+
+### The leg press is the heavy quad exercise that spares the spine
+
+> *"It's the only leg exercise, other than leg extensions, that you can lift really heavy on, and get a good
+> stretch on, and smoke the hell out of your quads on — that doesn't have any loading through your spine. So
+> leg press is unbelievably good for people of all ages, including people who are older in age, and
+> especially people with back problems — even really bad back problems, like herniated discs."*
+
+**Rule:** the leg press is the answer for a client who needs heavy quad work and cannot load their spine.
+Indicated explicitly for **older clients and for serious back pathology including herniated discs**.
+
+**Rule — the hack squat is not a substitute for that.** *"The hack squat definitely isn't good for that."*
+It is *"a little bit safer than squatting"*, but it still loads the spine. The two are grouped for
+parameters and separated for this.
+
+This mirrors the back section exactly. There, the chest-supported row is the row that removes erector
+demand; here, the leg press is the quad exercise that removes spinal loading. In both cases the machine's
+value is not that it is easier — it is that it **subtracts a specific demand** while keeping the load.
+
+**Rule — reps: floor 6, and even that is grudging.** *"I would go no lower than six… if you're trying to get
+really strong on your legs, even then I think it's stupid. I would never go [below] six on either the hack
+squat or leg press."* Typical range **8-12**, treated as *"a bodybuilding exercise."*
+
+**Rule — 15 reps is fine on the leg press specifically.** *"Your whole body isn't cooked, compared to doing
+15 reps on a squat."* The systemic cost, not the local one, is what limits high-rep squatting — and the
+machine removes it.
+
+**Rule — sets: up to 6 at the highest**, and per G38 six is a block-end figure rather than a routine one.
+
+**Rule — slot: first or second**, and it moves with the client:
+
+| Client | Slot |
+|---|---|
+| Intermediate or advanced, trains hard | **First** |
+| Default | First or second |
+| Older, or not feeling good, or not a hard-training demographic | **Third is fine** |
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
