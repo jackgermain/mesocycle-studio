@@ -392,11 +392,26 @@ rather than incidental:
 spent and already delivered. In practice this means the front delts and rear delts rarely need isolation at
 all, and the biceps need less than their nominal target.
 
-This breaks an assumption the volume model would otherwise make. `weeklyVolume.ts` counts sets per muscle
-from the `muscle` tag, one tag per exercise — so a week of heavy rowing books zero biceps sets and zero
-rear delt sets, a week of heavy pressing books zero front delt sets, and the generator would happily add
-full allocations of all three on top of a budget already partly spent and a stimulus already partly
-delivered.
+**Correction — `weeklyVolume.ts` already does this.** Earlier notes in this file claimed the volume model
+counts one muscle tag per exercise and books zero indirect sets. **That was wrong.** The module carries a
+`SECONDARY` synergist-credit table and computes an `effective` volume alongside the direct one:
+
+| Primary | Credited synergists |
+|---|---|
+| Chest | Triceps 0.5, Front delts 0.5 |
+| Back | Biceps 0.5, Rear delts 0.3, Forearms 0.3 |
+| Front delts | Triceps 0.3 |
+| Quads | Glutes 0.3 |
+| Hamstrings | Glutes 0.5 |
+| Glutes | Hamstrings 0.3 |
+| Traps | Back 0.3 |
+
+Its own comment states the reasoning this doctrine arrived at independently: *"A set of bench is not a set
+of triceps, but it is not zero either — counting only primary movers understates arm and delt volume badly
+in a program built on compounds."*
+
+So G14 is **already implemented**, and the three-instance table above is confirmation of the existing
+design rather than a defect report.
 
 **G18 — Small muscle groups are a function of training frequency.**
 
@@ -762,9 +777,15 @@ a note of it if anything else isn't like that."*
 | **Primary** — trained mainly by their own direct work | Chest, back, quads, hamstrings, glutes | **10-25** |
 | **Indirectly fed** — substantially trained by compounds (G14) | Front delts, rear delts, and arguably biceps | **~4, up to 8** with priority and frequency |
 
-**Rule:** `weeklyVolume.ts` applies its 10-25 band to every muscle group equally. That is wrong for tier 2
-by a factor of three or more, and it is the reason a naively-generated program would bury a client in
-isolation work for muscles their compounds already covered.
+**How this sits against `weeklyVolume.ts` — better than first recorded.** The module applies its 10-25 band
+to every muscle equally, but it applies it to **effective** volume, which already includes synergist credit.
+So the two-tier model may fall out of the existing design rather than contradict it: a client doing 12 sets
+of chest earns 6 credited front delt sets, and Jack's ~4 direct sets bring the effective figure to 10 —
+inside the band.
+
+**What is genuinely unverified** is whether the credit weights produce his numbers across the range of real
+programs, not whether the mechanism exists. An earlier note here claimed the band was wrong for tier 2 by a
+factor of three; that claim assumed direct volume was being compared to the band, and it was not.
 
 Tier membership is not final — he undertook to flag any other muscle that belongs in tier 2, so treat the
 lists above as what is confirmed rather than as complete. The lateral delts are notably **not** in tier 2
