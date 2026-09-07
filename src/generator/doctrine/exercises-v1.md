@@ -4311,6 +4311,54 @@ sanctioned — see G3's floor.
 
 ---
 
+## How ab training is structured — *the first session template in this file*
+
+Given unprompted, and it is a complete structure rather than a rule about one exercise.
+
+> *"The way that I like to structure my ab training is I like to do some form of a hanging leg lift, or a
+> captain's chair raise, or a hanging knee raise if that's all you're strong enough to be able to do. And then
+> have that first hanging exercise be a hanging leg lift or a hanging leg twist, or a leg circle. And then
+> after that I have anywhere between two and four exercises that are much easier, usually done on the ground."*
+
+**The shape:**
+
+| Position | What | Why |
+|---|---|---|
+| **First** | A hanging or supported leg-raise movement — hanging leg lift, hanging leg twist, leg circle, or the captain's chair regression | These are the compounds of core work |
+| **Then** | 2-4 easier exercises, usually on the ground | Accessories |
+
+**Rule — hanging leg work is the compound of ab training.**
+
+> *"Your hanging ab exercises are like your compound [lifts], essentially — just because moving your legs is
+> much harder than doing any form of a crunch, pretty much."*
+
+That places core work under G28 like everything else: the hardest, highest-stimulus movement opens, and the
+easier work follows. It also means the captain's chair, as the regression of the hanging leg raise, is still
+the opening exercise for a client who cannot hang — the *slot* is defined by the movement's role, not by its
+difficulty for that person.
+
+### Abs are trained in supersets, and the pattern depends on how many exercises follow
+
+> *"If I had two exercises after the more compound-y [one], I would do probably two sets of both of them,
+> supersetted back to back — so no rest in between the two exercises — then you repeat that again. If I had
+> four exercises stacked afterwards, I'd do all of them once, and maybe take a break in between two of them,
+> even though all four of them are different."*
+
+| Accessories | Structure |
+|---|---|
+| **2** | Superset the pair, no rest between them. Two rounds. |
+| **4** | Circuit all four once through, with an optional break midway. |
+
+**Rule:** ab accessories are not run as straight sets. Two exercises pair into a superset run twice; four run
+as a single circuit.
+
+This is the first per-body-part session template recorded, and it is worth noting that it is **structural
+rather than prescriptive** — it says how the session is shaped, not which exercises fill it. That is a
+different kind of knowledge from everything else in this file, and it is exactly what a generator needs in
+order to assemble a session rather than just select for one.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
