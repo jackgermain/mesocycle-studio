@@ -796,6 +796,25 @@ the biceps effect becomes large, not as a recommendation.
 Note the second row is conjunctive: higher volume needs the priority **and** the frequency. Wanting bigger
 front delts on a 2-day split does not unlock 8 sets — G18 again.
 
+**G31 — Look at the person; observed underdevelopment overrides the default priority.** Stated for rear
+delts, and it has already appeared once for front delts:
+
+> *"There's also a cosmetic to it too. If you look at somebody's shoulder and they don't have very developed
+> rear delts, then yeah, of course rear delt training is gonna need to take a priority. It all depends about
+> how they're looking outside of that."* (rear delts)
+>
+> *"If your front delt is actually like small or weak — which I highly doubt — but if it's small, doing
+> shoulder presses are great."* (overhead press)
+
+**Rule:** the muscle priorities in this doctrine — lateral delts over rear delts, chest over front delts,
+the body-part orderings in `v1.md` — are **defaults for a client you have not looked at**. Visible
+underdevelopment of any muscle promotes it, regardless of where it normally sits.
+
+This is the rule that makes every priority list in the doctrine conditional. It also names an input the app
+does not currently collect: there is no field anywhere for *"which muscles look underdeveloped on this
+person"*, and without it the generator can only ever apply the defaults. A coach looking at a client has
+information the intake form never asks for.
+
 ---
 
 # Entries
@@ -2235,10 +2254,15 @@ floor and 20 the hard ceiling.
 **Rule — two triggers: bad posture, and shoulder issues.** This is the second time rear delt work has been
 unlocked by posture (G18), and it now adds shoulder health.
 
-Note what is *not* a trigger: wanting bigger shoulders. That request means lateral delts (see the lateral
-raise entry), so rear delt work is prescribed for how the shoulder *functions*, not for how it looks. It
-sits alongside the straight-arm pulldown's dislocation indication as one of the few exercises in this file
-selected primarily for joint health.
+**Rule — and a third trigger: visible underdevelopment.**
+
+> *"There's also a cosmetic to it too. If you look at somebody's shoulder and they don't have very developed
+> rear delts, then yeah, of course rear delt training is gonna need to take a priority. It all depends about
+> how they're looking outside of that."*
+
+So rear delt work is prescribed for shoulder function **and** for appearance. The distinction that survives
+is narrower than "rear delts are not aesthetic": a *generic* request for bigger shoulders means lateral
+delts, but **looking at the person** can put rear delts at the top regardless. See G31.
 
 ---
 
