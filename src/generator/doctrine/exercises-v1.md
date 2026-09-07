@@ -4670,6 +4670,59 @@ denylisted on the clarification.
 
 ---
 
+## Plank and its variations — *time-based, goal-dependent, and capped*
+
+**Library:** `Plank` · `Plank Leg Lift` · `Plank Alternating Limb Touch`
+**His usage:** 37 prescriptions, all of them *moving* planks.
+
+> *"Planks are OK, I don't do them that much."*
+
+### Goal decides whether they appear at all
+
+> *"If I had four exercises, I'd probably pick one type of plank for general strength, and definitely for
+> strength and conditioning. It'll just help with torso rigidity and the lateral flexion component. But for
+> bodybuilding, not as much — for cosmetics of your abs, not as much. For strength though, yes, absolutely."*
+
+| Goal | Plank? |
+|---|---|
+| Strength and conditioning | **Yes** — definitely |
+| General strength | Yes, one variation |
+| Bodybuilding / ab appearance | **Not much** |
+
+**Rule:** planks train **torso rigidity and anti-lateral flexion** — movements #5 and #6 of the coverage
+model, the two he set aside. So this partially fills that gap: the plank family is where those movements live.
+
+### Duration, and the ceiling
+
+**Rule — a very beginner starts at 15-30 seconds.**
+**Rule — 30 seconds is the bare minimum** otherwise, working upward. 45 seconds is unremarkable.
+
+**Rule — past about 45-60 seconds, make it harder rather than longer:**
+
+> *"If you can do a plank for anything longer than a minute, you need to start making that plank harder —
+> either adding a leg lift, or picking up a limb, or doing something during that plank like dragging a plate
+> across the ground laterally, one limb, two limbs, picking up different things of that nature."*
+
+That is why every plank in his own programs is a *moving* plank — limb touch, ankle touch, hip drop, plate
+drag. He is not prescribing a static hold and then progressing it; he starts past that point.
+
+**Rule — sets 2-3 maximum**, for any plank variation.
+
+### The app cannot prescribe these correctly
+
+This is the first **time-based** exercise in the file, and `SetPrescribed` has no duration field. Reps are
+`number | string`, where the string exists for AMRAP display like `"6+"`, and `SetActual.reps` is a plain
+number.
+
+Worse, the fallback is silent: `LiveSet.tsx` reads `typeof set.prescribed.reps === "number" ? ... : 10` in one
+place and `: 8` in another. **So a plank written as `"30s"` renders in the live logging screen as 10 reps, or
+8, depending on the code path** — with no error and no indication anything is wrong.
+
+Any time-based prescription — planks, carries, holds, the isometric pauses in `TempoSpec.holdAt` — needs a
+real duration field before it can be delivered.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
