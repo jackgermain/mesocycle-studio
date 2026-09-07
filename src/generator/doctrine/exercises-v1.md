@@ -1787,7 +1787,7 @@ the next-safest thing in the same family, it is the thing that removes the cause
 
 ## Incline Barbell Bench Press — *inherits from flat barbell bench*
 
-**Library:** `Incline Barbell Bench Press`
+**Library:** `Incline Barbell Bench Press` · `Hammer Strength Incline Press`
 **His usage:** zero across the ten programs, same as the flat barbell.
 
 > *"Incline barbell press is amazing. I would apply the same rules to it as flat barbell pressing, with a
@@ -2367,8 +2367,7 @@ is the better spend.
 
 ## Lat Pulldown — *a staple, but not a route to pull-ups*
 
-**Library:** `Lat Pulldown — Wide Grip` · `Lat Pulldown — Close Grip` · `Hammer Strength Plate-Loaded Lat
-Pulldown` · `Seated Row Machine`-adjacent variants
+**Library:** `Lat Pulldown — Wide Grip` · `Lat Pulldown — Close Grip` · `Hammer Strength Plate-Loaded Lat Pulldown`
 **His usage:** 84 prescriptions across nine of ten programs.
 
 > *"Pulldowns are good, I like them a lot… they're a staple. I think everybody should do them, should use
@@ -2837,8 +2836,7 @@ a priority to be expressed as volume.
 
 ## Overhead / Shoulder Press — *usually redundant, and ranked by stability*
 
-**Library:** `Barbell Overhead Press` · `Seated Barbell Press` · `Dumbbell Shoulder Press` · `Seated
-Dumbbell Press` · `Arnold Press` · `Smith Machine Overhead Press` · `Life Fitness Shoulder Press Machine`
+**Library:** `Barbell Overhead Press` · `Seated Barbell Press` · `Dumbbell Shoulder Press` · `Seated Dumbbell Press` · `Arnold Press` · `Smith Machine Overhead Press` · `Life Fitness Shoulder Press Machine`
 **His usage:** zero across the ten programs.
 
 > *"Overhead press is cool, I don't have anything against it. It's just, a lot of the time, your front delt
@@ -3373,8 +3371,7 @@ intent flipping a slot; here intent changes everything at once.
 
 ## Kickbacks, Triceps Machines and Triceps Presses — *one entry, all minor*
 
-**Library:** `Dumbbell Kickback` · `Cable Kickback` · `Cybex Tricep Extension Machine` · `Hammer Strength
-Tricep Press` · `Nautilus Dip Machine`
+**Library:** `Dumbbell Kickback` · `Cable Kickback` · `Cybex Tricep Extension Machine` · `Hammer Strength Tricep Press` · `Nautilus Dip Machine`
 **His usage:** zero across the ten programs.
 
 > *"Dumbbell kickback, cable kickback, tricep extensions and presses — these are all accessories for
@@ -3962,7 +3959,7 @@ outside the bodybuilding four.
 exercises being absent from the app entirely — the belt squat looked like this and turned out to already
 exist; this one genuinely did not.
 
-**Single-leg RDL parameters:** *"I would keep them the same as the regular RDL"* — so 6-15 reps with an 8-10
+**Library:** `Single-Leg Romanian Deadlift`. **Parameters:** *"I would keep them the same as the regular RDL"* — so 6-15 reps with an 8-10
 sweet spot, 2-6 sets with 4 the middle ground.
 
 *Open:* whether it carries the barbell RDL's axial scheduling cost. It is loaded far lighter, so the G32
@@ -4581,7 +4578,7 @@ to train somehow.
 
 ## Crunch — *placed by how easy it has become*
 
-**Library:** `Crunch`-family entries, plus the `Life Fitness` and `Cybex` ab crunch machines
+**Library:** `Life Fitness Ab Crunch Machine` · `Cybex Ab Crunch Machine`, plus the crunch-family entries
 **His usage:** part of the 135 crunch-family prescriptions.
 
 > *"As crunches get really easy — similar as a push-up — I would do them towards the end of that little
@@ -5062,6 +5059,35 @@ This is the second exercise whose primary justification is conditioning, after h
 both cases it is the *only* thing that justifies the exercise. G30's goal list ended with "etc," and
 conditioning is now the clearest of the missing entries: two exercises depend on it, and without it in the
 enumeration neither can ever be selected correctly.
+
+---
+
+## Med Ball Toss — *sets of three*
+
+**Library:** `Med Ball Toss`
+**His usage:** 24 prescriptions.
+
+> *"Med ball tosses are cool. I would usually do them in sets of three."*
+
+**Rule — three.** *(Ambiguous in the recording between three reps per set and three sets. Three reps reads
+more naturally for power work, where the Olympic lifts cap at 3 and speed is the point — but it is not
+certain and is worth one word.)*
+
+**Rule — power work, so it opens the session** (G5), and only when trained for power.
+
+---
+
+## Plyometrics — *deferred as a topic*
+
+> *"We're not gonna get into plyometrics right now, so we're not gonna worry about the ball squat jump toss
+> either."*
+
+`Ball Squat Jump Toss` (43 uses) and plyometric work generally are set aside. Not generatable under G10 until
+covered.
+
+This is the last uncovered area of the library, and it is deferred rather than missing — worth noting that
+Jack prescribes the ball squat jump toss 43 times in his own programs, so it is a real part of his practice
+that the doctrine does not yet hold.
 
 ---
 
