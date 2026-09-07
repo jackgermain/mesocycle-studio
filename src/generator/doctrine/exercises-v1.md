@@ -1902,6 +1902,21 @@ other exercise recorded so far carries a slot constraint; this one does not.
 **Rule — reps: 8 at the floor** (6 is the absolute bottom of the threshold, and unusual), **no ceiling when
 clustered** — see G26, where clusters of 30 are cited.
 
+**But the floor is not the prescription.** Legal and intended are different here:
+
+> *"For me personally, I really like [high] reps for shoulders. I think they work amazingly, so I would even
+> urge on most of the time programming high rep lateral delts, as in 12 reps and higher."*
+>
+> *"Even the 15 to 20 rep range is amazing."*
+
+**Rule — default to 12+, and 15-20 is excellent.** The 8-rep floor exists, but most prescriptions should sit
+well above it. In G2 terms the lateral raise lives in **middle-to-upper hypertrophy** and is one of the few
+exercises Jack actively pushes toward the top of the ladder rather than the middle.
+
+This makes the lateral raise the clearest case of a distinction running through the whole file: an
+exercise's rep *range* says what is permitted, and is not the same as where inside it the work should
+normally be prescribed.
+
 **Rule — sets: 3-4 for most people**, up to 8 at the extreme. *"The most I've heard of is like eight,
 although I would still say three or four is usually a good place for most people."*
 
