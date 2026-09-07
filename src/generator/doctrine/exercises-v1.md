@@ -14,6 +14,27 @@ in 3,490 sets" is itself a strong signal.
 
 ---
 
+## Notation — "s" means seconds and nothing else
+
+> *"Never have `s` as time unless you are doing an exercise for time — but that's stupid for anything other
+> than planks, pretty much."*
+
+**Rule:** the suffix **`s` is reserved for seconds.** It must never be used for dumbbell loads, sides, or
+anything else.
+
+This surfaced when a generated program wrote a dumbbell press as `20s`, meaning a 20 lb dumbbell in each
+hand. Read literally that is a twenty-second set, and the app now has time-based sets where exactly that
+notation is correct — so the collision is real rather than cosmetic.
+
+**Rule — and time is only for planks and similar holds.** Prescribing an exercise for time when it could be
+prescribed for reps is wrong; the timed-set feature exists for holds, not as an alternative unit for ordinary
+work.
+
+Dumbbell loads are written **`20 ea.`** — the weight of one dumbbell, with `ea.` making it explicit that it
+is per hand rather than a total.
+
+---
+
 ## Naming convention — read this before reading any entry
 
 > *"When you see it written down, that refers to a chest press machine, specifically a **flat** chest press
