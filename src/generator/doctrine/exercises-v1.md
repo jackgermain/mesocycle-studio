@@ -656,6 +656,25 @@ intra-set rest, and no way to mark one prescribed set as several mini-sets. A cl
 written as 18 straight — which is the wrong prescription at that load — or as 2x9, which loses the
 short-rest instruction that is the entire point.
 
+**G27 — For a priority muscle, rotate the parameters, not the exercises.** The counterpoint to G16:
+
+> *"My favourite lateral delt exercises are the Freemotion Y raise, the seated lateral raise machine, and
+> what's called a Super ROM lateral raise… I pretty much run these three exercises year-round, with
+> different combinations of sets, clusters, rest times, all that sort of stuff. But that's pretty much all
+> I do for lateral delts, and I've done that forever. I just rotate the stimulus. Those are my three
+> absolute bread and butter."*
+
+**Rule:** for a muscle that is a genuine priority, the exercises stay fixed and the **variables** rotate —
+sets, clusters (G26), rest times. Not year-to-year exercise turnover.
+
+**This is not in conflict with G16, but it is a different tool.** G16 rotates *between* two interchangeable
+exercises to keep a stimulus fresh. G27 keeps the best exercises permanently and refreshes the stimulus by
+changing how they are executed. The choice between them appears to be priority: for the muscle that matters
+most, you do not rotate away from the best exercise for it — you find another axis to vary.
+
+A generator told only "vary the stimulus between blocks" would swap the exercise, which is exactly wrong
+for a priority muscle.
+
 ---
 
 # Entries
@@ -1885,6 +1904,34 @@ clustered** — see G26, where clusters of 30 are cited.
 
 **Rule — sets: 3-4 for most people**, up to 8 at the extreme. *"The most I've heard of is like eight,
 although I would still say three or four is usually a good place for most people."*
+
+### His three bread-and-butter lateral delt exercises
+
+> *"Those are my three absolute bread and butter."*
+
+1. **Freemotion Y Raise**
+2. **Seated lateral raise machine** — `Cybex Lateral Raise Machine`
+3. **Super ROM Lateral Raise** — *"pretty much just a lateral raise with dumbbells, past horizontal"*
+
+Run **year-round**, with variation coming from sets, clusters and rest times rather than from swapping
+exercises. See G27.
+
+This also answers a question left open from the first pass over his programs: a **Super ROM lateral raise**
+is a dumbbell lateral raise taken past horizontal.
+
+### Correction — the Freemotion Y Raise is lateral delt work, not rear delt
+
+The initial analysis of his ten programs classified `Freemotion Y Raise` (30 uses) and the various
+`Circles` under a **rear delt** grouping, and that produced the finding that only five of ten clients get
+any rear delt work.
+
+He names the Y raise here as one of his three primary **lateral** delt exercises. So that classification
+was wrong, the rear delt usage figure is overstated by roughly 34 prescriptions, and the real amount of
+direct rear delt work in those programs is lower than recorded.
+
+**(inferred)** The `Infinity Circles`, `Top Circles` and `Bottom Circles` remain unclassified and may
+belong with the Y raise rather than with rear delts. They have not been discussed and should not be assumed
+either way.
 
 ### A worked illustration of G18
 
