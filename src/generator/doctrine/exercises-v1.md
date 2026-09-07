@@ -1349,6 +1349,19 @@ heavy dumbbell press is asking someone to unrack 90s four times in thirty second
 `intraRestSec` — so a myo-rep is representable as a cluster with an uneven rep distribution and a short
 intra-rest: 12 + 3 + 2 + 2 at 10 seconds. No schema change is needed, only the vocabulary to describe it.
 
+**G43 — Eccentric loading causes more muscle damage.** Given on the Nordic curl:
+
+> *"It can also do some muscle damage, because you can load the eccentric so hard — and eccentrics are known
+> to cause a little bit more muscle damage than concentrics or isometrics."*
+
+**Rule:** an exercise that loads the eccentric heavily costs more recovery than its set count suggests. That
+matters in two places already in this file: the soreness feedback (`recoveryWindow.ts`) will read higher
+after eccentric-biased work for the same volume, and G32's cross-day scheduling should treat it as more
+expensive than the sets alone imply.
+
+It also composes with the stretched-position rule — a movement that is both eccentric-heavy *and* loads the
+muscle at long length is the most damaging combination available, and the Nordic curl is exactly that.
+
 ---
 
 # Entries
@@ -3779,9 +3792,11 @@ outside the bodybuilding four.
 exercises being absent from the app entirely — the belt squat looked like this and turned out to already
 exist; this one genuinely did not.
 
-*Open:* the single-leg RDL has no parameters yet — reps, sets, slot, and whether it inherits the barbell
-RDL's scheduling cost. Given it is loaded far lighter than a barbell RDL, the axial sequencing rule in G32
-may not apply to it.
+**Single-leg RDL parameters:** *"I would keep them the same as the regular RDL"* — so 6-15 reps with an 8-10
+sweet spot, 2-6 sets with 4 the middle ground.
+
+*Open:* whether it carries the barbell RDL's axial scheduling cost. It is loaded far lighter, so the G32
+sequencing rule may not apply — but that was not stated either way.
 
 ---
 
@@ -3808,7 +3823,24 @@ the opening slot.
 **Rule — slot: middle to late.** *"I would do them later in the session — definitely not first. Maybe in the
 middle, depending how big of a priority it is."*
 
-*Open:* reps and sets were not given for either.
+**Rule — reps 6-15.** *"I would keep the reps above six and less than fifteen."*
+
+**Rule — the 6-rep end is legitimate here, unlike most accessories**, because these are loadable and because
+of what they train:
+
+> *"You can load this exercise too, as you get really strong — so that's why the six rep range can be
+> appropriate, just because it can be such a good exercise for eccentric hamstring strength, which is an
+> important part of the running stride, as when your leading foot is flying forwards. It's really great for
+> that."*
+
+**Rule — the athletic indication is specific: eccentric hamstring strength for the running stride**, where the
+hamstring decelerates the leg as the lead foot swings forward. That is the sports-performance job these two do
+that the bodybuilding four do not, and it is why they exist as a separate category rather than a worse one.
+
+**Rule — but they cost more recovery than their volume suggests.** See G43 — heavy eccentric loading does more
+muscle damage than concentric or isometric work, so the same set count is more expensive here.
+
+*Open:* set counts were not given for either.
 
 **Library addition:** the glute ham raise was missing and has been added under `Hamstrings`. The Nordic curl
 was already present and now has doctrine, so it is generatable where it previously was not.
