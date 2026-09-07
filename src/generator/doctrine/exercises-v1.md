@@ -4197,16 +4197,30 @@ usually more is good — so I would say three or four even."*
 deadlift or a compound, so that affects other things that you do."* So the G32 weekly sequencing applies:
 early in the week, chest-supported back work the day after, heavier back later.
 
-### ⚠ What the exercise actually is has not been established
+### What it is — a sumo deadlift
 
-This is the last unidentified name from the original analysis of his ten programs, and it remains
-unidentified. "Glute deadlift" is not a standard movement name, it appears 24 times in his own spreadsheets,
-and someone added it to the library — but nothing recorded so far says **what it is**: stance, bar path,
-range, or how it differs from the RDL and the conventional deadlift.
+> *"Looks more like a sumo deadlift."*
 
-That matters more than for most entries. Every parameter above is known and the movement is not, so the
-generator could prescribe it correctly and the client would have no idea what to do. It also cannot be
-substituted, because nothing is known about what it would be substituted *for*.
+**Rule:** the glute deadlift is a **sumo-stance deadlift** — wide stance, hands inside the knees, a more
+upright torso than a conventional pull, and more hip and glute contribution.
+
+That resolves the last unidentified exercise name from the original analysis of his ten programs, and it
+makes the rest of the entry coherent: a sumo pull is a compound, is loaded heavily, and is genuinely a glute
+movement rather than a hamstring one — which is why it sits here and not with the RDL.
+
+**Note on the axial cost.** A sumo stance is usually held to place *less* shear on the lower back than a
+conventional deadlift, because the torso stays more upright. Jack nonetheless says to treat it like a
+deadlift for scheduling purposes, and **his rule stands** — it is still a heavy bilateral pull off the floor,
+and the axial sequencing in G32 applies to it.
+
+### The library name should probably change
+
+`Glute Deadlift` is Jack's own term. "Sumo deadlift" is the universal name, is what every instructional video
+is filed under, and is what a client could search for. A client shown "Glute Deadlift — 3 × 10" has nothing
+to look up; shown "Sumo Deadlift" they have everything.
+
+Worth renaming, or carrying "Glute Deadlift" as an alias so his own spreadsheets still import cleanly. Not
+changed here — a rename affects any program already referencing the name, same as the Smith lunge duplicate.
 
 ---
 
