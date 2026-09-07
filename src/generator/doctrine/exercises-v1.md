@@ -4337,6 +4337,10 @@ corners. Every core action is one of six things:
 **Rule — cover a variety of the six.** *"You want to make sure that you have a variety of those amongst the
 exercises that you choose."*
 
+*Deferred:* movements **5 and 6** — anti-lateral flexion — are set aside for now at his request: *"Don't
+worry about five and six as much, I'll talk about that later."* So the coverage check currently runs on four
+of the six, and the two resisting movements are pending rather than dismissed.
+
 **Rule — but not at the compounds' expense.** *"…without compromising the compounds."* Coverage is a
 secondary objective. The hanging leg work still opens the session (see the structure below), and the variety
 is filled in around it.
