@@ -986,6 +986,34 @@ This is the same shape as G20, where elbow flare selects upper versus mid back: 
 position selects which part of it is trained.** Two instances now, on two different muscles, and neither is
 expressible in a library that carries one muscle tag per exercise.
 
+**G36 — For elbow pain, get the palms out of pronation on triceps work.**
+
+> *"[EZ-bar skull crushers] hurt my elbows, but that's a thing in itself. So if somebody's got a lot of elbow
+> pain going on, I would do less of any tricep extension where your palms are facing down, and try to have it
+> be where your hands are neutral, or your palms are up. That will decrease the elbow pain during triceps
+> quite a bit."*
+
+**Rule:** on triceps extensions, **pronated (palms down) is the worst grip for a painful elbow**; neutral is
+better and supinated better still. The modification is the grip, not the exercise.
+
+| Grip | Elbow stress |
+|---|---|
+| Pronated — palms down | Highest |
+| Neutral — palms facing each other | Lower |
+| Supinated — palms up | Lowest |
+
+**This is the third rule where joint position is the control variable**, and they form a family:
+
+| Rule | Position | Selects |
+|---|---|---|
+| G20 | Elbow flare on a row | Upper vs mid back |
+| G35 | Elbow overhead on a triceps extension | Long head vs the rest |
+| G36 | Grip rotation on a triceps extension | How much the elbow is stressed |
+
+Two of the three choose *what* is trained; this one chooses *what it costs*. None of them can be expressed
+in the current model, which has no per-exercise note or cue field — so the entire family is currently
+unrepresentable, and it is the layer where a coach does most of their actual work.
+
 ---
 
 # Entries
@@ -2720,6 +2748,56 @@ exercises that demand one.
 
 And it is G21 for the fourth time: the overhead position lengthens the long head, load at long muscle length
 is the risk, and the mitigations are *less load* and *be warm* rather than avoidance.
+
+---
+
+## EZ-Bar Skull Crusher — *a staple he has personally moved away from*
+
+**Library:** `EZ-Bar Skull Crusher`
+**His usage:** 52 skullcrusher prescriptions across variants.
+
+> *"EZ-bar skull crushers are a staple in tricep training. A lot of people really really like them. I don't
+> like them as much anymore because they hurt my elbows."*
+
+**Rule:** a staple, and widely liked. His personal move away from them is an elbow issue, not a judgement on
+the exercise — see G36 for the grip modification that addresses it.
+
+**Rule — reps 8-15.**
+**Rule — sets 2-4**, *"even five or six in some cases if you're crazy about it"* (G22).
+
+### Where triceps sit against biceps
+
+> *"These are accessories, they fall in the same scope of importance as biceps — due very close to — so they
+> shouldn't be done early, or very first, in the workout. If it is a dedicated arm day, I've heard of people
+> doing triceps before biceps, it doesn't really matter… if somebody wants bigger arms, I'm usually just
+> gonna go with biceps first if I had to pick. But nonetheless they still need to get trained. They're the
+> same level of importance as biceps."*
+
+**Rule:** triceps and biceps are **equal in priority**. Neither is done early in a general session (G28).
+
+**Rule — on a dedicated arm day, order is free**, with a mild default of **biceps first** when the goal is
+bigger arms.
+
+---
+
+## Dumbbell Skullcrusher and Lying Dumbbell Extension — *better than the EZ-bar, behind the cables*
+
+**Library:** `Dumbbell Skullcrusher` · `Dumbbell Overhead Extension`
+**His usage:** 45 prescriptions of dumbbell skullcrusher.
+
+> *"Dumbbell skull crushers [are] a little bit better, I like them — but still not as much as the cable
+> exercises. I would mostly stick to cable exercises for triceps. I don't mind the lying dumbbell
+> extensions, especially if the palms are facing each other so it's a neutral grip. I would give those the
+> same parameters as the skull crusher in terms of reps and sets, but I still just like the cables more. I
+> may use them here and there, but not very often."*
+
+**Rule:** better than the EZ-bar version — the neutral grip is why (G36) — and still behind the cables.
+**Rule — same reps and sets as the skull crusher:** 8-15, 2-4.
+**Rule — used occasionally, not routinely.** *"Not very often."*
+
+This restates G8 from the inside: *"I would mostly stick to cable exercises for triceps."* Cable first is not
+a mild preference — it is where nearly all of his triceps work goes, and the dumbbell versions are
+occasional.
 
 ---
 
