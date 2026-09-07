@@ -4179,6 +4179,37 @@ exercise.
 
 ---
 
+## Glute Deadlift — *parameters recorded; the movement itself is still undefined*
+
+**Library:** `Glute Deadlift`
+**His usage:** 24 prescriptions.
+
+**Rule — treated as a compound.** *"I would put this in the same category as a compound. So if you're gonna do
+it, do it early."*
+
+**Rule — reps 6-15.** *"I've seen rep ranges of six to eight, and also eight to twelve, eight to ten, ten to
+twelve, ten to fifteen."* A wide legal band with no single sweet spot named.
+
+**Rule — sets 2-6, with 3-4 typical.** *"I'd put a cap on six sets at the most and as little as two, but
+usually more is good — so I would say three or four even."*
+
+**Rule — it carries the full axial cost.** *"Because of the spinal erector usage, you have to treat it like a
+deadlift or a compound, so that affects other things that you do."* So the G32 weekly sequencing applies:
+early in the week, chest-supported back work the day after, heavier back later.
+
+### ⚠ What the exercise actually is has not been established
+
+This is the last unidentified name from the original analysis of his ten programs, and it remains
+unidentified. "Glute deadlift" is not a standard movement name, it appears 24 times in his own spreadsheets,
+and someone added it to the library — but nothing recorded so far says **what it is**: stance, bar path,
+range, or how it differs from the RDL and the conventional deadlift.
+
+That matters more than for most entries. Every parameter above is known and the movement is not, so the
+generator could prescribe it correctly and the client would have no idea what to do. It also cannot be
+substituted, because nothing is known about what it would be substituted *for*.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
