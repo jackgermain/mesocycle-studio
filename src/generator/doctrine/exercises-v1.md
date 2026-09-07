@@ -2863,6 +2863,30 @@ intent flipping a slot; here intent changes everything at once.
 
 ---
 
+## Kickbacks, Triceps Machines and Triceps Presses — *one entry, all minor*
+
+**Library:** `Dumbbell Kickback` · `Cable Kickback` · `Cybex Tricep Extension Machine` · `Hammer Strength
+Tricep Press` · `Nautilus Dip Machine`
+**His usage:** zero across the ten programs.
+
+> *"Dumbbell kickback, cable kickback, tricep extensions and presses — these are all accessories for
+> triceps. I wouldn't use them that much. There's nothing wrong with them. If I were using any of these, I
+> would keep the same parameters as I would do any other tricep exercise other than the close-grip bench."*
+
+**Rule:** one entry for all of them. Accessories, rarely used, nothing against them.
+
+**Rule — reps 8-15**, *"maybe even 20, but 8-15 is good."*
+**Rule — sets 2-4**, up to 5.
+
+**Rule — they inherit the standard triceps parameters**, explicitly excluding the close-grip bench, which is
+a bench press variation rather than a triceps exercise and carries its own numbers.
+
+That exclusion is worth noting on its own: he drew the boundary of "any other tricep exercise" to leave the
+close-grip bench outside it, which confirms the reading in that entry — it is filed under triceps but is not
+one of them.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Hammer Curl.** Not covered while going through the biceps group; the closing remark about "the other
