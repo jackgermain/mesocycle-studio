@@ -1014,6 +1014,34 @@ Two of the three choose *what* is trained; this one chooses *what it costs*. Non
 in the current model, which has no per-exercise note or cue field — so the entire family is currently
 unrepresentable, and it is the layer where a coach does most of their actual work.
 
+**G37 — Varying an exercise also redistributes tendon wear.** A third reason to rotate, alongside staleness
+and novelty:
+
+> *"I would mostly use this as a bench press variation in between blocks of bench pressing, to change the
+> variation a little bit — and the wear pattern on the tendon — and so that it will have a really high
+> transfer of strength back to bench pressing."*
+
+**Rule:** swapping to a close variant moves where the load falls on the connective tissue, so the tissue
+that has been taking the stress gets a break while training continues.
+
+The doctrine now has **three distinct reasons to vary an exercise**, and they are not interchangeable:
+
+| Reason | Source | What it addresses |
+|---|---|---|
+| Plateau | `trainingAge.ts`, G16 | Progress has stopped |
+| Novelty | `v1.md` P4, G22 | Staleness, boredom, the acute learning stimulus |
+| **Tendon wear** | G37 | Accumulated stress on one structure |
+
+The third one is the only one that argues for varying an exercise **while it is still working**. The other
+two are triggered by something going wrong; this one is preventive, and a generator that only swaps on
+plateau or boredom would never do it.
+
+**And the variant must transfer back.** The close-grip bench is chosen partly *because* it has *"a really
+high transfer of strength back to bench pressing"* — so this is a G17-safe substitution, one that sits
+alongside or above the parent lift in transfer rather than below it. A wear-pattern swap that transferred
+downward would cost the client their progress on the parent lift, which is exactly the pulldown-for-pull-up
+error.
+
 ---
 
 # Entries
@@ -2798,6 +2826,40 @@ bigger arms.
 This restates G8 from the inside: *"I would mostly stick to cable exercises for triceps."* Cable first is not
 a mild preference — it is where nearly all of his triceps work goes, and the dumbbell versions are
 occasional.
+
+---
+
+## Close-Grip Bench Press — *a bench variation, not really a triceps exercise*
+
+**Library:** `Close-Grip Bench Press` — tagged `Triceps`
+**His usage:** zero across the ten programs.
+
+> *"I would mostly use this as a bench press variation in between blocks of bench pressing… I would mostly
+> use it in a strength context. I wouldn't use it very much for hypertrophy or in any other context. There's
+> nothing wrong with it, in rare instances it does come up."*
+
+**Rule — its primary role is a bench press variation in a strength block**, not a triceps builder. That
+answers the tagging question: it is filed under `Triceps` in the library, but it is used as a *bench press*,
+and the reason to select it is what it does for the bench rather than for the arms.
+
+**Rule — reps depend entirely on which role it is playing:**
+
+| Role | Reps |
+|---|---|
+| Strength (its main use) | **3-6**, and he has seen 6-10; 2-3 rep work on occasion, not often |
+| Hypertrophy / general (rare) | **8-15** |
+
+**Rule — sets: 4 in a general context; 5-6 only when heavy for strength.** *"That's only with the purpose of
+that."*
+
+**Rule — slot depends on role too.** As a bench variation it takes the bench's slot, first or second. Used
+for hypertrophy it goes *"a little bit later in the session, probably third, maybe fourth, fifth or sixth."*
+
+**Rule — rare regardless.** *"Even then I still wouldn't use this very often."*
+
+This is the clearest case yet of an exercise whose every parameter — reps, sets, slot, and even which muscle
+it counts toward — is determined by the **role** it is playing rather than by the exercise itself. G5 showed
+intent flipping a slot; here intent changes everything at once.
 
 ---
 
