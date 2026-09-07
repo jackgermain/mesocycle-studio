@@ -626,6 +626,11 @@ client with a bad back.
 That is the tension worth naming: the client most likely to need erector work is the client whose program
 has had every source of it stripped out.
 
+**And route 3 is narrower than it looks.** Of the two direct options, the reverse hyper is deprioritised on
+equipment grounds — *"a bit of a niche machine, especially if you want to load it."* So for a client whose
+back rules out hinging and bent-over rowing, direct erector work comes down to the **back extension alone**,
+and only if the gym has one.
+
 ---
 
 # Entries
@@ -1783,6 +1788,18 @@ So 6 is real, known, and declined.
 
 **Rule — sets 2-6**, with 2 or 3 the usual. *"The most amount of sets I would do is probably six, and the
 least I would do is two or three — probably two."*
+
+### The reverse hyper is deprioritised on availability
+
+> *"The reverse hyper is a bit of a niche machine, especially if you want to load it, so I would urge away
+> from using it as much as possible."*
+
+**Rule:** prefer the **back extension**. The reverse hyper takes the same parameters but should be avoided
+where possible — the machine is uncommon, and loading it is worse than uncommon.
+
+Same shape as the bench dip, whose trigger was also a property of the gym rather than the person — but
+inverted. The bench dip is unlocked *by* limited equipment; the reverse hyper is locked *out* by the
+equipment it needs being rare.
 
 ---
 
