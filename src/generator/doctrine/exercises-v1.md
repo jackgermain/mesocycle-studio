@@ -1192,6 +1192,23 @@ one that sits closest to it in transfer while removing the thing that hurts.
 keeps them closest to the thing they will come back to" — and those give different answers. A leg press and
 a belt squat both spare the spine; only one of them keeps a squat.
 
+**G41 — How heavy an exercise is loaded moves it in the session.** Stated for the Smith split lunge:
+
+> *"It really depends on your loading scheme for them. If you're gonna do them really heavy, I would
+> recommend doing them a little bit earlier in the session. If you're gonna do a little bit more reps, then
+> it's not so bad if you do it just a little bit later — maybe that being third."*
+
+**Rule:** the **same exercise** takes a different slot depending on how it is loaded. Heavy loading moves it
+earlier; higher-rep, lighter loading lets it sit later.
+
+This is distinct from the rules already recorded, and it completes a set. G28 slots by what an exercise *is*
+(compound or accessory). G5 slots by *why* it is there (power work goes first). G41 slots by **how it is
+being loaded on this particular day** — so an exercise's position is not a fixed property at all, and cannot
+be stored as one.
+
+Three inputs, all needed before a session can be ordered: the exercise's class, the intent behind it, and
+its loading for that block.
+
 ---
 
 # Entries
@@ -3414,6 +3431,40 @@ reason to train that none of aesthetics, strength, feeling good or being really 
 
 **Rule:** for athletes and strong lifters, it is added **on top of** squatting, not instead of it. The
 selection reason is that it is single-leg, which bilateral work does not cover.
+
+**Rule — slot: within the first three exercises, four at the outside.** *"I would do them earlier on, usually
+within the first three exercises, maybe four. That's kind of the cap rate there."*
+
+---
+
+## Smith Machine Split Lunge — *the single-leg member of the machine-compound group*
+
+**Library:** `Smith Machine Split Lunge`
+**His usage:** 51 prescriptions — exactly level with the Smith machine lunge.
+
+> *"Smith machine split lunges are absolute gold for bodybuilding… This is an amazing variation. I'd put it
+> in the same place as a Smith machine squat, or a hack squat, or a leg press even — but a single-leg
+> version of it."*
+
+**Rule:** it belongs to the leg press / hack squat / Smith squat group — a compound on a machine — as its
+**single-leg** member. That group's defining trait is heavy loading with a stable, low-skill setup; this one
+adds unilateral work to it.
+
+### Who it's for
+
+> *"Most of the time these are pretty much only gonna be girls doing this exercise — unless it's a guy who's
+> a bit more of a bodybuilder and he's specifically looking to cook up his glutes… I would pretty much only
+> use this exercise with girls."*
+
+**Rule:** prescribed almost exclusively for women, with one unlock for men — a bodybuilder specifically
+training glutes. This is the most sex-specific selection rule recorded so far; most rules in this file key
+off training age, goal, joint history or equipment rather than sex directly.
+
+**Rule — reps 6-12**, kept *"decently heavy"*. 15 is not unheard of but is not the intent.
+**Rule — sets 2-4**, up to 6 and *"that's kind of pushing it."*
+
+**Rule — slot 1st, 2nd or 3rd, decided by the load** (G41). First is legitimate on a glute day. Heavy work
+goes earlier; higher-rep work can sit third.
 
 ---
 
