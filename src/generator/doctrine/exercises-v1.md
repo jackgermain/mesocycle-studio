@@ -208,12 +208,20 @@ is already flat.
 | 8 | 4 | 2 |
 | 9+ | 4 | 2 |
 
-And a floor that holds everywhere:
+And a floor that holds almost everywhere:
 
 > *"Doing one set is never enough… I would pretty much keep the bottom range of set volume at two sets
 > minimum."*
 
-**Rule:** never prescribe a single set of anything. Two is the floor.
+**Rule:** two sets is the floor.
+
+**One stated exception**, on the captain's chair knee raise and hanging leg raise: *"I would do no more than
+three or four sets, and no less than two. Even one in some instances is fine. This is maybe even the instance
+where one set is fine."*
+
+So the floor is two everywhere except small bodyweight core work, where a single set can be legitimate. Worth
+holding as an exception rather than softening the rule — it was stated as universal and contradicted exactly
+once, for one category.
 
 This is consistent with `v1.md` C1 rather than in conflict with it — C1 caps the 6-15 rep range at 4 sets,
 and G3 agrees there while extending the curve below 6 reps, where the cap rises to 5 and then 6.
@@ -4271,6 +4279,35 @@ It sharpens G30's "aesthetics" goal considerably. Aesthetics is not one target a
 two clients can both want to look better and want **opposite things from the same muscle.** A generator
 treating aesthetics as "grow the prioritised muscles" would prescribe adductor work to a woman who
 specifically does not want it.
+
+---
+
+# Core
+
+## Captain's Chair Knee Raise and Hanging Leg Raise — *one is the regression of the other*
+
+**Library:** `Captain's Chair Knee Raise` · `Hanging Leg Raise`
+**His usage:** captain's chair 113, hanging 43 — together his most-prescribed core work.
+
+> *"The captain's chair knee raise is a great exercise if you're not strong enough to do a hanging leg lift —
+> which a lot of people aren't. Most beginners and even early intermediates can't do these. But nonetheless,
+> if anybody's able to do a hanging leg lift, I would always choose that. Pretty much a hundred percent of the
+> time."*
+
+**Rule: the hanging leg raise is strictly better, and is chosen whenever the client can do it.** The captain's
+chair is its **regression**, not an alternative — the chair supports the back and forearms, so it is what you
+use until someone can hang.
+
+**This reframes his own usage.** Captain's chair outnumbers hanging 113 to 43 in his programs, and that is not
+a preference — it is a statement about his roster. Most of his clients cannot yet hang. Same lesson as the
+cable curl, which he prescribes most and ranks second: **frequency in the data reflects what clients can do,
+not what he rates.**
+
+**Rule — reps 8-20, with 12-15 the good place.** *"Above eight at the minimum… I even like reps up to twenty
+on both of these, but a good place for both is around the fifteen range, the twelve range."*
+
+**Rule — sets 2-4, and one set is acceptable here.** The only exercise in the file where a single set is
+sanctioned — see G3's floor.
 
 ---
 
