@@ -815,6 +815,35 @@ does not currently collect: there is no field anywhere for *"which muscles look 
 person"*, and without it the generator can only ever apply the defaults. A coach looking at a client has
 information the intake form never asks for.
 
+**G32 — A cooked synergist is an injury risk on the following day.** Distinct from G14, and more urgent:
+
+> *"When prescribing bicep work you have to be mindful of your back. What you don't wanna do is cook your
+> biceps really bad and then train back the next day — that's not a good idea. You'll probably hurt your
+> bicep, or you could hurt your bicep when you're doing heavy rows or pulldowns or pull-ups, from you
+> previously the day before cooking the crap out of your biceps. So just make sure you have enough time
+> between your back training — and even heavy deadlifts, or heavy hex bar deadlifts, if your biceps are
+> super cooked."*
+
+> *"Same goes for tricep training with chest, because it's a push exercise — you're gonna use your triceps
+> when you push at all. Less of a risk than the bicep for sure, but I've heard of it happening still."*
+
+**Rule:** do not schedule heavy pulling **the day after** heavy direct biceps work. The same applies to
+chest after triceps, at lower risk.
+
+| Cooked the day before | Do not schedule next day |
+|---|---|
+| Biceps | Rows, pulldowns, pull-ups, **heavy deadlifts and trap bar deadlifts** |
+| Triceps | Chest pressing (lower risk, but real) |
+
+**This is a different failure mode from G14.** G14 is a budget: spend biceps recovery on rows and you have
+less to spend on curls. G32 is an **injury**: a fatigued biceps tendon put under a heavy pulling load the
+next day can tear. One costs you progress, the other costs you a client.
+
+**It constrains the weekly schedule, not the session.** Nothing else in this file does that. `coverage.ts`
+places body parts across the week by frequency and recovery windows; this adds a hard adjacency
+constraint — an ordering rule between days rather than within one. Deadlifts appearing on that list is the
+non-obvious part, since nothing tags them as biceps work.
+
 ---
 
 # Entries
@@ -2263,6 +2292,71 @@ unlocked by posture (G18), and it now adds shoulder health.
 So rear delt work is prescribed for shoulder function **and** for appearance. The distinction that survives
 is narrower than "rear delts are not aesthetic": a *generic* request for bigger shoulders means lateral
 delts, but **looking at the person** can put rear delts at the top regardless. See G31.
+
+---
+
+# Arms
+
+## Standing Dumbbell Curl — *the godfather*
+
+**Library:** `Dumbbell Curl` · `Alternating Dumbbell Curl`
+**His usage:** 32 prescriptions.
+
+Jack is dividing biceps into **dumbbell, barbell and machine** groups. This is the first of the dumbbell
+group.
+
+> *"Standing dumbbell curls, which are an absolute godfather staple of bicep training in general. It's just
+> really important for a lot of guys cosmetically."*
+
+**Rule — a demographic priority.** *"If they're within the age range of, you know, 13 years old up to 40-45
+years old, in a lot of cases guys really care about biceps, so they take a high priority."*
+
+**Rule — reps 8-20, and target 15-16.** *"No less than sets of eight at the lowest, and no more than 20 at
+the highest — but that's still pretty damn high. I would urge on it being somewhere around 15, 16. It starts
+falling off there."* So 20 is legal and past the point of value, the same diminishing-returns ceiling given
+for the front raise.
+
+**Rule — sets 2-6**, four a good middle. *"I've heard of people doing six sets, eight sets… but I would
+still say on the high end six, and on the low end two."*
+
+**Rule — never first**, per G28, *"unless you have a dedicated arm day"* — the same priority override the
+lateral raise carries.
+
+---
+
+## Seated Dumbbell Curl — *inherits standing, slightly harder*
+
+> *"You've got seated curls, which are a little bit harder because you've got less momentum, less body sway.
+> They follow the same rules."*
+
+**Rule:** identical parameters to the standing curl. The seat removes momentum, which makes it harder at the
+same load rather than different in kind.
+
+---
+
+## Incline Dumbbell Curl — *less volume, higher reps, because of the stretch*
+
+**Library:** `Incline Dumbbell Curl`
+**His usage:** 17 prescriptions.
+
+> *"Incline curls specifically are amazing. I would do a little bit less volume of those… no more than three
+> sets and no less than two. And I'd keep the reps a little bit higher on the incline curls, just because the
+> stretch — of your shoulder being a little bit more in extension — puts a stretch on the bicep more. So if
+> you're trying to lift really really heavy on the incline curls you might hurt your bicep, or your bicep's a
+> little tight, it might tweak a little bit. So I'd keep the reps above 10… you can even range on the higher
+> end, you can do 15. I keep mine pretty high just because the stretch on them is a lot, so I do it for safety
+> purposes."*
+
+**Rule — sets 2-3.** Lower than the standing curl's 2-6.
+**Rule — reps above 10, up to 15.** Higher than the standing curl's floor of 8.
+
+**Both departures come from the same cause: the stretch.** Shoulder extension lengthens the biceps, and a
+lengthened muscle under heavy load is where it tears. Higher reps mean lighter loads, which is the
+mitigation.
+
+**This is G21 again.** The incline curl loads the biceps hardest where it is longest — exactly the property
+that makes the T-bar row riskier than the barbell row. Third instance of the same principle, and the second
+time the mitigation is *"keep the reps higher"* rather than avoiding the exercise.
 
 ---
 
