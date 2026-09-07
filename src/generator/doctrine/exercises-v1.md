@@ -337,6 +337,29 @@ other side: there, a strong lifter is pre-exhausted to keep absolute load down. 
 that has become too easy for a strong lifter is made hard again by fatiguing the muscle first. Both solve
 "this person is too strong for this exercise."
 
+**G14 — Back work spends biceps recovery.** The first cross-muscle interaction recorded:
+
+> *"When you're doing chin-ups you're gonna use your biceps a little bit more, so that might affect your
+> other bicep volume throughout the whole week. And in general with back training you have to be mindful of
+> your biceps, just because every time you pull you use your biceps a little bit as well. So depending on
+> what exercises you're doing for your back, that might affect your maximum recoverable volume for your
+> biceps when you train them individually."*
+
+**Rule:** pulling volume draws down the biceps' recoverable volume. Direct biceps work must be counted
+*against* the week's back work, not budgeted independently of it. Chin-ups cost more than pull-ups.
+
+This breaks an assumption the volume model would otherwise make. `weeklyVolume.ts` counts sets per muscle
+from the `muscle` tag, one tag per exercise — so a week of heavy rowing books zero biceps sets and the
+generator would happily add a full biceps allocation on top. The real budget is shared.
+
+**G15 — Past a point, another exercise beats more sets.** On the fifth and sixth set of pull-ups:
+
+> *"There's nothing wrong with five or six. It's just excessive — like, you can do another lat exercise."*
+
+**Rule:** when an exercise is at its useful set ceiling, additional volume for that muscle should come from
+a **different exercise**, not from more sets of the same one. The set caps throughout this file are
+therefore not volume caps: they cap *this exercise*, and the muscle's remaining volume is spent elsewhere.
+
 ---
 
 # Entries
@@ -1060,6 +1083,87 @@ impractical to load, and unpleasant to do. A small plate is acceptable; loading 
 **Rule:** for a strong lifter, the way to keep using push-ups is the non-antagonistic superset in G13 —
 fatigue the chest first with flies, then 4-8 push-ups. That restores the difficulty without loading the
 movement.
+
+---
+
+## Pull-Up and Chin-Up — *treated together; an assistance ladder*
+
+**Library:** `Pull-Up` · `Chin-Up` · `Cybex Assisted Pull-Up Machine` · `Matrix Assisted Pull-Up/Dip Machine`
+**His usage:** 157 assisted pull-ups, 29 unassisted, 14 assisted chin-ups — his most-prescribed back
+movement.
+
+> *"We'll talk about pull-ups and chin-ups kind of at the same time, because they work very similarly."*
+
+**The one difference:** chin-ups use more biceps, which spends more of the week's biceps budget. See G14.
+
+### Most people cannot do one, and that is the main case
+
+> *"A lot of people, most people, can't do a single pull-up, and that is a whole process of itself."*
+
+Two assistance methods, and the order between them is the point:
+
+1. **Band-assisted pull-up first.** *"When a band is tied to the pull-up bar above you and you put your
+   foot in it, at the bottom of the rep you get the most assistance — when your muscles are the most
+   stretched out, and that helps you quite a lot in the earlier phases."*
+2. **Then the assisted pull-up machine**, once the band goes stale after *"several weeks, or a block or two
+   blocks."* *"The way that the load is given is completely different, because the weight is even
+   throughout the whole rep. It's not easier at the bottom."*
+
+**Rule: bands first, machine second, and the reason is the force curve.** A band gives most help exactly
+where the movement is hardest, which is what a beginner needs. The machine assists evenly, which is the
+harder and more honest version of the same exercise. The progression is not band → less band → nothing; it
+is band → machine, a change in the *shape* of the assistance rather than only its size.
+
+This is the second time a force curve has decided something, and a generator has no access to that
+reasoning from muscle tags and equipment alone.
+
+**The results claimed:** *"I've had insane results… I've gotten people from zero pull-ups to 10 pull-ups.
+People in their 50s and 60s have done that."*
+
+### Progressing from zero, and the ceiling
+
+Follows the push-up method exactly — G12, descending load across sets.
+
+> *"If you can't do one, you need to be working as high as you can. You're still doing sets of one to
+> three, sets of two, sets of one in some cases if that's all you can do — but nonetheless probably sets of
+> three I like the most. You stay around there and you just keep adding weight each time, pretty much the
+> same way as push-ups."*
+
+**Rule:** sets of ~3 is the preferred working point when assistance is heavy.
+
+**The ceiling is low, even for the advanced:** *"Even when you get really advanced at pull-ups, most of the
+time people can't do more than 10, maybe 15 really good pull-ups — for multiple sets especially."* So
+unlike the push-up, the pull-up does **not** expire with strength; its useful range simply never gets long.
+
+### Slot and frequency
+
+> *"If you're really trying to get good at pull-ups and that's a big priority of yours, you should probably
+> do them first as your vertical pull for your back. I would prioritise it earlier in the session, if not
+> first one day if it's that important. But I would try to do a minimum of twice a week if you're trying to
+> get better at pull-ups."*
+
+**Rule — slot:** first, or early, **when improving at pull-ups is the goal.** Otherwise early-ish as the
+vertical pull. Same intent-dependent slotting as the landmine press (G5).
+
+**Rule — frequency: minimum 2x/week** when it is a goal. The first frequency rule tied to a goal rather
+than to a muscle.
+
+### Reps and sets
+
+**Rule — all rep ranges are legal.** *"It kind of just depends where you're at. If you can only do one
+pull-up, then you can only do one pull-up."* Capacity constrains it, not doctrine — same as the push-up.
+
+**Rule — sets by rep count:**
+
+| Reps | Sets |
+|---|---|
+| 2 | 3-4, working up to 5 by the end of a block |
+| 3 | 4, or 5 |
+| 5 | 4 |
+| 6+ | 4 |
+
+Ceiling 4-5, *"maybe even six if you're crazy about them"* — but see G15: past four, another lat exercise
+is the better spend.
 
 ---
 
