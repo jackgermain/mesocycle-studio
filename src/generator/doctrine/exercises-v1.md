@@ -390,6 +390,33 @@ their pairing changes.
 This does not violate `v1.md` C4 (*one variable at a time*). C4 governs change **within** a block, week to
 week. G16 is a change **between** blocks, which is where variation is supposed to happen.
 
+**G17 — Transfer runs one way.** Stated for two different pairs in the same breath:
+
+> *"They will not help you get better at your pull-ups. Pull-ups have an incredibly high transfer to how
+> much you can do a pulldown with, but it's not the other way around. And same with barbell pressing to
+> dumbbell pressing — barbell pressing is massive for increasing your dumbbell press, but increasing your
+> dumbbell press is not massive for your barbell press."*
+
+**Rule:** transfer between related exercises is **asymmetric**. The harder, less-supported, more-stabilising
+variant transfers *down* to the easier one. The easier one does not transfer back up.
+
+| Trains | Improves | Does not improve |
+|---|---|---|
+| Pull-up | Lat pulldown | — |
+| Lat pulldown | — | Pull-up |
+| Barbell press | Dumbbell press | — |
+| Dumbbell press | — | Barbell press |
+
+**Consequence for goal-driven selection:** to improve at an exercise, the generator must prescribe *that
+exercise, or something above it in the transfer order*. Substituting downward — pulldowns for someone whose
+goal is pull-ups, dumbbell pressing for someone whose goal is a bigger bench — trains the muscle and fails
+the goal. Muscle-tag equivalence says these swaps are free. They are not.
+
+**This also bounds G16.** An interchangeable pair requires transfer to run **both** ways: pull-up ↔ chin-up
+qualifies, pull-up ↔ pulldown does not, despite both being vertical pulls for the same muscle. So G16 pairs
+are not simply "two similar exercises" — they are two exercises of *equivalent difficulty*, which is why
+progress on either carries to the other.
+
 ---
 
 # Entries
@@ -1202,6 +1229,50 @@ pull-up, then you can only do one pull-up."* Capacity constrains it, not doctrin
 
 Ceiling 4-5, *"maybe even six if you're crazy about them"* — but see G15: past four, another lat exercise
 is the better spend.
+
+---
+
+## Lat Pulldown — *a staple, but not a route to pull-ups*
+
+**Library:** `Lat Pulldown — Wide Grip` · `Lat Pulldown — Close Grip` · `Hammer Strength Plate-Loaded Lat
+Pulldown` · `Seated Row Machine`-adjacent variants
+**His usage:** 84 prescriptions across nine of ten programs.
+
+> *"Pulldowns are good, I like them a lot… they're a staple. I think everybody should do them, should use
+> them with different handles, different bars. I think they're fantastic."*
+
+**Rule:** a staple, for everyone. Grip and handle variation is encouraged rather than merely tolerated.
+
+### But it ranks below the pull-up, and for a specific reason
+
+> *"The only reason I would do a pulldown over a pull-up is if they're already doing a lot of pull-ups and
+> they still want more volume for their lats."*
+
+**Rule:** the pull-up is preferred. The pulldown's role is **additional lat volume once the pull-up's own
+sets are spent** — which is exactly the case G15 describes, where more volume should come from a different
+exercise rather than more sets of the same one. The two rules meet here.
+
+**Rule:** it is *not* a substitute for the pull-up when improving at pull-ups is the goal. See G17 — the
+transfer runs pull-up → pulldown and not back.
+
+### Reps and sets
+
+**Rule — reps 6-15, sweet spot 8-12.** Other ranges within that span are fine.
+
+**Rule — sets: 2 minimum, 3-4 typical, 6 at the absolute high end.** *"No more than six sets at the very
+high end, but ideally four. Usually three is good, but no less than two."*
+
+**Rule — a beginner gets 2-3 easy sets.** *"If I was just starting somebody out and they were trained, I'd
+probably pick two or three really easy ones — depends how easy it is for them."*
+
+### Slot
+
+> *"Around the same time as when you would do a pull-up. So first if it's incredibly important, if not
+> second or third, maybe even fourth — it all depends on how tired you are by the time you get to them. But
+> usually the third or the second."*
+
+**Rule — slot 2nd or 3rd** by default; 1st only when it is the priority; as late as 4th depending on
+accumulated fatigue.
 
 ---
 
