@@ -3503,10 +3503,16 @@ within the first three exercises, maybe four. That's kind of the cap rate there.
 
 ---
 
-## Smith Machine Split Lunge — *the single-leg member of the machine-compound group*
+## Smith Machine Lunge / Smith Machine Split Lunge — *one exercise, two names*
 
-**Library:** `Smith Machine Split Lunge`
-**His usage:** 51 prescriptions — exactly level with the Smith machine lunge.
+**Library:** `Smith Machine Split Lunge` · `Smith Machine Lunge` — **two entries for the same movement**
+**His usage:** 51 + 51 = **102 prescriptions**, making it one of his most-used leg exercises.
+
+> *"Smith machine lunge and Smith machine split lunge are the exact same thing."*
+
+This resolves a question open since the first pass over his programs, where the two names appeared at
+exactly 51 uses each and looked like a deliberate distinction. It was not one — it is the same exercise
+written two ways, and the combined figure is what matters.
 
 > *"Smith machine split lunges are absolute gold for bodybuilding… This is an amazing variation. I'd put it
 > in the same place as a Smith machine squat, or a hack squat, or a leg press even — but a single-leg
@@ -3554,9 +3560,24 @@ mitigation, and the pattern is now consistent enough to predict.
 **Rule — the elevation is the point.** It is selected when a deeper stretch on the glutes is wanted, which
 makes it a glute-biased variant of a movement that is otherwise mixed quad and glute.
 
-*Open:* this entry and the Bulgarian both point at the **plain `Smith Machine Lunge`**, which has 51 uses and
-still has no entry of its own. Two entries now inherit from something not yet recorded — the same situation
-as the chest-supported row pointing at a seated cable row rep range that had not been given.
+**Its parent is the Smith machine lunge entry above** — which is the same exercise as the Smith machine split
+lunge, so this inherits 6-12 reps kept decently heavy, 2-4 sets, slot 1st-3rd by load, and the
+almost-exclusively-women rule. The only change is the rep floor of 7-8.
+
+---
+
+## Library duplicate — Smith Machine Lunge and Smith Machine Split Lunge
+
+`exerciseLibrary.ts` carries both `Smith Machine Lunge` and `Smith Machine Split Lunge` as separate
+exercises. By Jack's own statement they are *"the exact same thing."*
+
+**Why this matters beyond tidiness:** G6 forbids two exercises of the same pattern in one session. A
+generator reading the library sees two distinct entries, could legitimately place both in one workout, and
+would have prescribed the identical movement twice while believing it had varied the stimulus. The duplicate
+also splits progression history across two names, exactly as the spelling variants did in his spreadsheets.
+
+Not changed — merging library entries affects any program already referencing the removed name. Worth doing
+deliberately rather than as a side effect of this file.
 
 ---
 
