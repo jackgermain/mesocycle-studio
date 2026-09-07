@@ -3770,8 +3770,9 @@ Named in full:
 the chest, which has a dozen live options — and it means a hamstring allocation is mostly a decision about
 *how much*, not *which*.
 
-The `Standing Leg Curl` and `Nordic Hamstring Curl` in the library are not on that list and have no entry, so
-by G10 they are not generatable.
+The `Standing Leg Curl` is not on that list and has no entry, so by G10 it is not generatable. The **Nordic
+hamstring curl** and the **glute ham raise** are covered separately below — they are good exercises that sit
+outside the bodybuilding four.
 
 **Library addition:** the single-leg RDL was **not in the library** and has been added at
 `exerciseLibrary.ts:154`, tagged `Hamstrings`. It is the first case of one of his named best-in-class
@@ -3781,6 +3782,36 @@ exist; this one genuinely did not.
 *Open:* the single-leg RDL has no parameters yet — reps, sets, slot, and whether it inherits the barbell
 RDL's scheduling cost. Given it is loaded far lighter than a barbell RDL, the axial sequencing rule in G32
 may not apply to it.
+
+---
+
+## Nordic Hamstring Curl and Glute Ham Raise — *sports-performance movements*
+
+**Library:** `Nordic Hamstring Curl` · `Glute Ham Raise` *(added — see below)*
+**His usage:** zero across the ten programs.
+
+> *"The Nordic hamstring curl's cool. Another one is the glute ham raise. Both of those are more
+> sports-performance oriented movements, although they're not bad — they're great for general strength and
+> stuff of that nature too."*
+
+**Rule:** both are legitimate, and their home is **sports performance and general strength** rather than
+hypertrophy. That is why they sit outside the four bodybuilding hamstring exercises without being worse
+exercises.
+
+**Rule — usable for a bodybuilder, but not as a replacement.** *"As a bodybuilder you don't do things like
+that that much — although you could, you would just have to do other hamstring stuff as well."* They add to
+the hamstring allocation; they don't cover it.
+
+**Rule — not compounds.** *"I would not categorise them as compounds."* So by G28 they are not eligible for
+the opening slot.
+
+**Rule — slot: middle to late.** *"I would do them later in the session — definitely not first. Maybe in the
+middle, depending how big of a priority it is."*
+
+*Open:* reps and sets were not given for either.
+
+**Library addition:** the glute ham raise was missing and has been added under `Hamstrings`. The Nordic curl
+was already present and now has doctrine, so it is generatable where it previously was not.
 
 ---
 

@@ -162,6 +162,7 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Life Fitness Hip Abduction Machine", "Glutes", false),
   ex("Hip Adduction Machine", "Adductors", false),
   ex("Nordic Hamstring Curl", "Hamstrings", false),
+  ex("Glute Ham Raise", "Hamstrings", false),
   ex("Cable Glute Kickback", "Glutes", false),
 
   // Calves
