@@ -176,8 +176,12 @@ priority in G5, so the boundary matters.
 > be. So in that case I would put them in that category, meaning you could do them first or second."*
 
 **Rule:** the list above is the set of *unconditional* compounds. A second group — **seated cable row,
-barbell row, T-bar row** — becomes compound **when the intent is to get strong on it**, and then takes
-compound treatment including the first-or-second slot.
+barbell row, T-bar row, and every lunge variation** — becomes compound **when the intent is to get strong on
+it**, and then takes compound treatment including the first-or-second slot.
+
+On lunges: *"These can be used earlier on in the session if they're of really high importance, and
+especially so in a bodybuilding setting… in a way it can be its own compound. So these can absolutely be
+done first — any sort of lunge."*
 
 So compound is not purely a property of the movement. For this second group it is a property of *how the
 exercise is being used*, decided by the client's goal. That is the same intent-dependence already seen in
@@ -3215,6 +3219,61 @@ of that"* — the equipment question comes before the programming question.
 Three exercises now sit in that category: excellent or perfectly good, and gated on machines most gyms lack.
 For a generator this argues that **equipment availability should filter the candidate list before selection
 runs**, rather than being a tiebreaker applied afterwards.
+
+---
+
+## Lunges — *reverse, walking and forward, in one entry*
+
+**Library:** `Reverse Lunge` · `Dumbbell Reverse Lunge` · `Walking Lunge` · `Smith Machine Lunge` ·
+`Smith Machine Reverse Lunge`
+**His usage:** 178 prescriptions — reverse lunges dominate.
+
+### Forward versus reverse, and why the reverse wins
+
+> *"The only difference between the front lunge and the back lunge is the load initially hitting the ground
+> on your front leg when you step forward. When you step forward, for a brief second your centre of mass is
+> way behind your leg — where your foot is planted on the ground. So right when you apply the load of your
+> bodyweight, the transition can be a little bit weird on some people's knees. That is why the reverse lunge
+> is a much more preferred way to lunge for individuals with some knee irritation."*
+
+**Rule — reverse lunge for knee irritation.** The forward lunge's problem is a specific instant: the moment
+of landing, with the centre of mass behind the planted foot. The reverse lunge never creates it.
+
+**Rule — reverse lunge for heavy work.** *"If I were gonna go really heavy I'd want to be doing a reverse
+lunge. I would not want to do a front lunge."*
+
+**Rule — walking lunges are the high-rep variation.** *"Walking in a straight line for more reps — 15 reps,
+20 reps. I used to do that a lot."*
+
+**And they carry a cardiovascular cost:** *"High-rep lunges will get your cardiovascular system working
+quite a bit."* Second time systemic rather than local cost has decided something — the leg press entry noted
+that 15 reps there is fine precisely because *"your whole body isn't cooked compared to doing 15 reps on a
+squat."* There is a systemic-cost ordering emerging: **squat > high-rep lunge > leg press**, independent of
+how hard the target muscle is worked.
+
+**Rule — reps 6-15.** *"The lowest amount of reps I would do on a front lunge is six, and that's really
+pushing it, in a strength setting. Ideally I would still do probably eight… nothing wrong with the 12 rep
+range, or the 15 range at all, for hypertrophy especially. All the ranges can be good."*
+
+**Rule — sets 2-6.**
+
+### For women, this is a primary glute builder
+
+> *"I really like [these] for girls. Lunges are amazing amazing amazing glute builders — same as squatting,
+> but lunges especially are really really good for glutes. I grow a lot of girls [with] heavy front lunges,
+> heavy back lunges."*
+
+**Rule:** lunges rank alongside squatting as a glute builder, and *above* it for that purpose. Given `v1.md`
+places glutes first in the female priority ordering, this makes the lunge a **top-tier selection for that
+client**, not an accessory.
+
+### Slot
+
+**Rule — can be first.** An elective compound (G4) when it is a priority, whether for bodybuilding or for
+single-leg strength.
+
+**Rule — the athletic case.** *"They can be used a lot in a strength context too, for single-leg strength,
+which can contribute a lot to running power."*
 
 ---
 
