@@ -684,6 +684,21 @@ neither.
 **Consequence:** matching a force curve to a population is a real selection axis, and it is not derivable
 from muscle tags, equipment names, or anything else in the library.
 
+**The mitigation is almost always "raise the rep floor."** Five instances now, and it is consistent enough
+to use as a default for exercises not yet covered:
+
+| Exercise | What lengthens | Mitigation |
+|---|---|---|
+| T-bar row | Long lever at the bottom | Restrict for older clients |
+| Incline curl | Shoulder extension stretches the biceps | Reps above 10, sets capped at 3 |
+| Overhead triceps extension | Elbow overhead stretches the long head | Less load, and must be warm |
+| Straight-arm pulldown *(dislocation history)* | Overhead shoulder position | Higher reps, as the condition of use |
+| Elevated Smith lunge | Deeper hip and knee flexion | Rep floor rises from 6 to 7-8 |
+
+**Rule (inferred):** when a variation increases the stretch on the working muscle at its loaded position,
+raise the rep floor rather than dropping the exercise. Higher reps mean lighter loads, and it is the load at
+long muscle length that does the damage.
+
 **G22 — Enjoyment is a legitimate input.** It has now decided three separate things:
 
 > *"No more than probably four sets, unless you're just really in love with the exercise, then maybe you do
@@ -3465,6 +3480,32 @@ off training age, goal, joint history or equipment rather than sex directly.
 
 **Rule — slot 1st, 2nd or 3rd, decided by the load** (G41). First is legitimate on a glute day. Heavy work
 goes earlier; higher-rep work can sit third.
+
+---
+
+## Elevated Smith Machine Lunge — *the regular version, deeper*
+
+**Library:** `Elevated Smith Machine Lunge`
+**His usage:** 16 prescriptions.
+
+> *"It's the exact same thing as a regular Smith machine lunge, except the front foot is elevated — thus
+> you're able to get further down into the lunge, allowing the greater stretch on your glutes. You get a
+> higher degree of hip flexion and a little bit more knee flexion. So it's just another variation of the
+> Smith machine lunge. I would use it exactly the same as the regular Smith machine lunge, except I would
+> put the bottom end of the rep range at about seven or eight instead of six."*
+
+**Rule:** identical to the Smith machine lunge in every respect except one.
+
+**Rule — rep floor 7-8, not 6.** The elevation buys depth: more hip flexion, more knee flexion, more glute
+stretch — and the rep floor rises to keep the load off that stretched position. Fifth instance of the G21
+mitigation, and the pattern is now consistent enough to predict.
+
+**Rule — the elevation is the point.** It is selected when a deeper stretch on the glutes is wanted, which
+makes it a glute-biased variant of a movement that is otherwise mixed quad and glute.
+
+*Open:* this entry and the Bulgarian both point at the **plain `Smith Machine Lunge`**, which has 51 uses and
+still has no entry of its own. Two entries now inherit from something not yet recorded — the same situation
+as the chest-supported row pointing at a seated cable row rep range that had not been given.
 
 ---
 
