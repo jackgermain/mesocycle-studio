@@ -1430,17 +1430,19 @@ This is consistent with G11's absolute-pounds rule of thumb, and it says the sam
 a fixed poundage increment means something completely different on a lateral raise than on a hip thrust, so
 the increment has to scale with the load already on the bar.
 
-**⚠ One number needs clarifying before this is implementable.** He gave a figure — *"somewhere in the realm
-of maybe forty, fifty, or even sixty percent, maybe thirty percent at the lowest, but that's kind of pushing
-it"* — but not what it is a percentage **of**. The two readings are:
+**Resolved — it is a reduction in the load increment.**
 
-1. **A fraction of the normal load increase.** When clustering, add 40-60% of the jump you would otherwise
-   make, with 30% being over-cautious.
-2. **A percentage of 1RM**, i.e. the working load band for cluster work.
+> *"When clustering, when you make weekly increases in load, make them forty to sixty percent **less** than
+> what they would be if you were keeping the reps the same throughout the entire block, or if they were going
+> up by just a little bit. Because the total rep count is going up so much, that is the main variable we are
+> playing with during these three blocks that is providing the gains."*
 
-The first fits the surrounding argument about being conservative; the second fits the numbers being in a
-range that looks like intensity. **Recorded as unresolved rather than guessed, because a generator acting on
-the wrong reading would either stall progress or overshoot every week.**
+**Rule: while clustering, cut the weekly load increment by 40-60%** against what the same exercise would get
+under a constant-rep block.
+
+The reason is that the cluster system's *own* progression is volume. Reps climb 18 → 20 → 22 → 27 → 30 across
+the blocks, and that rising rep count is what drives adaptation. Load still moves, but it is the secondary
+variable and must give way.
 
 **G43 — Eccentric loading causes more muscle damage.** Given on the Nordic curl:
 
@@ -1455,9 +1457,24 @@ expensive than the sets alone imply.
 It also composes with the stretched-position rule — a movement that is both eccentric-heavy *and* loads the
 muscle at long length is the most damaging combination available, and the Nordic curl is exactly that.
 
----
+**G44 — Progression variables share one recovery budget.** The principle behind the cluster load rule, and
+it governs every block:
 
-# Entries
+> *"Each week you only have so much pool of recovery. When making a progression each week, you can either add
+> a little volume, add a little bit of load — you can do a little bit of both at the same time. But if you try
+> to drive really hard with one of them, you have to be mindful about how much you change the others as
+> well."*
+
+**Rule:** volume and load draw on the **same weekly recovery budget**. A week's progression may spend it on
+one variable or split it, but the total is fixed. Driving one hard requires easing the others.
+
+**This makes `v1.md` C4 quantitative rather than binary.** C4 says change one variable at a time. G44 says
+the real constraint is a budget: you *may* move two variables, provided each moves less. The cluster system
+is the worked example — reps climb steeply, so load rises at 40-60% of its normal rate.
+
+**Consequence for the generator:** progression cannot be computed per variable in isolation. A block that
+raises reps, adds a set and increases load by its usual increment has spent the budget three times over,
+and each decision looked reasonable alone. The check has to be on the combination.
 
 ## Chest Press Machine — *flat, seated, selectorized or plate-loaded*
 
