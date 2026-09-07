@@ -2253,6 +2253,7 @@ pre-exhaustion rather than added load:
 |---|---|---|---|
 | Push-up | Bodyweight | Strength rises | Fly, then push-ups |
 | Goblet squat | What you can hold | You can squat more than you can hold | Any leg exercise, then goblet squats |
+| Crunch | Bodyweight | *"As crunches get really easy, similar as a push-up"* | Move later in the circuit, where fatigue makes it hard again |
 
 A generator that only knew "this exercise is for beginners" would drop these at intermediate. The doctrine
 says they come back, in a different role.
@@ -4536,6 +4537,62 @@ Fifth adjustable position in the file, after elbow flare, overhead elbow positio
 pull-through torso angle. All five are storable in `ExerciseSetup` and none reach the client.
 
 **Rule — reps and sets as the weighted sit-up:** 8-20 biased high, 2-4 sets.
+
+---
+
+## V-Up — *a circuit exercise, and the reps are the progression*
+
+**Library:** `V-Up` · `Twisted V-Up`
+**His usage:** 68 prescriptions across both spellings.
+
+> *"V-ups are amazing."*
+
+**Rule — reps 8-15.**
+**Rule — sets: up to 4** when done alone or paired; **once** when part of a four-exercise circuit.
+**Rule — slot: in the circuit, after the hanging work.** *"Do them after your leg lifts, your leg circles, or
+your leg twists."*
+
+### Falling below the rep floor is fine here
+
+> *"If you're only strong enough to be able to do like six of them, or whatever, that's totally fine. Same
+> with any other ab exercise that's not weighted. That's how you get to being able to do more reps."*
+
+**Rule:** on **unweighted** ab work, the rep floor is a target rather than a requirement. Doing fewer reps than
+the range specifies is the normal state for someone building toward it, and the reps themselves are the
+progression.
+
+That is a real exception to how every other rep floor in this file works. Elsewhere a floor is a limit — go
+below it and the prescription is wrong. Here it is a destination. The difference is that these movements have
+no load to reduce, so the only variable available is reps, and a client who cannot reach the floor still has
+to train somehow.
+
+---
+
+## Crunch — *placed by how easy it has become*
+
+**Library:** `Crunch`-family entries, plus the `Life Fitness` and `Cybex` ab crunch machines
+**His usage:** part of the 135 crunch-family prescriptions.
+
+> *"As crunches get really easy — similar as a push-up — I would do them towards the end of that little
+> exercise circuit… but I would usually do crunches second, just because they're really easy. Unless doing a
+> crunch is hard, which for a beginner might be good enough."*
+
+**Rule — position is set by difficulty for that client, and it moves over time:**
+
+| Client | Where the crunch goes |
+|---|---|
+| Beginner, for whom a crunch is genuinely hard | Can carry real work — earlier |
+| Typical | **Second** in the circuit |
+| Strong, for whom it is easy | **Towards the end**, where accumulated fatigue makes it hard again |
+
+**This is the third exercise to expire with strength**, after the push-up and goblet squat — and he named the
+push-up parallel himself. The rescue differs though: the push-up and goblet squat are pre-exhausted by
+pairing them with something harder, while the crunch is simply moved later in a circuit that is already
+producing the fatigue.
+
+**Rule — within the ab circuit, order runs hardest to easiest.** Hanging leg work opens it, V-ups follow, and
+the crunch sits second or last depending on the client. That is G28 applying inside a circuit as well as
+across a session.
 
 ---
 
