@@ -901,6 +901,43 @@ variation. That is fine for relieving a plateau, but by G17 it is wrong whenever
 pull-ups — transfer does not run that direction. Variation swaps and goal-preserving swaps are not the same
 operation.
 
+**G34 — Volume tolerance is individual, and fibre type is why.** The reason the soreness feedback exists:
+
+> *"It depends on the person. If they do 2 to 4 sets and they don't feel anything, they need more — and
+> same goes for any other body part. That's why the soreness feedback is so important, because everybody's a
+> little different. Everybody has a different proportion of fast-twitch fibres to slow-twitch fibres across
+> muscles. Genetically, in a lot of people, if they're proportionately higher in fast-twitch fibres, they
+> are a lot stronger, they fatigue quicker, and they get damaged quicker — so they don't need as much volume
+> in order to get as messed up."*
+
+**Rule:** the right volume is a **per-client, per-muscle** quantity, not a number from the literature. Fibre
+composition varies between people and between muscles in the same person.
+
+| Fibre bias | Strength | Fatigue and damage | Volume needed |
+|---|---|---|---|
+| Fast-twitch | Higher | Quicker | **Less** |
+| Slow-twitch | Lower | Slower | **More** |
+
+**Rule — it is inferred from response, not measured.**
+
+> *"Over time we can collect and even observe and make an assumption that, OK, this guy does 10 sets of
+> quads per day on his leg days — he must have a higher proportion of slow-twitch fibres. Unlike somebody
+> who's like me: maybe I do six sets a week of quads and my legs grow a shit ton. My legs are very
+> fast[-twitch]."*
+
+**Rule — the titration is explicit:** *"if they do 2 to 4 sets and they don't feel anything, they need
+more."* Absence of a response is the signal to add volume.
+
+**This already has a hook in the code.** `weeklySetVolume()` takes a `limits: Record<string, number>`
+parameter whose comment reads *"A client-specific ceiling, learned from their own history, beats the
+literature's."* G34 is the doctrine behind that parameter, and it says the same thing should apply to the
+**floor**, not only the ceiling — a fast-twitch client's correct volume can be below the band's minimum,
+not merely below its maximum.
+
+**Jack's own quads are the counterexample to the band.** Six sets a week, growing well, against a 10-25
+band whose minimum is 10. So the band is a starting default for an unknown client, and individual response
+overrides it in both directions.
+
 ---
 
 # Entries
@@ -2414,6 +2451,29 @@ mitigation.
 **This is G21 again.** The incline curl loads the biceps hardest where it is longest — exactly the property
 that makes the T-bar row riskier than the barbell row. Third instance of the same principle, and the second
 time the mitigation is *"keep the reps higher"* rather than avoiding the exercise.
+
+---
+
+## Barbell Curl — *the other godfather*
+
+**Library:** `Barbell Curl` · `EZ-Bar Curl`
+**His usage:** part of the 234 curl prescriptions.
+
+> *"Barbell curls are another godfather of bicep training."*
+
+**Rule — reps 8-20.** *"No less than eight pretty much all the time, and no more than 20 — unless you're
+doing some crazy clusters or something like that."* Clusters (G26) lift the ceiling here as they do on the
+lateral raise.
+
+**Rule — sets 2-6, with 2-4 the good range.** *"I've heard of guys doing six sets a session, eight sets a
+session… the least I would do is two and the most is five or six, with 2 to 4 being a good range."* Eight is
+reported, not endorsed.
+
+**Rule — but titrate to the person.** *"It depends on the person — if they do 2 to 4 sets and they don't
+feel anything, they need more."* See G34.
+
+**Rule — the G32 scheduling constraint applies.** *"Same rules go for these as any bicep training — be
+careful of how it affects your back training."*
 
 ---
 
