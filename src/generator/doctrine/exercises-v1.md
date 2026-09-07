@@ -5036,6 +5036,35 @@ never try to teach them.**
 
 ---
 
+## Kettlebell Swing — *conditioning only, and low priority*
+
+**Library:** `Kettlebell Swing`
+**His usage:** zero across the ten programs.
+
+> *"I'm not a big fan of kettlebell swings, to be honest… I wouldn't really use these much. These aren't gonna
+> get that much done for you."*
+
+**Rule — never in a bodybuilding setting.** *"I would pretty much only do them in a strength conditioning
+setting."* This is the first exercise in the file **excluded by goal** rather than by risk, redundancy,
+equipment or coachability — it is not that it is dangerous or unavailable, it is that it does not serve the
+goal a bodybuilding client has.
+
+**Rule — a major accessory** when used at all.
+**Rule — reps 6-15.**
+**Rule — sets 2-4.**
+
+**Rule — two narrow uses:** conditioning for a middle-aged client, and *"maybe a little bit for lower body
+power, but even then that would be a rare instance."*
+
+### Conditioning keeps appearing as a goal
+
+This is the second exercise whose primary justification is conditioning, after high-rep lunge work — and in
+both cases it is the *only* thing that justifies the exercise. G30's goal list ended with "etc," and
+conditioning is now the clearest of the missing entries: two exercises depend on it, and without it in the
+enumeration neither can ever be selected correctly.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
