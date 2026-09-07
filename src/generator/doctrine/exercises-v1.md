@@ -500,6 +500,35 @@ as their own rows.
 in the data distinguishes vertical from horizontal, width from thickness, or upper from mid — so the
 generator currently cannot tell that a session of five rows has trained one thing five times.
 
+**G21 — Resistance peaking at long muscle length is the risky profile.** The reasoning behind several
+choices that looked unrelated:
+
+> *"Especially T-bars — because T-bar rows, the lever is so long at the bottom of the rep. The force curve
+> is favoured to it being the heaviest when your muscles are the longest in length that are contributing to
+> that exercise. And muscles, when they're lengthened, are weaker — the force output they're able to
+> produce is less. So you're in a bit more of a vulnerable spot than the barbell row, where it's consistent
+> throughout."*
+
+**Rule:** an exercise is riskier when its resistance is **greatest where the muscle is longest**, because a
+lengthened muscle produces less force. Even resistance through the range is safer than resistance that
+peaks at the stretch.
+
+This is the principle behind three separate things already recorded, which is why it is worth stating once:
+
+| Where it appears | How it applies |
+|---|---|
+| T-bar row vs barbell row | T-bar peaks at the stretch, barbell is even → T-bar is riskier, especially for older clients |
+| Band vs machine pull-up assistance | The band gives **most** help at the bottom, where the muscle is longest and weakest → which is exactly why it works for beginners |
+| Machines and cables generally | Even resistance is why they suit the older, general-population roster |
+
+The band-assisted pull-up and the T-bar row are the same physics with opposite signs. The T-bar loads the
+stretched position hardest and that is its danger; the band unloads the stretched position hardest and that
+is its value. A generator that understood only "assistance" and "resistance" as magnitudes would see
+neither.
+
+**Consequence:** matching a force curve to a population is a real selection axis, and it is not derivable
+from muscle tags, equipment names, or anything else in the library.
+
 ---
 
 # Entries
@@ -1454,6 +1483,23 @@ athletes.
 **Rule — grip does not change any of this.** *"That goes for both a supinated grip and a pronated grip."*
 
 **Rule — purpose:** *"a major mass builder for thickness in your back."* See G19.
+
+### Age restriction, and why the T-bar is the worse of the two
+
+> *"For the most part I wouldn't have people who are like very old doing barbell rows and T-bars a lot —
+> especially T-bars."*
+
+**Rule:** restrict both for very old clients, and the **T-bar more strictly than the barbell row.** The
+reason is the force curve — see G21. The T-bar's long lever puts peak resistance at the bottom of the rep,
+where the working muscles are longest and therefore weakest; the barbell row's resistance is even through
+the range.
+
+**Rule:** the barbell row remains available to this group with a caveat — *"nonetheless doing barbell rows
+is fine, especially if you keep them light at first."*
+
+*Transcription note:* the recording reads "late at first", which is either **light** or **late**. "Light"
+fits the surrounding risk argument and is recorded on that basis; "late" would contradict the slot rule
+above, which puts these first or second and never past third. Worth one word of confirmation.
 
 ---
 
