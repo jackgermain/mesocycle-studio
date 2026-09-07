@@ -4438,7 +4438,51 @@ with.
 
 **Rule — sets 2-4.**
 
+**Rule — it is a rung, not an endpoint.** The weighted sit-up is the step before the decline sit-up — see
+below.
+
 Movement #1 in the coverage model.
+
+---
+
+## Decline Sit-Up — *the next rung, with an adjustable angle*
+
+**Library:** `Decline Sit-Up`
+**His usage:** part of the crunch-family prescriptions.
+
+> *"Weighted sit-ups are a really good progression to do before you start doing decline sit-ups."*
+
+### The crunch ladder
+
+| Rung | Movement | Gate to the next |
+|---|---|---|
+| 1 | Bodyweight crunch, feet down | Good clean reps |
+| 2 | **Weighted sit-up** | A **10-15 lb plate for a set of 6-7** |
+| 3 | **Decline sit-up** | — |
+
+> *"By the time you can do, like, a 25 pound plate for maybe a set of six, seven — you can start doing the
+> decline crunches. Maybe not 25, maybe like a 10 or a 15, actually."*
+
+He corrected himself mid-sentence; **10-15 lb is the recorded gate.**
+
+This is the third exercise family with an explicit progression ladder and numeric gates, after the push-up
+(kneeling → weighted kneeling → full, gated at 7-8 reps and again at 12) and the pull-up (band → machine →
+unassisted). All three are bodyweight or near-bodyweight movements, which makes sense: where load cannot be
+dialled in small increments, progression has to come from changing the movement, and the gates are what say
+when.
+
+### The decline angle is a difficulty dial
+
+> *"You can decline different amounts, you can adjust it. So the more horizontal your back is at the bottom
+> of the rep, the easier that rep is going to be."*
+
+**Rule:** the steeper the decline, the harder the exercise; closer to horizontal is easier. So the decline
+sit-up is not one difficulty — it is a continuous range, and the angle is set for the client.
+
+Fifth adjustable position in the file, after elbow flare, overhead elbow position, grip rotation and the
+pull-through torso angle. All five are storable in `ExerciseSetup` and none reach the client.
+
+**Rule — reps and sets as the weighted sit-up:** 8-20 biased high, 2-4 sets.
 
 ---
 
