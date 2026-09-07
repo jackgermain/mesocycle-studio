@@ -1535,6 +1535,79 @@ is the worked example — reps climb steeply, so load rises at 40-60% of its nor
 raises reps, adds a set and increases load by its usual increment has spent the budget three times over,
 and each decision looked reasonable alone. The check has to be on the combination.
 
+## G59 — Intensity techniques appended to a set
+
+A family of techniques found across a real advanced program (Lara, 6x/week) that the doctrine did not
+contain. Each is written as a note attached to an exercise, and each modifies how the set finishes rather
+than how it is loaded.
+
+| Technique | As written | What it is |
+|---|---|---|
+| **Partials + hold** | `8 REP 8 PARTIALS 8 HOLD` | Full reps, then partial-range reps, then an isometric hold |
+| **Terminal isometric** | `8 SECOND HOLD AT TOP OF LAST REP` | Hold the contracted position at the end of the set |
+| **Per-rep pause** | `3 SECOND HOLD AT TOP EVERY REP` | An isometric inside every rep, not just the last |
+| **Last-rep pause** | `PAUSE ON LAST REP` | The lightest version — one pause, at the end |
+| **Bodyweight finisher** | `8 BW LUNGE AT END OF EACH SET` | A bodyweight movement appended to every set of a loaded one |
+| **Mechanical drop set** | `FIRST 8 INCLINE 17.5; LAST 10 STANDING 7.5` | Change position *and* load mid-set to extend it |
+| **Assistance ramp** | `1 BW, 2 ASSISTED` | First set unassisted, remaining sets assisted |
+
+**Rule:** these are how an advanced program adds difficulty without adding load. They cluster on machines and
+cables — the same easy-re-entry condition that governs clusters and myo-reps (G42).
+
+**None of them are representable.** `ClusterSpec` handles clusters and myo-reps because those are rep blocks
+with rest between. These are different: partials are reps of a different range, holds are time inside a set,
+a bodyweight finisher is a second exercise inside a set, and a mechanical drop set changes the exercise
+mid-set. `ExerciseSetup.cue` can carry them as prose — which is exactly what the spreadsheet does — and
+nothing shows `.setup` to the client.
+
+That is the third distinct thing blocked by that one unrendered field, after the position cues and the
+per-cluster grip.
+
+---
+
+## What Lara's program confirms and contradicts
+
+A real 6-day advanced female program, reviewed against the doctrine. 97 sets across five populated days.
+
+**Confirmed, and several precisely:**
+
+- **Hip thrust opens both glute days** (Mon T1, Fri T1) for a glute-priority woman. Stronger than the
+  recorded "at least two of three glute sessions" — here it is two of two, both as the first exercise.
+- **The goblet squat sits at T3 on the quad day**, after a split squat and a leg press. That is exactly the
+  pre-exhausted finisher role recorded for intermediate and advanced lifters — found in the wild, unprompted.
+- **Abs are last and structured as recorded**: `HANGING KNEE LIFT SS CABLE CRUNCH` — the hanging compound
+  first, the ground accessory second, supersetted.
+- **Rear delts appear twice** at six days a week, which is G18 working: small muscle groups become affordable
+  as frequency rises.
+- **Legs are consolidated** into three dedicated days rather than spread through the week (G58).
+- **The bent-over barbell row appears with no deadlift anywhere near it** (G52), on a back-only day.
+- **Single-leg RDL and lat prayer both appear**, justifying two library entries added from his own vocabulary.
+
+**Two contradictions worth resolving:**
+
+1. **Cable crunches are used twice a week here**, supersetted with hanging knee lifts on both ab days. The
+   recorded rule says they are request-only and that he would rather use other ab exercises. In an advanced
+   program they are a fixture. The rule is either wrong or scoped to a client type not yet identified.
+
+2. **Tuesday carries 15 direct back sets** — assisted pull-ups 3, lat pulldown 4, barbell row 4, lat prayer 4
+   — against the 14 he criticised as *"quite a bit"* in a generated program for a comparably advanced client.
+
+   **The likely resolution is weekly frequency rather than per-session volume.** Lara trains back once a week,
+   so 15 sets is her whole weekly back allocation and sits mid-band. The generated program trained back twice,
+   so 14 in one session was heading for ~24 across the week — near the top of the band. If that is right, G49
+   is not a flat per-session cap but a per-session cap **conditioned on how often the muscle is trained**.
+   Worth confirming, because a flat cap would wrongly reject this program.
+
+**Also observed:** reps are near-uniformly 8 across the whole program, with a handful of exceptions (12 on the
+cable step-up, 6 on the double-leg RDL, 18 on the mechanical-drop curls, 10 on the split squat). The variation
+that would normally come from rep ranges comes instead from the G59 techniques above.
+
+*(Three muscle tags on the Friday page are wrong in the sheet itself — the RDL and cable kickback are tagged
+`CHEST`, and the hip thrust `FULL BODY`. Copy-paste artefacts, not doctrine, but they are exactly what an
+importer would ingest as truth.)*
+
+---
+
 ## Rules from critiquing generated programs
 
 The first six generated programs were reviewed exercise by exercise. What follows came out of that review —
@@ -1571,10 +1644,11 @@ is wrong by construction — that is where week four lives.
 |---|---|
 | Block opens at | **RPE 7** |
 | Block closes at | **RPE 9–9.5** |
-| 0 RIR at ≤5 reps | Test days only |
+| 0 RIR at ≤6 reps | Test days only |
 
-Tightens `v1.md`'s "start at RPE 7, end at RPE 9" with a barbell exception: at five reps and below the ceiling
-stays below failure even in the last week.
+Tightens `v1.md`'s "start at RPE 7, end at RPE 9" with a barbell exception: at six reps and below the ceiling
+stays below failure even in the last week. Restated unprompted: *"I just don't like starting at a high RPE,
+like eight, if the rep count is going to be really low — that being six and below especially."*
 
 **G52 — Never heavy barbell deadlifts and heavy barbell rows in the same session.**
 
