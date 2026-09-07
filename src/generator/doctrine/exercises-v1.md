@@ -865,6 +865,42 @@ places body parts across the week by frequency and recovery windows; this adds a
 constraint — an ordering rule between days rather than within one. Deadlifts appearing on that list is the
 non-obvious part, since nothing tags them as biceps work.
 
+**G33 — Beginners start in the higher rep ranges, for connective tissue.**
+
+> *"As a general rule of thumb, if people are more beginners in lifting, I try to keep them on the higher rep
+> ranges first, just so that their connective tissues and the muscle bellies get used to training a little
+> bit. Because it takes time for your musculotendinous structure especially to thicken, and the collagen
+> fibres of the matrix of the tendon itself to actually become thicker and stronger, and lay down more of
+> them — and in a lot of cases pliable, because some people are really stiff. So the stretch plus the load
+> plus all that could hurt somebody."*
+
+**Rule:** training age raises the rep floor. A beginner starts high and comes down as their tendons adapt,
+regardless of what the exercise's own range permits.
+
+**The reasoning is tissue, not muscle.** Muscle adapts faster than tendon, so the early limit on load is
+connective tissue that has not yet thickened, laid down collagen, or become pliable. That is why the answer
+is reps rather than sets or exercise choice: reps are what set the load.
+
+**Three separate rules now raise a rep floor, and they stack:**
+
+| Rule | Raises the floor because |
+|---|---|
+| G24 | The client's goal is to look and feel good, not to get strong |
+| G33 | The client is a beginner and their tendons have not adapted |
+| G21 | The exercise loads the muscle at long length (incline curl, T-bar row) |
+
+Any of the three can apply alone, and a beginner doing incline curls for general fitness gets all three. The
+prescription is the highest floor among them, never the exercise's own.
+
+**Note against `trainingAge.ts`:** that module already keys **exercise turnover** off training age — how
+often to swap, and what to swap for. G33 adds a second thing training age governs, the **rep floor**, which
+the module does not currently model.
+
+One thing there worth checking separately: its swap list offers *"pulldown for pull-up"* as a correlated
+variation. That is fine for relieving a plateau, but by G17 it is wrong whenever the client's goal is
+pull-ups — transfer does not run that direction. Variation swaps and goal-preserving swaps are not the same
+operation.
+
 ---
 
 # Entries
