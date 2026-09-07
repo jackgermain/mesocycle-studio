@@ -713,6 +713,7 @@ to use as a default for exercises not yet covered:
 | Overhead triceps extension | Elbow overhead stretches the long head | Less load, and must be warm |
 | Straight-arm pulldown *(dislocation history)* | Overhead shoulder position | Higher reps, as the condition of use |
 | Elevated Smith lunge | Deeper hip and knee flexion | Rep floor rises from 6 to 7-8 |
+| Glute kickback | Long moment arm with the leg horizontal, cable at the ankle | Rep floor held above 8 |
 
 **Rule:** when a variation increases the stretch on the working muscle at its loaded position, raise the rep
 floor rather than dropping the exercise. Higher reps mean lighter loads, and it is the load at long muscle
@@ -1110,6 +1111,26 @@ what makes the week schedulable.
 
 **Rule — heavy RDLs are treated as deadlifts** for scheduling purposes, regardless of being a lighter
 movement.
+
+**G45 — Training age raises volume tolerance.** On the glute kickback:
+
+> *"Some of the intermediate and advanced people may need a little bit more volume on some exercises, just
+> because they're more trained. That's sometimes a rule of thumb."*
+
+**Rule:** the more trained the client, the more volume they need on a given exercise. So a set range's upper
+end belongs to intermediate and advanced lifters, and beginners sit at the bottom of it.
+
+**Training age now governs three separate things**, which is worth collecting since they were recorded far
+apart:
+
+| What | Rule | Effect of being more advanced |
+|---|---|---|
+| Exercise turnover | `trainingAge.ts` | Swap exercises more often — novelty is most of what's left |
+| Rep floor | G33 | Can go lower; tendons have adapted |
+| Volume | G45 | Needs more of it |
+
+All three point the same way — an advanced lifter trains heavier, more varied and with more volume — which
+makes training age one of the highest-leverage intake questions in the whole system.
 
 **G33 — Beginners start in the higher rep ranges, for connective tissue.**
 
@@ -4126,6 +4147,35 @@ the day after, heavier back later — exists because the RDL loads the erectors.
 through pull-throughs has no such constraint**, and their week can be ordered freely. That turns an exercise
 substitution into a scheduling simplification, which is a larger effect than swapping one movement for
 another normally has.
+
+---
+
+## Glute Kickback — *cable and machine, one entry*
+
+**Library:** `Cable Glute Kickback` · `Hammer Strength Glute Kickback Machine`
+**His usage:** 13 prescriptions.
+
+> *"Hammer Strength glute kickback — I'm not gonna talk about [separately], [it's] pretty much the same thing
+> as the cable kickback. It's another really great exercise."*
+
+**Rule:** one entry for both.
+**Rule — an accessory.** *"I would use them as more of an accessory."*
+
+**Rule — do not open with it.** *"It's not the craziest thing I've heard of, doing them first to pre-exhaust —
+but I would urge away from that the vast majority of the time."* Pre-exhaustion is a legitimate use and a rare
+one.
+
+**Rule — reps 8-15, and the floor has a mechanical reason:**
+
+> *"I'd keep the reps on these above eight, just because — the leg being straight at the top of the rep, your
+> hamstring is getting a lot of load when your leg is horizontal, and the cable is pulling you down forwards
+> into the ground, especially when the cable is tied to your ankle. So the moment [arm] is really long."*
+
+An ankle attachment with the leg horizontal is the longest lever available on a small muscle. Sixth instance
+of the same rule — long lever or stretched position, so raise the rep floor rather than dropping the
+exercise.
+
+**Rule — sets 2-4 typically, up to 6.** Six is *"not crazy"* for intermediate and advanced lifters, per G45.
 
 ---
 
