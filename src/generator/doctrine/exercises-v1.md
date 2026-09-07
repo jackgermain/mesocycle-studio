@@ -3056,6 +3056,27 @@ machine removes it.
 
 ---
 
+## Smith Machine Squat — *inherits the leg press and hack squat entry*
+
+**Library:** `Smith Machine Squat`
+**His usage:** 78 prescriptions — his most-used squat by far, against 20 barbell squats.
+
+> *"Smith machine squat I would put in the exact same category as hack squat and leg press. Don't change
+> anything else."*
+
+**Rule:** identical parameters — 6-rep floor, 8-12 typical, up to 6 sets, slot first or second (third for
+older or less hard-training clients), treated as a compound on a machine.
+
+**But not the spine-sparing property.** That belongs to the leg press alone. The Smith squat carries a bar
+across the back and loads the spine like the hack squat does, so it is **not** the answer for the herniated-disc
+client. The three share parameters; only one of them subtracts spinal load.
+
+**Fourth confirmation of the Smith floor.** Smith bench, incline Smith, Smith row and now Smith squat all
+floor at exactly 6, each against a free-barbell parent reaching 1 or 3. The default holds: **a Smith version
+of a barbell lift keeps everything except the strength band.**
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
