@@ -289,6 +289,12 @@ a list of what is endorsed. The first entry on the denylist:
 
 - `Rack Pull` — never
 
+**Fourth — the sissy squat:**
+
+> *"Sissy squats I would never use. Let's not even worry about that."*
+
+- `Sissy Squat` — never
+
 **Third — the preacher curl:**
 
 > *"Preacher curls, I am never going to prescribe them, so let's skip those altogether."*
@@ -3161,7 +3167,7 @@ sets it would get alone.** First time that has been quantified.
 
 ## Belt Squat — *the leg press's equal, and squat-specific*
 
-**Library:** not present — no belt squat exists in the 163.
+**Library:** `Belt Squat` — `exerciseLibrary.ts:147`, tagged `Quads`
 **His usage:** zero across the ten programs.
 
 > *"Belt squat is amazing, unbelievable exercise — if they have them. Most gyms don't have them."*
@@ -3186,9 +3192,29 @@ injury, it maintains squat specificity in a way the leg press cannot. See G40.
 **Rule — availability is the binding constraint.** *"The problem is that a lot of places just don't have
 them."* Same shape as the reverse hyper: excellent, and gated on equipment most gyms lack.
 
-**Library gap:** there is no belt squat in the exercise library. By G10 it is therefore not generatable, and
-the fix is a library addition rather than a doctrine one. Worth noting because this is the first exercise
-Jack has rated highly that the app cannot name at all.
+*Correction:* an earlier note here claimed the belt squat was missing from the library and needed adding.
+That was wrong — it is at `exerciseLibrary.ts:147`, tagged `Quads`. Nothing needed adding, and with this
+entry it is generatable under G10.
+
+---
+
+## Pendulum Squat Machine — *inherits the leg press, rarely available*
+
+**Library:** `Pendulum Squat Machine`
+**His usage:** zero across the ten programs.
+
+> *"The pendulum squat machine would go into the same category as the leg press. But once again, they just
+> don't use them often — most places don't have them, ever. So I would gauge off of that."*
+
+**Rule:** identical to the leg press and hack squat — 6-rep floor, 8-12 typical, up to 6 sets, slot first or
+second.
+
+**Rule — availability is the binding constraint**, as with the belt squat and the reverse hyper. *"Gauge off
+of that"* — the equipment question comes before the programming question.
+
+Three exercises now sit in that category: excellent or perfectly good, and gated on machines most gyms lack.
+For a generator this argues that **equipment availability should filter the candidate list before selection
+runs**, rather than being a tiebreaker applied afterwards.
 
 ---
 
