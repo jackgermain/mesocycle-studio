@@ -1535,6 +1535,128 @@ is the worked example — reps climb steeply, so load rises at 40-60% of its nor
 raises reps, adds a set and increases load by its usual increment has spent the budget three times over,
 and each decision looked reasonable alone. The check has to be on the combination.
 
+## Rules from critiquing generated programs
+
+The first six generated programs were reviewed exercise by exercise. What follows came out of that review —
+rules the doctrine did not contain, several of which it should have caught.
+
+**G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
+
+> *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of
+> volume for your lats in one session. Your weighted pull-ups are four sets, and even though rows aren't
+> quite the same because it's a horizontal pull, it still does a little bit. So take note: you have fourteen
+> sets of back in one session, which is quite a bit."*
+
+**Rule:** ~14 sets for one muscle in a single session is too many. Every rule in this file until now was
+either per-exercise or per-week; nothing governed how much could land in one day.
+
+**Rule — horizontal and vertical pulls partially share a budget.** They are different jobs (G19) but not
+independent allocations: *"even though rows aren't quite the same… it still does a little bit."*
+
+**G50 — Volume rises across a block and never peaks in week one.**
+
+> *"There's nothing wrong with the volume going up a little bit as the block goes on, but definitely not in
+> week one."*
+
+Restates G38 from the volume side. A generated week-one session sitting at the top of an exercise's set range
+is wrong by construction — that is where week four lives.
+
+**G51 — Effort starts at RPE 7, and stays below failure on heavy barbell work.**
+
+> *"I would not start at RPE 8, I would start at RPE 7 — especially on sets of four, because sets of four are
+> so heavy. I don't want to be at zero RIR very often with sets of five and less on the bar, unless you're
+> doing a test day. Even in the last week of your block, an RPE 9 or 9.5 is good."*
+
+| | Value |
+|---|---|
+| Block opens at | **RPE 7** |
+| Block closes at | **RPE 9–9.5** |
+| 0 RIR at ≤5 reps | Test days only |
+
+Tightens `v1.md`'s "start at RPE 7, end at RPE 9" with a barbell exception: at five reps and below the ceiling
+stays below failure even in the last week.
+
+**G52 — Never heavy barbell deadlifts and heavy barbell rows in the same session.**
+
+> *"You can't have crazy heavy barbell deadlifts on the same day as you have heavy barbell rows. Definitely a
+> bad idea — way too much spinal erector engagement. Pick one."*
+
+**Rule — which one goes depends on the goal:** *"Ideally I would get rid of the bent-over rows if he really
+wanted to work on his deadlift. And if he doesn't care about his deadlift, I would just keep the barbell rows
+in."*
+
+G32 governed axial load across days. This governs it **within a session**, and it is a hard conflict rather
+than a caution.
+
+**G53 — Do not stack pressing compounds in one session.**
+
+> *"You have too many compounds on Friday. Why do we have three pressing compounds in a row on the same day?
+> That's kind of stupid."*
+
+**Rule:** one heavy pressing compound per session. G28 says the hardest work opens a session; it does not
+license filling the front of one with three compounds.
+
+**G54 — Lateral raises go before triceps work.**
+
+> *"I'd always put lateral raises before tricep extensions. I don't like doing lateral raises at the very end.
+> In terms of importance they should be done earlier on if possible."*
+
+**Rule:** order the accessory block by **importance**, not by muscle grouping. Lateral delts outrank arms.
+Stated twice in one review, on two different sessions.
+
+**G55 — Alternate bilateral and unilateral across days.**
+
+> *"You have reverse lunges on the Wednesday, but you did Smith machine squats on Monday… I would have one of
+> them be a two-legged exercise and one a single-leg exercise. You just want to make sure you have variety
+> across the days."*
+
+**Rule:** two leg sessions in a week should not lean the same way. Pair a bilateral day with a unilateral one.
+
+**G56 — Free weights are the default press; a machine needs the week to already contain one.**
+
+> *"If I have one choice, it'll pretty much all the time be either the barbell press or a dumbbell press,
+> whether it's flat or incline — or a hammer press."*
+
+**Rule:** where only one chest exercise is programmed, it is a barbell or dumbbell press. A machine press is
+legitimate **as an addition**, never as the only pressing.
+
+He checked this against the week and reversed his own objection: *"scratch everything I just said about the
+machine chest press being bad — it's actually good here, because on the Friday you have incline Smith press.
+It's not the only thing you're doing for your chest."*
+
+**The hammer press** is named as a third staple — a dumbbell press with the palms facing each other. *"I
+pretty much run those three quite a bit."*
+
+**G57 — Almost everybody should be doing RDLs.**
+
+> *"There's nothing wrong with using RDLs for any individual. I think everybody should be doing them, whether
+> they're old or young — hard is relative to them. So if they're older this might be a little bit lighter and
+> less reps. But everybody should be RDL'ing unless they have something wrong with their back."*
+
+**Rule:** near-universal. **Age is handled by load and reps, not by removing the exercise.** The only
+exclusion is an actual back problem.
+
+**Rule — it competes for the week's erector budget**, which is the real constraint: *"it also has to compete
+for other spinal erector work — so what's more important? If you can sneak it in, try to."*
+
+**Rule — for women it is a priority**, not merely permitted.
+
+**This corrected a real error.** A generated program for a 56-year-old with a stiff-but-uninjured back had no
+RDL, reasoning that age and axial caution ruled it out. Wrong — stiffness is not pathology, and the correct
+adjustment was lighter load and fewer reps.
+
+**G58 — Legs on one day, for men especially.**
+
+> *"I usually like to try to do legs all on the same day, at least for guys especially. And then if you want
+> to do some more accessories afterwards for other body parts, there's nothing wrong with that."*
+
+**Rule:** consolidate leg work into one session, then hang accessories off it. Where a session holds both a
+bench and a squat, **chest accessories come before leg accessories.** Compatible with a 3-day full-body split,
+which he checked explicitly.
+
+---
+
+
 ## Chest Press Machine — *flat, seated, selectorized or plate-loaded*
 
 **Library:** `Life Fitness Chest Press Machine` · `Cybex Eagle Chest Press` · `Hammer Strength Chest Press`
