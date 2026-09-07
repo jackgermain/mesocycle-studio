@@ -4363,6 +4363,59 @@ along it — a diagonal is obliques, but so is anti-lateral flexion, and they ar
 
 ---
 
+## Where abs go, and the two session architectures
+
+### Bodybuilding and general strength — abs at the end
+
+> *"Pretty much, I always program abs at the end of the workout… In a general strength purpose, for
+> bodybuilding especially, I always have abs at the end."*
+
+**Rule:** in a bodybuilding or general-strength session, core work is last. Unambiguous default.
+
+### Strength conditioning — a different shape entirely
+
+> *"In some instances, in like strength conditioning instances, you can have an ab exercise within each of
+> your last blocks… You have your first two exercises, which you pretty much don't superset with anything.
+> And these are pretty much all antagonistic supersets at least."*
+
+> *"So in one session in strength conditioning you may end up doing like fifteen exercises — because the first
+> two exercises you do by themselves, and then maybe the one after that you superset it with another
+> exercise, and then the exercise you do after that, those two, you maybe stack two others with them, and then
+> the block after that, as in after you finish those three exercises, you do another three together."*
+
+**The shape: density rises as the session goes on.**
+
+| Position | Grouping |
+|---|---|
+| Exercises 1-2 | **Alone.** No supersetting at all |
+| Next | **Pairs** — supersetted |
+| Next | **Threes** — stacked blocks |
+| Later blocks | Threes, with **core distributed through them** |
+
+Total can reach **~15 exercises** in a session.
+
+**Rule — the first two exercises are never supersetted**, in either architecture. The most important work is
+done unimpeded and fresh; grouping only begins once the priority work is finished. This is the same logic as
+G28 seen from a different angle — it is not just *what* goes first but that what goes first gets the session
+to itself.
+
+**Rule — the supersets here are antagonistic** (opposing patterns — push with pull), which is the opposite of
+the **non-antagonistic** pairing in G13, where two exercises for the *same* body part are stacked to
+pre-exhaust. Both are legitimate and they serve different ends:
+
+| Type | Pairs | Purpose |
+|---|---|---|
+| **Antagonistic** | Opposing patterns | Density — fit more work into the time |
+| **Non-antagonistic** (G13) | Same body part | Fatigue — make an easy exercise hard again |
+
+**Rule — in strength conditioning, core is distributed through the later blocks** rather than saved for the
+end.
+
+So session architecture is not one template. It depends on the training style, and the placement of core work
+is the clearest tell: **last in bodybuilding, woven through the back half in conditioning.**
+
+---
+
 ## How ab training is structured — *the first session template in this file*
 
 Given unprompted, and it is a complete structure rather than a rule about one exercise.
