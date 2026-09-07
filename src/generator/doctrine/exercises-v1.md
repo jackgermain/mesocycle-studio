@@ -45,6 +45,81 @@ Anything he hasn't said is left blank rather than guessed. Where something is in
 
 ---
 
+## Vocabulary — the framework underneath everything else
+
+Given unprompted, and it names concepts this document had been describing without names for its whole
+length. Recorded ahead of the rules because most of them turn out to be instances of it.
+
+### Three kinds of fatigue
+
+> *"Local fatigue is essentially just fatigue to a certain muscle group. You have **axial fatigue**, which is
+> just fatigue through your spine and your spinal erectors, from bearing a lot of load over the course of
+> many many days and weeks, accumulated over the block. Then we have **CNS fatigue**, which is your central
+> nervous system being tired of sending a lot of really [high-frequency] action potentials to every single
+> motor unit, because you train hard every day."*
+
+| Type | What accumulates |
+|---|---|
+| **Local** | Fatigue in one muscle group |
+| **Axial** | Load borne through the spine and erectors, accumulated across a block |
+| **CNS** | Central nervous system output, from training hard repeatedly |
+
+**Axial fatigue is the name for a thread running through this entire document.** The spinal-demand table in
+the back section, the chest-supported row, the leg press's *"doesn't have any loading through your spine"*,
+the belt squat, G25's three routes to the erectors — all of it is axial fatigue management. And it
+**accumulates across a block**, which means it is not a per-session property: a program can be defensible
+session by session and still bury someone by week four.
+
+### Volume landmarks
+
+> *"You have your **minimum effective volume**, which is the lowest end of the scale, and it's the amount of
+> training you want when you're deloading — just to maintain mass, but [with] enough recovery left over to be
+> able to heal in your time off. And then you have your **maximum recoverable volume**, which is how much
+> volume you can totally heal from per week. And then it goes even further to your **maximum recoverable
+> volume per body part**, because every muscle is a little different."*
+
+| Landmark | Definition | Used for |
+|---|---|---|
+| **MEV** — minimum effective volume | Least training that maintains mass | The deload target |
+| **MRV** — maximum recoverable volume | Most that can be fully recovered from in a week | The systemic ceiling |
+| **MRV per body part** | The same, per muscle | The real prescription |
+
+> *"Like we talked about with the fast/slow twitch thing — how fast they heal, what exercises you're
+> choosing, that all affects that. But you can put a number of sets, ideally, for a person where there is a
+> sweet spot for them."*
+
+This is the formal name for G34. Fibre composition, healing rate and exercise selection all move a muscle's
+MRV, which is why volume is a per-client, per-muscle number rather than a figure from the literature.
+
+### Raw stimulus magnitude and the stimulus-to-fatigue ratio
+
+> *"**Raw stimulus magnitude** is a concept that talks about the amount of raw stimulus you get from the
+> exercise, without accounting for the amount of fatigue that you pay for it. So then you have what's called
+> your **SFR**, stimulus-to-fatigue ratio — what you're paying versus what you're getting back. All of your
+> compounds zap the hell out of you; the raw stimulus magnitude is very high on them. That's why a lot of the
+> best exercises that I mentioned, they have a very high SFR."*
+
+**RSM** is what an exercise gives. **SFR** is what it gives per unit of fatigue paid. A compound can have the
+highest RSM available and still be the wrong choice, because the fatigue it costs — local, axial and CNS — is
+charged against everything else in the week.
+
+**This is the organising idea behind every ranking in this file.** Each "I'd rather use X" recorded here is
+an SFR judgement:
+
+| Choice | The SFR argument |
+|---|---|
+| Leg press for a bad back | Same quad stimulus, no axial fatigue paid |
+| Chest-supported row over bent-over row | Same lats, no erector cost |
+| Machine or Smith over free barbell for the older roster | Similar stimulus, lower injury and CNS cost |
+| Cables for triceps and biceps | High stimulus for very little fatigue |
+| The denylist | Fatigue or risk paid for stimulus available more cheaply elsewhere |
+
+It also explains why the same exercise ranks differently for different people: **SFR is a property of the
+exercise for a given client**, not of the exercise alone. A barbell bench has a good ratio for a healthy
+25-year-old and a poor one for a 60-year-old with shoulder pain, because the denominator changed.
+
+---
+
 ## General rules, stated while talking about specific exercises
 
 These came up inside individual entries but are not about one exercise. Recorded here so the generator
