@@ -169,6 +169,21 @@ Worth noting what is **absent**: no Smith machine, no dumbbell press, no machine
 a barbell-only list. Membership grants an exercise the low-rep set allowance in G3 and the ordering
 priority in G5, so the boundary matters.
 
+**Amendment — compound status can be elective.** Added while discussing rows:
+
+> *"If you're trying to get really strong on these — this is another exercise that could arguably be a
+> compound exercise, including barbell rows. T-bar rows are also compound exercises, if you want them to
+> be. So in that case I would put them in that category, meaning you could do them first or second."*
+
+**Rule:** the list above is the set of *unconditional* compounds. A second group — **seated cable row,
+barbell row, T-bar row** — becomes compound **when the intent is to get strong on it**, and then takes
+compound treatment including the first-or-second slot.
+
+So compound is not purely a property of the movement. For this second group it is a property of *how the
+exercise is being used*, decided by the client's goal. That is the same intent-dependence already seen in
+G5, where power training moves an exercise to the front of the session — the generator cannot classify
+these from the exercise name alone.
+
 **G5 — Ordering when a session has more than one compound.** Four rules, applied in order:
 
 > *"If you're going to bench press, do it first. There are some cases in which you don't, but I think
@@ -1273,6 +1288,62 @@ probably pick two or three really easy ones — depends how easy it is for them.
 
 **Rule — slot 2nd or 3rd** by default; 1st only when it is the priority; as late as 4th depending on
 accumulated fatigue.
+
+---
+
+## Seated Cable Row — *one of the best exercises there is, and elective-compound*
+
+**Library:** `Seated Cable Row` · `Seated Row Machine`
+**His usage:** 106 prescriptions — his most-used row and second-most-used back movement.
+
+> *"Seated cable rows, in my opinion, are one of the greatest exercises around, for people of all ages —
+> honestly, especially when you start bringing the weight forward, you start hinging a little bit as well.
+> It'll really help with people who have stiff backs, like lower back pain, just from their spinal erectors
+> being really tight."*
+
+**Rule:** suitable at **all ages**, and one of the highest-rated exercises in the file.
+
+**Rule — the forward lean is therapeutic, not sloppy form.** Letting the torso travel forward at the
+stretch, hinging slightly, is *deliberate* and is prescribed for people with stiff lower backs and erector
+tightness. A generator or validator treating torso movement on a row as an error would be removing the
+reason he picked it.
+
+### Slot — depends on whether it is being treated as a compound
+
+**Rule:** when the goal is to get strong on it, it is a compound (see G4 amendment) and goes **1st or 2nd**.
+When horizontal pulling is a lower priority, **3rd**. *"I probably wouldn't do them fourth or fifth, unless
+you're working with somebody who's not that crazy about that exercise or that day."*
+
+**Rule — sets: 2 minimum, 4 is the good spot, 6 absolute maximum.**
+
+*Open:* rep range was not given.
+
+*Unclear in the recording:* a caveat about clients around **50+** and whether being in good shape and active
+exempts them from it. The sentence did not survive transcription and is worth restating — it may be the
+condition under which the forward-lean version is or isn't appropriate.
+
+---
+
+## Chest Supported Row — *the row that spares the erectors*
+
+**Library:** `Hammer Strength Chest-Supported Row` · `Chest Supported Row Machine`
+**His usage:** 74 prescriptions across two spellings.
+
+> *"Chest supported rows, those are amazing as well, but they're in their own category as the back exercise
+> that doesn't use your spinal erectors."*
+
+**Rule:** its defining property is what it *doesn't* tax — the spinal erectors. That makes it the row for
+someone whose lower back is already spent, fatigued, or unable to brace, and it is a different tool from
+the seated cable row rather than a safer version of it.
+
+The two rows sit either side of the same problem. The seated cable row **uses** the erectors and, with the
+forward lean, is prescribed to help a stiff back. The chest-supported row **avoids** them entirely. A
+generator picking between them on muscle tag alone sees one choice; there are two, and which is right
+depends on the state of the person's lower back.
+
+**Rule — slot: never first**, *"unless you're just really trying to grow a certain part of your back."*
+
+*Open:* reps and sets were not given.
 
 ---
 
