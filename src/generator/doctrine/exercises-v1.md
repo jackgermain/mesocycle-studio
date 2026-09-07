@@ -4623,6 +4623,23 @@ version of.
 
 ---
 
+## Ab Wheel Rollout — *request-only*
+
+**Library:** `Ab Wheel Rollout`
+**His usage:** zero across the ten programs.
+
+> *"Ab wheel rollout — I don't do much, unless somebody requests it or really really wants to."*
+
+**Rule:** prescribed only when the client asks for it. Third exercise with that trigger, after the chest dip
+and the cable crunch — and in all three cases the exercise is fine, it simply loses to something he would
+rather use.
+
+That is a distinct category from the denylist (G9), where there is no unlock at all, and from a fallback like
+the concentration curl, which is unlocked by circumstance rather than by preference. Client request is its own
+gate.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
