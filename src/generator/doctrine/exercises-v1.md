@@ -2203,6 +2203,45 @@ weaker than the decline press.
 
 ---
 
+## Rear Delt Work — *one entry: flies, face pulls, reverse pec deck*
+
+**Library:** `Rear Delt Fly — Dumbbell` · `Hammer Strength Reverse Pec Deck` · `Cable Face Pull`
+**His usage:** roughly 50 prescriptions across five of ten programs, once the Freemotion Y Raise is
+reclassified as lateral delt work.
+
+> *"Rear delt flies are a staple for rear delt training. If you're going to do rear delt training, this is
+> one of the best things you've got. You've got these, you've got face pulls, and then you've got the
+> reverse pec deck — that's pretty much the go-to. Or a single-arm rear delt cable fly. All these follow the
+> same thing."*
+
+**Rule:** one entry for the whole family. The **reverse pec deck is the go-to** of the four; the rest are
+equivalent.
+
+**Rule — a major accessory.** *"They're a major accessory, like forearms."*
+
+**Rule — reps 10-20.** *"I would keep the reps high on these, as in above 10 pretty much at all times. Eight
+is not crazy, but for the most part I would say 10+ for sure. Definitely less than 20."* So 8 is the outlier
+floor and 20 the hard ceiling.
+
+**Rule — sets 2-4.**
+
+**Rule — slot: towards the end of the workout.** Consistent with G28.
+
+### The indications are postural and health, not aesthetic
+
+> *"If you have really bad posture, or like shoulder issues, it's usually a good idea to start training
+> stuff like this. They're good for your shoulder health, so I wouldn't ignore them completely."*
+
+**Rule — two triggers: bad posture, and shoulder issues.** This is the second time rear delt work has been
+unlocked by posture (G18), and it now adds shoulder health.
+
+Note what is *not* a trigger: wanting bigger shoulders. That request means lateral delts (see the lateral
+raise entry), so rear delt work is prescribed for how the shoulder *functions*, not for how it looks. It
+sits alongside the straight-arm pulldown's dislocation indication as one of the few exercises in this file
+selected primarily for joint health.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Hammer Strength / Cybex / Life Fitness chest presses.** Asked twice and passed over both times, so
