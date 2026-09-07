@@ -643,10 +643,13 @@ entirely. A back allocation that satisfies its set count purely from rows produc
   a mid-back exercise as normally performed.
 - **Elbows flared toward horizontal** → upper back.
 
-So "upper back" is not a separate list of exercises — it is the same exercises cued differently. That is a
-prescription the model has no way to express today: the program model has no per-exercise note field, which
-`TEMPLATE-ANALYSIS.md` already flagged when Jasper's sheet turned out to carry cues like "ELBOWS VERTICAL"
-as their own rows.
+So "upper back" is not a separate list of exercises — it is the same exercises cued differently.
+
+**The model can carry this, but the client never sees it.** `ExerciseSetup` on `WorkExercise` has fields for
+exactly this — `cue`, plus `stance`, `depth`, `rom`, `heelLift` and `bar`. The gap is not the data model, it
+is the UI: `.setup` is not read anywhere in the client screens, so a cue written by a coach reaches nobody.
+An earlier note in this file said the model had no per-exercise note field, repeating a claim from
+`TEMPLATE-ANALYSIS.md`. That was wrong — the field exists and is unrendered.
 
 **Both of these are invisible to the library.** All 24 back exercises carry the single tag `Back`. Nothing
 in the data distinguishes vertical from horizontal, width from thickness, or upper from mid — so the
@@ -797,10 +800,11 @@ a cluster, so a clustered prescription must be read as a different exercise for 
 
 *"That's actually one of my favourite blocks to run ever."*
 
-**Nothing in the app can currently express this.** A set is a rep count and a load; there is no field for
-intra-set rest, and no way to mark one prescribed set as several mini-sets. A clustered 18 would either be
-written as 18 straight — which is the wrong prescription at that load — or as 2x9, which loses the
-short-rest instruction that is the entire point.
+**Correction — the app already supports this.** An earlier note here claimed clusters had nowhere to live.
+That was wrong. `SetPrescribed.cluster?: ClusterSpec` carries `clusters`, `repsPerCluster[]` and
+`intraRestSec`, `SetActual.clusterBlocks?: number[]` records what was actually done, and it is wired through
+`LiveSet.tsx`, `ExerciseSection.tsx` and the store. A clustered 9+9 at 15s intra-rest is fully
+representable and already implemented.
 
 **G27 — For a priority muscle, rotate the parameters, not the exercises.** The counterpoint to G16:
 
@@ -1095,9 +1099,12 @@ better and supinated better still. The modification is the grip, not the exercis
 | G35 | Elbow overhead on a triceps extension | Long head vs the rest |
 | G36 | Grip rotation on a triceps extension | How much the elbow is stressed |
 
-Two of the three choose *what* is trained; this one chooses *what it costs*. None of them can be expressed
-in the current model, which has no per-exercise note or cue field — so the entire family is currently
-unrepresentable, and it is the layer where a coach does most of their actual work.
+Two of the three choose *what* is trained; this one chooses *what it costs*.
+
+All three are storable — `ExerciseSetup.cue` exists on every exercise — but **none of them are displayed to
+the client**, because nothing in the client screens reads `.setup`. So the layer where a coach does most of
+their actual work is captured by the schema and dropped by the UI. That is a rendering job, not a schema
+change, which makes it considerably cheaper to fix than previously recorded here.
 
 **G37 — Varying an exercise also redistributes tendon wear.** A third reason to rotate, alongside staleness
 and novelty:
@@ -1946,6 +1953,11 @@ Two assistance methods, and the order between them is the point:
 2. **Then the assisted pull-up machine**, once the band goes stale after *"several weeks, or a block or two
    blocks."* *"The way that the load is given is completely different, because the weight is even
    throughout the whole rep. It's not easier at the bottom."*
+
+*The app models this already:* `AssistanceSpec` carries an assistance `type`, a free-text `detail` — its own
+example is *"Thin band"* / *"-40 lb assisted machine"* — and a split between assisted and unassisted reps,
+with `SetActual.assistanceSplit` recording what was done. The band-versus-machine distinction below is
+representable today.
 
 **Rule: bands first, machine second, and the reason is the force curve.** A band gives most help exactly
 where the movement is hardest, which is what a beginner needs. The machine assists evenly, which is the
