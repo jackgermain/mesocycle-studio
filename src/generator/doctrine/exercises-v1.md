@@ -4086,18 +4086,36 @@ heavy on these."*
 **Rule — sets up to 6, "even that's pushing it" — 4 is good.**
 **Rule — never first.** Anywhere from just after the opening through to the end of the session.
 
-### One thing worth confirming
+### Confirmed: a hinge with no axial cost
 
-**(inferred)** If the resistance line is horizontal rather than vertical, the pull-through should impose
-little or no spinal compression — which would make it a hinge that trains the posterior chain **without the
-axial cost that shapes the entire weekly schedule** around the RDL (see G32).
+> *"Exactly — because there's nothing that your spine is being compressed by, because the load is not being
+> transmitted straight into the ground. It's horizontal versus vertical, and you're in a hinge. And the reason
+> you're in a hinge and resisting the hinge is through your glutes. So the weight is trying to fold you in
+> half, and your glutes have to resist that. And even at the top of the rep — because it's pulling you
+> horizontally rather than vertically, when your body is vertical you have a perpendicular angle between the
+> line of tension and your body, so there's no spinal compression."*
 
-That would be valuable: the axial-sparing group so far is the leg press, belt squat and hip thrust, and none
-of them is a hinge. A hinge with no axial cost would be the missing option for a client whose back rules out
-RDLs.
+**Rule: the cable pull-through trains the hinge pattern with no spinal compression.** The mechanism is
+geometric — at the top of the rep the line of tension is perpendicular to the spine, so there is no
+component running down through it. The glutes work by resisting being folded in half, which is the hinge's
+actual demand, without the axial cost that comes from carrying load vertically.
 
-He did not say this, and the inference could be wrong — a heavy pull-through still requires bracing. Worth
-one question rather than assumption.
+**This fills a hole in the axial-sparing group.** Until now that group was the leg press, belt squat and hip
+thrust — all excellent, none of them a hinge. So a client whose back ruled out RDLs lost the hinge pattern
+entirely.
+
+| Exercise | Pattern | Axial cost |
+|---|---|---|
+| Leg press | Knee-dominant | None |
+| Belt squat | Squat | None |
+| Hip thrust | Hip extension, supine | None |
+| **Cable pull-through** | **Hinge** | **None** |
+
+**Consequence for the weekly schedule.** G32's whole sequencing rule — RDL early, chest-supported back work
+the day after, heavier back later — exists because the RDL loads the erectors. **A client training the hinge
+through pull-throughs has no such constraint**, and their week can be ordered freely. That turns an exercise
+substitution into a scheduling simplification, which is a larger effect than swapping one movement for
+another normally has.
 
 ---
 
