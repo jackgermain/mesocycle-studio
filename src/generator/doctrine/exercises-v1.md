@@ -4723,6 +4723,76 @@ real duration field before it can be delivered.
 
 ---
 
+## Cable Rotation, Woodchopper and Rotary Torso — *the diagonals*
+
+**Library:** `Cable Rotation` · `Cable Woodchopper` · `Cybex Rotary Torso Machine` · `Landmine Rotation`
+**His usage:** 142 prescriptions — cable rotation is his most-used oblique movement by far.
+
+> *"Cable rotations are amazing. I would use them all the time. They are working that side-to-side motion, so
+> the cross part of your core."*
+
+**Rule:** these are movements **#3 and #4** of the coverage model — the diagonals.
+
+**Rule — reps 8-15**, kept high. *"Usually above eight. I wouldn't do six or less ever — six is kind of pushing
+it, just if you really need to get your core really strong and you're trying to rotate hard. That's the only
+reason to be doing that."*
+
+**Rule — sets: no more than 4.**
+**Rule — slot: the later end of the workout.**
+**Rule — do not superset them** (G46), unless the cable station is reliably free.
+
+**Same parameters:** the cable woodchopper (*"about the same"*) and the rotary torso machine (*"follows the
+same parameters as the cable rotation"*).
+
+**`Landmine Rotation` — not used.** *"Landmine rotation is okay. I wouldn't really use that ever."* Available
+but never selected.
+
+---
+
+## Russian Twist — *reps or time, either way*
+
+**Library:** `Russian Twist`
+
+> *"Russian twists are amazing as well. You can do them weighted or without weight, they're fantastic. You can
+> either do reps or time on Russian twists specifically."*
+
+**Rule:** weighted or unweighted, and **either reps or duration** — the first exercise explicitly offered in
+both units. Diagonal work, movements #3 and #4.
+
+---
+
+## The plank family — *definitions, and one that is easier than the rest*
+
+All share the plank parameters: 30s minimum working upward, harder variation past 45-60s, 2-3 sets.
+
+**`Plank Hip Twist`** — *"You're in a plank and you're just dropping each hip down to the ground and bringing
+it back."* **Reps or time, either.**
+
+**`Plank Twist`** (thread-the-needle / rotation) — *"You're in a plank with your arms under you, on your
+forearms, forearms flat on the ground, weight not through your hands. You go onto one arm and point that elbow
+that was on the ground towards the ceiling — so you're opening up your upper back by opening your chest up,
+pointing towards the sky, and then you bring it back down."*
+
+**Rule — the easiest variations are the limb lifts.** *"All these plank variations have the same sort of
+parameters in terms of time and difficulty, except the easiest one would be a plank leg lift, or a plank arm
+lift, or any naming very similar to that, just because they're really easy."*
+
+So `Plank Leg Lift` and `Plank Alternating Limb Touch` sit at the bottom of the family and are where a client
+starts once a static hold is too easy.
+
+---
+
+## Twisted V-Up and Heel Tap — *definitions*
+
+**`Twisted V-Up`** — *"Pretty much the same thing as a V-up, but you're doing a half V-up, so you're kind of on
+one butt cheek instead of two. Your bottom hand is on the ground, or your bottom elbow on the ground so you can
+balance, and then you're sort of crunching on the side doing a V-up."* **Same parameters as the V-up.**
+Diagonal work — movements #3 and #4.
+
+**`Heel Tap`** — *"Like a crunch. I would apply the same standard to it as a regular crunch."*
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
