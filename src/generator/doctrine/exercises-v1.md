@@ -546,6 +546,31 @@ someone will actually do hard beats a better one they resent. But it only ever o
 it moves a set count by one, or picks between comparable options. It has never overridden a slot rule, a
 rep floor, or a safety restriction.
 
+**G23 — Almost every back exercise uses the biceps. Three don't.** The counterpart to G14, and the reason
+the straight-arm family exists:
+
+> *"There are only a couple of back exercises that you can do that don't use your biceps — and a straight-arm
+> pulldown, pullover, or a lat prayer, they all kind of have the same name, but they accomplish that goal.
+> The only other exercises that you can do that won't engage your biceps are cleans and snatches."*
+
+**Rule:** the bicep-free back exercises are:
+
+1. **Straight-arm pulldown / pullover / lat prayer** — one movement under three names
+2. **Cleans**
+3. **Snatches**
+
+Everything else — every row, every pulldown, every pull-up — spends biceps.
+
+**Rule — this is a selection trigger, not trivia.** G14 says back volume draws down the biceps' recoverable
+volume. G23 names the exercises that let the generator **add back volume without spending any of it.** When
+biceps are the binding constraint — heavy pulling week, direct arm work still to come, or a biceps injury —
+this family is the only way to keep training the back.
+
+**Rule — cleans and snatches are not available in practice.** *"I like muscle snatches a lot, but they're
+very complicated, so I don't program them for people."* Not a denylist entry (G9) — they are good — but
+excluded on coaching cost. That leaves the straight-arm family as the *only* usable bicep-free back
+exercise.
+
 ---
 
 # Entries
@@ -1596,6 +1621,48 @@ This is the third time the Smith has given up the bottom of the ladder and lande
 bench, incline Smith, and now the Smith row, each against a free-barbell parent that reaches 1 or 3. The
 pattern is consistent enough to be a default: **a Smith version of a barbell lift keeps everything except
 the strength band, and floors at 6.**
+
+---
+
+## Straight-Arm Pulldown — *also the pullover and the "lat prayer"*
+
+**Library:** `Cable Straight-Arm Pulldown` · `Nautilus Pullover Machine` · `Lat Prayer`
+**His usage:** 8 prescriptions as `Lat Prayer`.
+
+> *"A straight-arm pulldown, pullover, or a lat prayer — they all kind of have the same name."*
+
+**One entry, three names.** This resolves the open question about what a "Lat Prayer" is: it is his name for
+the straight-arm pulldown. *"And same thing goes for the machine"* — the Nautilus pullover machine takes the
+identical treatment.
+
+**Rule — implement is free.** Straight bar or rope. *"I like doing them with a rope a little bit more, but
+that doesn't matter at all."*
+
+**Rule — reps 8-15, and push toward the top.** *"Eight reps at the lowest, but even then I would still urge
+on keeping them higher — probably closer to 10 or even 15. Definitely wouldn't go higher than that."*
+
+**Rule — sets: 2 minimum, 3 a good spot, 4 maximum.**
+
+**Rule — slot 3rd.** *"These are a major accessory in my back day. I would do these third."*
+
+### Why it would ever be chosen over a pulldown
+
+> *"I still wouldn't favour them over a pulldown. I would never choose this over a pulldown, unless for one
+> reason."*
+
+**Rule:** the pulldown wins by default. The single exception is G23 — this is a back exercise that does not
+use the biceps. That is the only reason to select it over a pulldown, and it is a strong one when biceps
+are the constraint.
+
+### The shoulder indication
+
+> *"These can be great for people who have dislocated shoulders before — although, if you're going to do
+> that, make sure that the reps are higher, because it's a vulnerable area."*
+
+**Rule:** indicated for a history of shoulder dislocation, **conditional on higher reps.** The rep range is
+not just a hypertrophy choice here; it is what makes the exercise appropriate for that client. A generator
+prescribing it at the bottom of its range to a dislocation history would be using the right exercise in the
+wrong way.
 
 ---
 
