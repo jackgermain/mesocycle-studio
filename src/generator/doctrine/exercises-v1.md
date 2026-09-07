@@ -3962,8 +3962,31 @@ exist; this one genuinely did not.
 **Library:** `Single-Leg Romanian Deadlift`. **Parameters:** *"I would keep them the same as the regular RDL"* — so 6-15 reps with an 8-10
 sweet spot, 2-6 sets with 4 the middle ground.
 
-*Open:* whether it carries the barbell RDL's axial scheduling cost. It is loaded far lighter, so the G32
-sequencing rule may not apply — but that was not stated either way.
+**Rule — it does carry axial cost, but less, and it adds a different demand.**
+
+> *"Yes, but the relative load is less, because you're probably only gonna be single-leg RDL'ing half, or ever
+> so slightly more than half, of what you could double-leg RDL. But you do also have to worry about the
+> lateral rotation component that you have to resist — because you have weight on one side of your body, you
+> have to resist the twisting of a weight pulling towards the ground on one side."*
+
+So the G32 weekly sequencing applies, at a reduced weight: **roughly half the axial cost** of a barbell RDL,
+because roughly half the load. But it introduces an **anti-rotation** demand that the bilateral version does
+not have.
+
+### Unilateral versions trade bilateral load for rotational demand
+
+This is the second time that exact trade has appeared, on an unrelated movement:
+
+| Bilateral | Unilateral | Removes | Adds |
+|---|---|---|---|
+| Barbell bent-over row | Single-arm dumbbell row | Sagittal flexion demand | Anti-rotation |
+| Barbell RDL | **Single-leg RDL** | ~Half the axial load | Anti-rotation |
+
+**Rule (inferred from two instances):** going unilateral is not simply "the same exercise, lighter." It moves
+load off the spine in the sagittal plane and puts a twisting demand on instead. So it is the right substitute
+for someone who cannot tolerate flexion or heavy axial load, and the **wrong** one for someone who cannot
+brace against rotation — which is precisely the caution already recorded on the single-arm row for a client
+with an erector injury.
 
 ---
 
@@ -4868,10 +4891,8 @@ He trains calves himself, three to four times a week, for years. They appear zer
 programs — which are mostly 2- and 3-day splits. That is G18 exactly: small muscle groups are the first thing
 squeezed out when there are not enough sessions, and calves are the clearest case of it in the whole dataset.
 
-*⚠ One word to confirm:* the recording has *"you can't apply clusters to these"*, immediately followed by *"or
-any other rep scheming of that nature"* — which reads more naturally as **can**. Calves are a machine exercise
-with easy re-entry, which is exactly G42's condition, and 20+ rep work is where clusters are most useful. The
-sentence is left unresolved rather than recorded either way.
+**Rule — clusters apply.** Confirmed: *"You can cluster calves."* Which fits — a machine with easy re-entry
+doing 20+ rep work is exactly where G42 says clusters belong.
 
 ---
 
@@ -5069,9 +5090,8 @@ enumeration neither can ever be selected correctly.
 
 > *"Med ball tosses are cool. I would usually do them in sets of three."*
 
-**Rule — three.** *(Ambiguous in the recording between three reps per set and three sets. Three reps reads
-more naturally for power work, where the Olympic lifts cap at 3 and speed is the point — but it is not
-certain and is worth one word.)*
+**Rule — 3 reps per set, 2-5 sets.** Confirmed. Consistent with the Olympic lifts' sub-3 ceiling: power work
+is short sets, because speed is the quality being trained and it degrades immediately with fatigue.
 
 **Rule — power work, so it opens the session** (G5), and only when trained for power.
 
