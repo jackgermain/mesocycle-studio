@@ -1075,6 +1075,31 @@ are good exercises that lose to the delivery medium.
 delivers programs to people training alone, so the generator should weight technical simplicity in a way an
 in-person coach would not have to.
 
+**G40 — When injury removes a lift, substitute for specificity, not just for the muscle.** On the belt
+squat:
+
+> *"So you have somebody who hurt their back for a little bit, but they want something very specific to a
+> squat, and they have access to the machine — this will help a lot with maintaining their squat
+> specificity, so that when their back is healed and they get back to squatting, they won't be much weaker.
+> If anything they may be a little bit stronger when they come back."*
+
+**Rule:** an injury substitute is chosen for how well it **preserves transfer to the lift being replaced**,
+not merely for training the same muscle. The goal is that the client returns without having detrained the
+movement.
+
+This is G17 used constructively rather than as a warning. G17 says transfer is asymmetric and substituting
+downward costs the goal; G40 says that during an enforced layoff from a lift, the right substitute is the
+one that sits closest to it in transfer while removing the thing that hurts.
+
+| Injury | Removes | Specificity-preserving substitute |
+|---|---|---|
+| Back | Barbell squat | **Belt squat** — same movement, no spinal load |
+| Shoulder | Flat barbell bench | Dumbbell press *(by the same logic; recorded there as the substitution, not framed as specificity)* |
+
+**Consequence:** "what can this person still do" is the wrong question on its own. The right one is "what
+keeps them closest to the thing they will come back to" — and those give different answers. A leg press and
+a belt squat both spare the spine; only one of them keeps a squat.
+
 ---
 
 # Entries
@@ -3131,6 +3156,39 @@ all — a dumbbell held at the chest cannot go heavy enough to be dangerous.
 
 That halving is worth noting as a general shape: **an exercise used inside a superset gets roughly half the
 sets it would get alone.** First time that has been quantified.
+
+---
+
+## Belt Squat — *the leg press's equal, and squat-specific*
+
+**Library:** not present — no belt squat exists in the 163.
+**His usage:** zero across the ten programs.
+
+> *"Belt squat is amazing, unbelievable exercise — if they have them. Most gyms don't have them."*
+
+**Rule — no spinal loading, for a stated mechanical reason.** *"This exercise is actually in the same
+category as the leg press, where it does not have any spinal loading, because the belt is put around your
+hips — thus there is no compression through your spine from holding the bar, or bearing the weight through
+your shoulders like every other exercise."*
+
+**Rule — it loads as heavy as a leg press**, and reaches low reps: *"I've heard of people doing sets of three
+in major major strength phases."* That is lower than the leg press and hack squat's 6-rep floor.
+
+**Rule — parameters otherwise as the leg press.** *"Use it the same way as the leg press."*
+
+**Rule — indicated for older clients**, for the same reason as the leg press.
+
+### What makes it different from the leg press
+
+Both spare the spine. Only the belt squat is a **squat** — so for a client laid off squatting by a back
+injury, it maintains squat specificity in a way the leg press cannot. See G40.
+
+**Rule — availability is the binding constraint.** *"The problem is that a lot of places just don't have
+them."* Same shape as the reverse hyper: excellent, and gated on equipment most gyms lack.
+
+**Library gap:** there is no belt squat in the exercise library. By G10 it is therefore not generatable, and
+the fix is a library addition rather than a doctrine one. Worth noting because this is the first exercise
+Jack has rated highly that the app cannot name at all.
 
 ---
 
