@@ -684,6 +684,25 @@ neither.
 **Consequence:** matching a force curve to a population is a real selection axis, and it is not derivable
 from muscle tags, equipment names, or anything else in the library.
 
+**A second mechanical axis: the direction resistance pulls from.** Given on the cable pull-through:
+
+> *"It's kind of like doing an RDL, but the levers aren't quite the same — as in, instead of the weight
+> pulling you directly into the centre of the earth, it's pulling you a bit more horizontally."*
+
+**Rule:** a cable does not merely change the force curve, it changes the **line of resistance**. A free weight
+always pulls straight down; a cable pulls along whatever line the stack sits on. Two exercises can share a
+movement pattern and load it from different directions, which changes which part of the musculature is
+emphasised — here, more glute.
+
+So there are two independent mechanical properties, and both decide selection:
+
+| Property | Question | Example |
+|---|---|---|
+| Force curve | *Where in the range* is resistance heaviest? | T-bar row peaks at the stretch; barbell row is even |
+| Resistance line | *From what direction* does it pull? | RDL pulls vertically; pull-through pulls horizontally |
+
+Neither is in the library, and neither is inferable from a muscle tag or an equipment name.
+
 **The mitigation is almost always "raise the rep floor."** Five instances now, and it is consistent enough
 to use as a default for exercises not yet covered:
 
@@ -4045,6 +4064,40 @@ role the close-grip bench plays for the bench press.
 So the file now has two worked examples of the same manoeuvre on different lifts, which makes it a pattern
 worth looking for elsewhere: **every heavily-used compound wants a lower-cost variant that holds its
 specificity.**
+
+---
+
+## Cable Pull-Through — *an RDL pulled sideways*
+
+**Library:** `Cable Pull-Through`
+**His usage:** zero across the ten programs.
+
+> *"The cable pull-through is actually a cool exercise, because it's kind of like doing an RDL — but the
+> levers aren't quite the same. Instead of the weight pulling you directly into the centre of the earth, it's
+> pulling you a bit more horizontally. So they can be really really good for glute engagement."*
+
+**Rule — same pattern as the RDL, different resistance line**, and the horizontal pull is what biases it
+toward the glutes.
+
+**Rule — an accessory, but a loadable one.** *"I would use them a bit more like an accessory, but you can lift
+heavy on these."*
+
+**Rule — reps 6-15.**
+**Rule — sets up to 6, "even that's pushing it" — 4 is good.**
+**Rule — never first.** Anywhere from just after the opening through to the end of the session.
+
+### One thing worth confirming
+
+**(inferred)** If the resistance line is horizontal rather than vertical, the pull-through should impose
+little or no spinal compression — which would make it a hinge that trains the posterior chain **without the
+axial cost that shapes the entire weekly schedule** around the RDL (see G32).
+
+That would be valuable: the axial-sparing group so far is the leg press, belt squat and hip thrust, and none
+of them is a hinge. A hinge with no axial cost would be the missing option for a client whose back rules out
+RDLs.
+
+He did not say this, and the inference could be wrong — a heavy pull-through still requires bracing. Worth
+one question rather than assumption.
 
 ---
 
