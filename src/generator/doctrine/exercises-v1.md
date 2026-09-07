@@ -1042,6 +1042,39 @@ alongside or above the parent lift in transfer rather than below it. A wear-patt
 downward would cost the client their progress on the parent lift, which is exactly the pulldown-for-pull-up
 error.
 
+**G38 — Peak sets belong in the last or second-to-last week of a block.**
+
+> *"As a rule of thumb, the top end of any exercise — if it's ever used — should be the last, or if not the
+> second to last, week of the block, given that it's a four or five week block."*
+
+**Rule:** the maximum set count in an exercise's range is not available throughout a block. It appears at the
+**end** of a 4-5 week block, in the last or second-to-last week, and nowhere else.
+
+This is a volume-accumulation shape the file did not have. Every set range recorded so far — 2-4, 2-6, 3-6 —
+has been read as a flat window from which any value may be chosen. It is not: the bottom of the range is
+where a block starts and the top is where it finishes, and reaching the top early spends the block's
+headroom before it has run.
+
+It pairs with `v1.md` §3, where Model B already flexes sets upward as reps fall. G38 says *when* that upward
+flex is allowed to reach its maximum.
+
+**G39 — An exercise that needs in-person coaching is disfavoured in an app.** On the front squat:
+
+> *"A lot of people don't like the way you hold the bar in the front rack position. It hurts a lot of
+> people's wrists, so there's a learning component to that — unfortunately you can't really teach [remotely].
+> I could if I was in person, but [it] can't be that way, so I probably wouldn't use [it] as much."*
+
+**Rule:** an exercise whose setup or technique requires hands-on correction is a poor choice for a
+remotely-delivered program, independent of how good the exercise is.
+
+This is the second exercise excluded on coaching cost rather than quality — the muscle snatch was the first
+(*"I like muscle snatches a lot, but they're very complicated, so I don't program them for people"*). Both
+are good exercises that lose to the delivery medium.
+
+**It is a constraint the app imposes on its own doctrine**, which is worth stating plainly: this product
+delivers programs to people training alone, so the generator should weight technical simplicity in a way an
+in-person coach would not have to.
+
 ---
 
 # Entries
@@ -2887,8 +2920,75 @@ one of them.
 
 ---
 
+# Legs
+
+## Barbell Back Squat — *everyone should squat*
+
+**Library:** `Barbell Back Squat`
+**His usage:** 20 prescriptions as `Barbell Squat`, against 78 Smith squats.
+
+> *"I think literally every single person should be squatting. They can maybe [use] different depths — some
+> people maybe be able to squat halfway down, [some] people squat full."*
+
+**Rule:** universal. Depth is the variable that adapts it to the person, not whether they squat at all.
+
+**Rule — reps 1-15**, the full ladder. *"The lowest number of reps I do is one… I would probably go 15 [at the
+top]."* The reason is that it serves every goal: *"it could be used for max strength development, can be used
+for hypertrophy or strength — so that's why it gets such a wide range."*
+
+**Rule — slot 1st or 2nd.** *"It's a major compound. If you're gonna do it, do it first or second."*
+
+**Rule — and the strength demotion again.** *"Unless you're an incredibly strong bodybuilder who could squat
+500 pounds — then in that case maybe you could do it second or third, so that way you only have to load 225
+pounds on the bar."*
+
+Third instance of the same rule, after the barbell bench at 315 lb and the Smith press. A very strong lifter
+is moved *off* the opening slot so the absolute load comes down. The threshold here is roughly **500 lb**.
+
+### Sets by rep count — partially recovered
+
+The recording was significantly degraded through this section. What is unambiguous:
+
+| Reps | Max sets |
+|---|---|
+| 8 | 4-5 |
+| 10 | 4-5 |
+| 12 | 4 |
+| 15 | 4 |
+
+And the floor, restated as universal: *"no less than two on anything, on any exercise — no less than two
+sets."*
+
+The low-rep end of the table (singles through six) did not survive transcription clearly enough to record.
+He described a ceiling of five, six, or seven sets there, with **seven reserved for the end of a block** —
+which is what G38 above generalises. **The specific low-rep set numbers should be asked again.**
+
+---
+
+## Barbell Front Squat — *good, and hard to coach remotely*
+
+**Library:** `Barbell Front Squat`
+**His usage:** zero across the ten programs.
+
+**Rule — interchangeable with the back squat** (G16), confirming what he said earlier when introducing that
+rule.
+
+**Rule — strong indications: athletes, and general use.** *"It's really good for athletes, and really good in
+general."*
+
+**Rule — but disfavoured here, on coachability.** The front rack position hurts many people's wrists and
+needs hands-on correction that a remote program cannot deliver. See G39.
+
+That is the whole objection. There is nothing wrong with the exercise; it loses on the delivery medium, and
+it would be a different call for an in-person client.
+
+---
+
 ## Deferred — raised, not yet answered
 
+- **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
+  recording. He described five to seven sets with seven reserved for a block's final week; the exact numbers
+  need restating.
 - **Hammer Curl.** Not covered while going through the biceps group; the closing remark about "the other
   cable" was unclear on the recording and may have been about this.
 - **Hammer Strength / Cybex / Life Fitness chest presses.** Asked twice and passed over both times, so
