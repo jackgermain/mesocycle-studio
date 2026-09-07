@@ -379,10 +379,24 @@ work is adjusted against compound volume in two directions at once: less of it i
 stimulus is partly already delivered, and less of it is *affordable*, because the recovery is partly
 already spent.
 
+**The indirect-work table, as it stands.** Three instances have now been given, which makes this systematic
+rather than incidental:
+
+| Compound work | Also trains and fatigues | Consequence |
+|---|---|---|
+| Any pulling — rows, pulldowns, pull-ups | **Biceps** (chin-ups most) | Direct biceps work counts against the week's back volume |
+| Rowing specifically | **Rear delts** | *"You don't always have to isolate them like that"* |
+| Chest pressing | **Front delts** | *"Your front delt gets a lot of work already from chest"* — direct front delt work is usually redundant |
+
+**Rule:** before allocating direct work to a small muscle, check what the week's compounds have already
+spent and already delivered. In practice this means the front delts and rear delts rarely need isolation at
+all, and the biceps need less than their nominal target.
+
 This breaks an assumption the volume model would otherwise make. `weeklyVolume.ts` counts sets per muscle
 from the `muscle` tag, one tag per exercise — so a week of heavy rowing books zero biceps sets and zero
-rear delt sets, and the generator would happily add full allocations of both on top of a budget already
-partly spent and a stimulus already partly delivered.
+rear delt sets, a week of heavy pressing books zero front delt sets, and the generator would happily add
+full allocations of all three on top of a budget already partly spent and a stimulus already partly
+delivered.
 
 **G18 — Small muscle groups are a function of training frequency.**
 
@@ -1957,6 +1971,76 @@ either way.
 Four sessions a week of one small-muscle exercise was affordable **only because training frequency was
 six days**. This is G18 stated from the inside: the frequency creates the room, and the room is what allows
 a priority to be expressed as volume.
+
+---
+
+## Overhead / Shoulder Press — *usually redundant, and ranked by stability*
+
+**Library:** `Barbell Overhead Press` · `Seated Barbell Press` · `Dumbbell Shoulder Press` · `Seated
+Dumbbell Press` · `Arnold Press` · `Smith Machine Overhead Press` · `Life Fitness Shoulder Press Machine`
+**His usage:** zero across the ten programs.
+
+> *"Overhead press is cool, I don't have anything against it. It's just, a lot of the time, your front delt
+> gets a lot of work already from chest. So if your front delt is actually small or weak — which I highly
+> doubt — but if it's small, doing shoulder presses are great, especially if the person likes them."*
+
+**Rule:** direct front delt work is **usually redundant**, because chest pressing already trains it (G14).
+The exercise is unlocked by a genuinely underdeveloped front delt, which he considers rare — or by the
+person simply liking it (G22).
+
+**Rule — he would rather substitute.** *"I'd rather just do a front raise with a dumbbell or a rope, or I
+would rather do a shoulder press machine and just do it there, and keep the reps high, like eight and
+above."*
+
+### The variant ranking
+
+> *"If I were to pick one, I would probably pick [the dumbbell shoulder press] over anything, out of any of
+> the variations other than the machine. But I would still choose for other people the dumbbells, just
+> because a lot of people really really like them."*
+
+**Rule:** machine first, dumbbells second, everything else behind. But **for other people, dumbbells** — a
+clean case of G22, where adherence overrides his own ranking at the margin.
+
+**Rule — the machine wins on stability, and that decides high-rep work.** *"There's nothing wrong with the
+10 to 15, 10 to 20 range. If I were to do that, I would much rather do that with a machine, just for the
+stability component."* So the higher the reps, the stronger the case for the machine.
+
+**Rule — reps:** 6 is the lowest heard of, but **8+ at all times with age**, and **8-12 for most people**.
+10-20 is fine on a machine.
+
+**Rule — sets 2-4**, four being the top. Six is the most he has heard of, for someone who really cares
+about their press.
+
+---
+
+## Arnold Press — *between the dumbbell press and the machine*
+
+**Library:** `Arnold Press`
+
+> *"Arnold press kind of gets the same group as a machine press. It's kind of like an in-between of the
+> regular dumbbell shoulder press, because you can't lift quite as heavy on an Arnold press as you can on
+> the dumbbell shoulder press."*
+
+**Rule:** grouped with the machine press, and understood as a lighter dumbbell press — the rotation costs
+load. Takes the machine's parameters.
+
+---
+
+## Barbell Standing / Military Press — *athletes only*
+
+**Library:** `Barbell Overhead Press` · `Seated Barbell Press`
+
+> *"The barbell standing press, I wouldn't really program that much at all — unless you're a powerlifter,
+> or you're an Olympic lifter and you care about your clean and jerk, or if you're an athlete and you're
+> really trying to work on your vertical press production. Doing standing military press is not uncommon
+> [then]. I've heard of people doing up to sets of three, sets of one, two, three, five."*
+
+**Rule:** three unlocks, all of them athletic — powerlifter, Olympic lifter, or an athlete training vertical
+pressing power. Absent one of those, it is not programmed.
+
+**Rule — reps 1-5** in that context. One of only a handful of exercises reaching the peak-strength band, and
+it does so only for a population G24 explicitly excludes from that band. The two rules do not conflict; they
+partition the roster.
 
 ---
 
