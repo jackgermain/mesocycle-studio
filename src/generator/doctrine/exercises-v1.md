@@ -266,6 +266,12 @@ a list of what is endorsed. The first entry on the denylist:
 - `Decline Dumbbell Press` — never
 - Decline **dumbbell** flies — never
 
+**Second denylist entry — the rack pull:**
+
+> *"Rack pulls are terrible. I never do them, ever, and I will never program them."*
+
+- `Rack Pull` — never
+
 **Cables are not covered by this.** Asked directly whether `Cable Fly — High to Low` falls under it:
 
 > *"Don't worry about the cable flies. There's nothing wrong with high-low cable flies. I'm just referring
@@ -570,6 +576,35 @@ this family is the only way to keep training the back.
 very complicated, so I don't program them for people."* Not a denylist entry (G9) — they are good — but
 excluded on coaching cost. That leaves the straight-arm family as the *only* usable bicep-free back
 exercise.
+
+**G24 — General-population clients do not train below 6 reps.** The rule that explains the shape of all ten
+of his programs:
+
+> *"I don't really lift heavy at all with people who are just trying to look good, feel good, work out, get
+> some muscle. They don't need to do it. They don't need to lift in that [range] ever."*
+
+> *"Definitely keep the reps higher when people start getting older. No less than six reps — and if it is a
+> six, then I would say an RIR of at least two, or an RPE of eight. And if I am working that hard, I'm only
+> gonna do four sets max."*
+
+**Rule — a floor of 6 reps** for anyone training to look and feel good rather than to get strong, and for
+older clients generally. The peak-strength (1-3) and most of the middle-strength (4-6) bands from G2 are
+simply not used for this population.
+
+**Rule — effort is capped at the floor.** At 6 reps, stop at **RIR ≥ 2 / RPE ≤ 8**. The closer to the rep
+floor, the further from failure — the two constraints tighten together rather than independently.
+
+**Rule — and sets cap at 4 when working that hard.** Heavy, near-failure and high-volume are not permitted
+to coincide.
+
+This is the single biggest constraint on the generator's output for Jack's actual clientele, and it
+retroactively explains `TEMPLATE-ANALYSIS.md`'s finding that all ten programs sit at 10-20 reps with
+sub-10 rare. That was not a stylistic habit. It is this rule.
+
+**It also bounds every rep range in this file.** An exercise's range says what is legal *for the exercise*;
+G24 says what is legal *for the person*, and the prescription is the intersection. The barbell bench's 1-15
+becomes 6-15 for a 55-year-old general-population client — which is how a roster with zero barbell benching
+and zero sub-6 work is generated from a doctrine that permits both.
 
 ---
 
@@ -1663,6 +1698,45 @@ are the constraint.
 not just a hypertrophy choice here; it is what makes the exercise appropriate for that client. A generator
 prescribing it at the bottom of its range to a dislocation history would be using the right exercise in the
 wrong way.
+
+---
+
+## Barbell Deadlift — *a major compound he rarely uses*
+
+**Library:** `Barbell Deadlift`
+**His usage:** zero across the ten programs.
+
+> *"The barbell deadlift is a major compound. I don't do it that much, but there's nothing wrong with them
+> nonetheless — some people really like them."*
+
+**Rule:** unconditional compound (G4). Not avoided on risk grounds the way the decline or the rack pull are,
+simply not often the right pick for his roster.
+
+**Rule — reps 1-12, sweet spot 6-10.** *"No more than 10 reps, 12 at the highest. It's not inappropriate to
+have the lowest being one rep, but I don't use that often, if ever… I would say the sweet spot for the rep
+range is between six and 10 reps, I like that a lot. But there's nothing wrong with the 1 to 3 range or the
+4 to 6 rep range."*
+
+Note the ceiling: **12**, the lowest ceiling of any exercise recorded so far. Almost everything else tops at
+15. The deadlift is the one lift where high reps are ruled out rather than encouraged.
+
+**Rule — sets up to 6.** *"The most amount of sets I would do deadlifting is six, probably. But I've heard
+of eight — like I've heard of people doing eight singles or 10 singles, but that's on the crazy end of the
+spectrum, for peak strength powerlifting sort of stuff. That's not very practical."* Eight to ten singles is
+named as real but out of scope.
+
+**Rule — for max strength, it follows the squat pattern.** *"If somebody's looking for max strength and they
+want to improve their deadlift significantly, it kind of follows the same pattern as squatting and front
+squatting."*
+
+### For older and general-population clients
+
+This is where G24 was stated, and the deadlift is its sharpest case: *"especially on a deadlift, I would
+never have somebody who is of age actually work crazy crazy hard on a deadlift."*
+
+- Reps **≥ 6**
+- At 6 reps, **RIR ≥ 2 / RPE ≤ 8**
+- **≤ 4 sets** when working that hard
 
 ---
 
