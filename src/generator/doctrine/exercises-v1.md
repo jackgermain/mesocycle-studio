@@ -1799,6 +1799,19 @@ impractical to load, and unpleasant to do. A small plate is acceptable; loading 
 fatigue the chest first with flies, then 4-8 push-ups. That restores the difficulty without loading the
 movement.
 
+**This is a general pattern, not a push-up quirk.** Jack draws the same arc for the goblet squat, in the same
+terms — see that entry. Any exercise whose load is capped by something external (your own bodyweight, the
+heaviest dumbbell you can hold at your chest) **expires as the client gets strong**, and the rescue is
+pre-exhaustion rather than added load:
+
+| Exercise | Load ceiling | Expires when | Rescue |
+|---|---|---|---|
+| Push-up | Bodyweight | Strength rises | Fly, then push-ups |
+| Goblet squat | What you can hold | You can squat more than you can hold | Any leg exercise, then goblet squats |
+
+A generator that only knew "this exercise is for beginners" would drop these at intermediate. The doctrine
+says they come back, in a different role.
+
 ---
 
 ## Pull-Up and Chin-Up — *treated together; an assistance ladder*
@@ -3074,6 +3087,50 @@ client. The three share parameters; only one of them subtracts spinal load.
 **Fourth confirmation of the Smith floor.** Smith bench, incline Smith, Smith row and now Smith squat all
 floor at exactly 6, each against a free-barbell parent reaching 1 or 3. The default holds: **a Smith version
 of a barbell lift keeps everything except the strength band.**
+
+---
+
+## Goblet Squat — *a beginner exercise that comes back as a finisher*
+
+**Library:** `Goblet Squat`
+**His usage:** zero across the ten programs.
+
+> *"A goblet squat can be really good earlier on for somebody who's a beginner, but it very easily gets
+> dropped, just because you have to hold a crazy heavy dumbbell. Squatting 135 on the bar is pretty much a
+> beginner thing, so the exercise becomes bad once you can squat more than whatever you can hold in your
+> hand."*
+
+**Rule — a beginner exercise with a hard expiry.** It stops working when the client can squat more than they
+can hold at their chest.
+
+### Its second life, and he names the parallel himself
+
+> *"As you get really good at squatting, I would almost think of it as the same concept as you being really
+> good at push-ups. The only time you do push-ups when you're intermediate or advanced is if you superset
+> them with something before, so that your chest is fatigued and then when you go to do the push-ups they're
+> a lot better. Goblet squats can work the same way with another leg exercise — whether you're doing a lunge
+> before, or a leg press before, or a hack squat before, or anything else. That can be a good time to use a
+> goblet squat in an intermediate or advanced lifter who's looking for a little bit more spice for their
+> legs."*
+
+**Rule:** for intermediate and advanced lifters, the goblet squat is a **post-exhaustion finisher** — placed
+after a lunge, leg press or hack squat, in a non-antagonistic superset (G13).
+
+**Rule — reps: 6 at the absolute floor** (*"six is pushing it"*), **ideally 8+**, 8-12 good, 15 fine.
+
+**Rule — loading is not a safety concern.** *"I wouldn't even be worried about loading them heavy, just
+because you're not really gonna hurt yourself too bad."* One of very few exercises with no risk caveat at
+all — a dumbbell held at the chest cannot go heavy enough to be dangerous.
+
+**Rule — sets depend on how it is used:**
+
+| Use | Sets |
+|---|---|
+| On its own | 4-5 |
+| Supersetted after another leg exercise | **2, maybe 3 at most** |
+
+That halving is worth noting as a general shape: **an exercise used inside a superset gets roughly half the
+sets it would get alone.** First time that has been quantified.
 
 ---
 
