@@ -4411,6 +4411,37 @@ order to assemble a session rather than just select for one.
 
 ---
 
+## Cable Crunch — *available on request, not selected*
+
+**Library:** `Cable Crunch`
+**His usage:** zero across the ten programs.
+
+**Rule:** not prescribed unless a client specifically asks for it. His view is that other ab exercises cover
+the same job and he would rather use those. Not denylisted — it works, he just would not reach for it.
+
+Movement #1 in the core coverage model (ribs toward pelvis), which is the best-covered of the six, so nothing
+is lost by leaving it out.
+
+---
+
+## Weighted Sit-Up — *good, and kept light and high-rep*
+
+**Library:** `Weighted Sit-Up` · `Decline Sit-Up`
+**His usage:** part of the 135 crunch-family prescriptions.
+
+> *"Weighted sit-ups are fantastic. I would keep the reps above eight at all times, pretty much… and I would
+> keep the reps high, like I said."*
+
+**Rule — reps 8-20, biased high.** The floor is 8 and the intent is the top of the range — the *"weighted"*
+part is what makes a floor necessary at all, since added load on spinal flexion is the thing to be careful
+with.
+
+**Rule — sets 2-4.**
+
+Movement #1 in the coverage model.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
