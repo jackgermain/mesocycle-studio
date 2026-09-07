@@ -4620,15 +4620,39 @@ work, and the unweighted rep-floor exception applies.
 stale, and progress on one carries to the other. That satisfies G16's requirement of symmetric transfer,
 unlike the pull-up/pulldown pairing which fails it.
 
-### ⚠ What the movement is has not been established
+### What it is — a cross-body V-up
 
-Like the glute deadlift before it, this is a name from Jack's own vocabulary rather than a standard one. It
-appears 57 times in his spreadsheets and is in the library, but nothing recorded says what the body actually
-does — start position, what moves, what "starfish" refers to.
+> *"A starfish crunch is the same thing as a V-up, but instead of touching both of your feet with the same
+> hand — like in a V-up, your right hand goes towards your right foot — with a starfish crunch you're laying
+> out on the ground like you're gonna do a snow angel, and then you take your right hand and you touch your
+> left foot, and you meet in the middle by lifting your leg and your torso up at the same time."*
 
-Its parameters are fully known and the movement is not, so it could be prescribed correctly to a client who
-would have no idea what to perform, and it cannot be substituted because nothing is known about what it is a
-version of.
+**The movement:** start spread out like a snow angel — that is the "starfish". Lift one leg and the torso
+together and touch the **opposite** hand to the **opposite** foot. Alternate sides.
+
+The difference from a V-up is **ipsilateral versus contralateral**: a V-up brings same-side hand to foot, a
+starfish crunch crosses the body.
+
+### That difference moves it to a different slot in the coverage model
+
+This is where the interchangeability breaks down, and it matters:
+
+| Exercise | Coverage model slot |
+|---|---|
+| V-up | **#1** — ribs toward pelvis, plus some #2 |
+| **Starfish crunch** | **#3 and #4** — left hip to right rib, and the mirror |
+
+Crossing the body is precisely what movements 3 and 4 are. So the two exercises share every parameter — reps,
+sets, placement — and train **different things**.
+
+**Rule — they are interchangeable on parameters but not on coverage.** Swapping a starfish crunch for a V-up
+silently removes the diagonal work from the session, which is a third of the four movements currently in
+scope.
+
+**This bounds G16.** An interchangeable pair needs symmetric transfer *and* matching coverage. Pull-up and
+chin-up satisfy both. These two satisfy the first and fail the second — which means "use them
+interchangeably" is safe within a block, where variety is the point, and unsafe as a substitution rule, where
+the coverage check would silently pass.
 
 ---
 
