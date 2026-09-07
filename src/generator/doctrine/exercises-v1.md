@@ -970,6 +970,22 @@ not merely below its maximum.
 band whose minimum is 10. So the band is a starting default for an unknown client, and individual response
 overrides it in both directions.
 
+**G35 — The triceps long head needs an overhead elbow position.**
+
+> *"You will get more engagement of the long head of your tricep when your elbow is overhead, or pointed
+> straight up in the air. You'll stretch your long head out a little bit more, because your long head
+> attaches on the back of your scapula all the way to the olecranon process of your elbow."*
+
+**Rule:** the long head crosses the shoulder as well as the elbow, so it is only fully loaded when the
+shoulder is flexed — elbow up. A pushdown with the elbow at the side trains the triceps but under-trains the
+long head.
+
+**Rule:** a triceps allocation built entirely from pushdowns is incomplete. Something overhead is needed.
+
+This is the same shape as G20, where elbow flare selects upper versus mid back: **within a muscle, joint
+position selects which part of it is trained.** Two instances now, on two different muscles, and neither is
+expressible in a library that carries one muscle tag per exercise.
+
 ---
 
 # Entries
@@ -2643,6 +2659,67 @@ two."*
 *Library note:* tagged `Biceps`, though by this entry it is brachialis and forearm work. Less consequential
 than the landmine press mis-tag, since it sits in the same region and the volume it books is arm volume
 either way — but it is not what the exercise trains.
+
+---
+
+## Triceps Pushdown — *his first-choice triceps exercise*
+
+**Library:** `Tricep Rope Pushdown` · `Tricep Bar Pushdown — Straight Bar`
+**His usage:** 147 prescriptions, rope almost exclusively.
+
+### The triceps ranking
+
+> *"If I had to pick one tricep exercise, I would pick a rope pushdown — standard rope pushdown, not
+> overhead — as number one. Number two I'd pick an overhead rope extension. Number three I would pick an
+> underhand tricep pushdown with a straight bar. A lot of people like the straight bar with a pronated grip;
+> I don't like those very much. And then any variation of the handles are cool, they're pretty much all
+> equal."*
+
+| Rank | Exercise |
+|---|---|
+| 1 | Rope pushdown (standard, elbows down) |
+| 2 | Overhead rope extension |
+| 3 | Straight-bar pushdown, **underhand** |
+| — | Straight-bar pushdown, pronated — disliked |
+| — | Other handles — all roughly equal |
+
+Note that grip matters here where it did not on the barbell row, where supinated and pronated were declared
+equivalent. Same variable, opposite verdicts, on different exercises.
+
+**Rule — reps 8-15.** *"Bottom of the rep range for all these exercises is eight reps — pretty much no reason
+to do six, although that's not the craziest thing. The highest I'd say is 15, although I have heard of up to
+20, there's nothing wrong with that."*
+
+**Rule — sets 3-4**, more if triceps growth is a stated goal. *"3 to 4 sets is pretty good, although I have
+heard of five or six, nothing wrong with that as well."*
+
+**Rule — G32 applies.** *"You just have to make sure that your tricep training isn't gonna get in the way of
+your chest, or any other pressing that you're doing."*
+
+---
+
+## Overhead Cable Tricep Extension — *second choice, and the one with a prerequisite*
+
+**Library:** `Overhead Cable Tricep Extension`
+**His usage:** 88 prescriptions of overhead extension across variants.
+
+**Rule:** ranked second of all triceps exercises, and the one that satisfies G35 — the long head is only
+fully trained with the elbow overhead.
+
+**Rule — load is meaningfully lower than a pushdown.** *"You have to be mindful of the load being ever so
+slightly less than what it would be on a not-overhead pushdown — by a decent amount."*
+
+**Rule — it requires a warm-up.** *"You're getting way more stretch on your triceps, so you need to make sure
+that you're warm going into them."*
+
+**This is the first exercise with a prerequisite rather than a restriction.** Everything else in this file is
+gated on who the client is, what the gym has, or what the goal is. This one is gated on **session state** —
+it may not be the first thing a cold client does. Nothing in the model can currently express "this exercise
+requires prior warm-up", and `warmup.ts` prices warm-up ramps off the working load rather than flagging
+exercises that demand one.
+
+And it is G21 for the fourth time: the overhead position lengthens the long head, load at long muscle length
+is the risk, and the mitigations are *less load* and *be warm* rather than avoidance.
 
 ---
 
