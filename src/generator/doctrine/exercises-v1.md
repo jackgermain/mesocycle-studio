@@ -2610,6 +2610,42 @@ axes.
 
 ---
 
+## Hammer Curl — *brachialis and forearm, and a frequency unlock*
+
+**Library:** `Hammer Curl` — tagged `Biceps`
+**His usage:** part of the curl total.
+
+> *"The hammer curl is amazing. Also it's really good for parts of the forearm and the brachialis muscle,
+> which is under your bicep — but if the brachialis gets developed, it can help with making the arm, the
+> bicep, look a little bit fuller and [thicker]."*
+
+**Rule — it trains the brachialis and forearm, not the biceps directly**, and the reason to want that is
+**cosmetic**: a developed brachialis sits under the biceps and pushes it up, making the arm look fuller and
+thicker. This is the first exercise in the file selected for what it does to the *appearance* of a
+neighbouring muscle.
+
+**Rule — subordinate to the direct biceps work.** *"If you only have to pick one or the other, obviously you
+have to go with the regular curl… just don't pick them over bicep curls."* It is added alongside curls, never
+instead of them.
+
+**Rule — it unlocks on training frequency.** *"If you've got — if you're training five or six days a week,
+even four times a week, if you're doing a lot, you can absolutely throw hammer curls in."*
+
+This is G18 again, and the clearest statement of it yet: *"we're starting to get into a little bit more
+accessory by spending some time with forearms and things like that."* At 2-3 days a week the slots go
+elsewhere; at 4+ the small stuff becomes affordable. Same threshold as the front raise's 4-8 sets in G29.
+
+**Rule — reps and loading as the dumbbell curl.** *"I'd give them the same parameters of load and rep schemes
+as dumbbell curls."*
+**Rule — sets 2-4.** *"The most I would do is — six is crazy. I'd probably say four, and then the lowest is
+two."*
+
+*Library note:* tagged `Biceps`, though by this entry it is brachialis and forearm work. Less consequential
+than the landmine press mis-tag, since it sits in the same region and the volume it books is arm volume
+either way — but it is not what the exercise trains.
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Hammer Curl.** Not covered while going through the biceps group; the closing remark about "the other
