@@ -254,6 +254,20 @@ Worth noting it runs *opposite* to the chest hierarchy, where the implement orde
 Smith > machine and cables barely feature. So implement preference is **per muscle group**, not a global
 ranking — a generator must not carry the chest ordering across to the arms.
 
+**The biceps rank the same way.** *"Personally, I like cable curls even more than I like barbell curls."*
+And the machine is explicitly last: *"I would only pick that if I wasn't doing a cable curl or a dumbbell
+curl or an incline curl or a barbell curl."* So:
+
+| Muscle | Implement order |
+|---|---|
+| Chest | Barbell → dumbbell → Smith → machine |
+| Triceps | Cable → dumbbell → everything else |
+| Biceps | Cable → barbell → dumbbell/incline → machine |
+
+**Both arms prefer cables and rank the machine last; the chest is the opposite on both counts.** That is
+the shape of the split — big compound-trained muscles favour free weights, the small isolated arm muscles
+favour constant cable tension.
+
 **G9 — Some library exercises are never to be prescribed.** The library is a catalogue of what exists, not
 a list of what is endorsed. The first entry on the denylist:
 
@@ -2541,8 +2555,49 @@ the dumbbell variant of whatever the commercial-gym prescription would have been
 
 ---
 
+## Cable Curl — *his favourite of them all*
+
+**Library:** `Cable Curl`
+**His usage:** 114 prescriptions — his most-used curl by a factor of 3.5 over the dumbbell version.
+
+> *"Cable curls are amazing. I'd put them in the same group as barbell curls. Personally, I like cable curls
+> even more than I like barbell curls… cable curls are unbelievable. Same rules as a barbell curl."*
+
+**Rule:** identical to the barbell curl — 2-6 sets with 2-4 the good range, G32 scheduling caution — except:
+
+**Rule — reps a little higher, floor 8.** *"I'd keep them a little higher on the cable curls, no less than
+eight."*
+
+**Rule — the preferred biceps exercise.** Ranked above the barbell curl on his own preference, and his usage
+agrees at 114 to 32 over dumbbells.
+
+---
+
+## Biceps Curl Machine — *good, and chosen last*
+
+**Library:** `Life Fitness Bicep Curl Machine`
+**His usage:** zero across the ten programs.
+
+> *"The Life Fitness bicep curl machine is pretty great. I would only pick that if I wasn't doing a cable
+> curl, or a dumbbell curl, or an incline curl, or a barbell curl. I really like this machine, but I just
+> wouldn't have to use it that much."*
+
+**Rule — fifth choice.** Explicitly behind all four of the cable, dumbbell, incline and barbell curls. Not
+disliked — *"pretty great"*, *"I really like this machine"* — simply never the best available option.
+
+**Rule — reps 8+, ideally 10+.** Higher than the free-weight curls.
+**Rule — sets: no more than 4.** Lower than the barbell and cable curls' ceiling of 6.
+
+Both departures point the same way: the machine gets less volume and lighter relative loading than the
+exercises above it. A generator treating it as an equivalent substitute would over-prescribe it on both
+axes.
+
+---
+
 ## Deferred — raised, not yet answered
 
+- **Hammer Curl.** Not covered while going through the biceps group; the closing remark about "the other
+  cable" was unclear on the recording and may have been about this.
 - **Hammer Strength / Cybex / Life Fitness chest presses.** Asked twice and passed over both times, so
   recorded as **(inferred)**: they inherit the chest press machine entry — accessory, 8-15 reps, 4 sets max,
   slot 2nd or 3rd unless chest is trained 3x/week. Plate-loaded versus selectorized is assumed not to
