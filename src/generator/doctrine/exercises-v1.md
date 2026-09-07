@@ -689,6 +689,48 @@ most, you do not rotate away from the best exercise for it — you find another 
 A generator told only "vary the stimulus between blocks" would swap the exercise, which is exactly wrong
 for a priority muscle.
 
+**G28 — Anything that is not a compound goes later in the workout.** Stated as a general principle while
+placing front raises:
+
+> *"These are accessories, so once again, anything that's not a compound should be occurring later in the
+> workout — and is just part of the list of priorities of what the person you're training wants."*
+
+**Rule:** compound status (G4) determines the front of the session; everything else fills the back of it,
+ordered by the client's priorities.
+
+This unifies most of the individual slot rules already recorded — the chest press machine at 2nd-3rd, the
+flies never first, the straight-arm pulldown at 3rd, back extensions second-to-last. They are all one rule.
+
+**The known exception is a priority muscle.** The lateral raise is not a compound and may still open a
+session — *"as a true bodybuilder, if you have an isolated shoulder day, it would not be crazy at all to
+start with lateral raises."* So G28 is the default and a strong enough priority overrides it. Ordering is
+compound status first, client priority second, and priority can win.
+
+**G29 — Direct volume for an indirectly-trained muscle is small.** The first explicit weekly set target
+given for any muscle, and it is far below the general band:
+
+> *"Even for a lot of people I don't really do much front delt — maybe four sets a week. Unless it's a big
+> priority of theirs and they're training at least four days a week or even more, then it's appropriate for
+> it to be a little bit higher, so maybe around 4 to 8 sets per week. I've heard of cases where 12, or 16 as
+> well, if you're just crazy about it — but I'm not like that, and I don't think programming should be like
+> that."*
+
+| Case | Front delt sets / week |
+|---|---|
+| Most people | **~4** |
+| Big priority **and** training 4+ days/week | **4-8** |
+| Reported but rejected | 12-16 |
+
+**Rule:** a muscle that receives substantial indirect work (G14) needs only a fraction of the direct volume
+that a primary muscle does. Four sets a week is a complete front delt allocation for most clients.
+
+This matters against `weeklyVolume.ts`, which applies a **10-25 sets/week** band. That band cannot be right
+for the front delts, the rear delts, or arguably the biceps — the muscles already fed by compounds. The
+band belongs to muscles trained primarily by their own direct work.
+
+Note the second row is conjunctive: higher volume needs the priority **and** the frequency. Wanting bigger
+front delts on a 2-day split does not unlock 8 sets — G18 again.
+
 ---
 
 # Entries
@@ -2041,6 +2083,58 @@ pressing power. Absent one of those, it is not programmed.
 **Rule — reps 1-5** in that context. One of only a handful of exercises reaching the peak-strength band, and
 it does so only for a population G24 explicitly excludes from that band. The two rules do not conflict; they
 partition the roster.
+
+---
+
+## Front Raise — *his go-to front delt exercise*
+
+**Library:** `Front Raise — Dumbbell` · `Front Raise — Cable`
+**His usage:** 3 prescriptions.
+
+> *"Front raises are amazing. These are my go-to for my front delt training — even though I don't train them
+> that much, way less than lateral delts, but I still do them."*
+
+**Rule:** the preferred front delt exercise, ahead of overhead pressing. *"This goes for cable also"* — the
+dumbbell and cable versions are one entry.
+
+**Rule — reps 8-15.** *"Even 20's not the craziest thing I've ever heard, but it's kind of junk volume after
+that point."* So 20 is legal and explicitly poor value — the first time a rep ceiling has been justified by
+diminishing returns rather than by risk or suitability.
+
+**Rule — sets: 2 minimum.** The maximum did not survive the recording.
+
+**Rule — accessory, so late in the session** (G28).
+
+**Rule — weekly volume ~4 sets, or 4-8 for a priority at 4+ days/week** (G29).
+
+**Rule — it is counted against chest volume.** *"It also matters how much chest you're doing as well, how
+much incline you're doing already, just because that will affect how much shoulder volume you're doing."*
+
+---
+
+## Upright Row — *avoided about 90% of the time*
+
+**Library:** `Barbell Upright Row` · `Cable Upright Row`
+**His usage:** zero across the ten programs.
+
+> *"Upright rows are cool. I would keep the reps high on them, as in above 10. I don't like them more than
+> lateral raises — I'd rather just do a lateral raise. I don't really use upright rows that much."*
+
+**The reason, and it is mechanical:**
+
+> *"When you're at the top of the rep, your shoulder is very internally rotated, which isn't the most
+> comfortable position for your shoulder to be in, so a lot of people don't like these that much. They can
+> cause a lot of shoulder pain."*
+
+**Rule — avoid roughly 90% of the time.** *"I would still avoid them probably 90% of the time… we won't use
+them that much for now, unless somebody really wants them."*
+
+**Rule — contraindicated for existing shoulder pain.**
+**Rule — reps above 10** when used at all.
+
+Not denylisted (G9) — it is a real exercise with a real use — but it sits below the lateral raise on every
+axis and needs a client asking for it. Position on the scale: stronger discouragement than the chest dip,
+weaker than the decline press.
 
 ---
 
