@@ -706,7 +706,7 @@ session — *"as a true bodybuilder, if you have an isolated shoulder day, it wo
 start with lateral raises."* So G28 is the default and a strong enough priority overrides it. Ordering is
 compound status first, client priority second, and priority can win.
 
-**G30 — Ordering is decided by the client's goal, and there are four of them.**
+**G30 — Ordering is decided by the client's goal.**
 
 > *"When choosing what's first you have to think of your compounds of course, and the whole day schedule —
 > but you also have to prioritise. What's most important? Is it aesthetics? Is it strength? Is it feeling
@@ -727,8 +727,13 @@ unlocks the barbell bench, the standing military press, singles and doubles, and
 G3 — and it is what almost none of his clients want.
 
 So a generator needs the goal *before* it can order a session, and arguably before it can select anything
-at all: the same client, same equipment, same days per week produces a different program under each of
-these four.
+at all: the same client, same equipment, same days per week produces a different program under each goal.
+
+**The list is illustrative, not exhaustive** — he ended it with *"etc."* Four were named; there are more. So
+this must not be implemented as a closed enum, and the four above are examples of the axis rather than the
+axis itself. Worth returning to in order to enumerate the rest, since goal is turning out to be the single
+input the most other rules depend on: G24 keys off it, G3 and G4's set allowances key off it, the barbell
+bench and standing press unlock from it, and G28's ordering resolves through it.
 
 **G29 — Direct volume for an indirectly-trained muscle is small.** The first explicit weekly set target
 given for any muscle, and it is far below the general band:
