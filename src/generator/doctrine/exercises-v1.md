@@ -4986,6 +4986,56 @@ options in the library — movements #5 and #6 of the core coverage model, which
 
 ---
 
+# Power
+
+## Olympic Lifts — *one entry: cleans, snatches, jerks and their variants*
+
+**Library:** `Power Clean` · `Clean and Jerk` · `Snatch`
+**His usage:** zero across the ten programs.
+
+> *"This sort of scheme goes for any Olympic lift — so snatches, cleans, hang cleans, split jerks, doesn't
+> matter."*
+
+**Rule — reps below 3, always.** Singles, doubles and triples only. The only movement family in the file with
+a hard ceiling of 3.
+
+**Rule — sets by rep count:**
+
+| Reps | Max sets | Typical |
+|---|---|---|
+| 1 | 8 — *"but that's pushing it"* | **2-4** |
+| 2 | 7 | **2-4** |
+| 3 | 6-7 | **2-4** |
+
+*"Usually somewhere between two and four sets can even be good. It depends, but I would keep it around 2 to 4
+sets."* So the ceiling is high and the working figure is low — unlike the bench and squat, where the typical
+number sits nearer the cap.
+
+**This is the third compound with its own set-cap curve**, after the bench (6 singles) and the squat (8
+singles), confirming that the curve is per exercise rather than shared across the compound class.
+
+### The gate is capability, not goal
+
+> *"We're not gonna use these often at all, unless we know that the person who is using it can Olympic lift —
+> and that goes for every Olympic lift."*
+
+**Rule:** prescribed **only to someone who already knows how to Olympic lift.** Not unlocked by a goal, a
+training age or a sport — by an existing skill.
+
+That is a different gate from anything else recorded. The barbell bench is unlocked by an attitude to risk,
+the belt squat by an injury, the hip thrust by sex or a stated priority. This one asks whether the person can
+already do the movement, which the app has no field for.
+
+**It also composes with G39.** Technique that needs in-person correction is disfavoured in a remotely-delivered
+program — and the Olympic lifts are the extreme case, which is why Jack will not program muscle snatches
+despite liking them. Teaching someone to Olympic lift was raised and then explicitly set aside: *"if I was
+teaching somebody how to do it — we're not even gonna go there, don't even worry about that."*
+
+So the position is coherent: **the app can prescribe Olympic lifts to someone who already lifts, and should
+never try to teach them.**
+
+---
+
 ## Deferred — raised, not yet answered
 
 - **Barbell squat sets at low reps.** The 1-6 rep portion of the sets-by-reps table was lost to a degraded
