@@ -631,6 +631,31 @@ equipment grounds — *"a bit of a niche machine, especially if you want to load
 back rules out hinging and bent-over rowing, direct erector work comes down to the **back extension alone**,
 and only if the gym has one.
 
+**G26 — Cluster sets.** A set-execution technique not previously recorded anywhere in the doctrine:
+
+> *"Say I'm gonna do a set of 18 reps. I'm gonna do that set in two mini-sets of nine, with however much
+> time in between — usually about 10 to 15 seconds. That's called a cluster set: two clusters of nine for a
+> total of 18 reps. Clusters are an unbelievably good way, because you divided that little set into two
+> sets of nine, you can lift just a little bit more weight than you normally would and still get the same
+> volume in terms of set-reps."*
+
+**Definition:** one prescribed set of N reps, executed as mini-sets with **10-15 seconds** of rest between
+them. 18 reps becomes 9 + 9.
+
+**Rule — what it buys:** more load at the same total reps. The short intra-set rest restores enough to hold
+a heavier weight across the whole set than a straight set would allow.
+
+**Rule — it raises the rep ceiling.** The lateral raise has no upper rep limit *when clustered* — *"I've
+heard of people doing clusters of 30."* A rep count that would be absurd as a straight set is reasonable as
+a cluster, so a clustered prescription must be read as a different exercise for ceiling purposes.
+
+*"That's actually one of my favourite blocks to run ever."*
+
+**Nothing in the app can currently express this.** A set is a rep count and a load; there is no field for
+intra-set rest, and no way to mark one prescribed set as several mini-sets. A clustered 18 would either be
+written as 18 straight — which is the wrong prescription at that load — or as 2x9, which loses the
+short-rest instruction that is the entire point.
+
 ---
 
 # Entries
@@ -1818,6 +1843,58 @@ none of it is visible in the library, where all four carry the tag `Back`.
 The generator currently picks between these four on muscle tag, which makes them interchangeable. They are
 not — they are four answers to the question *what can this person's lower back do today*, and the seated
 cable row is at the opposite end from where its "safe cable machine" appearance would place it.
+
+---
+
+# Shoulders
+
+## Lateral Raise — *the gold standard, and his most-prescribed exercise*
+
+**Library:** `Dumbbell Lateral Raise` · `Cable Lateral Raise` · `Cybex Lateral Raise Machine`
+**His usage:** 280 prescriptions — the single most-prescribed exercise across all ten programs, roughly 7%
+of every set he has ever written.
+
+> *"The lateral raise is the absolute gold standard of lateral delt training, which is unbelievably
+> important for guys. Most girls really care about shoulders too."*
+
+### Why it outranks everything else in the shoulder
+
+> *"When people are talking about getting bigger shoulders, they're mostly referring to their lateral delts.
+> So lateral delts should get a huge priority — probably the biggest priority out of any other part of the
+> shoulder by far, when it's specified that you want bigger shoulders. Which is arguably tied for first
+> place for the most important body part aesthetically on a guy."*
+
+**Rule:** "bigger shoulders" means **lateral delts**. Front and rear delt work does not satisfy that
+request. Within the shoulder, the lateral delt takes priority by a wide margin.
+
+**Rule — frequency: at least 2x/week** when shoulders matter, and higher is better. *"Lateral delt frequency
+should be very high if you care about shoulders."*
+
+### Slot — the first exercise with no restriction
+
+> *"You can do them first, you can do them in the middle, you can do them at the end. Although because
+> they're so important for most people, I would usually do them in the middle. But as a true bodybuilder, if
+> you have an isolated shoulder day, it would not be crazy at all to start with lateral raises — I've heard
+> of that all the time in bodybuilding splits. I did that for years, it worked great."*
+
+**Rule — any slot is legal**, middle is the default, first is legitimate on a dedicated shoulder day. Every
+other exercise recorded so far carries a slot constraint; this one does not.
+
+**Rule — reps: 8 at the floor** (6 is the absolute bottom of the threshold, and unusual), **no ceiling when
+clustered** — see G26, where clusters of 30 are cited.
+
+**Rule — sets: 3-4 for most people**, up to 8 at the extreme. *"The most I've heard of is like eight,
+although I would still say three or four is usually a good place for most people."*
+
+### A worked illustration of G18
+
+> *"I even did that two or three times a week, even four times a week, doing lateral raises a lot, just
+> because I cared about them so much. But I was also training six days a week, so I had the ability to have
+> extra volume because I didn't jeopardise anything else."*
+
+Four sessions a week of one small-muscle exercise was affordable **only because training frequency was
+six days**. This is G18 stated from the inside: the frequency creates the room, and the room is what allows
+a priority to be expressed as volume.
 
 ---
 
