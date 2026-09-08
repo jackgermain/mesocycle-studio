@@ -1658,6 +1658,57 @@ importer would ingest as truth.)*
 The first six generated programs were reviewed exercise by exercise. What follows came out of that review —
 rules the doctrine did not contain, several of which it should have caught.
 
+**G46 — Supersets are constrained by where the equipment is.**
+
+> *"If you're gonna use a cable exercise in a circuit, it needs to be close enough to the machine that you
+> can go back and forth between the two things. You don't wanna have to walk all the way across the gym
+> because you have a cable rotation supersetted with a decline sit-up. So for the most part I would not
+> superset cable exercises for abs at all — I would keep them by themselves for that reason. Unless you're in
+> your own gym, or a cable machine is always kind of open and out of the way."*
+
+**Rule:** an exercise's **physical location** decides whether it can be supersetted at all. A cable movement
+paired with a floor exercise means crossing the gym between rounds, which breaks the short rest a superset
+depends on.
+
+**Rule — by default, do not superset cable ab work.** Straight sets. The exception is a private gym or a
+station that is reliably free.
+
+This is the only rule in the file about the gym as a **physical space** rather than as an inventory. Every
+other equipment rule asks whether a machine exists; this asks where it is and whether someone is on it. A
+generator holding a perfect equipment list would still get it wrong. It also bounds the ab circuit: four
+floor exercises circuit fine, and adding a cable rotation breaks it.
+
+**G47 — Knee position decides which calf muscle works.**
+
+> *"Any calf raise machine where your leg is straight — you have no knee flexion at all, your legs are
+> extended completely, you're standing up and doing a calf raise — that will engage both your gastrocnemius
+> and your soleus muscles. If your leg is bent, like the seated calf raise, [it] only works your soleus."*
+
+**Rule:** straight leg trains **gastrocnemius and soleus**; a bent knee trains **soleus only**, because the
+gastrocnemius crosses the knee and bending it takes that muscle out.
+
+**Consequence:** the standing calf raise is not merely preferred, it covers strictly more. A calf allocation
+built from seated raises trains half the calf — which is why standing is prioritised almost always, and why
+the seated version's role is a *second* calf exercise rather than an alternative to the first.
+
+**G48 — Vascularity is trainable, and the method is high reps with short rest.**
+
+> *"If you've got somebody who is decently lean and they're getting ready for summer, I like to start
+> including high-rep forearms… 15+ pretty much always. And I like not much rest — a minute, a minute fifteen,
+> even 45 seconds on occasion between sets. The increase in reps, especially in your forearms, you're going
+> for the burning sensation — this will literally make you more vascular over time. If you're cutting and you
+> want to look good in the summer… you can start programming forearms and other lifts in general like this,
+> for areas that you might want to be a little bit more vascular. That could even be biceps."*
+
+**Rule — the protocol:** **15+ reps at 45–75 seconds' rest**, trained for the burn.
+**Rule — the precondition is leanness.** Prescribed for someone already fairly lean and approaching a point
+where they want to look their best. Not a year-round default.
+**Rule — it applies wherever vascularity is wanted** — forearms and biceps named.
+
+This is a goal G30's list does not cover, and it is the first case where **rest is chosen to produce an
+effect** rather than to allow recovery. `SetPrescribed.restSec` exists and is normally set by whether an
+exercise is a compound or an isolation; nothing currently varies it for this reason.
+
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 
 > *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of
