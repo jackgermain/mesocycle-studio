@@ -1,6 +1,5 @@
 import { supabase } from "../lib/supabase";
-
-export type SignalKind = "pump" | "joint" | "soreness";
+import type { SignalKind } from "./signalScales";
 
 export interface ClientSignal {
   id: string;
@@ -20,32 +19,14 @@ export interface ClientSignal {
   day_id?: string | null;
 }
 
-/** What's worth a coach's attention, per the scales in data/mockData.ts:
- *
- *  - pump      1..5 as Bad → Very good, so a low number is the bad one. Under 3 is Bad or Poor.
- *  - soreness  1..5 as Very sore → Fully healed, low again meaning still wrecked. Under 3 is Very sore
- *              or Sore, i.e. showing up to train it again while it hasn't recovered.
- *  - joint     1..4 as "Noticed only" → "Stopped the set", and this one runs the *other* way: higher is
- *              worse. 2 and up ("Mild, trained on" and worse) is sent; a 1 is something they noticed and
- *              trained through, which isn't worth interrupting anyone over on its own. 3+ is urgent.
- */
-export const PUMP_ALERT_BELOW = 3;
-export const SORENESS_ALERT_BELOW = 3;
-export const JOINT_ALERT_AT_OR_ABOVE = 2;
-export const JOINT_URGENT_AT_OR_ABOVE = 3;
-
-export function isPumpAlerting(severity: number): boolean {
-  return severity < PUMP_ALERT_BELOW;
-}
-export function isSorenessAlerting(severity: number): boolean {
-  return severity < SORENESS_ALERT_BELOW;
-}
-export function isJointAlerting(severity: number): boolean {
-  return severity >= JOINT_ALERT_AT_OR_ABOVE;
-}
-export function isJointUrgent(severity: number): boolean {
-  return severity >= JOINT_URGENT_AT_OR_ABOVE;
-}
+/* The scales themselves live in signalScales.ts, which imports no Supabase client so a test can reach
+   them. Re-exported here so every existing caller keeps working. */
+export type { SignalKind } from "./signalScales";
+export {
+  PUMP_ALERT_BELOW, SORENESS_ALERT_BELOW, JOINT_ALERT_AT_OR_ABOVE, JOINT_URGENT_AT_OR_ABOVE,
+  EFFORT_ALERT_AT, EFFORT_WORDING,
+  isPumpAlerting, isSorenessAlerting, isJointAlerting, isJointUrgent, isEffortAlerting,
+} from "./signalScales";
 
 interface NewSignal {
   kind: SignalKind;

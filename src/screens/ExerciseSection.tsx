@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
+import { useAuth } from "../lib/auth";
+import { sendSignals } from "../shared/signals";
+import { SetEffortSheet } from "./SetEffortSheet";
+import { EFFORT_ALERT_AT, EFFORT_WORDING } from "../shared/signals";
 import type { WorkExercise, WorkSet } from "../data/types";
 import type { LoadMode } from "../coach/types";
 import { isSpecialSet, specialSummary, stepLoad, typeLabel } from "./exerciseHelpers";
@@ -100,12 +104,62 @@ export function ExerciseSection({
   readOnly?: "future" | "past";
 }) {
   const locked = readOnly === "past";
-  const { dispatch } = useStore();
+  const { state, dispatch } = useStore();
+  const { account } = useAuth();
   const nav = useNavigate();
   const doneCount = ex.sets.filter((s) => s.checked).length;
   const allDone = doneCount === ex.sets.length;
+
+  /** Warm-ups and removed sets are not the exercise. "Second to last" means second-to-last thing you
+   * actually work through, which on a day with three warm-up rungs is not the same as the array index. */
+  const workingSets = ex.sets.filter((s) => !s.isWarmup && !s.removed);
+  const [asking, setAsking] = useState<{ set: WorkSet; position: "before-last" | "final" } | null>(null);
+
+  function positionOf(s: WorkSet): "before-last" | "final" | null {
+    const i = workingSets.findIndex((w) => w.id === s.id);
+    if (i < 0) return null;
+    if (i === workingSets.length - 1) return "final";
+    // Only meaningful when there is a last set still to come to be informed by it.
+    if (i === workingSets.length - 2 && workingSets.length >= 2) return "before-last";
+    return null;
+  }
+
   function toggle(s: WorkSet) {
-    dispatch({ type: "SET_CHECKED", dayId, exerciseId: ex.id, setId: s.id, checked: !s.checked });
+    const checking = !s.checked;
+    dispatch({ type: "SET_CHECKED", dayId, exerciseId: ex.id, setId: s.id, checked: checking });
+    // Asked on the way in only. Unchecking a set to fix a number should not re-interrogate someone, and
+    // a set that already carries an answer is not asked twice.
+    if (!checking || locked || s.effort !== undefined) return;
+    const position = positionOf(s);
+    if (position) setAsking({ set: s, position });
+  }
+
+  function answerEffort(effort: number) {
+    const target = asking;
+    setAsking(null);
+    if (!target) return;
+    dispatch({ type: "SET_EFFORT", dayId, exerciseId: ex.id, setId: target.set.id, effort });
+    if (effort < EFFORT_ALERT_AT || !account) return;
+    // Only a 5 travels. Everything below it is ordinary training, and a roster rating four sets an
+    // exercise would bury a coach in notifications inside a day.
+    void sendSignals(account.id, account.coach_id, [
+      {
+        kind: "effort",
+        severity: effort,
+        exercise: ex.name,
+        muscle: ex.muscle ?? null,
+        dayId,
+        detail: target.position === "before-last" ? "second-to-last set" : "final set",
+        note: `${EFFORT_WORDING[effort - 1]} on the ${target.position === "before-last" ? "second-to-last" : "final"} set of ${ex.name}.`,
+      },
+    ]);
+    dispatch({
+      type: "SHOW_TOAST",
+      message: target.position === "before-last"
+        ? "Noted — hold the load on your last set."
+        : `${state.program.coachName} will see that.`,
+    });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
   }
   // On a timed exercise the number is seconds, so the nudge is five at a time -- a one-second step on a
   // plank is not a meaningful adjustment.
@@ -364,6 +418,15 @@ export function ExerciseSection({
           </span>
         ) : null}
       </div>
+
+      {asking && (
+        <SetEffortSheet
+          exerciseName={ex.name}
+          position={asking.position}
+          onPick={answerEffort}
+          onSkip={() => setAsking(null)}
+        />
+      )}
     </div>
   );
 }

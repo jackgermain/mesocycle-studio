@@ -47,6 +47,13 @@ export interface WorkSet {
   prescribed: SetPrescribed;
   actual: SetActual | null;
   checked: boolean;
+  /** How hard this set was, 1 (easy) to 5 (could not have done another rep) — RIR inverted and bounded,
+   * asked in the language a client thinks in rather than a number they have to convert.
+   *
+   * Only collected on two sets per exercise, and they answer different questions. The second-to-last
+   * decides what the LAST set should do; the last decides what NEXT WEEK should do. Absent on every other
+   * set, and on any set logged before this existed. */
+  effort?: number;
   removed?: { reason: string };
   lastWeek?: string;
   isWarmup?: boolean;

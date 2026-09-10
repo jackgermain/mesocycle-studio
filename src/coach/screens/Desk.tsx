@@ -90,6 +90,13 @@ export default function Desk() {
   }
 
   function signalText(s: ClientSignal): string {
+    // Only a 5 is ever sent, so the text can say what a 5 means outright rather than reporting a number.
+    // `detail` says which of the two sets it came from, and that changes what the coach should do: on the
+    // second-to-last set the client was told to hold their last set, so the exercise is already handled
+    // for today and this is a note for next week's numbers.
+    if (s.kind === "effort") {
+      return `Hit failure on ${s.exercise ?? "an exercise"}${s.detail ? ` — ${s.detail}` : ""}`;
+    }
     if (s.kind === "joint") return `Joint pain${s.note ? ` — ${s.note}` : ""}${s.exercise ? ` on ${s.exercise}` : ""}`;
     // Soreness signals now run both ways: still sore (volume too high) and healed early (room for more).
     // The high-severity ones are the second kind, and reading them as "still sore" would be backwards.
@@ -385,7 +392,11 @@ export default function Desk() {
             <div className="sh">From your clients · {signals.length}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {signals.map((s) => {
-                const urgent = s.kind === "joint" && isJointUrgent(s.severity);
+                const urgent =
+                  (s.kind === "joint" && isJointUrgent(s.severity)) ||
+                  // A 5 on the FINAL set is what caps next week's jump (G62), so it is the one worth
+                  // pulling out. A 5 before the last set was already acted on inside the session.
+                  (s.kind === "effort" && s.detail === "final set");
                 const times = recurrenceCount(allSignals, s);
                 return (
                   <div key={s.id} className="cell elev-sm" style={urgent ? { borderLeft: "2px solid var(--color-accent)" } : undefined}>
@@ -399,7 +410,7 @@ export default function Desk() {
                       </div>
                       <div style={{ flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                         <span className={`tag ${urgent ? "tag-accent" : "tag-neutral"}`}>
-                          {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : "Pump"}
+                          {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : "Pump"}
                         </span>
                         {times > 1 && (
                           <span className="tag tag-accent" title={`Reported ${times} times in the last 90 days`}>
