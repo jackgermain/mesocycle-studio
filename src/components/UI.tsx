@@ -340,19 +340,74 @@ export function HeroHeader({ kicker, title, right, children }: { kicker?: string
   );
 }
 
-/** A boxed, oversized stat used inside a HeroHeader — one big number carries far more weight than a tiny
- * uppercase kicker, with room for a secondary breakdown list (Desk's volume/joint/weigh-in counts,
- * Messages' thread count) alongside it. */
-export function HeroStat({ value, label, valueColor = "var(--color-accent)", children }: { value: React.ReactNode; label: React.ReactNode; valueColor?: string; children?: React.ReactNode }) {
+/** One line of the readout. `value` is the figure; `display` overrides what gets printed when the figure
+ * isn't a plain count (a coach's name, "8 weeks"). */
+export interface HeroRow {
+  label: string;
+  value?: number;
+  display?: React.ReactNode;
+  /** Marks the row worth looking at first. Reserve it — if everything is amber, nothing is. */
+  tone?: "warn";
+}
+
+/** Pad a count to two digits, the way an instrument does. 7 reads as a stray glyph; 07 reads as a
+ * reading. Left alone above 99 rather than truncated, and left alone entirely for anything that isn't a
+ * number, since "Jack Germain" is not a measurement. */
+function hudDigits(v: React.ReactNode): React.ReactNode {
+  return typeof v === "number" && v >= 0 && v < 10 ? `0${v}` : v;
+}
+
+/** The headline readout at the top of every screen.
+ *
+ * Corner brackets, scanlines and thin mono type, so it reads as an instrument reporting a value rather
+ * than a card containing one. That distinction is what fixes the state you see most days: a roster in
+ * good shape used to render a big 0 beside four more zeros, which looked like data that had failed to
+ * load. As a readout, the same thing reads as a system saying nominal.
+ *
+ * Each screen passes its own label — DECISIONS·WAITING, ROSTER, INBOX — and its own all-clear wording,
+ * because "0 decisions waiting" and "0 unread" want different words for the same good news. */
+export function HeroStat({
+  value,
+  label,
+  quiet,
+  rows,
+  children,
+}: {
+  value: React.ReactNode;
+  /** Short, uppercase, mono. Use a middle dot rather than a space: DECISIONS·WAITING. */
+  label: React.ReactNode;
+  /** True when there is nothing to report, which dims the figure instead of leaving it lit at zero. */
+  quiet?: boolean;
+  rows?: HeroRow[];
+  children?: React.ReactNode;
+}) {
   return (
     <div className="hero-box">
-      <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
-        <div style={{ flex: children ? "none" : 1, paddingRight: children ? 14 : 0, borderRight: children ? "1px solid var(--color-neutral-800)" : undefined }}>
-          <div className="num" style={{ fontSize: 32, lineHeight: 1, color: valueColor }}>{value}</div>
-          <div className="scr" style={{ marginTop: 5, lineHeight: 1.3 }}>{label}</div>
-        </div>
-        {children && <div style={{ flex: 1, paddingLeft: 14, display: "flex", flexDirection: "column", justifyContent: "center", gap: 7, minWidth: 0 }}>{children}</div>}
+      <span className="hud-br tl" />
+      <span className="hud-br tr" />
+      <span className="hud-br bl" />
+      <span className="hud-br br" />
+
+      <div className="row" style={{ alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: rows?.length || children ? 14 : 0 }}>
+        <span className={`hud-value${quiet ? " is-quiet" : ""}`}>{hudDigits(value)}</span>
+        <span className="hud-label">{label}</span>
       </div>
+
+      {rows && rows.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {rows.map((r, i) => (
+            <div key={i} className="hud-row">
+              <span style={{ flex: "none" }}>{r.label}</span>
+              <span className="hud-lead" />
+              <span className={`hud-rv${r.tone === "warn" && r.value ? " is-warn" : r.value === 0 ? " is-zero" : ""}`}>
+                {r.display ?? hudDigits(r.value)}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {children}
     </div>
   );
 }

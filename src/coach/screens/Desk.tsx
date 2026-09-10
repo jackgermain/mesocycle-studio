@@ -193,24 +193,17 @@ export default function Desk() {
           </button>
         }
       >
-        <HeroStat value={allFlags.length + signals.length + weighInGaps.length + formChecks.length + compliance.length} label={<>decisions<br />waiting</>}>
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
-            <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{counts.volume}</span>
-          </div>
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Joint flags</span>
-            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.joint}</span>
-          </div>
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Missed weigh-ins</span>
-            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.weighin}</span>
-          </div>
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Sessions &amp; meals not logged</span>
-            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.unlogged}</span>
-          </div>
-        </HeroStat>
+        <HeroStat
+          value={counts.volume + counts.joint + counts.weighin + counts.unlogged}
+          quiet={counts.volume + counts.joint + counts.weighin + counts.unlogged === 0}
+          label={counts.volume + counts.joint + counts.weighin + counts.unlogged === 0 ? <>ALL&middot;CLEAR</> : <>DECISIONS&middot;WAITING</>}
+          rows={[
+            { label: "Volume", value: counts.volume },
+            { label: "Joint", value: counts.joint, tone: "warn" },
+            { label: "Weigh-ins", value: counts.weighin },
+            { label: "Unlogged", value: counts.unlogged },
+          ]}
+        />
       </HeroHeader>
 
       <div className="screen-scroll">

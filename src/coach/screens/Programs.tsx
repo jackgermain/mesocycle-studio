@@ -61,16 +61,15 @@ export default function Programs() {
           </div>
         }
       >
-        <HeroStat value={state.programs.length} label="programs">
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Templates</span>
-            <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{templates.length}</span>
-          </div>
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Drafts</span>
-            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{drafts.length}</span>
-          </div>
-        </HeroStat>
+        <HeroStat
+          value={state.programs.length}
+          quiet={state.programs.length === 0}
+          label={<>PROGRAMS</>}
+          rows={[
+            { label: "Templates", value: templates.length },
+            { label: "Drafts", value: drafts.length },
+          ]}
+        />
       </HeroHeader>
       <div className="screen-scroll">
         <div className="row" style={{ gap: 6 }}>
