@@ -188,7 +188,7 @@ export default function Nutrition() {
                 <div className="sh" style={{ flex: 1, margin: 0 }}>{meal.name}</div>
                 {meal.items.length > 0 && (
                   <span className="mu">
-                    <span className="mono">{mealTotals.kcal}</span> kcal
+                    <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-300)" }}>{mealTotals.kcal}</span> kcal
                   </span>
                 )}
                 <button
@@ -245,6 +245,7 @@ export default function Nutrition() {
                   <button
                     onClick={() => setAddingTo(meal.id)}
                     className="add-row"
+                    style={{ padding: 14 }}
                   >
                     + Add food to {meal.name.toLowerCase()}
                   </button>
@@ -254,9 +255,12 @@ export default function Nutrition() {
                     is hidden behind it -- the ticked items already count -- but a coach can tell the
                     difference between a meal someone is midway through and one they are done with, which
                     is the whole point of asking for it. */}
+                {/* Set apart from "add food" above it. They are opposite acts -- one keeps the meal open,
+                    one closes it -- and sitting them 7px apart in the same stack read as a pair of
+                    equally-weighted choices. */}
                 {meal.items.length > 0 && (
                   submitted ? (
-                    <div className="row" style={{ gap: 8 }}>
+                    <div className="row" style={{ gap: 8, marginTop: 5 }}>
                       <span className="mu row" style={{ flex: 1, gap: 6, width: "auto" }}>
                         <i className="ph-fill ph-check-circle" style={{ fontSize: 14, color: "var(--color-accent)" }} />
                         Logged · {eaten.length} of {meal.items.length}
@@ -267,8 +271,11 @@ export default function Nutrition() {
                     </div>
                   ) : (
                     <button
-                      className="btn btn-solid btn-block"
-                      style={{ height: 42, fontSize: 13, opacity: eaten.length ? 1 : 0.5 }}
+                      // btn-primary, matching "Add to Meal 1" on the food sheet: this is the same class
+                      // of act -- the one green thing that finishes what you came here to do -- and it
+                      // was rendering in btn-solid's grey, which reads as secondary.
+                      className="btn btn-primary btn-block"
+                      style={{ height: 48, fontSize: 14, marginTop: 5, opacity: eaten.length ? 1 : 0.45 }}
                       disabled={!eaten.length}
                       onClick={() => dispatch({ type: "SUBMIT_MEAL", mealId: meal.id })}
                     >
