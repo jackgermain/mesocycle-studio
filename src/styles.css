@@ -478,14 +478,14 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
      it. Both were why the panel read as pasted in from somewhere else. This is the app's own green, in
      the same register as everything around it. */
   background:
-    radial-gradient(42% 48% at 20% 14%, rgba(76, 224, 143, 0.15), transparent 70%),
-    radial-gradient(40% 46% at 78% 88%, rgba(76, 224, 143, 0.07), transparent 72%);
-  filter: blur(30px);
+    radial-gradient(44% 50% at 20% 14%, rgba(76, 224, 143, 0.08), transparent 72%),
+    radial-gradient(42% 48% at 78% 88%, rgba(76, 224, 143, 0.035), transparent 74%);
+  filter: blur(32px);
   transition: opacity 400ms ease;
 }
 /* Nothing to report. The light drops rather than switching off, so a good week still looks like an
    object with depth instead of a flat black box. */
-.hero-box.is-quiet::before { opacity: 0.4; }
+.hero-box.is-quiet::before { opacity: 0.45; }
 
 .hero-inner { position: relative; }
 
@@ -494,18 +494,13 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
 .hero-value {
   font-family: var(--font-heading);
   font-variant-numeric: tabular-nums;
-  font-size: 44px; font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
-  /* Was white resolving into the accent, which at 900 weight and 44px was the brightest thing on any
-     screen by a wide margin. Kept as a gradient for the depth, but inside the accent ramp rather than
-     starting at pure white. */
-  background: linear-gradient(150deg, var(--color-accent-300), var(--color-accent) 60%, var(--color-accent-500));
-  -webkit-background-clip: text; background-clip: text;
-  color: transparent;
+  font-size: 40px; font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
+  /* Flat accent. This started as a gradient from pure white, then a gradient inside the accent ramp, and
+     both were still the brightest element on the screen -- at 900 weight and 40px the figure carries by
+     size alone and does not need help. */
+  color: var(--color-accent);
 }
-.hero-box.is-quiet .hero-value {
-  background: linear-gradient(150deg, var(--color-neutral-400), var(--color-neutral-700));
-  -webkit-background-clip: text; background-clip: text;
-}
+.hero-box.is-quiet .hero-value { color: var(--color-neutral-600); }
 
 /* One rounded group, 1px gaps, each row its own pane of smoked glass. -webkit- prefix because the real
    target is an installed iOS PWA and Safari still wants it. */
