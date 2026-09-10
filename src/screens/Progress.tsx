@@ -38,16 +38,16 @@ export default function Progress() {
   return (
     <div className="screen">
       <HeroHeader title="Progress">
-        <HeroStat
-          value={currentWeek}
-          label={<>current<br />week</>}
-          rows={[
-            { label: "Program length", display: `${state.program.totalWeeks} weeks` },
-            // No value: a coach's name has no magnitude, so this row prints without a bar rather than
-            // drawing one off a number that means nothing.
-            { label: "Coach", display: state.program.coachName },
-          ]}
-        />
+        <HeroStat value={currentWeek} label={<>current<br />week</>}>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Program length</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{state.program.totalWeeks} weeks</span>
+          </div>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Coach</span>
+            <span style={{ fontFamily: "var(--font-heading)", color: "var(--color-neutral-200)" }}>{state.program.coachName}</span>
+          </div>
+        </HeroStat>
       </HeroHeader>
       <div className="screen-scroll">
         {state.nextProgram && (

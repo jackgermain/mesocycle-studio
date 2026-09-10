@@ -128,15 +128,20 @@ export default function Clients() {
           </button>
         }
       >
-        <HeroStat
-          value={state.clients.length}
-          label="clients"
-          rows={[
-            { label: "Accepted", value: acceptedCount },
-            { label: "Needs review", value: needsReviewCount, tone: "warning" },
-            { label: "At risk", value: atRiskCount, tone: "warning" },
-          ]}
-        />
+        <HeroStat value={state.clients.length} label="clients">
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Accepted</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{acceptedCount}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Needs review</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{needsReviewCount}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>At risk</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{atRiskCount}</span>
+          </div>
+        </HeroStat>
       </HeroHeader>
       <div className="screen-scroll">
         {/* hscroll because the admin view has five chips, which overflow a phone -- without it they

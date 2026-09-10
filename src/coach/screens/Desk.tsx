@@ -193,17 +193,24 @@ export default function Desk() {
           </button>
         }
       >
-        <HeroStat
-          value={allFlags.length + signals.length + weighInGaps.length + formChecks.length + compliance.length}
-          label={<>decisions<br />waiting</>}
-          rows={[
-            { label: "Volume proposals", value: counts.volume },
-            // The only amber one: a joint flag is the category worth looking at before the others.
-            { label: "Joint flags", value: counts.joint, tone: "warning" },
-            { label: "Missed weigh-ins", value: counts.weighin },
-            { label: <>Sessions &amp; meals not logged</>, value: counts.unlogged },
-          ]}
-        />
+        <HeroStat value={allFlags.length + signals.length + weighInGaps.length + formChecks.length + compliance.length} label={<>decisions<br />waiting</>}>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Volume proposals</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{counts.volume}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Joint flags</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.joint}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Missed weigh-ins</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.weighin}</span>
+          </div>
+          <div className="row" style={{ fontSize: 12.5 }}>
+            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Sessions &amp; meals not logged</span>
+            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{counts.unlogged}</span>
+          </div>
+        </HeroStat>
       </HeroHeader>
 
       <div className="screen-scroll">
