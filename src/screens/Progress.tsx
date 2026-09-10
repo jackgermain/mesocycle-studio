@@ -40,9 +40,9 @@ export default function Progress() {
       <HeroHeader title="Progress">
         <HeroStat
           value={currentWeek}
-          label={<>WEEK&middot;OF&nbsp;{state.program.totalWeeks}</>}
+          label={<>current<br />week</>}
           rows={[
-            { label: "Block", display: state.program.name },
+            { label: "Program length", display: `${state.program.totalWeeks} weeks` },
             { label: "Coach", display: state.program.coachName },
           ]}
         />

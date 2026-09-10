@@ -96,8 +96,8 @@ export default function Messages() {
         <HeroStat
           value={unreadCount}
           quiet={unreadCount === 0}
-          label={unreadCount === 0 ? <>INBOX&middot;CLEAR</> : <>UNREAD</>}
-          rows={[{ label: "Threads", value: state.threads.length }]}
+          label="unread"
+          rows={[{ label: "Total threads", value: state.threads.length }]}
         />
       </HeroHeader>
       <div className="screen-scroll">

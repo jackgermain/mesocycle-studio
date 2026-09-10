@@ -132,10 +132,10 @@ export default function Clients() {
         <HeroStat
           value={state.clients.length}
           quiet={state.clients.length === 0}
-          label={<>ROSTER</>}
+          label="clients"
           rows={[
             { label: "Accepted", value: acceptedCount },
-            { label: "Review", value: needsReviewCount, tone: "warn" },
+            { label: "Needs review", value: needsReviewCount, tone: "warn" },
             { label: "At risk", value: atRiskCount, tone: "warn" },
           ]}
         />

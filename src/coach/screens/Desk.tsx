@@ -196,12 +196,12 @@ export default function Desk() {
         <HeroStat
           value={counts.volume + counts.joint + counts.weighin + counts.unlogged}
           quiet={counts.volume + counts.joint + counts.weighin + counts.unlogged === 0}
-          label={counts.volume + counts.joint + counts.weighin + counts.unlogged === 0 ? <>ALL&middot;CLEAR</> : <>DECISIONS&middot;WAITING</>}
+          label={<>decisions<br />waiting</>}
           rows={[
-            { label: "Volume", value: counts.volume },
-            { label: "Joint", value: counts.joint, tone: "warn" },
-            { label: "Weigh-ins", value: counts.weighin },
-            { label: "Unlogged", value: counts.unlogged },
+            { label: "Volume proposals", value: counts.volume },
+            { label: "Joint flags", value: counts.joint, tone: "warn" },
+            { label: "Missed weigh-ins", value: counts.weighin },
+            { label: <>Sessions &amp; meals not logged</>, value: counts.unlogged },
           ]}
         />
       </HeroHeader>

@@ -64,7 +64,7 @@ export default function Programs() {
         <HeroStat
           value={state.programs.length}
           quiet={state.programs.length === 0}
-          label={<>PROGRAMS</>}
+          label="programs"
           rows={[
             { label: "Templates", value: templates.length },
             { label: "Drafts", value: drafts.length },

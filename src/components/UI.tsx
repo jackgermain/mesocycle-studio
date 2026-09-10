@@ -340,32 +340,30 @@ export function HeroHeader({ kicker, title, right, children }: { kicker?: string
   );
 }
 
-/** One line of the readout. `value` is the figure; `display` overrides what gets printed when the figure
- * isn't a plain count (a coach's name, "8 weeks"). */
+/** One line of the meter. `value` is the count the segments are lit from; `display` overrides what gets
+ * printed on the right when the figure isn't a count — a coach's name, "8 weeks". A row with no `value`
+ * prints without a meter rather than lighting one off a number that has no magnitude. */
 export interface HeroRow {
-  label: string;
+  label: React.ReactNode;
   value?: number;
   display?: React.ReactNode;
   /** Marks the row worth looking at first. Reserve it — if everything is amber, nothing is. */
   tone?: "warn";
 }
 
-/** Pad a count to two digits, the way an instrument does. 7 reads as a stray glyph; 07 reads as a
- * reading. Left alone above 99 rather than truncated, and left alone entirely for anything that isn't a
- * number, since "Jack Germain" is not a measurement. */
-function hudDigits(v: React.ReactNode): React.ReactNode {
-  return typeof v === "number" && v >= 0 && v < 10 ? `0${v}` : v;
-}
+/** How many segments a meter has. Ten is enough to be countable at a glance and short enough to stay
+ * legible at phone width. */
+const LED_COUNT = 10;
 
-/** The headline readout at the top of every screen.
+/** The headline panel at the top of every screen.
  *
- * Corner brackets, scanlines and thin mono type, so it reads as an instrument reporting a value rather
- * than a card containing one. That distinction is what fixes the state you see most days: a roster in
- * good shape used to render a big 0 beside four more zeros, which looked like data that had failed to
- * load. As a readout, the same thing reads as a system saying nominal.
+ * One lit segment per item, so the meter can be counted rather than estimated — three lit blocks means
+ * three things waiting. Scaling each row against the largest one was the alternative, and it has a flaw
+ * this doesn't: a panel with a single countable row draws a permanently full bar that says nothing.
+ * Beyond ten the meter simply fills and the printed number carries the rest.
  *
- * Each screen passes its own label — DECISIONS·WAITING, ROSTER, INBOX — and its own all-clear wording,
- * because "0 decisions waiting" and "0 unread" want different words for the same good news. */
+ * At zero every segment sits dark and the figure dims. An unlit meter reads as no signal, which is what
+ * a good week actually is — where a big lit 0 beside four more zeros read as data that failed to load. */
 export function HeroStat({
   value,
   label,
@@ -374,7 +372,6 @@ export function HeroStat({
   children,
 }: {
   value: React.ReactNode;
-  /** Short, uppercase, mono. Use a middle dot rather than a space: DECISIONS·WAITING. */
   label: React.ReactNode;
   /** True when there is nothing to report, which dims the figure instead of leaving it lit at zero. */
   quiet?: boolean;
@@ -383,29 +380,34 @@ export function HeroStat({
 }) {
   return (
     <div className="hero-box">
-      <span className="hud-br tl" />
-      <span className="hud-br tr" />
-      <span className="hud-br bl" />
-      <span className="hud-br br" />
-
-      <div className="row" style={{ alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: rows?.length || children ? 14 : 0 }}>
-        <span className={`hud-value${quiet ? " is-quiet" : ""}`}>{hudDigits(value)}</span>
-        <span className="hud-label">{label}</span>
+      <div className="row" style={{ alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: rows?.length || children ? 15 : 0 }}>
+        <span className={`hero-value${quiet ? " is-quiet" : ""}`}>{value}</span>
+        <span className="scr" style={{ textAlign: "right", lineHeight: 1.3 }}>{label}</span>
       </div>
 
-      {rows && rows.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {rows.map((r, i) => (
-            <div key={i} className="hud-row">
-              <span style={{ flex: "none" }}>{r.label}</span>
-              <span className="hud-lead" />
-              <span className={`hud-rv${r.tone === "warn" && r.value ? " is-warn" : r.value === 0 ? " is-zero" : ""}`}>
-                {r.display ?? hudDigits(r.value)}
+      {rows?.map((r, i) => {
+        const lit = r.value === undefined ? null : Math.min(LED_COUNT, Math.max(0, Math.round(r.value)));
+        return (
+          <div key={i} style={{ marginBottom: i === rows.length - 1 && !children ? 0 : 11 }}>
+            <div className="row" style={{ fontSize: 12.5, marginBottom: lit === null ? 0 : 6 }}>
+              <span style={{ flex: 1, minWidth: 0, color: "var(--color-neutral-400)" }}>{r.label}</span>
+              <span
+                className={r.value === undefined ? undefined : "num"}
+                style={{ fontWeight: r.value === undefined ? 500 : 700, fontFamily: r.value === undefined ? "var(--font-heading)" : undefined, color: "var(--color-neutral-200)" }}
+              >
+                {r.display ?? r.value}
               </span>
             </div>
-          ))}
-        </div>
-      )}
+            {lit !== null && (
+              <div className="led-track">
+                {Array.from({ length: LED_COUNT }, (_, n) => (
+                  <span key={n} className={`led${n < lit ? (r.tone === "warn" ? " warn" : " on") : ""}`} />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
 
       {children}
     </div>
