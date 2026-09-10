@@ -430,7 +430,7 @@ function reducer(state: AppState, action: Action): AppState {
         const next = hit.includes(action.category) ? hit.filter((c) => c !== action.category) : [...hit, action.category];
         return { ...m, portionsHit: next };
       });
-      return { ...state, meals };
+      return { ...state, meals: meals.map((m) => (m.id === action.mealId ? { ...m, submittedAt: undefined } : m)) };
     }
     case "SHOW_TOAST":
       return { ...state, toast: action.message };

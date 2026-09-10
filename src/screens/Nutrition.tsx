@@ -166,7 +166,7 @@ export default function Nutrition() {
               <div className="num" style={{ fontSize: 21, lineHeight: 1.1, marginTop: 3 }}>{left}</div>
             </div>
             <div style={{ textAlign: "right", paddingRight: canSelfServe ? 20 : 0 }}>
-              <div className="mu"><span className="mono">{totals.kcal.toLocaleString()}</span> of <span className="mono">{kcalTarget.toLocaleString()}</span></div>
+              <div className="mu"><span className="num">{totals.kcal.toLocaleString()}</span> of <span className="num">{kcalTarget.toLocaleString()}</span></div>
               <div className="mu" style={{ marginTop: 2 }}>{canSelfServe ? "Your target" : `${state.program.coachName}'s target`}</div>
             </div>
           </div>
@@ -222,8 +222,8 @@ export default function Nutrition() {
                     <div style={{ flex: 1, minWidth: 0, opacity: ticked ? 1 : 0.62 }}>
                       <div className="trunc" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>{item.name}</div>
                       <div className="mu trunc" style={{ marginTop: 2 }}>
-                        <span className="mono">{item.servings}×</span> {item.servingLabel} ·{" "}
-                        <span className="mono">
+                        <span className="num">{item.servings}×</span> {item.servingLabel} ·{" "}
+                        <span className="num">
                           {item.protein}p · {item.carbs}c · {item.fat}f
                         </span>
                       </div>
@@ -306,7 +306,7 @@ export default function Nutrition() {
                 </div>
               ))}
             </div>
-            <div className="mu" style={{ marginTop: 10 }}>Within <span className="mono">50</span> kcal and <span className="mono">10</span> g protein counts as on target.</div>
+            <div className="mu" style={{ marginTop: 10 }}>Within <span className="num">50</span> kcal and <span className="num">10</span> g protein counts as on target.</div>
           </div>
         </div>
       </div>
@@ -434,7 +434,8 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
               <div className="row" style={{ marginBottom: 6 }}>
                 <div className="sh" style={{ flex: 1, margin: 0 }}>{meal.name}</div>
                 <span className="mu">
-                  <span className="mono">{hit.length}</span> of <span className="mono">{targets.length}</span>
+                  <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-300)" }}>{hit.length}</span> of{" "}
+                  <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-300)" }}>{targets.length}</span>
                 </span>
                 <button
                   onClick={() => dispatch({ type: "REMOVE_MEAL", mealId: meal.id })}
@@ -462,17 +463,52 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
                           textAlign: "left",
                         }}
                       >
+                        {/* The same 22px square as a food item and a set, on the left, rather than a
+                            trailing circle icon. Portions mode was the one screen still using its own
+                            shape for the identical act. */}
+                        <span
+                          style={{
+                            width: 22, height: 22, flex: "none", borderRadius: 7, marginRight: 10,
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            background: on ? "var(--color-accent)" : "none",
+                            border: on ? "none" : "1.5px solid var(--color-accent)",
+                          }}
+                        >
+                          {on && <i className="ph-bold ph-check" style={{ fontSize: 12, color: "var(--color-bg)" }} />}
+                        </span>
                         <i className={`ph ${PORTION_ICON[t.category]}`} style={{ fontSize: 16, color: on ? "var(--color-accent-300)" : "var(--color-neutral-500)", marginRight: 10 }} />
-                        <div style={{ flex: 1 }}>
+                        <div style={{ flex: 1, opacity: on ? 1 : 0.62 }}>
                           <div style={{ fontSize: 12.5, color: on ? "var(--color-accent-200)" : "var(--color-neutral-200)" }}>{t.category}</div>
                           <div className="mu" style={{ marginTop: 1 }}>{fmtPortionQty(t.unit, t.qty)}</div>
                         </div>
-                        <i className={`ph ${on ? "ph-check-circle" : "ph-circle"}`} style={{ fontSize: 20, color: on ? "var(--color-accent)" : "var(--color-neutral-700)" }} />
                       </button>
                     );
                   })}
                 </div>
               </div>
+
+              {/* Same finishing act as a macros meal, so both modes close a meal the same way. */}
+              {hit.length > 0 && (
+                meal.submittedAt ? (
+                  <div className="row" style={{ gap: 8, marginTop: 8 }}>
+                    <span className="mu row" style={{ flex: 1, gap: 6, width: "auto" }}>
+                      <i className="ph-fill ph-check-circle" style={{ fontSize: 14, color: "var(--color-accent)" }} />
+                      Logged · {hit.length} of {targets.length}
+                    </span>
+                    <button className="btn btn-ghost" style={{ fontSize: 12.5 }} onClick={() => dispatch({ type: "REOPEN_MEAL", mealId: meal.id })}>
+                      Edit
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="btn btn-primary btn-block"
+                    style={{ height: 48, fontSize: 14, marginTop: 8 }}
+                    onClick={() => dispatch({ type: "SUBMIT_MEAL", mealId: meal.id })}
+                  >
+                    Log {meal.name.toLowerCase()} · {hit.length} of {targets.length}
+                  </button>
+                )
+              )}
             </div>
           );
         })}
@@ -513,7 +549,7 @@ function MacroCol({ label, value, target, color, valueColor }: { label: string; 
         <span className="num" style={{ fontWeight: 700, color: valueColor ?? "var(--color-neutral-200)" }}>{value}</span>
       </div>
       <Meter pct={(value / target) * 100} color={color} />
-      <div className="mu" style={{ marginTop: 4, fontSize: 11 }}>of <span className="mono">{target}</span> g</div>
+      <div className="mu" style={{ marginTop: 4, fontSize: 11 }}>of <span className="num">{target}</span> g</div>
     </div>
   );
 }
