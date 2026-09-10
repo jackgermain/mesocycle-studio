@@ -473,16 +473,19 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
   position: absolute;
   inset: -40%;
   pointer-events: none;
+  /* One hue, and quiet. The first pass ran a cyan pool through here at 0.30 and green at 0.42 -- roughly
+     three times the intensity of any other surface in the app, in a colour that appears nowhere else in
+     it. Both were why the panel read as pasted in from somewhere else. This is the app's own green, in
+     the same register as everything around it. */
   background:
-    radial-gradient(38% 44% at 22% 18%, rgba(76, 224, 143, 0.42), transparent 68%),
-    radial-gradient(34% 40% at 80% 6%, rgba(55, 201, 255, 0.30), transparent 66%),
-    radial-gradient(40% 46% at 62% 82%, rgba(76, 224, 143, 0.16), transparent 70%);
-  filter: blur(26px);
+    radial-gradient(42% 48% at 20% 14%, rgba(76, 224, 143, 0.15), transparent 70%),
+    radial-gradient(40% 46% at 78% 88%, rgba(76, 224, 143, 0.07), transparent 72%);
+  filter: blur(30px);
   transition: opacity 400ms ease;
 }
 /* Nothing to report. The light drops rather than switching off, so a good week still looks like an
    object with depth instead of a flat black box. */
-.hero-box.is-quiet::before { opacity: 0.32; }
+.hero-box.is-quiet::before { opacity: 0.4; }
 
 .hero-inner { position: relative; }
 
@@ -492,7 +495,10 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
   font-family: var(--font-heading);
   font-variant-numeric: tabular-nums;
   font-size: 44px; font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
-  background: linear-gradient(150deg, #fff, var(--color-accent-300) 45%, var(--color-accent));
+  /* Was white resolving into the accent, which at 900 weight and 44px was the brightest thing on any
+     screen by a wide margin. Kept as a gradient for the depth, but inside the accent ramp rather than
+     starting at pure white. */
+  background: linear-gradient(150deg, var(--color-accent-300), var(--color-accent) 60%, var(--color-accent-500));
   -webkit-background-clip: text; background-clip: text;
   color: transparent;
 }
