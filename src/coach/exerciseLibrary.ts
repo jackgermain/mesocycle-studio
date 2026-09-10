@@ -125,7 +125,11 @@ export const libraryExercises: LibraryExercise[] = [
   ex("EZ-Bar Skull Crusher", "Triceps", true),
   ex("Dumbbell Overhead Extension", "Triceps", false),
   ex("Close-Grip Bench Press", "Triceps", true),
-  ex("Nautilus Dip Machine", "Triceps", false),
+  // "Nautilus Triceps Dip Machine", not "Nautilus Dip Machine": the bare name is a strict subset of
+  // "Nautilus Chest Dip Machine" above, so the matcher resolved it to that entry and booked triceps work
+  // as chest volume -- and the triceps entry could never be reached by name at all. Two different
+  // machines in the doctrine, so they need two names that are not prefixes of each other.
+  ex("Nautilus Triceps Dip Machine", "Triceps", false),
   ex("Cybex Tricep Extension Machine", "Triceps", false),
   ex("Dumbbell Kickback", "Triceps", false),
   ex("Cable Kickback", "Triceps", false),

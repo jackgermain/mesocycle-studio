@@ -69,9 +69,9 @@ export default function InviteRoster() {
       setSent({ name: trimmed, role, url });
       setName("");
     } catch (e) {
-      // Chiefly the RLS refusal on a coach invite from a non-owner account, which otherwise surfaced as
-      // a raw Postgres message and left the button looking like it had done nothing.
-      setError(e instanceof Error ? e.message : "Couldn't create that invite.");
+      // createInvite already turns the Postgres error into something readable -- Supabase's own error is
+      // a plain object rather than an Error, so an instanceof check here silently discarded the reason.
+      setError(e instanceof Error ? e.message : String((e as { message?: string })?.message ?? "Couldn't create that invite."));
     } finally {
       setSending(false);
     }

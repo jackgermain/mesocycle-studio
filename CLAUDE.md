@@ -245,3 +245,37 @@ is no realtime subscription yet.
 - Commit messages are detailed and explain reasoning, tradeoffs, and what was actually verified.
 - The user tests on a real iPhone. Things that can't be verified in a sandbox — camera, real viewport
   behavior, installed-PWA behavior — should be called out as needing his check rather than claimed done.
+
+---
+
+## Tests
+
+`npm test` — Node's built-in runner over `tests/*.test.mts`. **No test dependency, deliberately**: the
+environment this code is written in has no npm registry access, so a suite needing `npm install vitest`
+could never be run or extended from there. Two flags carry it:
+
+- `--experimental-strip-types` runs the TypeScript directly.
+- `--import ./tests/resolve-ts.mjs` teaches Node the extensionless relative imports the app source uses.
+  Vite resolves `from "../screens/exerciseHelpers"` by trying extensions; Node's ESM resolver does not.
+  The hook does what Vite does, only for extensionless relative specifiers that really resolve to a
+  `.ts`/`.tsx` file. The alternative was rewriting every import in `src/` to carry an extension.
+
+Tests live in `tests/`, **not** in `src/`, so `tsconfig.app.json`'s `include: ["src"]` never sees them and
+`tsc -b` stays a check on shipping code only.
+
+What is covered is the logic that produces *numbers and names* rather than pixels — the exercise-name
+matcher, weekly set volume including synergist credit, load-mode clamping, and draft→program conversion.
+These are the places where a regression is silent: it books chest volume as back volume, or dates a
+session in the past, rather than crashing.
+
+**When changing a shared function, prove the old behaviour first.** Extending
+`guessMuscleFromLibrary` started by running the old and new implementations side by side over every
+library name plus 45 deliberately messy ones and asserting zero differences — which is what made it safe
+to then add to it, and it turned up two real bugs in the process.
+
+## CI
+
+`.github/workflows/ci.yml` runs lint + typecheck + build + tests on every push to `main` and every PR.
+Before this the only gate was remembering to run `npm run build` by hand; Vercel also builds, but a failed
+Vercel build is silent — it shows up as a bundle hash that never changed. CI is also the only place the
+tests can run today, since there is no Node installed on the machine the app is written on.

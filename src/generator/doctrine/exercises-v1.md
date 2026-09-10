@@ -3747,7 +3747,7 @@ intent flipping a slot; here intent changes everything at once.
 
 ## Kickbacks, Triceps Machines and Triceps Presses — *one entry, all minor*
 
-**Library:** `Dumbbell Kickback` · `Cable Kickback` · `Cybex Tricep Extension Machine` · `Hammer Strength Tricep Press` · `Nautilus Dip Machine`
+**Library:** `Dumbbell Kickback` · `Cable Kickback` · `Cybex Tricep Extension Machine` · `Hammer Strength Tricep Press` · `Nautilus Triceps Dip Machine`
 **His usage:** zero across the ten programs.
 
 > *"Dumbbell kickback, cable kickback, tricep extensions and presses — these are all accessories for

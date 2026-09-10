@@ -39,9 +39,31 @@ export async function createInvite(coachId: string, clientName: string, role: In
     if (!error) return { code, coachId, clientName, role };
     // 23505 is unique_violation — the one error worth another draw. Anything else is a real failure
     // (no permission to mint this role, offline, RLS) and retrying just delays the message.
-    if (error.code !== "23505") throw error;
+    if (error.code !== "23505") throw new Error(explainInviteError(error, role));
   }
   throw new Error("Couldn't generate a unique invite code. Try again.");
+}
+
+/** Say what actually went wrong.
+ *
+ * Supabase returns a plain `{ code, message, details, hint }` object, not an Error, so an
+ * `e instanceof Error` check in the caller is false and the real reason gets replaced with a generic
+ * "couldn't do that" — which is what a coach invite looked like on a database where migration 0020 had
+ * not been run yet. The two failures worth naming are the two that will actually happen. */
+function explainInviteError(error: { code?: string; message?: string }, role: InviteRole): string {
+  // 23514 is check_violation: `invites.role` still only allows 'client' and 'friend', so 0020 is not
+  // applied. Nothing the coach can do in the app fixes this, and saying so beats saying nothing.
+  if (error.code === "23514" && role === "coach") {
+    return "Coach invites need database migration 0020 — run it in the Supabase SQL editor, then try again.";
+  }
+  // 42501 is insufficient_privilege: the RLS policy refused the insert. For a coach invite that means
+  // this account is not the platform owner.
+  if (error.code === "42501") {
+    return role === "coach"
+      ? "Only the platform owner can create coach invites."
+      : "This account isn't allowed to create invites.";
+  }
+  return error.message || "Couldn't create that invite.";
 }
 
 export interface PublicInvite {

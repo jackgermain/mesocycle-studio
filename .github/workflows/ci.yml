@@ -1,0 +1,32 @@
+# Runs on every push, so the gate does not depend on anyone remembering.
+#
+# Until now the only check on a change was running `npm run build` by hand before pushing. Vercel builds
+# too, but a failed Vercel build is silent -- it just means the deploy never appears, and the way that
+# surfaced was noticing a bundle hash that had not changed. This fails loudly, on the commit, with the
+# error.
+#
+# It also runs where Node exists. There is no Node installed on the machine this app is written on, so
+# CI is the only place the tests can actually run today.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      # oxlint (rules-of-hooks as an error) + tsc -b + vite build, which is the same command Vercel runs.
+      - run: npm run build
+      # Node's built-in test runner. No test dependency on purpose: the environment this app is written
+      # in has no npm registry access, so a suite that needed `npm install vitest` could never be run or
+      # extended from there.
+      - run: npm test
