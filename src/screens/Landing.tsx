@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import { bootstrapCoach } from "../lib/accountSetup";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
 import InstallPrompt from "../components/InstallPrompt";
+import { pendingInvite } from "../shared/pendingInvite";
 
 /** Set when someone arrives on the coach signup link, so the "set up as the coach" path is only ever
  * offered to people who came looking for it. */
@@ -269,6 +270,11 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
   const [code, setCode] = useState("");
   const [coachCode, setCoachCode] = useState("");
   const forCoach = cameForCoachSignup();
+  // An invited client who lost the link -- confirmed their email, reopened the installed app, whatever --
+  // ends up here with a session and no account. They have the code stored from when they first opened
+  // the invite, so finish the job rather than asking them to paste something they were never given.
+  // Skipped for someone who came in on the coach signup link, whose destination is below, not the invite.
+  const stored = forCoach ? null : pendingInvite();
 
   async function setUpAsCoach() {
     setBusy(true);
@@ -282,6 +288,8 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
       setBusy(false);
     }
   }
+
+  if (stored) return <Navigate to={`/invite/${stored}`} replace />;
 
   return (
     <Hero>

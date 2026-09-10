@@ -6,6 +6,8 @@ import { claimInvite } from "../lib/accountSetup";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
+import { forgetInvite, rememberInvite } from "../shared/pendingInvite";
+import { shareBaseUrl } from "../shared/appUrl";
 
 /** Every dead-end state on this screen gets a way out.
  *
@@ -33,6 +35,14 @@ export default function AcceptInvite() {
       active = false;
     };
   }, [code]);
+
+  // Hold on to the code for as long as it's worth anything. Confirming an email, reopening the app from
+  // the home screen, or just closing the tab all lose the URL, and the code is only in the URL.
+  useEffect(() => {
+    if (invite === "loading") return;
+    if (!invite || invite.usedAt) forgetInvite();
+    else rememberInvite(code);
+  }, [invite, code]);
 
   if (invite === "loading" || authLoading) {
     return (
@@ -77,23 +87,61 @@ export default function AcceptInvite() {
     return <ClaimStep code={code} invite={invite} onClaimed={refreshAccount} />;
   }
 
-  return <SignInStep invite={invite} />;
+  return <SignInStep code={code} invite={invite} />;
 }
 
-function SignInStep({ invite }: { invite: PublicInvite }) {
+function SignInStep({ code, invite }: { code: string; invite: PublicInvite }) {
   const [mode, setMode] = useState<"signup" | "signin">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [confirmSent, setConfirmSent] = useState(false);
 
   async function submit() {
     setError(null);
     setBusy(true);
-    const { error } = mode === "signup" ? await supabase.auth.signUp({ email, password }) : await supabase.auth.signInWithPassword({ email, password });
+    const res =
+      mode === "signup"
+        ? // Without emailRedirectTo, Supabase points the confirmation link at the site root and the
+          // invite is lost -- the user confirms, lands signed in with no account, and is asked for a
+          // code they never had. Send them back to this exact invite instead. shareBaseUrl() is used
+          // rather than window.location so a link opened on the old domain still returns to the
+          // canonical one, which is the origin the redirect allow-list is configured for.
+          await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${shareBaseUrl()}#/invite/${code}` } })
+        : await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
-    if (error) setError(error.message);
-    // On success, AuthProvider picks up the new session and AcceptInvite re-renders into ClaimStep.
+    if (res.error) {
+      setError(res.error.message);
+      return;
+    }
+    // A signUp that comes back without a session means email confirmation is switched on: nothing more
+    // happens on this screen until they open the email, so say so instead of leaving the form sitting
+    // there looking like the button didn't work. Otherwise AuthProvider picks up the new session and
+    // AcceptInvite re-renders into ClaimStep on its own.
+    if (mode === "signup" && !res.data.session) setConfirmSent(true);
+  }
+
+  if (confirmSent) {
+    return (
+      <Hero>
+        <div className="h1" style={{ textAlign: "center" }}>Check your email</div>
+        <InfoBanner icon="ph-envelope-simple" tone="accent">
+          We sent a confirmation link to {email}. Open it, then sign in below — your invite from {invite.coachName} is saved and picks up where it left off.
+        </InfoBanner>
+        <button
+          className="btn btn-solid btn-block"
+          style={{ height: 48, fontSize: 14 }}
+          onClick={() => {
+            setMode("signin");
+            setPassword("");
+            setConfirmSent(false);
+          }}
+        >
+          Sign in
+        </button>
+      </Hero>
+    );
   }
 
   return (
@@ -150,6 +198,7 @@ function ClaimStep({ code, invite, onClaimed }: { code: string; invite: PublicIn
     setError(null);
     try {
       await claimInvite(code, invite.clientName);
+      forgetInvite();
       await onClaimed();
       setDone(true);
     } catch (e) {
