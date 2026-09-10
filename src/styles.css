@@ -459,11 +459,14 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
  * the figure, not from a different material. */
 .hero-box {
   position: relative;
-  overflow: hidden;
   background: var(--color-surface);
   border-radius: var(--radius-md);
   padding: var(--space-4);
   width: 100%;
+  /* Explicitly hand vertical dragging to the page. Combined with dropping `overflow: hidden` below, this
+     is what stops the panel eating scroll gestures that begin on top of it -- which is most of them, now
+     that it sits at the top of the scrolling area rather than in the fixed header. */
+  touch-action: pan-y;
 }
 
 /* Bled past the panel and clipped back, so no falloff edge lands inside the frame -- a visible circle is
@@ -474,14 +477,23 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
  * larger than the panel itself -- cheap enough painted once in a fixed header, and something iOS has to
  * re-rasterize on every frame once the panel scrolls. Radial stops are already smooth, and at 0.08 there
  * is no banding for a blur to soften, so it bought nothing and cost a scroll. */
+/* Clipped by its own border-radius rather than by `overflow: hidden` on the parent.
+ *
+ * `overflow: hidden` makes an element a scroll container. On iOS a touch drag that begins inside one is
+ * handed to that container, and a container with nothing to scroll swallows it rather than passing it to
+ * the page -- so with this panel at the top of .screen-scroll, most scroll gestures start on it and the
+ * screen simply refuses to move. Taps were unaffected, which is exactly the symptom. */
 .hero-box::before {
   content: "";
   position: absolute;
-  inset: -25%;
+  inset: 0;
+  border-radius: inherit;
   pointer-events: none;
+  /* Sized and placed so both pools fade out before they reach an edge, now that nothing is clipping
+     them -- a hard cut at the panel border is what would give the gradient a visible seam. */
   background:
-    radial-gradient(48% 54% at 20% 14%, rgba(76, 224, 143, 0.08), transparent 76%),
-    radial-gradient(46% 52% at 78% 88%, rgba(76, 224, 143, 0.035), transparent 78%);
+    radial-gradient(120% 130% at 6% -10%, rgba(76, 224, 143, 0.09), transparent 62%),
+    radial-gradient(110% 120% at 96% 112%, rgba(76, 224, 143, 0.04), transparent 64%);
   transition: opacity 400ms ease;
 }
 /* Nothing to report: the light drops rather than switching off, so a good week still has depth. */
