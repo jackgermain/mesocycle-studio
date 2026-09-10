@@ -97,7 +97,7 @@ function StrengthTab() {
             <div className="mu" style={{ marginTop: 2 }}>Sets logged per week · {history.length} weeks</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 14, color: "var(--color-accent-300)" }}>{featured.lastLoggedTopSet ?? "—"}</div>
+            <div className="num" style={{ fontWeight: 700, fontSize: 14, color: "var(--color-accent-300)" }}>{featured.lastLoggedTopSet ?? "—"}</div>
             <div className="mu">last logged top set</div>
           </div>
         </div>
@@ -261,6 +261,7 @@ function BodyTab() {
                 return (
                   <div key={d} style={{ flex: 1, textAlign: "center" }}>
                     <div
+                      className="num"
                       style={{
                         height: 44,
                         borderRadius: 8,
@@ -271,7 +272,7 @@ function BodyTab() {
                         justifyContent: "center",
                         color: loggedWeight !== undefined ? "var(--color-accent-200)" : isToday ? "var(--color-accent)" : "var(--color-neutral-700)",
                         fontSize: 12.5,
-                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
                       }}
                     >
                       {loggedWeight !== undefined ? loggedWeight.toFixed(1) : isToday ? <i className="ph ph-plus" style={{ fontSize: 14 }} /> : due ? <i className="ph ph-minus" style={{ fontSize: 14 }} /> : ""}
@@ -286,6 +287,8 @@ function BodyTab() {
         </div>
       )}
 
+      <ProfileStats />
+
       <div>
         <div className="sh">Also tracked</div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -298,12 +301,81 @@ function BodyTab() {
           </div>
           <div className="cell" style={{ flex: 1 }}>
             <div className="scr">Photos</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: 16, marginTop: 3 }}>wk 8</div>
+            <div className="num" style={{ fontWeight: 700, fontSize: 16, marginTop: 3 }}>wk 8</div>
             <div className="mu" style={{ marginTop: 2 }}>next due wk 12</div>
           </div>
         </div>
       </div>
     </>
+  );
+}
+
+/** Height and bodyweight, changeable after onboarding.
+ *
+ * Both were set once on the onboarding screen and then unreachable -- there is no settings screen in the
+ * app, and the only bodyweight control anywhere is the weigh-in logger above, which records a measurement
+ * rather than correcting the profile figure the nutrition targets are computed from. Someone who typed
+ * 5'11" when they meant 6'1", or whose starting weight was a guess, had no way back to it.
+ *
+ * Committed on blur rather than per keystroke: the whole client state is upserted on every change, so a
+ * keystroke-level dispatch here is a write to Postgres per character. */
+function ProfileStats() {
+  const { dispatch } = useStore();
+  const p = useEffectiveProfile();
+  const [height, setHeight] = useState(p.heightLabel);
+  const [weight, setWeight] = useState(String(p.bodyweight));
+
+  function commitHeight() {
+    const v = height.trim();
+    if (v && v !== p.heightLabel) dispatch({ type: "UPDATE_PROFILE", profile: { heightLabel: v } });
+    else setHeight(p.heightLabel);
+  }
+
+  function commitWeight() {
+    const v = parseFloat(weight);
+    if (!isNaN(v) && v > 0 && v !== p.bodyweight) dispatch({ type: "UPDATE_PROFILE", profile: { bodyweight: v } });
+    else setWeight(String(p.bodyweight));
+  }
+
+  return (
+    <div>
+      <div className="sh">Your stats</div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <div className="cell" style={{ flex: 1 }}>
+          <div className="scr">Height</div>
+          <input
+            className="input num"
+            style={{ padding: 0, border: "none", background: "none", height: 26, marginTop: 3, fontWeight: 700, fontSize: 16 }}
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+            onBlur={commitHeight}
+            onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+            aria-label="Height"
+          />
+        </div>
+        <div className="cell" style={{ flex: 1 }}>
+          <div className="scr">Bodyweight</div>
+          <div className="row" style={{ gap: 4, alignItems: "baseline" }}>
+            <input
+              className="input num"
+              style={{ padding: 0, border: "none", background: "none", height: 26, marginTop: 3, fontWeight: 700, fontSize: 16, flex: 1, minWidth: 0 }}
+              type="number"
+              inputMode="decimal"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              onBlur={commitWeight}
+              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+              aria-label="Bodyweight"
+            />
+            <span style={{ fontSize: 11, color: "var(--color-neutral-500)" }}>{p.units}</span>
+          </div>
+        </div>
+      </div>
+      <div className="mu" style={{ marginTop: 6, lineHeight: 1.55 }}>
+        Bodyweight here is the figure your nutrition targets are worked out from — logging a weigh-in above
+        doesn’t change it.
+      </div>
+    </div>
   );
 }
 

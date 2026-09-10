@@ -62,6 +62,9 @@ function buildBlankState(ownerName: string, coachName: string): AppState {
 type Action =
   | { type: "HYDRATE"; state: AppState }
   | { type: "ONBOARD"; profile: Partial<ClientProfile> }
+  /** Same merge as ONBOARD without the onboarded flag, for changing a stat after the fact. Height was
+   * only ever askable once, on the onboarding screen, and there was no way back to it. */
+  | { type: "UPDATE_PROFILE"; profile: Partial<ClientProfile> }
   | { type: "SET_PROGRAM"; program: Program }
   | { type: "RENAME_PROGRAM"; name: string }
   | { type: "PROMOTE_NEXT_PROGRAM" }
@@ -143,6 +146,8 @@ function reducer(state: AppState, action: Action): AppState {
       return action.state;
     case "ONBOARD":
       return { ...state, onboarded: true, profile: { ...state.profile, ...action.profile } };
+    case "UPDATE_PROFILE":
+      return { ...state, profile: { ...state.profile, ...action.profile } };
     case "SET_PROGRAM":
       return { ...state, program: action.program };
     case "RENAME_PROGRAM":
