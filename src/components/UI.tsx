@@ -340,9 +340,8 @@ export function HeroHeader({ kicker, title, right, children }: { kicker?: string
   );
 }
 
-/** One line of the meter. `value` is the count the segments are lit from; `display` overrides what gets
- * printed on the right when the figure isn't a count — a coach's name, "8 weeks". A row with no `value`
- * prints without a meter rather than lighting one off a number that has no magnitude. */
+/** One line of the panel. `display` overrides what gets printed on the right when the figure isn't a
+ * plain count — a coach's name, "8 weeks". */
 export interface HeroRow {
   label: React.ReactNode;
   value?: number;
@@ -351,19 +350,15 @@ export interface HeroRow {
   tone?: "warn";
 }
 
-/** How many segments a meter has. Ten is enough to be countable at a glance and short enough to stay
- * legible at phone width. */
-const LED_COUNT = 10;
-
 /** The headline panel at the top of every screen.
  *
- * One lit segment per item, so the meter can be counted rather than estimated — three lit blocks means
- * three things waiting. Scaling each row against the largest one was the alternative, and it has a flaw
- * this doesn't: a panel with a single countable row draws a permanently full bar that says nothing.
- * Beyond ten the meter simply fills and the printed number carries the rest.
+ * A mesh gradient under frosted glass: three blurred pools of green and cyan bled past the panel's bounds
+ * and clipped back, with the rows floating above them on smoked glass. The figure is cut out of a
+ * gradient rather than filled, so it belongs to the light rather than sitting on it.
  *
- * At zero every segment sits dark and the figure dims. An unlit meter reads as no signal, which is what
- * a good week actually is — where a big lit 0 beside four more zeros read as data that failed to load. */
+ * `quiet` drops the light instead of switching it off. That state — a roster in good shape, nothing
+ * waiting — is what a coach sees most days, and the version of this panel that just printed a big 0 beside
+ * four more zeros read as data that had failed to load rather than as good news. */
 export function HeroStat({
   value,
   label,
@@ -373,43 +368,41 @@ export function HeroStat({
 }: {
   value: React.ReactNode;
   label: React.ReactNode;
-  /** True when there is nothing to report, which dims the figure instead of leaving it lit at zero. */
+  /** True when there is nothing to report. */
   quiet?: boolean;
   rows?: HeroRow[];
   children?: React.ReactNode;
 }) {
   return (
-    <div className="hero-box">
-      <div className="row" style={{ alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: rows?.length || children ? 15 : 0 }}>
-        <span className={`hero-value${quiet ? " is-quiet" : ""}`}>{value}</span>
-        <span className="scr" style={{ textAlign: "right", lineHeight: 1.3 }}>{label}</span>
-      </div>
+    <div className={`hero-box${quiet ? " is-quiet" : ""}`}>
+      <div className="hero-inner">
+        <div className="row" style={{ alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: rows?.length || children ? 16 : 0 }}>
+          <span className="hero-value">{value}</span>
+          <span className="scr" style={{ textAlign: "right", lineHeight: 1.3 }}>{label}</span>
+        </div>
 
-      {rows?.map((r, i) => {
-        const lit = r.value === undefined ? null : Math.min(LED_COUNT, Math.max(0, Math.round(r.value)));
-        return (
-          <div key={i} style={{ marginBottom: i === rows.length - 1 && !children ? 0 : 11 }}>
-            <div className="row" style={{ fontSize: 12.5, marginBottom: lit === null ? 0 : 6 }}>
-              <span style={{ flex: 1, minWidth: 0, color: "var(--color-neutral-400)" }}>{r.label}</span>
-              <span
-                className={r.value === undefined ? undefined : "num"}
-                style={{ fontWeight: r.value === undefined ? 500 : 700, fontFamily: r.value === undefined ? "var(--font-heading)" : undefined, color: "var(--color-neutral-200)" }}
-              >
-                {r.display ?? r.value}
-              </span>
-            </div>
-            {lit !== null && (
-              <div className="led-track">
-                {Array.from({ length: LED_COUNT }, (_, n) => (
-                  <span key={n} className={`led${n < lit ? (r.tone === "warn" ? " warn" : " on") : ""}`} />
-                ))}
+        {rows && rows.length > 0 && (
+          <div className="hero-rows">
+            {rows.map((r, i) => (
+              <div key={i} className="row" style={{ fontSize: 12.5 }}>
+                <span style={{ flex: 1, minWidth: 0, color: "var(--color-neutral-400)" }}>{r.label}</span>
+                <span
+                  className={r.value === undefined ? undefined : "num"}
+                  style={{
+                    fontWeight: r.value === undefined ? 500 : 700,
+                    fontFamily: r.value === undefined ? "var(--font-heading)" : undefined,
+                    color: r.tone === "warn" && r.value ? "var(--color-warning)" : "var(--color-neutral-200)",
+                  }}
+                >
+                  {r.display ?? r.value}
+                </span>
               </div>
-            )}
+            ))}
           </div>
-        );
-      })}
+        )}
 
-      {children}
+        {children}
+      </div>
     </div>
   );
 }

@@ -450,34 +450,66 @@ input[type="number"] { appearance: textfield; }
    that used to override this was removed from ExerciseSection.tsx in favour of the .mono class. */
 input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
 
-/* The headline panel on every screen: a lit meter rather than a card with numbers in it.
+/* The headline panel on every screen: a mesh gradient under frosted glass.
  *
- * Deeper ground than the surrounding surface with a hairline ring rather than a border, so it reads as
- * recessed into the screen and the lit segments sit above it. That contrast is the whole effect -- on a
- * flat background the LEDs look like coloured rectangles instead of light. */
+ * Three blurred radial pools -- green, cyan, green -- bled well past the panel's own bounds and clipped
+ * back by overflow, so the light has no visible edge or centre. The rows then float on smoked glass above
+ * it, separated by a 1px gap rather than a border: the aurora shows through the gap and draws the divider
+ * itself, which is why there is no rule anywhere in here. */
 .hero-box {
+  position: relative;
+  overflow: hidden;
   border-radius: var(--radius-lg);
-  padding: 17px 16px;
+  padding: 18px 16px;
   width: 100%;
-  background: #0e1015;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.055), 0 16px 40px -24px #000;
+  background: #0a0c10;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 20px 50px -26px #000;
 }
 
+/* Inset well beyond the panel so no pool's falloff lands inside it -- a visible circle edge is what makes
+   this look like a gradient someone applied rather than light in the material. */
+.hero-box::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 44% at 22% 18%, rgba(76, 224, 143, 0.42), transparent 68%),
+    radial-gradient(34% 40% at 80% 6%, rgba(55, 201, 255, 0.30), transparent 66%),
+    radial-gradient(40% 46% at 62% 82%, rgba(76, 224, 143, 0.16), transparent 70%);
+  filter: blur(26px);
+  transition: opacity 400ms ease;
+}
+/* Nothing to report. The light drops rather than switching off, so a good week still looks like an
+   object with depth instead of a flat black box. */
+.hero-box.is-quiet::before { opacity: 0.32; }
+
+.hero-inner { position: relative; }
+
+/* Cut out of the gradient rather than filled with a colour: the figure picks up white at the top-left and
+   resolves into the accent, so it belongs to the light behind it instead of sitting on top of it. */
 .hero-value {
-  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
-  font-size: 32px; font-weight: 700; line-height: 1;
-  color: var(--color-accent); text-shadow: 0 0 18px rgba(76, 224, 143, 0.6);
+  font-family: var(--font-heading);
+  font-variant-numeric: tabular-nums;
+  font-size: 44px; font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
+  background: linear-gradient(150deg, #fff, var(--color-accent-300) 45%, var(--color-accent));
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
 }
-/* Nothing to report. Dimmed rather than left lit at zero, so a good week doesn't glow like a bad one. */
-.hero-value.is-quiet { color: var(--color-neutral-600); text-shadow: none; }
+.hero-box.is-quiet .hero-value {
+  background: linear-gradient(150deg, var(--color-neutral-400), var(--color-neutral-700));
+  -webkit-background-clip: text; background-clip: text;
+}
 
-/* One segment per item, so the meter is literally countable -- three lit blocks means three things.
-   Relative scaling was the other option and it has a flaw this doesn't: with one countable row the bar
-   is always full and says nothing. */
-.led-track { display: flex; gap: 3px; }
-.led { flex: 1; height: 4px; border-radius: 1px; background: rgba(255, 255, 255, 0.055); }
-.led.on   { background: var(--color-accent);  box-shadow: 0 0 7px rgba(76, 224, 143, 0.85); }
-.led.warn { background: var(--color-warning); box-shadow: 0 0 7px rgba(255, 184, 77, 0.85); }
+/* One rounded group, 1px gaps, each row its own pane of smoked glass. -webkit- prefix because the real
+   target is an installed iOS PWA and Safari still wants it. */
+.hero-rows { display: flex; flex-direction: column; gap: 1px; border-radius: 11px; overflow: hidden; }
+.hero-rows > div {
+  background: rgba(8, 10, 14, 0.62);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+  padding: 10px 12px;
+}
 
 .link-row { display: flex; align-items: center; gap: var(--space-3); text-align: left; width: 100%; background: none; border: none; color: inherit; cursor: pointer; padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
 .link-row:hover { background: rgba(238, 240, 245, 0.04); }
