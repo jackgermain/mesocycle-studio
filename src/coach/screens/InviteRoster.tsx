@@ -30,9 +30,6 @@ export default function InviteRoster() {
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Minting a coach is a platform-owner capability, not something one coach does to bring on another.
-  // The invites insert policy is what actually enforces it; this only decides whether to offer it.
-  const canInviteCoaches = account?.is_platform_admin === true;
 
   async function send() {
     const trimmed = name.trim();
@@ -103,7 +100,7 @@ export default function InviteRoster() {
                 options={[
                   { value: "client" as InviteRole, label: "Client" },
                   { value: "friend" as InviteRole, label: "Friend / family" },
-                  ...(canInviteCoaches ? [{ value: "coach" as InviteRole, label: "Coach" }] : []),
+                  { value: "coach" as InviteRole, label: "Coach" },
                 ]}
               />
               <div className="mu" style={{ marginTop: 8, lineHeight: 1.55 }}>{ROLE_COPY[role]}</div>

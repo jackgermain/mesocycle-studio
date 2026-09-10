@@ -6,6 +6,8 @@ import { supabase } from "../../lib/supabase";
 import { listClaimedInvites } from "../../shared/invites";
 import { CoachTabBar } from "../components/CoachTabBar";
 import { HeroHeader, HeroStat } from "../../components/UI";
+import { SwipeRow } from "../components/SwipeRow";
+import { listCoachesForAdmin, type CoachSummary } from "../../shared/deleteAccount";
 import type { ClientStatus, CoachClient } from "../types";
 
 function initialsFor(name: string): string {
@@ -21,13 +23,27 @@ const STATUS_DOT: Record<ClientStatus, string> = {
   unassigned: "var(--color-neutral-700)",
 };
 
-type Filter = "review" | "all" | "at-risk" | "clients" | "friends";
+type Filter = "review" | "all" | "at-risk" | "clients" | "friends" | "coaches";
 
 export default function Clients() {
   const { state, dispatch } = useCoachStore();
   const { account } = useAuth();
   const nav = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
+  // Which row is swiped open, if any. Held here rather than in each row so opening one closes the last.
+  const [swipedId, setSwipedId] = useState<string | null>(null);
+  // The platform owner's view of every coach on the app. Loaded only when that tab is opened, because
+  // it is a cross-account read that nobody else on the roster screen has any use for.
+  const isOwner = account?.is_platform_admin === true;
+  const [coaches, setCoaches] = useState<CoachSummary[] | null>(null);
+  useEffect(() => {
+    if (filter !== "coaches" || !isOwner) return;
+    let live = true;
+    listCoachesForAdmin().then((rows) => live && setCoaches(rows));
+    return () => {
+      live = false;
+    };
+  }, [filter, isOwner]);
 
   // Pick up any invites that were claimed since we last looked, and attach the real account id to the
   // matching roster placeholder so the coach can immediately open their live program/nutrition/log.
@@ -151,16 +167,39 @@ export default function Clients() {
               <button className={`chip${filter === "friends" ? " on" : ""}`} onClick={() => setFilter("friends")}>
                 Friends <span className="mono">{friendCount}</span>
               </button>
+              {/* Owner only. Every other coach's roster is invisible to them by design, so this chip
+                  would show an empty screen and imply something was broken. */}
+              {isOwner && (
+                <button className={`chip${filter === "coaches" ? " on" : ""}`} onClick={() => setFilter("coaches")}>
+                  Coaches
+                </button>
+              )}
             </>
           )}
         </div>
 
+        {filter === "coaches" ? (
+          <CoachDirectory coaches={coaches} />
+        ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
           {filtered.map((c) => (
-            <button
+            /* Swiping removes them from the roster -- the reversible one. Deleting the actual account is
+               permanent and cascades, so it stays behind the explicit confirmation sheet on their page;
+               a gesture this easy to make by accident should not be able to reach it. */
+            <SwipeRow
               key={c.id}
+              open={swipedId === c.id}
+              onOpenChange={(o) => setSwipedId(o ? c.id : null)}
+              onAction={() => {
+                if (window.confirm(`Remove ${c.name} from your roster?\n\nThis takes them off your list. It does not delete their account — do that from their page if that's what you want.`)) {
+                  dispatch({ type: "REMOVE_CLIENT", clientId: c.id });
+                }
+                setSwipedId(null);
+              }}
+            >
+            <button
               className="link-row"
-              style={{ padding: "10px 11px", opacity: c.status === "paused" ? 0.6 : 1 }}
+              style={{ padding: "10px 11px", opacity: c.status === "paused" ? 0.6 : 1, width: "100%" }}
               onClick={() => nav(`/coach/clients/${c.id}`)}
             >
               <div style={{ position: "relative", flex: "none" }}>
@@ -194,10 +233,55 @@ export default function Clients() {
                 </div>
               )}
             </button>
+            </SwipeRow>
           ))}
         </div>
+        )}
       </div>
       <CoachTabBar />
+    </div>
+  );
+}
+
+/** Every coach on the platform, and how big their roster is. Read-only on purpose -- this exists to see
+ * who is on the app and how much they are using it, not to reach into anyone's roster. Nothing here can:
+ * the counts arrive already computed from a security definer function, because a coach's clients are
+ * invisible to every other account including this one. */
+function CoachDirectory({ coaches }: { coaches: CoachSummary[] | null }) {
+  if (coaches === null) {
+    return <div className="mu" style={{ textAlign: "center", padding: "22px 0" }}>Loading coaches…</div>;
+  }
+  if (coaches.length === 0) {
+    return <div className="mu" style={{ textAlign: "center", padding: "22px 0" }}>No coaches yet.</div>;
+  }
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+      {coaches.map((c) => {
+        const total = c.clientCount + c.friendCount;
+        return (
+          <div key={c.id} className="link-row" style={{ padding: "10px 11px", opacity: c.active ? 1 : 0.55 }}>
+            <div className="avatar" style={{ width: 36, height: 36, flex: "none" }}>
+              {(c.displayName.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("") || "?").toUpperCase()}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, fontFamily: "var(--font-heading)", fontWeight: 500 }} className="trunc">
+                {c.displayName}
+              </div>
+              <div className="mu trunc" style={{ marginTop: 1 }}>
+                {c.active ? "" : "Revoked · "}
+                {total === 0
+                  ? "No one on their roster yet"
+                  : `${c.clientCount} client${c.clientCount === 1 ? "" : "s"}${c.friendCount ? ` · ${c.friendCount} friend${c.friendCount === 1 ? "" : "s"}` : ""}`}
+                {c.createdAt ? ` · joined ${new Date(c.createdAt).toLocaleDateString(undefined, { month: "short", year: "numeric" })}` : ""}
+              </div>
+            </div>
+            <div style={{ textAlign: "right", flex: "none" }}>
+              <div className="num" style={{ fontWeight: 700, fontSize: 12.5, color: "var(--color-accent-300)" }}>{total}</div>
+              <div className="mu" style={{ fontSize: 11 }}>on roster</div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

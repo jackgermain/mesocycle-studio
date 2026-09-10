@@ -38,3 +38,32 @@ export async function listAccountsForAdmin(): Promise<AdminAccount[]> {
   }
   return (data ?? []) as AdminAccount[];
 }
+
+/** One coach on the platform, as the owner's directory sees them. */
+export interface CoachSummary {
+  id: string;
+  displayName: string;
+  createdAt: string;
+  active: boolean;
+  clientCount: number;
+  friendCount: number;
+}
+
+/** Every coach on the platform, with the size of each roster.
+ *
+ * Platform-owner only, enforced inside the RPC rather than here -- a hidden tab is not access control,
+ * and the function raises "Not authorized" for anyone else. The counts come from SQL because nothing in
+ * this app can read another coach's roster: that isolation is the point of the schema, and a security
+ * definer function is the only thing allowed to see across it. */
+export async function listCoachesForAdmin(): Promise<CoachSummary[]> {
+  const { data, error } = await supabase.rpc("list_coaches_for_admin");
+  if (error || !data) return [];
+  return (data as Record<string, unknown>[]).map((r) => ({
+    id: String(r.id),
+    displayName: String(r.display_name ?? "Coach"),
+    createdAt: String(r.created_at ?? ""),
+    active: r.active !== false,
+    clientCount: Number(r.client_count ?? 0),
+    friendCount: Number(r.friend_count ?? 0),
+  }));
+}
