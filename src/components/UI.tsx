@@ -359,11 +359,53 @@ export interface HeroRow {
  * `quiet` drops the light instead of switching it off. That state — a roster in good shape, nothing
  * waiting — is what a coach sees most days, and the version of this panel that just printed a big 0 beside
  * four more zeros read as data that had failed to load rather than as good news. */
+/** Where the ring's arc tops out. Past ten waiting, the ring is simply full and the figure carries the
+ * rest -- a gauge with no ceiling is just a number drawn in a circle. */
+const RING_FULL_AT = 10;
+
+/** The dial. Drawn rather than charted: one arc, the figure inside it, and no axis or scale, because
+ * "how much is waiting" has no units worth labelling.
+ *
+ * At zero the ring closes into a complete circle in a muted tone instead of showing an empty track. A
+ * finished circle reads as done; an empty one reads as broken, and that is the state a coach with a
+ * healthy roster sees most days. */
+function HeroRing({ value, quiet }: { value: number; quiet?: boolean }) {
+  const R = 34;
+  const C = 2 * Math.PI * R;
+  const frac = quiet ? 1 : Math.min(1, Math.max(0.06, value / RING_FULL_AT));
+  return (
+    <div style={{ position: "relative", width: 84, height: 84, flex: "none" }}>
+      <svg width="84" height="84" viewBox="0 0 84 84" style={{ transform: "rotate(-90deg)" }} aria-hidden="true">
+        <defs>
+          <linearGradient id="hero-ring" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="var(--color-accent-300)" />
+            <stop offset="55%" stopColor="var(--color-accent)" />
+            <stop offset="100%" stopColor="var(--color-accent-600)" />
+          </linearGradient>
+        </defs>
+        <circle cx="42" cy="42" r={R} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+        <circle
+          cx="42" cy="42" r={R} fill="none"
+          stroke={quiet ? "var(--color-neutral-800)" : "url(#hero-ring)"}
+          strokeWidth="5" strokeLinecap="round"
+          strokeDasharray={C} strokeDashoffset={C * (1 - frac)}
+          style={{ transition: "stroke-dashoffset 500ms cubic-bezier(0.22, 1, 0.36, 1)" }}
+        />
+      </svg>
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <span className="num" style={{ fontSize: 24, fontWeight: 700, lineHeight: 1, color: quiet ? "var(--color-neutral-500)" : "var(--color-accent)" }}>{value}</span>
+        <span className="scr" style={{ fontSize: 8.5, marginTop: 3 }}>{quiet ? "all clear" : "waiting"}</span>
+      </div>
+    </div>
+  );
+}
+
 export function HeroStat({
   value,
   label,
   quiet,
   rows,
+  ring,
   children,
 }: {
   value: React.ReactNode;
@@ -371,8 +413,37 @@ export function HeroStat({
   /** True when there is nothing to report. */
   quiet?: boolean;
   rows?: HeroRow[];
+  /** Draw the figure as a dial with the rows beside it, instead of above them. Roughly half the height,
+   * which is why the Desk uses it — that screen's panel is the tallest and sits in a fixed header. */
+  ring?: boolean;
   children?: React.ReactNode;
 }) {
+  if (ring && typeof value === "number") {
+    return (
+      <div className={`hero-box${quiet ? " is-quiet" : ""}`}>
+        <div className="hero-inner row" style={{ gap: 16, alignItems: "center" }}>
+          <HeroRing value={value} quiet={quiet} />
+          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 }}>
+            {rows?.map((r, i) => (
+              <div key={i} className="row" style={{ fontSize: 12.5 }}>
+                <span style={{ flex: 1, minWidth: 0, color: "var(--color-neutral-400)" }}>{r.label}</span>
+                <span
+                  className={r.value === undefined ? undefined : "num"}
+                  style={{
+                    fontWeight: r.value === undefined ? 500 : 700,
+                    color: r.tone === "warn" && r.value ? "var(--color-warning)" : "var(--color-neutral-200)",
+                  }}
+                >
+                  {r.display ?? r.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`hero-box${quiet ? " is-quiet" : ""}`}>
       <div className="hero-inner">
