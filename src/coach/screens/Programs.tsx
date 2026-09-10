@@ -60,7 +60,8 @@ export default function Programs() {
             </button>
           </div>
         }
-      >
+       />
+      <div className="screen-scroll">
         <HeroStat
           value={state.programs.length}
           quiet={state.programs.length === 0}
@@ -70,8 +71,6 @@ export default function Programs() {
             { label: "Drafts", value: drafts.length },
           ]}
         />
-      </HeroHeader>
-      <div className="screen-scroll">
         <div className="row" style={{ gap: 6 }}>
           <button className={`chip${filter === "templates" ? " on" : ""}`} onClick={() => setFilter("templates")}>Templates</button>
           <button className={`chip${filter === "drafts" ? " on" : ""}`} onClick={() => setFilter("drafts")}>Drafts</button>
