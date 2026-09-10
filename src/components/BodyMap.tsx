@@ -185,7 +185,9 @@ function ShapeEls({ shapes, fill, outline }: { shapes: Shape[]; fill: string; ou
  * both under the 44px everyone targets for a finger. Growing the *visible* shapes to fix that would turn
  * the silhouette into a blob, so the hit areas are grown instead and left transparent. */
 function HitShapes({ shapes }: { shapes: Shape[] }) {
-  const pad = 5;
+  // 9, up from 5. On one full-width figure a deltoid is ~52px across instead of ~26, so the padding is
+  // topping up a target that is already big enough rather than papering over one that never was.
+  const pad = 9;
   return (
     <>
       {shapes.map((s, i) => {
@@ -233,33 +235,95 @@ export function BodyMap({
 }) {
   // Which region's bubble is open. Separate from `location`, because tapping a part only asks the
   // follow-up question -- nothing is recorded until they answer it, so a stray tap records nothing.
-  const [open, setOpen] = React.useState<{ col: number; id: string } | null>(null);
+  const [open, setOpen] = React.useState<string | null>(null);
+  // 0 = front, 1 = back. One body at a time rather than two side by side: two figures on a 390px screen
+  // put a deltoid at ~26px and a wrist under 20, both well below the 44px a finger needs, and no amount
+  // of invisible padding fixes a target that is physically smaller than the thing tapping it.
+  const [view, setView] = React.useState(0);
+  // How far through the turn we are, 0..1, while a finger is down. The body scales horizontally toward
+  // its centre line and back out, which is what a real turn looks like from the front -- and it tracks
+  // the finger rather than playing a fixed animation, so the movement belongs to the gesture.
+  const [turn, setTurn] = React.useState(0);
+  const drag = React.useRef<{ x: number; from: number; moved: boolean } | null>(null);
+  const wrap = React.useRef<HTMLDivElement | null>(null);
 
-  const openRegion = open ? VIEWS[open.col].regions.find((r) => r.id === open.id) ?? null : null;
+  const v = VIEWS[view];
+  const openRegion = open ? v.regions.find((r) => r.id === open) ?? null : null;
   const anchor = openRegion ? centre(openRegion) : null;
+
+  function down(e: React.PointerEvent) {
+    drag.current = { x: e.clientX, from: view, moved: false };
+  }
+  function move(e: React.PointerEvent) {
+    const d = drag.current;
+    if (!d) return;
+    const width = wrap.current?.clientWidth ?? 320;
+    // Half the card's width is a full turn, so the body reaches the other side about when the finger
+    // reaches the other edge.
+    const frac = Math.min(1, Math.abs(e.clientX - d.x) / (width / 2));
+    if (frac > 0.04) d.moved = true;
+    setTurn(frac);
+    // Flipped at the halfway point, so the far side is already facing you as the body opens back out --
+    // waiting for release would show the front squashing flat and then popping to the back.
+    setView(frac >= 0.5 ? 1 - d.from : d.from);
+  }
+  function up() {
+    const d = drag.current;
+    drag.current = null;
+    setTurn(0);
+    if (d?.moved) setOpen(null);
+  }
+
+  // 1 at rest, pinching to a sliver at the halfway point and opening back out. Floored so the body never
+  // disappears entirely mid-turn.
+  const squash = Math.max(0.12, Math.abs(1 - turn * 2));
 
   return (
     <div>
-      <div className="cell" style={{ display: "flex", gap: 4, position: "relative" }}>
-        {VIEWS.map((v, col) => (
+      <div className="row" style={{ gap: 6, marginBottom: 8 }}>
+        {VIEWS.map((view_, i) => (
+          <button
+            key={view_.caption}
+            className={`chip${view === i ? " on" : ""}`}
+            style={{ flex: 1, justifyContent: "center", height: 34 }}
+            onClick={() => { setView(i); setOpen(null); }}
+          >
+            {view_.caption}
+          </button>
+        ))}
+      </div>
+
+      <div
+        ref={wrap}
+        className="cell"
+        style={{ position: "relative", padding: 10, touchAction: "pan-y", overflow: "hidden" }}
+        onPointerDown={down}
+        onPointerMove={move}
+        onPointerUp={up}
+        onPointerCancel={up}
+      >
+        <div
+          style={{
+            transform: `scaleX(${squash})`,
+            transformOrigin: "center",
+            transition: drag.current ? "none" : "transform 220ms cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
           <BodyView
-            key={v.caption}
             regions={v.regions}
             caption={v.caption}
             location={location}
             tissue={tissue}
-            openId={open?.col === col ? open.id : null}
-            onTapRegion={(id) => setOpen(open?.col === col && open.id === id ? null : { col, id })}
+            openId={open}
+            onTapRegion={(id) => setOpen(open === id ? null : id)}
           />
-        ))}
+        </div>
 
         {openRegion && anchor && (
           <TissueBubble
             label={openRegion.label}
             current={location === openRegion.label ? tissue : ""}
-            // Two equal columns, so a point's horizontal place on the card is its place within its own
-            // body, halved, plus half a card for the back view.
-            xPct={open!.col * 50 + (anchor.x / 220) * 50}
+            xPct={(anchor.x / 220) * 100}
             yPct={(anchor.y / 445) * 100}
             onChoose={(t) => {
               onPick(t ? openRegion.label : "", t);
@@ -273,7 +337,7 @@ export function BodyMap({
       <div className="mu" style={{ marginTop: 8, textAlign: "center" }}>
         {location
           ? `${location} — ${tissue.toLowerCase()}`
-          : "Tap where it hurts. Left and right are yours, not the picture's."}
+          : "Tap where it hurts, or drag to turn them round. Left and right are yours, not the picture's."}
       </div>
     </div>
   );
@@ -414,10 +478,14 @@ function BodyView({
         aria-label={`Body map, ${caption.toLowerCase()} view`}
       >
         <defs>
-          {/* Ids have to differ between the two views -- both silhouettes live in the same document. */}
-          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--color-neutral-900)" />
-            <stop offset="100%" stopColor="var(--color-surface-raised)" />
+          {/* Ids have to differ between the two views -- both silhouettes live in the same document.
+              Lit from the upper left, across the body rather than straight down: a top-to-bottom ramp
+              shades a shoulder and a hand identically and the figure comes out flat, which is what it
+              was. On the diagonal, each limb catches the light on its own outer edge. */}
+          <linearGradient id={gradId} x1="0.1" y1="0" x2="0.9" y2="1">
+            <stop offset="0%" stopColor="#3a4048" />
+            <stop offset="42%" stopColor="#242a31" />
+            <stop offset="100%" stopColor="#14181d" />
           </linearGradient>
         </defs>
         {/* Outlines first, all of them, then every fill on top. Interleaving the two per region would let
@@ -437,7 +505,6 @@ function BodyView({
           </g>
         ))}
       </svg>
-      <div className="scr" style={{ textAlign: "center", marginTop: 2 }}>{caption}</div>
     </div>
   );
 }
