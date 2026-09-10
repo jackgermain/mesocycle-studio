@@ -37,8 +37,7 @@ export default function Progress() {
 
   return (
     <div className="screen">
-      <HeroHeader title="Progress" />
-      <div className="screen-scroll">
+      <HeroHeader title="Progress">
         <HeroStat
           value={currentWeek}
           label={<>current<br />week</>}
@@ -47,6 +46,8 @@ export default function Progress() {
             { label: "Coach", display: state.program.coachName },
           ]}
         />
+      </HeroHeader>
+      <div className="screen-scroll">
         {state.nextProgram && (
           <InfoBanner icon="ph-hourglass" tone="accent">
             Up next: <strong>{state.nextProgram.name}</strong> — starts automatically once you finish this block.
