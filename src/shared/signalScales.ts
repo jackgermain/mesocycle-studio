@@ -11,7 +11,8 @@
  *  - soreness  1..5 Very sore → Fully healed. LOW is bad.
  *  - joint     1..4 Noticed only → Stopped the set. HIGH is bad.
  *  - effort    1..5 Easy → Could not have done another rep. HIGH is the noteworthy end.
- *  - nutrition severity is the day's miss in kcal, absolute. Not a 1..5 scale at all — it is a magnitude,
+ *  - nutrition two shapes. detail "missed" means nothing was logged all day and severity is 0; otherwise
+ *              severity is the day's miss in kcal, absolute. Not a 1..5 scale at all — it is a magnitude,
  *              and only sent once the miss is already past the tolerance below.
  */
 export type SignalKind = "pump" | "joint" | "soreness" | "effort" | "nutrition";

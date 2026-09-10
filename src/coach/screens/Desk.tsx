@@ -97,7 +97,9 @@ export default function Desk() {
     // second-to-last set the client was told to hold their last set, so the exercise is already handled
     // for today and this is a note for next week's numbers.
     if (s.kind === "nutrition") {
-      // severity is the miss in kcal, not a 1..5 rating.
+      // Two shapes share this kind. "missed" means nothing was logged at all, so there is no number to
+      // report; otherwise severity is the miss in kcal, not a 1..5 rating.
+      if (s.detail === "missed") return `Logged no meals${s.note ? ` — ${s.note}` : ""}`;
       return `Day landed ${s.severity} kcal ${s.detail ?? "off"} target`;
     }
     if (s.kind === "effort") {
@@ -213,10 +215,10 @@ export default function Desk() {
           ring
           rows={[
             { label: "Volume proposals", value: counts.volume },
-            { label: "Joint flags", value: counts.joint, tone: "warn" },
-            { label: "Missed weigh-ins", value: counts.weighin },
+            { label: "Joint flags", value: counts.joint, tone: "danger" },
+            { label: "Missed weigh-ins", value: counts.weighin, tone: "warn" },
             // Shortened: the dial puts the rows in a narrower column than the stacked layout does.
-            { label: "Not logged", value: counts.unlogged },
+            { label: "Not logged", value: counts.unlogged, tone: "caution" },
           ]}
         />
       </HeroHeader>
@@ -402,7 +404,10 @@ export default function Desk() {
                   (s.kind === "joint" && isJointUrgent(s.severity)) ||
                   // A 5 on the FINAL set is what caps next week's jump (G62), so it is the one worth
                   // pulling out. A 5 before the last set was already acted on inside the session.
-                  (s.kind === "effort" && s.detail === "final set");
+                  (s.kind === "effort" && s.detail === "final set") ||
+                  // Nothing logged all day is a different problem from a day that came in 200 under, and
+                  // the one worth chasing first.
+                  (s.kind === "nutrition" && s.detail === "missed");
                 const times = recurrenceCount(allSignals, s);
                 return (
                   <div key={s.id} className="cell elev-sm" style={urgent ? { borderLeft: "2px solid var(--color-accent)" } : undefined}>
@@ -420,7 +425,7 @@ export default function Desk() {
                       </div>
                       <div style={{ flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                         <span className={`tag ${urgent ? "tag-accent" : "tag-neutral"}`}>
-                          {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : s.kind === "nutrition" ? "Nutrition" : "Pump"}
+                          {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : s.kind === "nutrition" ? (s.detail === "missed" ? "No meals" : "Nutrition") : "Pump"}
                         </span>
                         {times > 1 && (
                           <span className="tag tag-accent" title={`Reported ${times} times in the last 90 days`}>
