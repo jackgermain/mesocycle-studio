@@ -39,16 +39,30 @@ const MAX_LOOKBACK_DAYS = 10;
  * days earlier on pull day, triceps on chest day after overhead pressing. Surfaced as a pre-session "is
  * this healed" check so a coach can see when a muscle's actual recovery lags its programmed frequency,
  * which is the real signal for whether that muscle's volume is set too high. */
+/** Weeks that are never asked.
+ *
+ * Week 0 is the partial catch-up week `scheduleWeeks` creates when a program starts mid-week, and week 1
+ * is the first real exposure to the prescription. Both are sore by definition — a new movement, a new
+ * order, often a new gym — and nothing useful comes out of asking. Soreness is a signal about whether a
+ * muscle's *volume* is set too high, and that only means anything once there is a previous week of the
+ * same prescription to compare against. */
+const SKIP_WEEKS_BEFORE = 2;
+
 export function computeSorenessDue(program: Program, dayId: string): { muscle: string; lastTrainedDaysAgo: number }[] {
   let target: TrainingDay | null = null;
+  let targetWeek: number | null = null;
   const doneDays: TrainingDay[] = [];
   for (const week of program.weeks) {
     for (const day of week.days) {
-      if (day.id === dayId) target = day;
+      if (day.id === dayId) {
+        target = day;
+        targetWeek = week.number;
+      }
       if (day.status === "done") doneDays.push(day);
     }
   }
   if (!target) return [];
+  if (targetWeek !== null && targetWeek < SKIP_WEEKS_BEFORE) return [];
 
   const todayMuscles = musclesWorked(target);
   const priorDays = doneDays.filter((d) => d.date < target!.date).sort((a, b) => b.date.localeCompare(a.date));
