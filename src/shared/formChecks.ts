@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { isMissingTable } from "./pgErrors";
 
 export const FORM_CHECK_BUCKET = "form-checks";
 /** Matches the bucket's own file_size_limit in migration 0016. Checked here as well so someone gets a
@@ -27,14 +28,15 @@ let available: boolean | null = null;
 export async function formChecksAvailable(): Promise<boolean> {
   if (available !== null) return available;
   const { error } = await supabase.from("form_checks").select("id", { count: "exact", head: true }).limit(1);
-  // 42P01 is "relation does not exist" -- the migration hasn't been run. Any other error (a network blip,
-  // an auth problem) shouldn't permanently disable the feature, so it isn't cached as unavailable.
-  if (error && (error.code === "42P01" || /does not exist/i.test(error.message))) {
+  if (isMissingTable(error)) {
     available = false;
     return false;
   }
-  available = !error;
-  return available;
+  // Anything else -- a network blip, an auth problem -- must NOT be cached, or one bad request at the
+  // wrong moment hides the feature for the rest of the session. Answer false for now, ask again later.
+  if (error) return false;
+  available = true;
+  return true;
 }
 
 function extensionFor(file: File): string {
