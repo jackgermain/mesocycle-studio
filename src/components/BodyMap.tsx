@@ -1,4 +1,6 @@
 import React from "react";
+import { Body3D } from "./Body3D";
+import { PARTS, labelFor, type Part } from "./bodyModel";
 
 /** A tappable body silhouette for reporting where pain is.
  *
@@ -7,118 +9,12 @@ import React from "react";
  * the third right-shoulder report this month because none of the three are spelled the same. Tapping a
  * region produces one canonical label, so recurrence actually matches.
  *
- * Left/right are labelled from the *lifter's* point of view, which means they flip between views: on the
- * front, the shape on the viewer's left is the lifter's right arm; on the back, you're behind them and it's
- * their left. Getting this backwards would send a coach to the wrong shoulder, so the two views carry
- * separate label tables rather than sharing one. */
+ * Left/right are the lifter's, not the picture's. In the flat front/back version that needed two separate
+ * label tables, because the viewer's left is the lifter's right from the front and their left from behind
+ * -- and getting it backwards sends a coach to the wrong shoulder. The 3D model retires the problem: the
+ * label belongs to the part and the part turns with the body. Only the torso still renames itself, since
+ * "chest" and "upper back" really are the same solid seen from opposite sides. */
 
-type Shape =
-  // `flip` mirrors the path about the body's centre line at render time. Mirroring by rewriting the
-  // coordinates in `d` means parsing path syntax; a transform is exact and can't drift from the original.
-  | { kind: "path"; d: string; flip?: boolean }
-  | { kind: "ellipse"; cx: number; cy: number; rx: number; ry: number }
-  // Limbs are drawn as thick round-capped strokes rather than outlined shapes: a stroke gives a clean
-  // tapered joint where two segments meet, which hand-authored outlines around a knee do not.
-  | { kind: "limb"; x1: number; y1: number; x2: number; y2: number; w: number };
-
-type Region = { id: string; label: string; shapes: Shape[] };
-
-const mirror = (s: Shape): Shape => {
-  if (s.kind === "ellipse") return { ...s, cx: 220 - s.cx };
-  if (s.kind === "limb") return { ...s, x1: 220 - s.x1, x2: 220 - s.x2 };
-  // Paths used to fall through here unchanged, which meant the one path-shaped region that gets mirrored
-  // -- the hip/glute -- drew both halves on top of each other on the left, and the right side of the body
-  // was simply missing on both views.
-  return { ...s, flip: !s.flip };
-};
-
-// ——— shared skeleton ————————————————————————————————————————————————————
-// One set of geometry drives both views; only the labels differ. Anything side-specific is authored on the
-// viewer's left and mirrored, so the two halves can never drift apart.
-
-const HEAD: Shape[] = [{ kind: "ellipse", cx: 110, cy: 34, rx: 21, ry: 26 }];
-const NECK: Shape[] = [{ kind: "path", d: "M99,52 L121,52 L123,72 L97,72 Z" }];
-const DELT_L: Shape[] = [{ kind: "ellipse", cx: 66, cy: 93, rx: 20, ry: 19 }];
-const UPPER_TORSO: Shape[] = [{
-  kind: "path",
-  d: "M70,86 C79,71 92,64 110,64 C128,64 141,71 150,86 C153,105 152,127 147,144 L73,144 C68,127 67,105 70,86 Z",
-}];
-const MID_TORSO: Shape[] = [{ kind: "path", d: "M73,147 L147,147 C145,166 141,185 138,201 L82,201 C79,185 75,166 73,147 Z" }];
-const PELVIS_L: Shape[] = [{ kind: "path", d: "M110,203 L82,203 C73,214 70,234 78,256 L110,256 Z" }];
-const UPPER_ARM_L: Shape[] = [{ kind: "limb", x1: 58, y1: 106, x2: 49, y2: 156, w: 23 }];
-const ELBOW_L: Shape[] = [{ kind: "ellipse", cx: 48, cy: 169, rx: 12, ry: 12 }];
-const FOREARM_L: Shape[] = [{ kind: "limb", x1: 46, y1: 182, x2: 39, y2: 231, w: 19 }];
-const HAND_L: Shape[] = [{ kind: "ellipse", cx: 36, cy: 250, rx: 11, ry: 15 }];
-const THIGH_L: Shape[] = [{ kind: "limb", x1: 92, y1: 258, x2: 88, y2: 316, w: 33 }];
-const KNEE_L: Shape[] = [{ kind: "ellipse", cx: 86, cy: 331, rx: 16, ry: 13 }];
-const SHIN_L: Shape[] = [{ kind: "limb", x1: 85, y1: 346, x2: 82, y2: 402, w: 23 }];
-const FOOT_L: Shape[] = [{ kind: "ellipse", cx: 80, cy: 419, rx: 12, ry: 13 }];
-
-const M = (s: Shape[]) => s.map(mirror);
-
-/** Reflects about x = 110, the body's centre line. */
-const FLIP = "translate(220,0) scale(-1,1)";
-
-/** Front view. Viewer's left is the lifter's right. */
-const FRONT: Region[] = [
-  { id: "chest", label: "Chest", shapes: UPPER_TORSO },
-  { id: "abs", label: "Abs", shapes: MID_TORSO },
-  { id: "r-hip", label: "R hip", shapes: PELVIS_L },
-  { id: "l-hip", label: "L hip", shapes: M(PELVIS_L) },
-  { id: "head", label: "Head / neck", shapes: [...HEAD, ...NECK] },
-  { id: "r-shoulder", label: "R shoulder", shapes: DELT_L },
-  { id: "l-shoulder", label: "L shoulder", shapes: M(DELT_L) },
-  { id: "r-biceps", label: "R biceps", shapes: UPPER_ARM_L },
-  { id: "l-biceps", label: "L biceps", shapes: M(UPPER_ARM_L) },
-  { id: "r-elbow", label: "R elbow", shapes: ELBOW_L },
-  { id: "l-elbow", label: "L elbow", shapes: M(ELBOW_L) },
-  { id: "r-forearm", label: "R forearm", shapes: FOREARM_L },
-  { id: "l-forearm", label: "L forearm", shapes: M(FOREARM_L) },
-  { id: "r-wrist", label: "R wrist / hand", shapes: HAND_L },
-  { id: "l-wrist", label: "L wrist / hand", shapes: M(HAND_L) },
-  { id: "r-quad", label: "R quad", shapes: THIGH_L },
-  { id: "l-quad", label: "L quad", shapes: M(THIGH_L) },
-  { id: "r-knee", label: "R knee", shapes: KNEE_L },
-  { id: "l-knee", label: "L knee", shapes: M(KNEE_L) },
-  { id: "r-shin", label: "R shin", shapes: SHIN_L },
-  { id: "l-shin", label: "L shin", shapes: M(SHIN_L) },
-  { id: "r-ankle", label: "R ankle / foot", shapes: FOOT_L },
-  { id: "l-ankle", label: "L ankle / foot", shapes: M(FOOT_L) },
-];
-
-/** Back view. You're behind them now, so the viewer's left is the lifter's LEFT. */
-const BACK: Region[] = [
-  { id: "upper-back", label: "Upper back", shapes: UPPER_TORSO },
-  { id: "lower-back", label: "Lower back", shapes: MID_TORSO },
-  { id: "l-glute", label: "L glute", shapes: PELVIS_L },
-  { id: "r-glute", label: "R glute", shapes: M(PELVIS_L) },
-  { id: "head", label: "Head / neck", shapes: [...HEAD, ...NECK] },
-  { id: "l-shoulder", label: "L rear delt", shapes: DELT_L },
-  { id: "r-shoulder", label: "R rear delt", shapes: M(DELT_L) },
-  { id: "l-triceps", label: "L triceps", shapes: UPPER_ARM_L },
-  { id: "r-triceps", label: "R triceps", shapes: M(UPPER_ARM_L) },
-  { id: "l-elbow", label: "L elbow", shapes: ELBOW_L },
-  { id: "r-elbow", label: "R elbow", shapes: M(ELBOW_L) },
-  { id: "l-forearm", label: "L forearm", shapes: FOREARM_L },
-  { id: "r-forearm", label: "R forearm", shapes: M(FOREARM_L) },
-  { id: "l-wrist", label: "L wrist / hand", shapes: HAND_L },
-  { id: "r-wrist", label: "R wrist / hand", shapes: M(HAND_L) },
-  { id: "l-hamstring", label: "L hamstring", shapes: THIGH_L },
-  { id: "r-hamstring", label: "R hamstring", shapes: M(THIGH_L) },
-  { id: "l-knee", label: "L knee", shapes: KNEE_L },
-  { id: "r-knee", label: "R knee", shapes: M(KNEE_L) },
-  { id: "l-calf", label: "L calf", shapes: SHIN_L },
-  { id: "r-calf", label: "R calf", shapes: M(SHIN_L) },
-  { id: "l-ankle", label: "L ankle / heel", shapes: FOOT_L },
-  { id: "r-ankle", label: "R ankle / heel", shapes: M(FOOT_L) },
-];
-
-/** What kind of tissue it feels like. Four options because a coach's first question after "where" is
- * always "what does it feel like" -- muscle pain and joint-line pain lead to opposite decisions, and a
- * report without it is a report they have to chase. "Not sure" is deliberately one of the four: forcing a
- * guess between three confident answers produces confident wrong data, which is worse than a shrug.
- *
- * The colours run least- to most-concerning so a coach can read a report at a glance without the legend. */
 export type Tissue = "Muscle belly" | "Tendon" | "Deep in the joint" | "Not sure";
 
 export const TISSUES: { id: Tissue; color: string }[] = [
@@ -128,103 +24,11 @@ export const TISSUES: { id: Tissue; color: string }[] = [
   { id: "Not sure", color: "var(--color-neutral-500)" },
 ];
 
-const tissueColor = (t: string) => TISSUES.find((x) => x.id === t)?.color ?? "var(--color-accent)";
 
 /** Every label either view can produce, so callers can tell a tapped region from free text. */
 export const BODY_MAP_LABELS: string[] = Array.from(
-  new Set([...FRONT, ...BACK].map((r) => r.label)),
+  new Set(PARTS.flatMap((p) => [labelFor(p, 0), labelFor(p, Math.PI)])),
 );
-
-/** Where the bubble's pointer goes: the middle of the region, in viewBox units. */
-function centre(r: Region): { x: number; y: number } {
-  const pts = r.shapes.map((s) => {
-    if (s.kind === "ellipse") return { x: s.cx, y: s.cy, w: s.rx * s.ry };
-    if (s.kind === "limb") return { x: (s.x1 + s.x2) / 2, y: (s.y1 + s.y2) / 2, w: s.w * Math.hypot(s.x2 - s.x1, s.y2 - s.y1) };
-    const nums = (s.d.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
-    const xs = nums.filter((_, i) => i % 2 === 0);
-    const ys = nums.filter((_, i) => i % 2 === 1);
-    const cx = (Math.max(...xs) + Math.min(...xs)) / 2;
-    const cy = (Math.max(...ys) + Math.min(...ys)) / 2;
-    // A flipped path draws on the other side of the centre line, so its anchor has to move with it.
-    return { x: s.flip ? 220 - cx : cx, y: cy, w: 3000 };
-  });
-  const total = pts.reduce((n, p) => n + p.w, 0) || 1;
-  return {
-    x: pts.reduce((n, p) => n + p.x * p.w, 0) / total,
-    y: pts.reduce((n, p) => n + p.y * p.w, 0) / total,
-  };
-}
-
-function ShapeEls({ shapes, fill, outline }: { shapes: Shape[]; fill: string; outline: boolean }) {
-  // The outline pass is the same geometry drawn slightly fatter in the page colour underneath the fill.
-  // It's what separates neighbouring parts, so the silhouette reads as segments rather than one blob.
-  const grow = outline ? 2 : 0;
-  return (
-    <>
-      {shapes.map((s, i) => {
-        if (s.kind === "ellipse") {
-          return <ellipse key={i} cx={s.cx} cy={s.cy} rx={s.rx + grow} ry={s.ry + grow} fill={outline ? "var(--color-bg)" : fill} />;
-        }
-        if (s.kind === "limb") {
-          return (
-            <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
-              stroke={outline ? "var(--color-bg)" : fill}
-              strokeWidth={s.w + grow * 2} strokeLinecap="round" />
-          );
-        }
-        return <path key={i} d={s.d} transform={s.flip ? FLIP : undefined} fill={outline ? "var(--color-bg)" : fill}
-          stroke={outline ? "var(--color-bg)" : undefined} strokeWidth={grow * 2} strokeLinejoin="round" />;
-      })}
-    </>
-  );
-}
-
-/** Invisible, deliberately oversized copies of the geometry that catch the taps.
- *
- * Two bodies side by side on a phone put a deltoid at roughly 26px across and a wrist at less than 20 --
- * both under the 44px everyone targets for a finger. Growing the *visible* shapes to fix that would turn
- * the silhouette into a blob, so the hit areas are grown instead and left transparent. */
-function HitShapes({ shapes }: { shapes: Shape[] }) {
-  // 9, up from 5. On one full-width figure a deltoid is ~52px across instead of ~26, so the padding is
-  // topping up a target that is already big enough rather than papering over one that never was.
-  const pad = 9;
-  return (
-    <>
-      {shapes.map((s, i) => {
-        if (s.kind === "ellipse") return <ellipse key={i} cx={s.cx} cy={s.cy} rx={s.rx + pad} ry={s.ry + pad} fill="transparent" />;
-        if (s.kind === "limb") {
-          return <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" strokeWidth={s.w + pad * 2} strokeLinecap="round" />;
-        }
-        // A path can't be offset outwards cheaply, so it gets a fat transparent stroke on top of its fill,
-        // which comes to the same thing.
-        return <path key={i} d={s.d} transform={s.flip ? FLIP : undefined} fill="transparent" stroke="transparent" strokeWidth={pad * 2} strokeLinejoin="round" />;
-      })}
-    </>
-  );
-}
-
-/** Roughly how much of the body a region covers, used only to decide which hit area sits on top. Small
- * parts have to win: an elbow overlapped by an upper arm's padded hit area is otherwise untappable.
- *
- * Paths are measured by the bounding box of their coordinates. A flat constant was tried first and got the
- * order wrong -- it made head-plus-neck score higher than the whole chest, so the chest's padded hit area
- * was drawn last and swallowed taps on the neck. */
-function footprint(r: Region): number {
-  return r.shapes.reduce((n, s) => {
-    if (s.kind === "ellipse") return n + s.rx * s.ry;
-    if (s.kind === "limb") return n + s.w * Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
-    const nums = (s.d.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
-    const xs = nums.filter((_, i) => i % 2 === 0);
-    const ys = nums.filter((_, i) => i % 2 === 1);
-    if (!xs.length || !ys.length) return n;
-    return n + (Math.max(...xs) - Math.min(...xs)) * (Math.max(...ys) - Math.min(...ys));
-  }, 0);
-}
-
-const VIEWS: { regions: Region[]; caption: string }[] = [
-  { regions: FRONT, caption: "Front" },
-  { regions: BACK, caption: "Back" },
-];
 
 export function BodyMap({
   location, tissue, onPick,
@@ -233,100 +37,38 @@ export function BodyMap({
   tissue: string;
   onPick: (location: string, tissue: Tissue | "") => void;
 }) {
-  // Which region's bubble is open. Separate from `location`, because tapping a part only asks the
-  // follow-up question -- nothing is recorded until they answer it, so a stray tap records nothing.
-  const [open, setOpen] = React.useState<string | null>(null);
-  // 0 = front, 1 = back. One body at a time rather than two side by side: two figures on a 390px screen
-  // put a deltoid at ~26px and a wrist under 20, both well below the 44px a finger needs, and no amount
-  // of invisible padding fixes a target that is physically smaller than the thing tapping it.
-  const [view, setView] = React.useState(0);
-  // How far through the turn we are, 0..1, while a finger is down. The body scales horizontally toward
-  // its centre line and back out, which is what a real turn looks like from the front -- and it tracks
-  // the finger rather than playing a fixed animation, so the movement belongs to the gesture.
-  const [turn, setTurn] = React.useState(0);
-  const drag = React.useRef<{ x: number; from: number; moved: boolean } | null>(null);
-  const wrap = React.useRef<HTMLDivElement | null>(null);
+  // Which part's bubble is open. Separate from `location`, because tapping only asks the follow-up
+  // question -- nothing is recorded until they answer it, so a stray tap records nothing.
+  const [open, setOpen] = React.useState<Part | null>(null);
+  // Kept in state only so the caption and the open bubble's label follow the body round; the canvas keeps
+  // its own copy and redraws itself without React.
+  const [yaw, setYaw] = React.useState(0);
 
-  const v = VIEWS[view];
-  const openRegion = open ? v.regions.find((r) => r.id === open) ?? null : null;
-  const anchor = openRegion ? centre(openRegion) : null;
-
-  function down(e: React.PointerEvent) {
-    drag.current = { x: e.clientX, from: view, moved: false };
-  }
-  function move(e: React.PointerEvent) {
-    const d = drag.current;
-    if (!d) return;
-    const width = wrap.current?.clientWidth ?? 320;
-    // Half the card's width is a full turn, so the body reaches the other side about when the finger
-    // reaches the other edge.
-    const frac = Math.min(1, Math.abs(e.clientX - d.x) / (width / 2));
-    if (frac > 0.04) d.moved = true;
-    setTurn(frac);
-    // Flipped at the halfway point, so the far side is already facing you as the body opens back out --
-    // waiting for release would show the front squashing flat and then popping to the back.
-    setView(frac >= 0.5 ? 1 - d.from : d.from);
-  }
-  function up() {
-    const d = drag.current;
-    drag.current = null;
-    setTurn(0);
-    if (d?.moved) setOpen(null);
-  }
-
-  // 1 at rest, pinching to a sliver at the halfway point and opening back out. Floored so the body never
-  // disappears entirely mid-turn.
-  const squash = Math.max(0.12, Math.abs(1 - turn * 2));
+  const openLabel = open ? labelFor(open, yaw) : null;
+  // The selected part is whichever one currently carries the recorded label, from this angle.
+  const selected = PARTS.find((p) => labelFor(p, yaw) === location) ?? null;
 
   return (
     <div>
-      <div className="row" style={{ gap: 6, marginBottom: 8 }}>
-        {VIEWS.map((view_, i) => (
-          <button
-            key={view_.caption}
-            className={`chip${view === i ? " on" : ""}`}
-            style={{ flex: 1, justifyContent: "center", height: 34 }}
-            onClick={() => { setView(i); setOpen(null); }}
-          >
-            {view_.caption}
-          </button>
-        ))}
-      </div>
+      <div className="cell" style={{ position: "relative", padding: 6, overflow: "hidden" }}>
+        <Body3D
+          selectedId={selected?.id ?? null}
+          selectedColor={resolvedTissueColor(tissue)}
+          openId={open?.id ?? null}
+          onTap={(part) => setOpen((cur) => (cur?.id === part.id ? null : part))}
+          onYaw={setYaw}
+        />
 
-      <div
-        ref={wrap}
-        className="cell"
-        style={{ position: "relative", padding: 10, touchAction: "pan-y", overflow: "hidden" }}
-        onPointerDown={down}
-        onPointerMove={move}
-        onPointerUp={up}
-        onPointerCancel={up}
-      >
-        <div
-          style={{
-            transform: `scaleX(${squash})`,
-            transformOrigin: "center",
-            transition: drag.current ? "none" : "transform 220ms cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-        >
-          <BodyView
-            regions={v.regions}
-            caption={v.caption}
-            location={location}
-            tissue={tissue}
-            openId={open}
-            onTapRegion={(id) => setOpen(open === id ? null : id)}
-          />
-        </div>
-
-        {openRegion && anchor && (
+        {open && openLabel && (
           <TissueBubble
-            label={openRegion.label}
-            current={location === openRegion.label ? tissue : ""}
-            xPct={(anchor.x / 220) * 100}
-            yPct={(anchor.y / 445) * 100}
+            label={openLabel}
+            current={location === openLabel ? tissue : ""}
+            // Anchored to the middle of the card rather than to the part: the body turns under the
+            // bubble, and a pointer chasing a moving target reads as a glitch.
+            xPct={50}
+            yPct={46}
             onChoose={(t) => {
-              onPick(t ? openRegion.label : "", t);
+              onPick(t ? openLabel : "", t);
               setOpen(null);
             }}
             onDismiss={() => setOpen(null)}
@@ -337,10 +79,21 @@ export function BodyMap({
       <div className="mu" style={{ marginTop: 8, textAlign: "center" }}>
         {location
           ? `${location} — ${tissue.toLowerCase()}`
-          : "Tap where it hurts, or drag to turn them round. Left and right are yours, not the picture's."}
+          : "Drag to turn them round. Tap where it hurts — left and right are theirs, so they match yours."}
       </div>
     </div>
   );
+}
+
+/** The canvas cannot multiply a CSS variable, so the tissue colours resolve to literals here. Kept beside
+ * TISSUES so the two lists cannot drift. */
+function resolvedTissueColor(t: string): string {
+  switch (t) {
+    case "Tendon": return "#ffb84d";
+    case "Deep in the joint": return "#ff6b6b";
+    case "Not sure": return "#9397ab";
+    default: return "#4ce08f";
+  }
 }
 
 function TissueBubble({
@@ -447,64 +200,3 @@ function TissueBubble({
   );
 }
 
-function BodyView({
-  regions, caption, location, tissue, openId, onTapRegion,
-}: {
-  regions: Region[];
-  caption: string;
-  location: string;
-  tissue: string;
-  openId: string | null;
-  onTapRegion: (id: string) => void;
-}) {
-  const selected = regions.find((r) => r.label === location);
-  // The highlighted part is drawn last so it lands on top. Without this a tapped deltoid comes out as a
-  // crescent peeking from behind the chest, which reads as a rendering fault rather than a selection.
-  const ordered = selected ? [...regions.filter((r) => r !== selected), selected] : regions;
-  // Biggest hit areas first so the smallest end up on top and win the tap.
-  const hitOrder = [...regions].sort((a, b) => footprint(b) - footprint(a));
-  const gradId = `bodyfill-${caption.toLowerCase()}`;
-  const fillFor = (r: Region) =>
-    r.label === location ? tissueColor(tissue)
-    : r.id === openId ? "var(--color-neutral-700)"
-    : `url(#${gradId})`;
-
-  return (
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <svg
-        viewBox="0 0 220 445"
-        style={{ width: "100%", height: "auto", display: "block", touchAction: "manipulation" }}
-        role="group"
-        aria-label={`Body map, ${caption.toLowerCase()} view`}
-      >
-        <defs>
-          {/* Ids have to differ between the two views -- both silhouettes live in the same document.
-              Lit from the upper left, across the body rather than straight down: a top-to-bottom ramp
-              shades a shoulder and a hand identically and the figure comes out flat, which is what it
-              was. On the diagonal, each limb catches the light on its own outer edge. */}
-          <linearGradient id={gradId} x1="0.1" y1="0" x2="0.9" y2="1">
-            <stop offset="0%" stopColor="#3a4048" />
-            <stop offset="42%" stopColor="#242a31" />
-            <stop offset="100%" stopColor="#14181d" />
-          </linearGradient>
-        </defs>
-        {/* Outlines first, all of them, then every fill on top. Interleaving the two per region would let
-            a later region's outline eat into the neighbour drawn before it. */}
-        {ordered.map((r) => <ShapeEls key={`o-${r.id}`} shapes={r.shapes} fill="" outline />)}
-        {ordered.map((r) => <ShapeEls key={r.id} shapes={r.shapes} fill={fillFor(r)} outline={false} />)}
-        {hitOrder.map((r) => (
-          <g
-            key={`h-${r.id}`}
-            onClick={() => onTapRegion(r.id)}
-            style={{ cursor: "pointer" }}
-            role="button"
-            aria-pressed={r.label === location}
-            aria-label={r.label}
-          >
-            <HitShapes shapes={r.shapes} />
-          </g>
-        ))}
-      </svg>
-    </div>
-  );
-}
