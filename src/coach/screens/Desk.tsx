@@ -577,6 +577,8 @@ export default function Desk() {
         <SignalActionSheet
           signal={actingOn}
           clientName={signalClientName(actingOn)}
+          week={state.clients.find((x) => x.accountId === actingOn.client_id)?.week}
+          totalWeeks={state.clients.find((x) => x.accountId === actingOn.client_id)?.totalWeeks}
           onClose={() => setActingOn(null)}
           onOpenSession={() => {
             const c = state.clients.find((x) => x.accountId === actingOn.client_id);

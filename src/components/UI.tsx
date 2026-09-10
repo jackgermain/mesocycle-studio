@@ -373,17 +373,13 @@ const HERO_TONE: Record<string, string> = {
   none: "var(--color-neutral-200)",
 };
 
-/** Worst first. The dial takes its colour from the most severe row that actually has something in it, so
- * the ring answers "how bad" at a glance and the list answers "what". A red ring over a red row is one
- * fact told twice; a green ring over a red row is the summary contradicting the detail. */
-const TONE_RANK: ("danger" | "warn" | "caution")[] = ["danger", "warn", "caution"];
-
-function worstTone(rows: HeroRow[] | undefined): string {
-  for (const tone of TONE_RANK) {
-    if (rows?.some((r) => r.tone === tone && (r.value ?? 0) > 0)) return HERO_TONE[tone];
-  }
-  return "var(--color-accent)";
-}
+/** The dial stays the accent whatever the rows say.
+ *
+ * It briefly took the colour of the worst row, on the reasoning that the ring should answer "how bad" and
+ * the list "what". It looked wrong: a red or yellow ring is the largest, brightest thing on the screen and
+ * the whole panel turns into an alarm, which is not what a roster with two joint flags on it deserves.
+ * The rows carry the severity; the ring carries the count. */
+const RING_COLOR = "var(--color-accent)";
 
 /** The dial. Drawn rather than charted: one arc, the figure inside it, and no axis or scale, because
  * "how much is waiting" has no units worth labelling.
@@ -446,7 +442,7 @@ export function HeroStat({
     return (
       <div className={`hero-box${quiet ? " is-quiet" : ""}`}>
         <div className="hero-inner row" style={{ gap: 16, alignItems: "center" }}>
-          <HeroRing value={value} quiet={quiet} color={worstTone(rows)} />
+          <HeroRing value={value} quiet={quiet} color={RING_COLOR} />
           <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 }}>
             {rows?.map((r, i) => (
               <div key={i} className="row" style={{ fontSize: 12.5 }}>

@@ -15,9 +15,16 @@ export function SignalActionSheet({
   onOpenSession,
   onApplied,
   onClose,
+  week,
+  totalWeeks,
 }: {
   signal: ClientSignal;
   clientName: string;
+  /** Where in the block this happened. A coach reads "week 2 of 8" very differently from "week 7 of 8" --
+   * the same report early in a block is a prescription that needs changing, and late in one is a block
+   * that is nearly over. Absent when the client has no program running. */
+  week?: number;
+  totalWeeks?: number;
   onOpenSession: () => void;
   onApplied: (message: string) => void;
   onClose: () => void;
@@ -51,7 +58,17 @@ export function SignalActionSheet({
           <div style={{ flex: 1 }}>
             <div className="scr">{clientName}</div>
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>
-              {signal.kind === "joint" ? "Joint pain" : signal.kind === "soreness" ? "Still sore" : "Low pump"}
+              {/* Every kind names itself. "effort" and "nutrition" both fell through to "Low pump" here,
+                  so a failure on a final set was reported to the coach as a pump problem. */}
+              {signal.kind === "joint"
+                ? "Joint pain"
+                : signal.kind === "soreness"
+                  ? "Still sore"
+                  : signal.kind === "effort"
+                    ? "Hit failure"
+                    : signal.kind === "nutrition"
+                      ? signal.detail === "missed" ? "No meals logged" : "Off target"
+                      : "Low pump"}
               {signal.note ? ` — ${signal.note}` : ""}
             </div>
           </div>
@@ -69,7 +86,9 @@ export function SignalActionSheet({
           )}
           {signal.detail && <div style={{ fontSize: 12.5, lineHeight: 1.5 }}>{signal.detail}</div>}
           <div className="mu">
-            {signal.day_label ?? "Session"} · reported {new Date(signal.created_at).toLocaleDateString()}
+            {signal.day_label ?? "Session"}
+            {week ? ` · week ${week}${totalWeeks ? ` of ${totalWeeks}` : ""}` : ""}
+            {` · reported ${new Date(signal.created_at).toLocaleDateString()}`}
           </div>
         </div>
 
