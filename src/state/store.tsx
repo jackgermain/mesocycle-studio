@@ -12,6 +12,9 @@ import { withDerivedStatuses, isoToday } from "../shared/dayStatus";
 import { insertWarmupSet } from "../shared/programEdits";
 
 export interface AppState {
+  /** The last date a "day landed off target" signal was sent, so the coach hears once rather than once
+   * per meal submitted after the threshold was crossed. */
+  nutritionAlertSentOn?: string;
   onboarded: boolean;
   profile: ClientProfile;
   program: Program;
@@ -86,6 +89,7 @@ type Action =
   | { type: "REMOVE_FOOD_ITEM"; mealId: string; itemId: string }
   | { type: "TOGGLE_FOOD_EATEN"; mealId: string; itemId: string }
   | { type: "SUBMIT_MEAL"; mealId: string }
+  | { type: "MARK_NUTRITION_ALERT_SENT"; date: string }
   | { type: "REOPEN_MEAL"; mealId: string }
   | { type: "ADD_MEAL"; name: string }
   | { type: "REMOVE_MEAL"; mealId: string }
@@ -391,6 +395,8 @@ function reducer(state: AppState, action: Action): AppState {
       );
       return { ...state, meals };
     }
+    case "MARK_NUTRITION_ALERT_SENT":
+      return { ...state, nutritionAlertSentOn: action.date };
     case "SUBMIT_MEAL": {
       const meals = state.meals.map((m) => (m.id === action.mealId ? { ...m, submittedAt: isoToday() } : m));
       return { ...state, meals };

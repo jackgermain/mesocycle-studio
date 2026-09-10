@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { useStore } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
 import { useAuth } from "../lib/auth";
+import { sendSignals } from "../shared/signals";
+import { isNutritionAlerting, KCAL_TOLERANCE } from "../shared/signalScales";
+import { coachOnTheOtherEnd } from "../shared/coachName";
+import { isoToday } from "../shared/dayStatus";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, Meter, HeroHeader, BackHeader } from "../components/UI";
 import { NutritionForm } from "../shared/NutritionForm";
@@ -102,6 +106,45 @@ export default function Nutrition() {
   const totals = totalsFor(state.meals.flatMap(eatenItems));
   const kcalTarget = target.kcal + target.trainingDayCarbBonus * 4;
   const left = Math.max(0, kcalTarget - totals.kcal);
+
+  /** Submit a meal, and tell the coach once the whole day is in and landed off target.
+   *
+   * Fired on the last submission rather than per meal: a coach does not need to know breakfast was light,
+   * they need to know the day finished 700 under. "The whole day is in" means every meal that has
+   * anything in it has been submitted — an empty Meal 4 nobody used should not hold the day open forever.
+   */
+  function submitMeal(mealId: string) {
+    dispatch({ type: "SUBMIT_MEAL", mealId });
+
+    const after = state.meals.map((m) => (m.id === mealId ? { ...m, submittedAt: isoToday() } : m));
+    const withFood = after.filter((m) => m.items.length > 0);
+    if (withFood.length === 0 || withFood.some((m) => !m.submittedAt)) return;
+    if (state.nutritionAlertSentOn === isoToday()) return;
+
+    const dayKcal = totalsFor(after.flatMap(eatenItems)).kcal;
+    const miss = dayKcal - kcalTarget;
+    if (!isNutritionAlerting(miss) || !account) return;
+
+    dispatch({ type: "MARK_NUTRITION_ALERT_SENT", date: isoToday() });
+    const under = miss < 0;
+    void sendSignals(account.id, account.coach_id, [
+      {
+        kind: "nutrition",
+        // Not a 1..5 scale: the magnitude of the miss, so the coach sees how far off without asking.
+        severity: Math.abs(miss),
+        detail: under ? "under" : "over",
+        note: `Day finished ${Math.abs(miss)} kcal ${under ? "under" : "over"} — ${dayKcal} of ${kcalTarget}.`,
+      },
+    ]);
+    const coach = coachOnTheOtherEnd(account.coach_id, state.program.coachName);
+    dispatch({
+      type: "SHOW_TOAST",
+      message: coach
+        ? `Day logged · ${Math.abs(miss)} kcal ${under ? "under" : "over"}. ${coach} will see it.`
+        : `Day logged · ${Math.abs(miss)} kcal ${under ? "under" : "over"}.`,
+    });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3400);
+  }
 
   function addFoodTo(mealId: string, food: FoodItem, servings: number) {
     const scaled = { kcal: Math.round(food.kcal * servings), protein: Math.round(food.protein * servings * 10) / 10, carbs: Math.round(food.carbs * servings * 10) / 10, fat: Math.round(food.fat * servings * 10) / 10 };
@@ -276,7 +319,7 @@ export default function Nutrition() {
                       className="btn btn-primary btn-block"
                       style={{ height: 48, fontSize: 14, marginTop: 5, opacity: eaten.length ? 1 : 0.45 }}
                       disabled={!eaten.length}
-                      onClick={() => dispatch({ type: "SUBMIT_MEAL", mealId: meal.id })}
+                      onClick={() => submitMeal(meal.id)}
                     >
                       {eaten.length ? `Log ${meal.name.toLowerCase()} · ${mealTotals.kcal} kcal` : "Tick what you ate"}
                     </button>

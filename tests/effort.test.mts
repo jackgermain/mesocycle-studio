@@ -31,3 +31,20 @@ test("the scale has exactly five rungs, ending at failure", () => {
   assert.equal(EFFORT_WORDING[0], "Easy");
   assert.equal(EFFORT_WORDING[4], "Nothing left");
 });
+
+/** The nutrition threshold. Direction-agnostic on purpose — 700 under and 700 over are both worth
+ * telling a coach, and they mean opposite things. */
+import { isNutritionAlerting, KCAL_TOLERANCE } from "../src/shared/signalScales.ts";
+
+test("a day inside tolerance says nothing", () => {
+  for (const miss of [0, 20, -20, KCAL_TOLERANCE, -KCAL_TOLERANCE]) {
+    assert.equal(isNutritionAlerting(miss), false, `${miss} kcal should be on target`);
+  }
+});
+
+test("a day outside tolerance alerts, in both directions", () => {
+  assert.equal(isNutritionAlerting(KCAL_TOLERANCE + 1), true);
+  assert.equal(isNutritionAlerting(-(KCAL_TOLERANCE + 1)), true);
+  assert.equal(isNutritionAlerting(700), true);
+  assert.equal(isNutritionAlerting(-700), true);
+});

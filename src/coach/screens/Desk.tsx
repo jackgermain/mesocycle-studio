@@ -95,6 +95,10 @@ export default function Desk() {
     // `detail` says which of the two sets it came from, and that changes what the coach should do: on the
     // second-to-last set the client was told to hold their last set, so the exercise is already handled
     // for today and this is a note for next week's numbers.
+    if (s.kind === "nutrition") {
+      // severity is the miss in kcal, not a 1..5 rating.
+      return `Day landed ${s.severity} kcal ${s.detail ?? "off"} target`;
+    }
     if (s.kind === "effort") {
       return `Hit failure on ${s.exercise ?? "an exercise"}${s.detail ? ` — ${s.detail}` : ""}`;
     }
@@ -411,7 +415,7 @@ export default function Desk() {
                       </div>
                       <div style={{ flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                         <span className={`tag ${urgent ? "tag-accent" : "tag-neutral"}`}>
-                          {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : "Pump"}
+                          {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : s.kind === "nutrition" ? "Nutrition" : "Pump"}
                         </span>
                         {times > 1 && (
                           <span className="tag tag-accent" title={`Reported ${times} times in the last 90 days`}>
