@@ -50,7 +50,7 @@ export function Body3D({
     const blobs: Blob[] = [];
     for (const part of PARTS) {
       const len = Math.hypot(part.b[0] - part.a[0], part.b[1] - part.a[1], part.b[2] - part.a[2]);
-      const steps = Math.max(2, Math.ceil(len / 1.6));
+      const steps = Math.max(2, Math.ceil(len / 1.2));
       for (let i = 0; i <= steps; i++) {
         const t = i / steps;
         const p: [number, number, number] = [
@@ -59,7 +59,9 @@ export function Body3D({
           part.a[2] + (part.b[2] - part.a[2]) * t,
         ];
         const q = project(p, yaw.current, w, h);
-        const rx = part.r * q.scale;
+        // Taper along the capsule. A constant radius is what makes a limb read as a balloon.
+        const r = part.r + ((part.r2 ?? part.r) - part.r) * t;
+        const rx = r * q.scale;
         // `flatten` is how deep the part is relative to how wide, so a chest is a slab: full width
         // head-on, thin from the side. face is 1 looking at the front or back and 0 from the side, so the
         // drawn width runs from the full radius to `flatten` of it as the body turns.
@@ -76,7 +78,11 @@ export function Body3D({
     for (const bl of blobs) {
       const isSel = bl.part.id === selectedId;
       const isOpen = bl.part.id === openId;
-      const base = isSel ? selectedColor : isOpen ? "#6d7684" : "#2b323a";
+      // Detail sits darker than the body it lies on, so it reads as a crease or a shadow rather than a
+      // sticker. It never takes the selection colour -- a highlighted head should not light up its eyes.
+      const base = bl.part.detail
+        ? "#191d23"
+        : isSel ? selectedColor : isOpen ? "#6d7684" : "#2b323a";
       const grad = ctx.createRadialGradient(
         bl.x - bl.rx * 0.45, bl.y - bl.ry * 0.55, bl.rx * 0.12,
         bl.x, bl.y, Math.max(bl.rx, bl.ry) * 1.25,
