@@ -418,11 +418,7 @@ export function ExerciseSection({
       </div>
 
       {asking && (
-        <SetEffortSheet
-          exerciseName={ex.name}
-          onPick={answerEffort}
-          onSkip={() => setAsking(null)}
-        />
+        <SetEffortSheet exerciseName={ex.name} onPick={answerEffort} />
       )}
     </div>
   );

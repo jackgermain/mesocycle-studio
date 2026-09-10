@@ -346,8 +346,10 @@ export interface HeroRow {
   label: React.ReactNode;
   value?: number;
   display?: React.ReactNode;
-  /** Marks the row worth looking at first. Reserve it — if everything is amber, nothing is. */
-  tone?: "warn";
+  /** How urgent this row is, and they are ranked: danger (red) is a body part complaining, warn (orange)
+   * is something a coach has to chase, caution (yellow) is a client's own admin slipping. Reserve them —
+   * if every row is coloured, none of them is. */
+  tone?: "danger" | "warn" | "caution";
 }
 
 /** The headline panel at the top of every screen.
@@ -362,6 +364,14 @@ export interface HeroRow {
 /** Where the ring's arc tops out. Past ten waiting, the ring is simply full and the figure carries the
  * rest -- a gauge with no ceiling is just a number drawn in a circle. */
 const RING_FULL_AT = 10;
+
+/** A zero row is never coloured whatever its tone -- nothing is wrong, so nothing should read as wrong. */
+const HERO_TONE: Record<string, string> = {
+  danger: "var(--color-danger)",
+  warn: "var(--color-warning)",
+  caution: "var(--color-caution)",
+  none: "var(--color-neutral-200)",
+};
 
 /** The dial. Drawn rather than charted: one arc, the figure inside it, and no axis or scale, because
  * "how much is waiting" has no units worth labelling.
@@ -431,7 +441,7 @@ export function HeroStat({
                   className={r.value === undefined ? undefined : "num"}
                   style={{
                     fontWeight: r.value === undefined ? 500 : 700,
-                    color: r.tone === "warn" && r.value ? "var(--color-warning)" : "var(--color-neutral-200)",
+                    color: r.value ? HERO_TONE[r.tone ?? "none"] : "var(--color-neutral-200)",
                   }}
                 >
                   {r.display ?? r.value}
@@ -462,7 +472,7 @@ export function HeroStat({
                   style={{
                     fontWeight: r.value === undefined ? 500 : 700,
                     fontFamily: r.value === undefined ? "var(--font-heading)" : undefined,
-                    color: r.tone === "warn" && r.value ? "var(--color-warning)" : "var(--color-neutral-200)",
+                    color: r.value ? HERO_TONE[r.tone ?? "none"] : "var(--color-neutral-200)",
                   }}
                 >
                   {r.display ?? r.value}

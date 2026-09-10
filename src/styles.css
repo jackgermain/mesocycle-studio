@@ -33,6 +33,10 @@
   --color-danger: #ff6b6b;
   --color-danger-tint: rgba(255, 107, 107, 0.10);
   --color-warning: #ffb84d;
+  /* A third alert colour, between warning and fine. Three severities need three hues -- with two, "worth
+     a look" and "act now" end up the same amber and the distinction stops being readable. */
+  --color-caution: #ffe066;
+  --color-caution-tint: rgba(255, 224, 102, 0.10);
   --color-warning-tint: rgba(255, 184, 77, 0.10);
   --color-info: #7aa2ff;
   --color-info-tint: rgba(122, 162, 255, 0.10);

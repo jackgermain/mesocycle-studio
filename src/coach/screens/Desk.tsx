@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
 import { BUILD_ID, BUILT_AT } from "../../shared/build";
+import { ago } from "../../shared/ago";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
 import { loadWeighInGaps, applyWeighInDismissals, weighInKeys, type ClientWeighInGap } from "../weighInWatch";
@@ -411,6 +412,10 @@ export default function Desk() {
                         <div className="mu" style={{ marginTop: 1 }}>
                           {signalText(s)}
                           {s.day_label ? ` · ${s.day_label}` : ""}
+                          {/* How long it has been sitting there. The age is what decides triage order --
+                              a two-day-old joint report is a different problem from one from an hour
+                              ago, and the timestamp alone makes the coach work that out per row. */}
+                          {ago(s.created_at) ? ` · ${ago(s.created_at)} ago` : ""}
                         </div>
                       </div>
                       <div style={{ flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
