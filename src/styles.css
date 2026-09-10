@@ -466,19 +466,22 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
   width: 100%;
 }
 
-/* Bled well past the panel and clipped back, so no falloff edge lands inside the frame -- a visible
-   circle is what makes a gradient look applied rather than like light in the material. Kept very low:
-   every surface in this app sits around rgba(255,255,255,.035), and anything much brighter than that
-   reads as pasted in. */
+/* Bled past the panel and clipped back, so no falloff edge lands inside the frame -- a visible circle is
+   what makes a gradient look applied rather than like light in the material. Kept very low: every surface
+   in this app sits around rgba(255,255,255,.035), and anything brighter reads as pasted in.
+ *
+ * No filter: blur(). This carried a 32px blur over a box inset -40%, which is a composited layer far
+ * larger than the panel itself -- cheap enough painted once in a fixed header, and something iOS has to
+ * re-rasterize on every frame once the panel scrolls. Radial stops are already smooth, and at 0.08 there
+ * is no banding for a blur to soften, so it bought nothing and cost a scroll. */
 .hero-box::before {
   content: "";
   position: absolute;
-  inset: -40%;
+  inset: -25%;
   pointer-events: none;
   background:
-    radial-gradient(44% 50% at 20% 14%, rgba(76, 224, 143, 0.08), transparent 72%),
-    radial-gradient(42% 48% at 78% 88%, rgba(76, 224, 143, 0.035), transparent 74%);
-  filter: blur(32px);
+    radial-gradient(48% 54% at 20% 14%, rgba(76, 224, 143, 0.08), transparent 76%),
+    radial-gradient(46% 52% at 78% 88%, rgba(76, 224, 143, 0.035), transparent 78%);
   transition: opacity 400ms ease;
 }
 /* Nothing to report: the light drops rather than switching off, so a good week still has depth. */
