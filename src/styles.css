@@ -450,67 +450,53 @@ input[type="number"] { appearance: textfield; }
    that used to override this was removed from ExerciseSection.tsx in favour of the .mono class. */
 input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
 
-/* The headline panel on every screen: a mesh gradient under frosted glass.
+/* The headline panel on every screen.
  *
- * Three blurred radial pools -- green, cyan, green -- bled well past the panel's own bounds and clipped
- * back by overflow, so the light has no visible edge or centre. The rows then float on smoked glass above
- * it, separated by a 1px gap rather than a border: the aurora shows through the gap and draws the divider
- * itself, which is why there is no rule anywhere in here. */
+ * Materially it is a `.cell` -- same ground, same radius, same padding -- with one difference: a faint
+ * pool of the accent bled in from the top left. That is deliberate. Every other box on a screen is a
+ * plain cell, and giving this one its own ground, radius, ring and shadow made it read as belonging to a
+ * different app than the boxes directly beneath it. Hierarchy here comes from the light and the size of
+ * the figure, not from a different material. */
 .hero-box {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-lg);
-  padding: 18px 16px;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
   width: 100%;
-  background: #0a0c10;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 20px 50px -26px #000;
 }
 
-/* Inset well beyond the panel so no pool's falloff lands inside it -- a visible circle edge is what makes
-   this look like a gradient someone applied rather than light in the material. */
+/* Bled well past the panel and clipped back, so no falloff edge lands inside the frame -- a visible
+   circle is what makes a gradient look applied rather than like light in the material. Kept very low:
+   every surface in this app sits around rgba(255,255,255,.035), and anything much brighter than that
+   reads as pasted in. */
 .hero-box::before {
   content: "";
   position: absolute;
   inset: -40%;
   pointer-events: none;
-  /* One hue, and quiet. The first pass ran a cyan pool through here at 0.30 and green at 0.42 -- roughly
-     three times the intensity of any other surface in the app, in a colour that appears nowhere else in
-     it. Both were why the panel read as pasted in from somewhere else. This is the app's own green, in
-     the same register as everything around it. */
   background:
     radial-gradient(44% 50% at 20% 14%, rgba(76, 224, 143, 0.08), transparent 72%),
     radial-gradient(42% 48% at 78% 88%, rgba(76, 224, 143, 0.035), transparent 74%);
   filter: blur(32px);
   transition: opacity 400ms ease;
 }
-/* Nothing to report. The light drops rather than switching off, so a good week still looks like an
-   object with depth instead of a flat black box. */
+/* Nothing to report: the light drops rather than switching off, so a good week still has depth. */
 .hero-box.is-quiet::before { opacity: 0.45; }
 
 .hero-inner { position: relative; }
 
-/* Cut out of the gradient rather than filled with a colour: the figure picks up white at the top-left and
-   resolves into the accent, so it belongs to the light behind it instead of sitting on top of it. */
 .hero-value {
   font-family: var(--font-heading);
   font-variant-numeric: tabular-nums;
   font-size: 40px; font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
-  /* Flat accent. This started as a gradient from pure white, then a gradient inside the accent ramp, and
-     both were still the brightest element on the screen -- at 900 weight and 40px the figure carries by
-     size alone and does not need help. */
   color: var(--color-accent);
 }
 .hero-box.is-quiet .hero-value { color: var(--color-neutral-600); }
 
-/* One rounded group, 1px gaps, each row its own pane of smoked glass. -webkit- prefix because the real
-   target is an installed iOS PWA and Safari still wants it. */
-.hero-rows { display: flex; flex-direction: column; gap: 1px; border-radius: 11px; overflow: hidden; }
-.hero-rows > div {
-  background: rgba(8, 10, 14, 0.62);
-  -webkit-backdrop-filter: blur(9px);
-  backdrop-filter: blur(9px);
-  padding: 10px 12px;
-}
+/* Plain rows on the panel's own surface, spaced like any other list in the app. These were panes of
+   frosted glass in the first pass, which was a third material on one screen. */
+.hero-rows { display: flex; flex-direction: column; gap: 11px; }
 
 .link-row { display: flex; align-items: center; gap: var(--space-3); text-align: left; width: 100%; background: none; border: none; color: inherit; cursor: pointer; padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
 .link-row:hover { background: rgba(238, 240, 245, 0.04); }
