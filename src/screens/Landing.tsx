@@ -1,46 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
-import { bootstrapCoach } from "../lib/accountSetup";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
 import InstallPrompt from "../components/InstallPrompt";
 import { pendingInvite } from "../shared/pendingInvite";
 
-/** Set when someone arrives on the coach signup link, so the "set up as the coach" path is only ever
- * offered to people who came looking for it. */
-export const COACH_SIGNUP_INTENT = "jacked:coach-signup-intent";
-
-function cameForCoachSignup(): boolean {
-  try {
-    return sessionStorage.getItem(COACH_SIGNUP_INTENT) === "1";
-  } catch {
-    return false;
-  }
-}
-
 export default function Landing() {
-  const { loading, session, account, recovering, clearRecovering, revoked, clearRevoked, refreshAccount } = useAuth();
-  // Set by the coach signup link. Read from the hash route's own query, which is where HashRouter puts it
-  // -- window.location.search is the real query string and holds the magic-link `invite` param instead.
-  const [params] = useSearchParams();
-  const wantsSignup = params.get("signup") === "1";
-
-  // Remember that this visit began from the coach signup link, because the flag is gone by the time they
-  // come back signed in -- especially after an email confirmation round trip. Without it, NoAccountYet
-  // has no way to tell a real coach from an invited client who signed up on the wrong screen, and it was
-  // offering "Set up as the coach" to both.
-  useEffect(() => {
-    if (wantsSignup) {
-      try {
-        sessionStorage.setItem(COACH_SIGNUP_INTENT, "1");
-      } catch {
-        // Private browsing can refuse storage. The coach falls back to the invite-code screen and can
-        // reopen the signup link, which is a better failure than showing everyone the coach button.
-      }
-    }
-  }, [wantsSignup]);
-
+  const { loading, session, account, recovering, clearRecovering, revoked, clearRevoked } = useAuth();
   // Coming back from a magic-link email sent from the invite-accept screen — forward to it (it handles
   // its own loading/auth state) rather than falling through to the plain sign-in form here.
   const inviteCode = new URLSearchParams(window.location.search).get("invite");
@@ -77,10 +44,10 @@ export default function Landing() {
   }
 
   if (session) {
-    return <NoAccountYet onBootstrapped={refreshAccount} />;
+    return <NoAccountYet />;
   }
 
-  return <SignIn startInSignup={wantsSignup} />;
+  return <SignIn />;
 }
 
 function ResetPassword({ onDone }: { onDone: () => void }) {
@@ -128,10 +95,13 @@ function ResetPassword({ onDone }: { onDone: () => void }) {
   );
 }
 
-function SignIn({ startInSignup }: { startInSignup?: boolean }) {
+/** Sign-in only. Creating an account happens on an invite link and nowhere else -- a client's, a
+ * friend's, or now a coach's, all of which carry the person's name so nothing has to be typed in
+ * afterwards. A "create an account" button here would produce a signed-in session with no account and
+ * no invite attached to it, which is the dead end this whole change exists to remove. */
+function SignIn() {
   const nav = useNavigate();
-  const [step, setStep] = useState<"welcome" | "form">(startInSignup ? "form" : "welcome");
-  const [mode, setMode] = useState<"signin" | "signup">(startInSignup ? "signup" : "signin");
+  const [step, setStep] = useState<"welcome" | "form">("welcome");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -143,11 +113,11 @@ function SignIn({ startInSignup }: { startInSignup?: boolean }) {
   async function submit() {
     setError(null);
     setBusy(true);
-    const { error } = mode === "signin" ? await supabase.auth.signInWithPassword({ email, password }) : await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) setError(error.message);
-    // On success, AuthProvider's onAuthStateChange picks up the new session and Landing re-renders
-    // itself into the right place (coach desk, client app, or the "set up as coach" bootstrap step).
+    // On success, AuthProvider's onAuthStateChange picks up the session and Landing re-renders itself
+    // into the right place -- coach desk or client app.
   }
 
   async function sendReset() {
@@ -203,29 +173,17 @@ function SignIn({ startInSignup }: { startInSignup?: boolean }) {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={mode === "signup" ? "At least 6 characters" : "••••••••"}
+                  placeholder="••••••••"
                   onKeyDown={(e) => e.key === "Enter" && email.trim() && password.length >= 6 && !busy && submit()}
                 />
               </div>
               {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
               <button className="btn btn-solid btn-block" style={{ height: 54, fontSize: 14, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
-                {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
+                {busy ? "Working…" : "Sign in"}
               </button>
-              <button
-                className="btn btn-ghost"
-                style={{ fontSize: 12.5 }}
-                onClick={() => {
-                  setMode((m) => (m === "signin" ? "signup" : "signin"));
-                  setError(null);
-                }}
-              >
-                {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
+              <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={!email.trim() || busy} onClick={sendReset}>
+                Forgot password?
               </button>
-              {mode === "signin" && (
-                <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={!email.trim() || busy} onClick={sendReset}>
-                  Forgot password?
-                </button>
-              )}
 
               <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
 
@@ -261,120 +219,37 @@ function SignIn({ startInSignup }: { startInSignup?: boolean }) {
   );
 }
 
-function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
+/** The screen that is left after account creation moved entirely onto invite links.
+ *
+ * This used to be a form: an invite-code field, a name field, a coach signup code, and two buttons --
+ * because it had to serve a coach setting themselves up and an invited client whose claim had been
+ * interrupted, at the same time, and there is no wording that speaks to both. In beta it read as the app
+ * demanding an invite code from the platform owner, who had never been given one.
+ *
+ * Every account now comes from a named invite link, coaches included, so there is nothing to ask for. A
+ * signed-in session with no account is no longer a state anyone is meant to reach: a live invite is
+ * remembered and redirected to above, the root offers sign-in only, and a coach arrives through a link
+ * carrying their name. What is left is the genuine dead end -- an email that was never invited, or a
+ * claim abandoned on a link that has since been used -- and the only honest thing to do with it is say
+ * so and offer the way out. */
+function NoAccountYet() {
   const { signOut } = useAuth();
-  const nav = useNavigate();
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [code, setCode] = useState("");
-  const [coachCode, setCoachCode] = useState("");
-  const forCoach = cameForCoachSignup();
-  // An invited client who lost the link -- confirmed their email, reopened the installed app, whatever --
-  // ends up here with a session and no account. They have the code stored from when they first opened
-  // the invite, so finish the job rather than asking them to paste something they were never given.
-  // Skipped for someone who came in on the coach signup link, whose destination is below, not the invite.
-  const stored = forCoach ? null : pendingInvite();
 
-  async function setUpAsCoach() {
-    setBusy(true);
-    setError(null);
-    try {
-      await bootstrapCoach(name.trim() || "Coach", coachCode.trim());
-      onBootstrapped();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Couldn't set this up.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
+  // The invite this session started on, remembered when AcceptInvite first resolved it. Confirming an
+  // email, reopening the installed app, or closing the tab all lose the URL, and the code lives nowhere
+  // else -- so without this the person is looking at the dead end below with a perfectly good invite
+  // sitting unclaimed. No coach-signup exception any more: coaches arrive on an invite link too, so a
+  // stored code is now the only thing that can be true here and it always wins.
+  const stored = pendingInvite();
   if (stored) return <Navigate to={`/invite/${stored}`} replace />;
-
-  /* Both paths that land here are shown, because either can be the right one and guessing wrong strands
-     someone. What changes is which comes first. Someone who arrived on the coach signup link is here to
-     set up as a coach, and leading them with a big INVITE CODE field and "if a coach invited you" reads
-     as the app asking for something they were never given -- which is exactly what it looked like in
-     beta. Their own path goes first; the invite field stays underneath for the case where they were in
-     fact invited and opened the wrong link. */
-  const inviteBlock = (
-    <>
-      <div className="field">
-        <label>Invite code</label>
-        <input
-          className="input"
-          style={{ height: 50, fontSize: 14 }}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="Paste the code from your coach"
-          onKeyDown={(e) => e.key === "Enter" && code.trim() && nav(`/invite/${code.trim()}`)}
-        />
-      </div>
-      <button
-        className="btn btn-solid btn-block"
-        style={{ height: 48, fontSize: 14, opacity: code.trim() ? 1 : 0.5 }}
-        disabled={!code.trim()}
-        onClick={() => nav(`/invite/${code.trim()}`)}
-      >
-        Continue with invite code
-      </button>
-    </>
-  );
-
-  if (forCoach) {
-    return (
-      <Hero>
-        <InfoBanner icon="ph-info">
-          You're signed in. Finish setting up your coach account below — you'll need the signup code you were given.
-        </InfoBanner>
-        <div className="field">
-          <label>Your name</label>
-          <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" />
-        </div>
-        <div className="field">
-          <label>Coach signup code</label>
-          <input className="input" style={{ height: 50, fontSize: 14 }} value={coachCode} onChange={(e) => setCoachCode(e.target.value)} placeholder="From the platform owner" />
-        </div>
-        {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-        <button
-          className="btn btn-solid btn-block"
-          style={{ height: 48, fontSize: 14, opacity: name.trim() && coachCode.trim() && !busy ? 1 : 0.5 }}
-          disabled={!name.trim() || !coachCode.trim() || busy}
-          onClick={setUpAsCoach}
-        >
-          {busy ? "Setting up…" : "Set up as the coach"}
-        </button>
-        <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
-        <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
-          Were you invited by a coach instead? Enter the code from your link.
-        </p>
-        {inviteBlock}
-        <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={() => void signOut()}>
-          Use a different email
-        </button>
-      </Hero>
-    );
-  }
 
   return (
     <Hero>
       <InfoBanner icon="ph-info">
-        You're signed in, but nothing's set up for this email yet. If a coach invited you, enter your invite code below.
+        Nothing is set up for this email. Accounts here are created from an invite link — open the one your
+        coach sent you, or ask them for a new one.
       </InfoBanner>
-
-      {/* This screen's only control used to be "Set up as the coach", which is the wrong answer for the
-          most likely visitor: an invited client who signed up here instead of opening their link. Going
-          to /invite/<code> while already signed in lands straight on the claim step, so the code field
-          finishes the job rather than starting over. */}
-      {inviteBlock}
-
-      {/* No coach block here: someone who arrived on the coach signup link returned above, with that path
-          first. Anyone reaching this branch did not come looking to be a coach, and offering it to them is
-          how an invited client who signed up on the home page ended up with exactly one button -- and it
-          made them a coach. */}
-      {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-      {/* And a way out for the wrong email entirely, which otherwise had none. */}
-      <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={() => void signOut()}>
+      <button className="btn btn-ghost" style={{ fontSize: 12.5 }} onClick={() => void signOut()}>
         Use a different email
       </button>
     </Hero>

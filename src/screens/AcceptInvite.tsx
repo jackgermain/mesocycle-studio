@@ -149,9 +149,11 @@ function SignInStep({ code, invite }: { code: string; invite: PublicInvite }) {
       <div className="h1" style={{ textAlign: "center" }}>You're invited, {invite.clientName.split(" ")[0]}</div>
       <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
         {invite.coachName} sent you this link
-        {invite.role === "friend"
-          ? " — once you're in, you can build your own programs from scratch or clone one of their saved templates, plus full nutrition tracking."
-          : " — once you're in, you'll only ever see the program they build for you."}
+        {invite.role === "coach"
+          ? " — once you're in, you'll have your own roster, your own clients and your own programs, completely separate from theirs."
+          : invite.role === "friend"
+            ? " — once you're in, you can build your own programs from scratch or clone one of their saved templates, plus full nutrition tracking."
+            : " — once you're in, you'll only ever see the program they build for you."}
       </p>
       <div className="field">
         <label>Email</label>
@@ -208,13 +210,17 @@ function ClaimStep({ code, invite, onClaimed }: { code: string; invite: PublicIn
     }
   }
 
-  if (done) return <Navigate to="/onboarding" replace />;
+  // A coach has no client onboarding to do -- that screen asks for units, height and bodyweight, which
+  // are a client's profile, not a coach's. Straight to their desk.
+  if (done) return <Navigate to={invite.role === "coach" ? "/coach/desk" : "/onboarding"} replace />;
 
   return (
     <Hero>
       <div className="h1" style={{ textAlign: "center" }}>Finish setting up</div>
       <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
-        You're signed in as {invite.clientName} — finish setting up your account with {invite.coachName}.
+        You're signed in as {invite.clientName} — {invite.role === "coach"
+          ? "finish setting up your coach account."
+          : `finish setting up your account with ${invite.coachName}.`}
       </p>
       {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
       <button className="btn btn-solid btn-block" style={{ height: 48, fontSize: 14, opacity: busy ? 0.5 : 1 }} disabled={busy} onClick={claim}>

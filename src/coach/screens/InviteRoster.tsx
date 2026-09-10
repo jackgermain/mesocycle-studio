@@ -12,46 +12,42 @@ function initialsFor(name: string): string {
   return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "?";
 }
 
-type PickerRole = InviteRole | "coach";
-
-const ROLE_COPY: Record<PickerRole, string> = {
+const ROLE_COPY: Record<InviteRole, string> = {
   client:
     "A fully prescribed client — you build every program and set their nutrition targets, same as the rest of your roster.",
   friend:
     "A self-directed friend/family account — they can build their own programs from scratch or clone one of your saved templates and modify it, and they get full nutrition tracking. They can't onboard anyone else, and can only message you in the app. You can still view and edit anything they set up.",
   coach:
-    "A fully independent coach — they get their own separate roster, clients, and programs, completely walled off from yours. Not part of your roster at all; this is just a general signup link, so no name needed.",
+    "A fully independent coach — their own separate roster, clients and programs, completely walled off from yours. They don't join your roster; the link just creates their account under the name you give it here.",
 };
-
-// ?signup=1 so it opens on "Create account" rather than "Sign in". Without it the link lands on a screen
-// whose only button says Sign in, and the one audience this link exists for -- someone who has no account
-// yet -- gets "Invalid login credentials" on their first attempt before spotting the small toggle.
-const COACH_SIGNUP_URL = `${shareBaseUrl()}#/?signup=1`;
 
 export default function InviteRoster() {
   const { dispatch } = useCoachStore();
   const { account } = useAuth();
   const [name, setName] = useState("");
-  const [role, setRole] = useState<PickerRole>("client");
+  const [role, setRole] = useState<InviteRole>("client");
   const [sent, setSent] = useState<{ name: string; role: InviteRole; url: string } | null>(null);
-  const [coachLinkCopied, setCoachLinkCopied] = useState(false);
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
-
-  function copyCoachLink() {
-    navigator.clipboard?.writeText(COACH_SIGNUP_URL).then(() => {
-      setCoachLinkCopied(true);
-      setTimeout(() => setCoachLinkCopied(false), 2000);
-    });
-  }
+  const [error, setError] = useState<string | null>(null);
+  // Minting a coach is a platform-owner capability, not something one coach does to bring on another.
+  // The invites insert policy is what actually enforces it; this only decides whether to offer it.
+  const canInviteCoaches = account?.is_platform_admin === true;
 
   async function send() {
-    if (role === "coach") return;
     const trimmed = name.trim();
     if (!trimmed || !account) return;
     setSending(true);
+    setError(null);
     try {
       const invite = await createInvite(account.id, trimmed, role);
+      // A coach is nobody's client, so nothing goes on the roster -- the account exists independently
+      // the moment they claim the link. Everything below this point is roster bookkeeping.
+      if (role === "coach") {
+        setSent({ name: trimmed, role, url: `${shareBaseUrl()}#/invite/${invite.code}` });
+        setName("");
+        return;
+      }
       const id = `${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${Math.random().toString(36).slice(2, 6)}`;
       const client: CoachClient = {
         id,
@@ -72,6 +68,10 @@ export default function InviteRoster() {
       const url = `${shareBaseUrl()}#/invite/${invite.code}`;
       setSent({ name: trimmed, role, url });
       setName("");
+    } catch (e) {
+      // Chiefly the RLS refusal on a coach invite from a non-owner account, which otherwise surfaced as
+      // a raw Postgres message and left the button looking like it had done nothing.
+      setError(e instanceof Error ? e.message : "Couldn't create that invite.");
     } finally {
       setSending(false);
     }
@@ -92,9 +92,7 @@ export default function InviteRoster() {
         {!sent ? (
           <>
             <InfoBanner icon="ph-info">
-              {role === "coach"
-                ? "Prototype note: nothing is emailed automatically. This is a plain signup link, not a personal invite — copy it and send it to whoever you want to bring on."
-                : "Prototype note: nothing is emailed automatically. This generates a link — copy it and send it however you'd reach them."}
+              Prototype note: nothing is emailed automatically. This generates a link — copy it and send it however you'd reach them.
             </InfoBanner>
 
             <div>
@@ -103,46 +101,38 @@ export default function InviteRoster() {
                 value={role}
                 onChange={setRole}
                 options={[
-                  { value: "client", label: "Client" },
-                  { value: "friend", label: "Friend / family" },
-                  { value: "coach", label: "Coach" },
+                  { value: "client" as InviteRole, label: "Client" },
+                  { value: "friend" as InviteRole, label: "Friend / family" },
+                  ...(canInviteCoaches ? [{ value: "coach" as InviteRole, label: "Coach" }] : []),
                 ]}
               />
               <div className="mu" style={{ marginTop: 8, lineHeight: 1.55 }}>{ROLE_COPY[role]}</div>
             </div>
 
-            {role === "coach" ? (
-              <div className="cell" style={{ marginTop: 4 }}>
-                <div className="row" style={{ marginBottom: 8 }}>
-                  <span style={{ flex: 1, fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Coach signup link</span>
-                </div>
-                <div className="mu trunc" style={{ padding: "8px 10px", background: "var(--color-neutral-900)", borderRadius: 7, fontFamily: "monospace" }}>
-                  {COACH_SIGNUP_URL}
-                </div>
-                <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 8, fontSize: 12.5 }} onClick={copyCoachLink}>
-                  {coachLinkCopied ? "Copied" : "Copy link"}
-                </button>
-              </div>
-            ) : (
-              <>
-                <div className="field">
-                  <label>Name</label>
-                  <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Their name" autoFocus />
-                </div>
+            {/* One form for all three roles now. A coach used to be handed a bare signup URL and asked to
+                type their own name into the landing page after signing up -- which meant that page had to
+                serve both them and a stranded invited client at once, and it could not. The name goes on
+                the invite instead, exactly as it does for a client. */}
+            <div className="field">
+              <label>Name</label>
+              <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Their name" autoFocus />
+            </div>
 
-                <div style={{ marginTop: "auto", paddingBottom: 8 }}>
-                  <button className="btn btn-primary btn-block" style={{ height: 48, opacity: name.trim() && !sending ? 1 : 0.5 }} disabled={!name.trim() || sending} onClick={send}>
-                    <i className="ph ph-paper-plane-tilt" style={{ fontSize: 14 }} />
-                    {sending ? "Sending…" : "Generate invite link"}
-                  </button>
-                </div>
-              </>
-            )}
+            {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+
+            <div style={{ marginTop: "auto", paddingBottom: 8 }}>
+              <button className="btn btn-primary btn-block" style={{ height: 48, opacity: name.trim() && !sending ? 1 : 0.5 }} disabled={!name.trim() || sending} onClick={send}>
+                <i className="ph ph-paper-plane-tilt" style={{ fontSize: 14 }} />
+                {sending ? "Sending…" : "Generate invite link"}
+              </button>
+            </div>
           </>
         ) : (
           <>
             <InfoBanner icon="ph-check-circle" tone="accent">
-              {sent.name} was added to your roster as {sent.role === "friend" ? "a friend/family account" : "a client"}.
+              {sent.role === "coach"
+                ? `${sent.name}'s coach account is ready to claim — they won't appear on your roster.`
+                : `${sent.name} was added to your roster as ${sent.role === "friend" ? "a friend/family account" : "a client"}.`}
             </InfoBanner>
 
             <div className="cell">
@@ -158,9 +148,11 @@ export default function InviteRoster() {
               </button>
               <div className="mu" style={{ marginTop: 8, lineHeight: 1.6 }}>
                 Opening it walks {sent.name.split(" ")[0]} through creating their own account. From then on{" "}
-                {sent.role === "friend"
-                  ? "they can build or clone their own programs — you can still view and edit anything they set up from their client page."
-                  : "they only see the program you build for them."}
+                {sent.role === "coach"
+                  ? "they run their own roster, completely separate from yours — you can't see their clients and they can't see yours."
+                  : sent.role === "friend"
+                    ? "they can build or clone their own programs — you can still view and edit anything they set up from their client page."
+                    : "they only see the program you build for them."}
               </div>
             </div>
 
