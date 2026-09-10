@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import { refreshInboxBubbles } from "../shared/inboxUnread";
 import { MyFormChecks } from "../components/MyFormChecks";
 import { useAuth } from "../lib/auth";
+import { BUILD_ID, BUILT_AT } from "../shared/build";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, HeroHeader, SetPasswordCard, SignOutButton } from "../components/UI";
 import { FeedbackSheet } from "../shared/FeedbackSheet";
@@ -160,6 +161,8 @@ export default function Inbox() {
               <div style={{ flex: 1 }}>
                 <div className="scr">Signed in as</div>
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{myName}</div>
+                {/* Which build is on screen. Settles "is it live yet" without a round trip. */}
+                <div className="mu" style={{ marginTop: 2, fontSize: 11 }}>Build {BUILD_ID} · {BUILT_AT}</div>
               </div>
               <button onClick={() => setShowAccount(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
                 <i className="ph ph-x" style={{ fontSize: 16 }} />

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCoachStore } from "../store";
 import { useAuth } from "../../lib/auth";
+import { BUILD_ID, BUILT_AT } from "../../shared/build";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
 import { loadWeighInGaps, applyWeighInDismissals, weighInKeys, type ClientWeighInGap } from "../weighInWatch";
@@ -511,6 +512,8 @@ export default function Desk() {
               <div style={{ flex: 1 }}>
                 <div className="scr">Signed in as</div>
                 <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>{coachName}</div>
+                {/* Which build is on screen. Settles "is it live yet" without a round trip. */}
+                <div className="mu" style={{ marginTop: 2, fontSize: 11 }}>Build {BUILD_ID} · {BUILT_AT}</div>
               </div>
               <button onClick={() => setShowAccount(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-neutral-500)" }}>
                 <i className="ph ph-x" style={{ fontSize: 16 }} />
