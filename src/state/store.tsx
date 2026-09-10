@@ -84,6 +84,9 @@ type Action =
   | { type: "SET_SORENESS_DONE"; dayId: string; answers?: TrainingDay["sorenessAnswers"] }
   | { type: "ADD_FOOD_ITEM"; mealId: string; item: LoggedFoodItem }
   | { type: "REMOVE_FOOD_ITEM"; mealId: string; itemId: string }
+  | { type: "TOGGLE_FOOD_EATEN"; mealId: string; itemId: string }
+  | { type: "SUBMIT_MEAL"; mealId: string }
+  | { type: "REOPEN_MEAL"; mealId: string }
   | { type: "ADD_MEAL"; name: string }
   | { type: "REMOVE_MEAL"; mealId: string }
   | { type: "ADD_CUSTOM_FOOD"; food: FoodItem }
@@ -364,13 +367,36 @@ function reducer(state: AppState, action: Action): AppState {
     }
     case "ADD_FOOD_ITEM": {
       // Stamped here rather than at the call site so every path that logs food is dated, including the
-      // barcode scanner and the AI import.
-      const item = { ...action.item, loggedAt: action.item.loggedAt ?? isoToday() };
+      // barcode scanner and the AI import. Added as planned, not eaten -- ticking it off is a separate,
+      // deliberate act, the same way a prescribed set exists before it is checked.
+      const item = { eaten: false, ...action.item, loggedAt: action.item.loggedAt ?? isoToday() };
       const meals = state.meals.map((m) => (m.id === action.mealId ? { ...m, items: [...m.items, item] } : m));
       return { ...state, meals };
     }
     case "REMOVE_FOOD_ITEM": {
       const meals = state.meals.map((m) => (m.id === action.mealId ? { ...m, items: m.items.filter((i) => i.id !== action.itemId) } : m));
+      return { ...state, meals };
+    }
+    case "TOGGLE_FOOD_EATEN": {
+      const meals = state.meals.map((m) =>
+        m.id !== action.mealId
+          ? m
+          : {
+              ...m,
+              items: m.items.map((i) => (i.id === action.itemId ? { ...i, eaten: i.eaten === false } : { ...i })),
+              // Changing what you ate reopens the meal: a submitted meal that no longer matches what is
+              // ticked is a lie the coach would read as fact.
+              submittedAt: undefined,
+            },
+      );
+      return { ...state, meals };
+    }
+    case "SUBMIT_MEAL": {
+      const meals = state.meals.map((m) => (m.id === action.mealId ? { ...m, submittedAt: isoToday() } : m));
+      return { ...state, meals };
+    }
+    case "REOPEN_MEAL": {
+      const meals = state.meals.map((m) => (m.id === action.mealId ? { ...m, submittedAt: undefined } : m));
       return { ...state, meals };
     }
     case "ADD_MEAL": {

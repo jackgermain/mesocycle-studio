@@ -7,7 +7,7 @@ import { InfoBanner, Meter, HeroHeader, BackHeader } from "../components/UI";
 import { NutritionForm } from "../shared/NutritionForm";
 import FoodSearchSheet from "./FoodSearchSheet";
 import type { FoodItem } from "../data/foodDatabase";
-import type { PortionCategory } from "../data/types";
+import type { PortionCategory, LoggedFoodItem } from "../data/types";
 
 const PORTION_ICON: Record<PortionCategory, string> = {
   Protein: "ph-hand-palm",
@@ -96,7 +96,10 @@ export default function Nutrition() {
     return <PortionsNutrition canSelfServe={canSelfServe} onEditTargets={() => setEditingTargets(true)} />;
   }
 
-  const totals = totalsFor(state.meals.flatMap((m) => m.items));
+  // Only what was actually ticked counts. `eaten === false` is the planned-but-not-eaten case; undefined
+  // is anything logged before this existed and still counts, so nobody's history zeroed itself overnight.
+  const eatenItems = (m: { items: LoggedFoodItem[] }) => m.items.filter((i) => i.eaten !== false);
+  const totals = totalsFor(state.meals.flatMap(eatenItems));
   const kcalTarget = target.kcal + target.trainingDayCarbBonus * 4;
   const left = Math.max(0, kcalTarget - totals.kcal);
 
@@ -176,7 +179,9 @@ export default function Nutrition() {
         </div>
 
         {state.meals.map((meal) => {
-          const mealTotals = totalsFor(meal.items);
+          const eaten = eatenItems(meal);
+          const mealTotals = totalsFor(eaten);
+          const submitted = !!meal.submittedAt;
           return (
             <div key={meal.id}>
               <div className="row" style={{ marginBottom: 6 }}>
@@ -195,9 +200,26 @@ export default function Nutrition() {
                 </button>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-                {meal.items.map((item) => (
-                  <div key={item.id} className="cell row">
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                {meal.items.map((item) => {
+                  const ticked = item.eaten !== false;
+                  return (
+                  <div key={item.id} className="cell row" style={{ background: ticked ? "var(--color-accent-tint)" : undefined }}>
+                    {/* Same gesture as checking off a set, and the same shape, so it reads as the same
+                        act rather than a new one to learn. */}
+                    <button
+                      onClick={() => dispatch({ type: "TOGGLE_FOOD_EATEN", mealId: meal.id, itemId: item.id })}
+                      aria-label={ticked ? `Mark ${item.name} as not eaten` : `Mark ${item.name} as eaten`}
+                      aria-pressed={ticked}
+                      style={{
+                        width: 22, height: 22, flex: "none", borderRadius: 7, cursor: "pointer", padding: 0,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        background: ticked ? "var(--color-accent)" : "none",
+                        border: ticked ? "none" : "1.5px solid var(--color-accent)",
+                      }}
+                    >
+                      {ticked && <i className="ph-bold ph-check" style={{ fontSize: 12, color: "var(--color-bg)" }} />}
+                    </button>
+                    <div style={{ flex: 1, minWidth: 0, opacity: ticked ? 1 : 0.62 }}>
                       <div className="trunc" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>{item.name}</div>
                       <div className="mu trunc" style={{ marginTop: 2 }}>
                         <span className="mono">{item.servings}×</span> {item.servingLabel} ·{" "}
@@ -217,13 +239,43 @@ export default function Nutrition() {
                       </button>
                     </div>
                   </div>
-                ))}
-                <button
-                  onClick={() => setAddingTo(meal.id)}
-                  className="add-row"
-                >
-                  + Add food to {meal.name.toLowerCase()}
-                </button>
+                  );
+                })}
+                {!submitted && (
+                  <button
+                    onClick={() => setAddingTo(meal.id)}
+                    className="add-row"
+                  >
+                    + Add food to {meal.name.toLowerCase()}
+                  </button>
+                )}
+
+                {/* The finishing act, the way an exercise is finished rather than merely started. Nothing
+                    is hidden behind it -- the ticked items already count -- but a coach can tell the
+                    difference between a meal someone is midway through and one they are done with, which
+                    is the whole point of asking for it. */}
+                {meal.items.length > 0 && (
+                  submitted ? (
+                    <div className="row" style={{ gap: 8 }}>
+                      <span className="mu row" style={{ flex: 1, gap: 6, width: "auto" }}>
+                        <i className="ph-fill ph-check-circle" style={{ fontSize: 14, color: "var(--color-accent)" }} />
+                        Logged · {eaten.length} of {meal.items.length}
+                      </span>
+                      <button className="btn btn-ghost" style={{ fontSize: 12.5 }} onClick={() => dispatch({ type: "REOPEN_MEAL", mealId: meal.id })}>
+                        Edit
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="btn btn-solid btn-block"
+                      style={{ height: 42, fontSize: 13, opacity: eaten.length ? 1 : 0.5 }}
+                      disabled={!eaten.length}
+                      onClick={() => dispatch({ type: "SUBMIT_MEAL", mealId: meal.id })}
+                    >
+                      {eaten.length ? `Log ${meal.name.toLowerCase()} · ${mealTotals.kcal} kcal` : "Tick what you ate"}
+                    </button>
+                  )
+                )}
               </div>
             </div>
           );

@@ -178,6 +178,12 @@ export interface LoggedFoodItem {
    * no way to ask whether someone logged anything yesterday. Optional because entries made before this
    * existed have no date and must not be counted as either logged or missed. */
   loggedAt?: string;
+  /** Ticked off as actually eaten, the same gesture as checking off a set.
+   *
+   * Undefined rather than false for anything added before this existed, and undefined counts — a food
+   * log that silently zeroed itself the day this shipped would be worse than no change at all. New items
+   * start explicitly false, so they are planned until ticked. */
+  eaten?: boolean;
   foodId: string;
   name: string;
   servingLabel: string;
@@ -193,6 +199,9 @@ export interface MealSection {
   name: string;
   items: LoggedFoodItem[];
   portionsHit?: PortionCategory[];
+  /** ISO yyyy-mm-dd the meal was submitted, the way an exercise is finished rather than just started.
+   * Absent means still open: food has been added and maybe ticked off, but the meal isn't closed. */
+  submittedAt?: string;
 }
 
 export interface WeighIn {
