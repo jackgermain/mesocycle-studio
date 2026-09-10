@@ -192,7 +192,7 @@ export default function Desk() {
             {coachName.slice(0, 2).toUpperCase()}
           </button>
         }
-       />
+      />
 
       <div className="screen-scroll">
         <HeroStat
