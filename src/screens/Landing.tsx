@@ -291,16 +291,14 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
 
   if (stored) return <Navigate to={`/invite/${stored}`} replace />;
 
-  return (
-    <Hero>
-      <InfoBanner icon="ph-info">
-        You're signed in, but nothing's set up for this email yet. If a coach invited you, enter your invite code below.
-      </InfoBanner>
-
-      {/* This screen's only control used to be "Set up as the coach", which is the wrong answer for the
-          most likely visitor: an invited client who signed up here instead of opening their link. Going
-          to /invite/<code> while already signed in lands straight on the claim step, so the code field
-          finishes the job rather than starting over. */}
+  /* Both paths that land here are shown, because either can be the right one and guessing wrong strands
+     someone. What changes is which comes first. Someone who arrived on the coach signup link is here to
+     set up as a coach, and leading them with a big INVITE CODE field and "if a coach invited you" reads
+     as the app asking for something they were never given -- which is exactly what it looked like in
+     beta. Their own path goes first; the invite field stays underneath for the case where they were in
+     fact invited and opened the wrong link. */
+  const inviteBlock = (
+    <>
       <div className="field">
         <label>Invite code</label>
         <input
@@ -320,43 +318,61 @@ function NoAccountYet({ onBootstrapped }: { onBootstrapped: () => void }) {
       >
         Continue with invite code
       </button>
+    </>
+  );
 
-      {/* The coach path is only offered to someone who arrived on the coach signup link. It used to be
-          shown to everyone who signed in without an account, which meant an invited client who signed up
-          on the home page instead of using their link had exactly one button -- and it made them a coach. */}
-      {forCoach && (
-        <>
-          <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
-          <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
-            Setting this up for yourself as the coach for the first time? Name yourself below.
-          </p>
-          <div className="field">
-            <label>Your name</label>
-            <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" />
-          </div>
-          <div className="field">
-            <label>Coach signup code</label>
-            <input
-              className="input"
-              style={{ height: 50, fontSize: 14 }}
-              value={coachCode}
-              onChange={(e) => setCoachCode(e.target.value)}
-              placeholder="From the platform owner"
-              onKeyDown={(e) => e.key === "Enter" && coachCode.trim() && setUpAsCoach()}
-            />
-          </div>
-          {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
-          <button
-            className="btn btn-secondary btn-block"
-            style={{ height: 48, fontSize: 14, opacity: busy || !coachCode.trim() ? 0.5 : 1 }}
-            disabled={busy || !coachCode.trim()}
-            onClick={setUpAsCoach}
-          >
-            {busy ? "Setting up…" : "Set up as the coach"}
-          </button>
-        </>
-      )}
-      {!forCoach && error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+  if (forCoach) {
+    return (
+      <Hero>
+        <InfoBanner icon="ph-info">
+          You're signed in. Finish setting up your coach account below — you'll need the signup code you were given.
+        </InfoBanner>
+        <div className="field">
+          <label>Your name</label>
+          <input className="input" style={{ height: 50, fontSize: 14 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Dana" />
+        </div>
+        <div className="field">
+          <label>Coach signup code</label>
+          <input className="input" style={{ height: 50, fontSize: 14 }} value={coachCode} onChange={(e) => setCoachCode(e.target.value)} placeholder="From the platform owner" />
+        </div>
+        {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+        <button
+          className="btn btn-solid btn-block"
+          style={{ height: 48, fontSize: 14, opacity: name.trim() && coachCode.trim() && !busy ? 1 : 0.5 }}
+          disabled={!name.trim() || !coachCode.trim() || busy}
+          onClick={setUpAsCoach}
+        >
+          {busy ? "Setting up…" : "Set up as the coach"}
+        </button>
+        <div style={{ height: 1, background: "var(--color-divider)", margin: "6px 0" }} />
+        <p className="mu" style={{ fontSize: 12.5, lineHeight: 1.6, textAlign: "center" }}>
+          Were you invited by a coach instead? Enter the code from your link.
+        </p>
+        {inviteBlock}
+        <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={() => void signOut()}>
+          Use a different email
+        </button>
+      </Hero>
+    );
+  }
+
+  return (
+    <Hero>
+      <InfoBanner icon="ph-info">
+        You're signed in, but nothing's set up for this email yet. If a coach invited you, enter your invite code below.
+      </InfoBanner>
+
+      {/* This screen's only control used to be "Set up as the coach", which is the wrong answer for the
+          most likely visitor: an invited client who signed up here instead of opening their link. Going
+          to /invite/<code> while already signed in lands straight on the claim step, so the code field
+          finishes the job rather than starting over. */}
+      {inviteBlock}
+
+      {/* No coach block here: someone who arrived on the coach signup link returned above, with that path
+          first. Anyone reaching this branch did not come looking to be a coach, and offering it to them is
+          how an invited client who signed up on the home page ended up with exactly one button -- and it
+          made them a coach. */}
+      {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
       {/* And a way out for the wrong email entirely, which otherwise had none. */}
       <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={() => void signOut()}>
         Use a different email
