@@ -130,7 +130,8 @@ export default function Clients() {
             Invite
           </button>
         }
-      >
+       />
+      <div className="screen-scroll">
         <HeroStat
           value={state.clients.length}
           quiet={state.clients.length === 0}
@@ -141,8 +142,6 @@ export default function Clients() {
             { label: "At risk", value: atRiskCount, tone: "warn" },
           ]}
         />
-      </HeroHeader>
-      <div className="screen-scroll">
         {/* hscroll because the admin view has five chips, which overflow a phone -- without it they
             squash rather than scroll. */}
         <div className="row hscroll" style={{ gap: 6 }}>

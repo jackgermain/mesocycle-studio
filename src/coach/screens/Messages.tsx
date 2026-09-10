@@ -92,15 +92,14 @@ export default function Messages() {
             </button>
           </div>
         }
-      >
+       />
+      <div className="screen-scroll">
         <HeroStat
           value={unreadCount}
           quiet={unreadCount === 0}
           label="unread"
           rows={[{ label: "Total threads", value: state.threads.length }]}
         />
-      </HeroHeader>
-      <div className="screen-scroll">
         <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)" }}>
           <i className="ph ph-magnifying-glass" style={{ fontSize: 14 }} />
           <span style={{ fontSize: 14 }}>Search messages</span>
