@@ -223,7 +223,10 @@ export default function Programs() {
             <div className="field">
               <input className="input" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Off-Season Strength" autoFocus />
             </div>
-            <div className="mu" style={{ marginTop: 8, lineHeight: 1.6 }}>Starts as a 4-week, 4-day-a-week draft — every setting is editable in the builder.</div>
+            {/* Was a full sentence explaining that a 4x4 draft is created and that everything is editable
+                afterwards. Both halves were noise: nothing here is committed, and "editable in the
+                builder" is true of every screen in the app. What is worth saying is where it starts. */}
+            <div className="mu" style={{ marginTop: 8, letterSpacing: ".04em" }}>4 weeks · 4 days · change anything after</div>
             <div className="row" style={{ gap: 8, marginTop: 14 }}>
               <button className="btn btn-secondary" style={{ flex: 1, height: 44 }} onClick={() => setNaming(false)}>Cancel</button>
               <button className="btn btn-primary" style={{ flex: 1, height: 44 }} onClick={createFromScratch}>Create</button>

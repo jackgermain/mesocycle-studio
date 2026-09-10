@@ -67,3 +67,31 @@ export async function listCoachesForAdmin(): Promise<CoachSummary[]> {
     friendCount: Number(r.friend_count ?? 0),
   }));
 }
+
+export interface RosterMember {
+  id: string;
+  displayName: string;
+  role: "client" | "friend";
+  active: boolean;
+  createdAt: string;
+  /** They claimed an invite and have a real login, rather than being a name the coach typed in. */
+  claimed: boolean;
+}
+
+/** One coach's roster, for the platform owner.
+ *
+ * Account-level facts only — who is on the roster and whether they finished signing up. Deliberately not
+ * their programs, sessions, weigh-ins, messages or nutrition: a coach's clients are the coach's business,
+ * and an owner who can read them has something to explain to every coach they're selling this to. */
+export async function getCoachRosterForAdmin(coachId: string): Promise<RosterMember[]> {
+  const { data, error } = await supabase.rpc("get_coach_roster_for_admin", { p_coach_id: coachId });
+  if (error || !data) return [];
+  return (data as Record<string, unknown>[]).map((r) => ({
+    id: String(r.id),
+    displayName: String(r.display_name ?? "—"),
+    role: r.role === "friend" ? "friend" : "client",
+    active: r.active !== false,
+    createdAt: String(r.created_at ?? ""),
+    claimed: r.claimed === true,
+  }));
+}

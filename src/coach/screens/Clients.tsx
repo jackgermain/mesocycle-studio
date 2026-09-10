@@ -7,7 +7,7 @@ import { listClaimedInvites } from "../../shared/invites";
 import { CoachTabBar } from "../components/CoachTabBar";
 import { HeroHeader, HeroStat } from "../../components/UI";
 import { SwipeRow } from "../components/SwipeRow";
-import { listCoachesForAdmin, type CoachSummary } from "../../shared/deleteAccount";
+import { listCoachesForAdmin, getCoachRosterForAdmin, type CoachSummary, type RosterMember } from "../../shared/deleteAccount";
 import type { ClientStatus, CoachClient } from "../types";
 
 function initialsFor(name: string): string {
@@ -36,6 +36,7 @@ export default function Clients() {
   // it is a cross-account read that nobody else on the roster screen has any use for.
   const isOwner = account?.is_platform_admin === true;
   const [coaches, setCoaches] = useState<CoachSummary[] | null>(null);
+  const [openCoach, setOpenCoach] = useState<CoachSummary | null>(null);
   useEffect(() => {
     if (filter !== "coaches" || !isOwner) return;
     let live = true;
@@ -179,7 +180,7 @@ export default function Clients() {
         </div>
 
         {filter === "coaches" ? (
-          <CoachDirectory coaches={coaches} />
+          <CoachDirectory coaches={coaches} onOpen={setOpenCoach} />
         ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
           {filtered.map((c) => (
@@ -238,6 +239,7 @@ export default function Clients() {
         </div>
         )}
       </div>
+      {openCoach && <CoachRosterSheet coach={openCoach} onClose={() => setOpenCoach(null)} />}
       <CoachTabBar />
     </div>
   );
@@ -247,7 +249,7 @@ export default function Clients() {
  * who is on the app and how much they are using it, not to reach into anyone's roster. Nothing here can:
  * the counts arrive already computed from a security definer function, because a coach's clients are
  * invisible to every other account including this one. */
-function CoachDirectory({ coaches }: { coaches: CoachSummary[] | null }) {
+function CoachDirectory({ coaches, onOpen }: { coaches: CoachSummary[] | null; onOpen: (c: CoachSummary) => void }) {
   if (coaches === null) {
     return <div className="mu" style={{ textAlign: "center", padding: "22px 0" }}>Loading coaches…</div>;
   }
@@ -259,7 +261,12 @@ function CoachDirectory({ coaches }: { coaches: CoachSummary[] | null }) {
       {coaches.map((c) => {
         const total = c.clientCount + c.friendCount;
         return (
-          <div key={c.id} className="link-row" style={{ padding: "10px 11px", opacity: c.active ? 1 : 0.55 }}>
+          <button
+            key={c.id}
+            className="link-row"
+            style={{ padding: "10px 11px", opacity: c.active ? 1 : 0.55, width: "100%" }}
+            onClick={() => onOpen(c)}
+          >
             <div className="avatar" style={{ width: 36, height: 36, flex: "none" }}>
               {(c.displayName.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("") || "?").toUpperCase()}
             </div>
@@ -279,9 +286,70 @@ function CoachDirectory({ coaches }: { coaches: CoachSummary[] | null }) {
               <div className="num" style={{ fontWeight: 700, fontSize: 12.5, color: "var(--color-accent-300)" }}>{total}</div>
               <div className="mu" style={{ fontSize: 11 }}>on roster</div>
             </div>
-          </div>
+            <i className="ph ph-caret-right" style={{ fontSize: 13, color: "var(--color-neutral-700)", flex: "none" }} />
+          </button>
         );
       })}
+    </div>
+  );
+}
+
+/** One coach's roster, read-only, for the platform owner.
+ *
+ * Account-level facts and nothing else: who is on the roster, which of them ever finished signing up, and
+ * whether their access is still live. Not their programs, sessions, weigh-ins or messages. A coach's
+ * clients are the coach's business, and this is a directory, not a back door.
+ *
+ * "Placeholder" is the number worth looking at — a roster of ten that is nine names typed into a box and
+ * never sent is not a roster of ten, and the count on the previous screen cannot tell you that. */
+function CoachRosterSheet({ coach, onClose }: { coach: CoachSummary; onClose: () => void }) {
+  const [roster, setRoster] = useState<RosterMember[] | null>(null);
+  useEffect(() => {
+    let live = true;
+    getCoachRosterForAdmin(coach.id).then((r) => live && setRoster(r));
+    return () => {
+      live = false;
+    };
+  }, [coach.id]);
+
+  const claimed = roster?.filter((r) => r.claimed).length ?? 0;
+  const placeholders = (roster?.length ?? 0) - claimed;
+
+  return (
+    <div className="sheet-backdrop" onClick={onClose}>
+      <div className="sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: "78vh", display: "flex", flexDirection: "column" }}>
+        <div className="h1" style={{ fontSize: 19, marginBottom: 2 }}>{coach.displayName}</div>
+        <div className="mu" style={{ marginBottom: 12 }}>
+          {coach.active ? "Active coach" : "Access revoked"}
+          {coach.createdAt ? ` · joined ${new Date(coach.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` : ""}
+          {roster && roster.length > 0 ? ` · ${claimed} signed up${placeholders ? `, ${placeholders} placeholder${placeholders === 1 ? "" : "s"}` : ""}` : ""}
+        </div>
+
+        <div style={{ overflowY: "auto", display: "flex", flexDirection: "column", gap: 6, minHeight: 0 }}>
+          {roster === null && <div className="mu" style={{ padding: "16px 0", textAlign: "center" }}>Loading roster…</div>}
+          {roster?.length === 0 && <div className="mu" style={{ padding: "16px 0", textAlign: "center" }}>No one on this roster yet.</div>}
+          {roster?.map((m) => (
+            <div key={m.id} className="cell" style={{ display: "flex", alignItems: "center", gap: 10, opacity: m.active ? 1 : 0.55 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="trunc" style={{ fontSize: 13.5 }}>{m.displayName}</div>
+                <div className="mu trunc" style={{ marginTop: 1 }}>
+                  {m.claimed ? "Signed up" : "Never claimed their invite"}
+                  {m.createdAt ? ` · ${new Date(m.createdAt).toLocaleDateString(undefined, { month: "short", year: "numeric" })}` : ""}
+                  {m.active ? "" : " · revoked"}
+                </div>
+              </div>
+              <span className={`tag ${m.role === "friend" ? "tag-outline" : "tag-neutral"}`} style={{ flex: "none" }}>
+                {m.role === "friend" ? "Friend" : "Client"}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mu" style={{ marginTop: 12, lineHeight: 1.55, fontSize: 11.5 }}>
+          Names and signup status only — their programs, sessions and messages stay private to their coach.
+        </div>
+        <button className="btn btn-secondary btn-block" style={{ height: 44, marginTop: 10 }} onClick={onClose}>Close</button>
+      </div>
     </div>
   );
 }
