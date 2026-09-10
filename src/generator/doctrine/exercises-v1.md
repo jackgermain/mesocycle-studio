@@ -1709,6 +1709,40 @@ This is a goal G30's list does not cover, and it is the first case where **rest 
 effect** rather than to allow recovery. `SetPrescribed.restSec` exists and is normally set by whether an
 exercise is a compound or an isolation; nothing currently varies it for this reason.
 
+**G60 — Order by systemic cost, not just by compound status.** From a review of a generated two-day
+template that placed a Smith squat third:
+
+> *"The Smith machine squat is at the bottom — because it's a Smith machine squat, I would do it first or
+> second. I would do the dumbbell press if chest is more important, and then the chest supported row
+> afterwards — because the chest supported row is a less fatiguing exercise in general than the squat. You
+> get to sit down at the machine, you don't have to think about stabilising it. And working your legs is way
+> more taxing mentally, and just in terms of overall fatigue for your body. So you want to try to do it
+> earlier if possible."*
+
+**Rule — two things drive systemic cost, and both order a session:**
+
+| | Costs more | Costs less |
+|---|---|---|
+| **Body region** | Legs | Upper body |
+| **Support** | Standing, free, self-stabilised | Seated, chest-supported, machine-guided |
+
+So a Smith squat outranks a chest-supported row even though both are compounds — the row is sat down,
+guided, and demands no stabilisation, while the squat taxes the whole body and the head.
+
+**Rule — the resulting order is: priority exercise first, then descending systemic cost.** The day's stated
+priority still claims the opening slot, which is why an incline dumbbell press can lead when chest is the
+client's priority. **Everything after that is ordered by how much it takes out of them**, so the squat comes
+second and the row third.
+
+This sharpens G5's *"whichever one is hardest first"*, which never said what "hardest" meant. It is not the
+heaviest, and it is not the one with the most muscle involved — it is the one that costs the most across the
+whole body. And it explains an observation recorded much earlier from the other direction: 15 reps on a leg
+press is fine where 15 on a squat is not, *"because your whole body isn't cooked."* Same axis, stated then as
+a rep ceiling and now as an ordering rule.
+
+**Applies to any exercise of that shape**, not just squats — anything standing, loaded and self-stabilised
+outranks anything seated and supported.
+
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 
 > *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of
