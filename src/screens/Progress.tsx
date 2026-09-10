@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore, getAllLifts, getLiftHistory } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
+import { useAuth } from "../lib/auth";
+import { coachOnTheOtherEnd } from "../shared/coachName";
 import { TabBar } from "../components/TabBar";
 import { Seg, InfoBanner, HeroHeader, HeroStat } from "../components/UI";
 
@@ -134,6 +136,7 @@ function StrengthTab() {
 
 function BodyTab() {
   const { state, dispatch } = useStore();
+  const { account } = useAuth();
   const p = useEffectiveProfile();
   const today = todayISO();
   const [logging, setLogging] = useState(false);
@@ -279,7 +282,12 @@ function BodyTab() {
                 );
               })}
             </div>
-            <div className="mu" style={{ marginTop: 10, lineHeight: 1.5 }}>Miss two in a week and {state.program.coachName} is notified — the trend line needs the density to stay honest.</div>
+            {/* Only mentions a coach when there is one to notify. */}
+            <div className="mu" style={{ marginTop: 10, lineHeight: 1.5 }}>
+              {coachOnTheOtherEnd(account?.coach_id, state.program.coachName)
+                ? `Miss two in a week and ${state.program.coachName} is notified — the trend line needs the density to stay honest.`
+                : "The trend line needs the density to stay honest — two a week is the minimum that works."}
+            </div>
           </div>
         </div>
       )}

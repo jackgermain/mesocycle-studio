@@ -7,6 +7,7 @@ import { sorenessWording } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { useAuth } from "../lib/auth";
 import { isSorenessAlerting, sendSignals } from "../shared/signals";
+import { coachOnTheOtherEnd } from "../shared/coachName";
 import { judgeVolume, targetRecoveryDay } from "../generator/recoveryWindow";
 
 export default function Soreness({ dayId, due }: { dayId: string; due: { muscle: string; lastTrainedDaysAgo: number }[] }) {
@@ -69,7 +70,13 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
     if (account) void sendSignals(account.id, account.coach_id, [...sore, ...early]);
 
     if (anyUnhealed) {
-      dispatch({ type: "SHOW_TOAST", message: `Noted — those sets hold at last week's number, and ${state.program.coachName}'s flagged.` });
+      const coach = coachOnTheOtherEnd(account?.coach_id, state.program.coachName);
+      dispatch({
+        type: "SHOW_TOAST",
+        message: coach
+          ? `Noted — those sets hold at last week's number, and ${coach}'s flagged.`
+          : "Noted — those sets hold at last week's number.",
+      });
       setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
     }
     nav(`/block/day/${dayId}`, { replace: true });

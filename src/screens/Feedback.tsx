@@ -6,6 +6,7 @@ import { pumpWording, jointReasonLabels } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { useAuth } from "../lib/auth";
 import { isJointAlerting, isJointUrgent, isPumpAlerting, sendSignals } from "../shared/signals";
+import { coachOnTheOtherEnd } from "../shared/coachName";
 import { resolveMuscle } from "../shared/muscleNames";
 import { BodyMap, type Tissue } from "../components/BodyMap";
 
@@ -122,11 +123,17 @@ export default function Feedback() {
     const flagged = signals.length > 0;
     if (flagged) {
       const urgent = jointYes && isJointUrgent(jointSeverity ?? 0);
+      const coach = coachOnTheOtherEnd(account?.coach_id, state.program.coachName);
       dispatch({
         type: "SHOW_TOAST",
-        message: urgent
-          ? `${state.program.coachName} was notified about the joint pain right away.`
-          : `${state.program.coachName} will see this before your next session.`,
+        // Named only when a real coach is on the other end. coach_id is null for a coach training
+        // themselves and for any unattached account, and sendSignals sends nothing in that case -- so
+        // promising that someone will see it would be a promise of a reply that never comes.
+        message: coach
+          ? urgent
+            ? `${coach} was notified about the joint pain right away.`
+            : `${coach} will see this before your next session.`
+          : "Noted — that's on record.",
       });
       setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
     }

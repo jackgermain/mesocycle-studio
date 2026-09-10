@@ -12,8 +12,10 @@ import Soreness from "./Soreness";
 import { ExerciseSection } from "./ExerciseSection";
 import { computeSorenessDue } from "../shared/soreness";
 import { isoToday } from "../shared/dayStatus";
+import { coachOnTheOtherEnd } from "../shared/coachName";
 
 export default function DayDetail() {
+  const { account } = useAuth();
   const { dayId = "" } = useParams();
   const { state } = useStore();
   const found = findDay(state.program, dayId);
@@ -82,7 +84,12 @@ function ReopenedDay({ dayId }: { dayId: string }) {
           </div>
         </div>
 
-        <InfoBanner icon="ph-lock-simple">Logged sessions are read-only after 24 hours. Ask {state.program.coachName} to correct anything wrong.</InfoBanner>
+        <InfoBanner icon="ph-lock-simple">
+          Logged sessions are read-only after 24 hours.{" "}
+          {coachOnTheOtherEnd(account?.coach_id, state.program.coachName)
+            ? `Ask ${state.program.coachName} to correct anything wrong.`
+            : "Nothing here can be edited after that."}
+        </InfoBanner>
       </div>
       <TabBar />
     </div>

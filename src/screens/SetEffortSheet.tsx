@@ -2,21 +2,18 @@ import React from "react";
 
 import { EFFORT_WORDING } from "../shared/signals";
 
-/** Asked in the moment, twice per exercise.
+/** Asked once, after the last working set of an exercise.
  *
- * `position` changes what the answer is for, and the sheet says so, because the same question means two
- * different things depending on when it lands: before the last set it can still change that set, and
- * after it, it can only change next week. A client who knows which one they are answering answers it
- * differently — and more honestly.
+ * Once and not twice: asking on the second-to-last as well doubled the prompts, and on a short day that
+ * is more interruptions than sets. A question people tap through is worse than one that is not asked,
+ * because a wrong answer feeds the progression rule and a missing one does not.
  */
 export function SetEffortSheet({
   exerciseName,
-  position,
   onPick,
   onSkip,
 }: {
   exerciseName: string;
-  position: "before-last" | "final";
   onPick: (effort: number) => void;
   onSkip: () => void;
 }) {
@@ -27,9 +24,7 @@ export function SetEffortSheet({
           <div className="scr">{exerciseName}</div>
           <div className="h1" style={{ fontSize: 20, marginTop: 3 }}>How hard was that set?</div>
           <div className="mu" style={{ marginTop: 4, lineHeight: 1.55 }}>
-            {position === "before-last"
-              ? "One set left. This decides what it should be."
-              : "Last set done. This sets next week's numbers."}
+            Last set done. This sets next week's numbers.
           </div>
         </div>
 

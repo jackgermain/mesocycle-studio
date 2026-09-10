@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
+import { useAuth } from "../lib/auth";
+import { coachOnTheOtherEnd } from "../shared/coachName";
 import { CloseHeader, InfoBanner } from "../components/UI";
 import {
   GOAL_LABELS, GYM_ACCESS_LABELS, INTAKE_VERSION, RECOVERY_MUSCLES, SESSION_LENGTH_LABELS,
@@ -18,6 +20,7 @@ import {
  * Nothing is required. A half-finished intake is worth more than none, and the builder's job is to say
  * what it couldn't determine rather than to refuse. */
 export default function IntakeForm() {
+  const { account } = useAuth();
   const { state, dispatch } = useStore();
   const nav = useNavigate();
   const [draft, setDraft] = useState<Intake>(() => ({ ...blankIntake(), ...(state.intake ?? {}) }));
@@ -122,7 +125,10 @@ export default function IntakeForm() {
             placeholder="Anything that changes what's safe or sensible for you to train."
           />
           <div className="mu" style={{ marginTop: 6 }}>
-            {state.program.coachName} reads this personally. Nothing here is used to make a medical decision.
+            {coachOnTheOtherEnd(account?.coach_id, state.program.coachName)
+              ? `${state.program.coachName} reads this personally.`
+              : "This is kept on your account."}{" "}
+            Nothing here is used to make a medical decision.
           </div>
         </div>
 

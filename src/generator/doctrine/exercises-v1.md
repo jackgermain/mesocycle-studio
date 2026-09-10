@@ -1782,41 +1782,36 @@ load and add a rep or a set instead, at least once. Holding is not a failed week
 a six-week block at 2–4×/week means the connective tissue never gets the relief this rule is pricing in. The
 restraint matters *more* there, not less — the block boundary is the only relief that arrives.
 
-**G62 — Ask how hard the set was twice per exercise: before the last set, and after it.**
+**G62 — Ask how hard the last set was, once per exercise.**
 
-> *"During the second to last set of the exercise I want immediate feedback right there and then, after the
-> last set of the exercise. How hard was this set? 1 easy, 5 could not have done another. Make sure I get
-> that feedback because it can inform the actual after the final set. Include that popup on every exercise
-> every day. Give the coach a notification of the feedback if it's a 5."*
+> *"After the last set of the exercise: how hard was this set? 1 easy, 5 could not have done another.
+> Include that popup on every exercise every day. Give the coach a notification of the feedback if it's a
+> 5."*
 
 **The scale.** 1 easy · 2 moderate · 3 hard · 4 very hard · 5 could not have done another rep. It is RIR
 inverted and bounded — a 5 is RIR 0, a 1 is roughly RIR 4+ — and it is asked in the language a client
 actually thinks in rather than as a number they have to convert.
 
-**Rule — two readings, and they do different jobs.**
+**Rule — the last set, and only the last set.** It was briefly asked on the second-to-last as well, on the
+reasoning that a 5 there could still change the final set. Cut, because the cost is wrong: two prompts per
+exercise is, on a short day, more interruptions than there are sets. **A question people tap through is
+worse than a question not asked** — a wrong answer feeds the progression rule and a missing one does not.
 
-| | Asked | What it decides |
-|---|---|---|
-| **Second-to-last set** | before the final set is performed | **This session.** A 5 here means the last set is already beyond the intended effort, and the last set should hold load or drop a rep rather than push. A 1–2 means there is room to add load or reps on it. |
-| **Last set** | after the exercise is finished | **Next week.** This is the effort the prescription actually produced, and it is the input the progression rule needs. |
+**Rule — the answer is the effort the prescription actually produced**, which is the input next week's
+progression needs. It is not a judgement of the client and should never be framed as one.
 
-The second reading alone was never enough. A single number collected after everything is over can only be
-acted on seven days later; asking one set early is what makes the same question able to change something
-now.
+**Rule — a 5 caps next week's jump.** The prescription already reached RIR 0, so the week's effort target
+was met or exceeded and there is no headroom to spend. Hold the load and add a rep, or hold both — do not
+jump. This is the per-exercise version of C6's ceiling: effort has been spent, so load must not also rise.
 
-**Rule — a 5 on the last set caps next week's jump.** The prescription already reached RIR 0, so the
-week's effort target was met or exceeded and there is no headroom to spend. Hold the load and add a rep,
-or hold both — do not jump. This is the per-exercise version of C6's ceiling: effort has been spent, so
-load must not also rise.
-
-**Rule — a 1 or 2 on the last set means the prescription was too light.** The exercise finished with
-several reps left in reserve, so the next jump can be a full increment rather than the staggered one, and
-on a rep-first exercise the rep target can move rather than waiting for the range to top out.
+**Rule — a 1 or 2 means the prescription was too light.** The exercise finished with several reps left in
+reserve, so the next jump can be a full increment rather than the staggered one, and on a rep-first
+exercise the rep target can move rather than waiting for the range to top out.
 
 **Rule — only a 5 reaches the coach.** Every rating is stored; one is notified. Anything below 5 is
-ordinary training, and a roster of ten people rating four sets an exercise would bury a coach in
-notifications within a day. This is the same reasoning as the joint scale, where a 1 is noticed and
-trained through and is not worth interrupting anyone over.
+ordinary training, and a roster of ten people rating one set an exercise would still bury a coach. This is
+the same reasoning as the joint scale, where a 1 is noticed and trained through and is not worth
+interrupting anyone over.
 
 **Interaction with G61.** Under six reps in a six-week block, a 5 is a stop sign rather than a data point:
 the load is already at the top of what the tissue is being asked to take, the deload is still weeks away,
