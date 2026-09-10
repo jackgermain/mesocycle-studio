@@ -192,7 +192,9 @@ export default function Desk() {
             {coachName.slice(0, 2).toUpperCase()}
           </button>
         }
-      >
+       />
+
+      <div className="screen-scroll">
         <HeroStat
           value={counts.volume + counts.joint + counts.weighin + counts.unlogged}
           quiet={counts.volume + counts.joint + counts.weighin + counts.unlogged === 0}
@@ -204,9 +206,6 @@ export default function Desk() {
             { label: <>Sessions &amp; meals not logged</>, value: counts.unlogged },
           ]}
         />
-      </HeroHeader>
-
-      <div className="screen-scroll">
         <div>
           <div className="sh">Roster this week · {assigned.length} clients</div>
           <div className="cell">
