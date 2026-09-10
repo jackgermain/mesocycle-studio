@@ -95,3 +95,13 @@ export async function getCoachRosterForAdmin(coachId: string): Promise<RosterMem
     claimed: r.claimed === true,
   }));
 }
+
+/** Revoke or restore a coach's access, platform-owner only.
+ *
+ * Reversible, unlike deletion: `active` is checked on every session load and a revoked account is signed
+ * out, but the row and everything hanging off it stays. That is the control to reach for first — deleting
+ * a coach takes their whole roster with it. */
+export async function setCoachActiveAsAdmin(coachId: string, active: boolean): Promise<{ ok: true } | { ok: false; error: string }> {
+  const { error } = await supabase.rpc("set_coach_active_as_admin", { p_coach_id: coachId, p_active: active });
+  return error ? { ok: false, error: error.message } : { ok: true };
+}
