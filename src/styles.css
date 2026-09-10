@@ -367,19 +367,29 @@ textarea.input { min-height: 78px; resize: vertical; line-height: 1.5; }
 /* "Add another one here" rows. These were a dashed border, which rendered badly: CSS dashes bunch up and
    change length as they wrap a 14px corner radius, so the corners looked frayed rather than deliberate.
    A solid hairline with accent text is the same affordance without the ragged corners. */
+/* The "add another one" control. A real button on a real surface, not a hairline outline around empty
+ * page -- it sits directly above the green Log button, and a 1px divider next to a solid 48px primary
+ * read as an unfinished placeholder rather than the secondary half of a pair.
+ *
+ * Deliberately not green-filled: there is one green button per meal and it is the one that finishes the
+ * meal. This is the same relationship .btn-secondary has to .btn-primary everywhere else, so it borrows
+ * that treatment -- a surface with an inset ring -- and keeps the accent for its label only. */
 .add-row {
   width: 100%;
-  border: 1px solid var(--color-divider);
+  min-height: 48px;
+  border: none;
+  box-shadow: inset 0 0 0 1px var(--color-neutral-800);
   border-radius: var(--radius-md);
-  padding: 11px;
+  padding: 12px;
   text-align: center;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-accent);
-  background: none;
+  background: var(--color-surface);
   cursor: pointer;
 }
-.add-row:active { background: var(--color-accent-tint); }
+.add-row:hover { background: var(--color-surface-raised); }
+.add-row:active { background: var(--color-accent-tint); transform: scale(0.995); }
 
 .chip {
   padding: 6px 10px; border-radius: 999px; font-size: var(--text-sm); font-weight: 600; cursor: pointer;

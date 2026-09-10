@@ -245,7 +245,6 @@ export default function Nutrition() {
                   <button
                     onClick={() => setAddingTo(meal.id)}
                     className="add-row"
-                    style={{ padding: 14 }}
                   >
                     + Add food to {meal.name.toLowerCase()}
                   </button>
