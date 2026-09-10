@@ -130,7 +130,7 @@ export default function Clients() {
             Invite
           </button>
         }
-      />
+       />
       <div className="screen-scroll">
         <HeroStat
           value={state.clients.length}
