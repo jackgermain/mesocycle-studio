@@ -1743,6 +1743,45 @@ a rep ceiling and now as an ordering rule.
 **Applies to any exercise of that shape**, not just squats — anything standing, loaded and self-stabilised
 outranks anything seated and supported.
 
+**G61 — Block length sets the size of the weekly jump, and the mechanism is connective tissue.**
+
+> *"With six week blocks in general, have a smaller ramp up each week, because it's six weeks instead of four
+> before deloading. Part of what's important about deloading is it lets your connective tissues heal. So if
+> you've made a lot of weight jumps in one block and you still have another two weeks of training, somebody
+> could get hurt. So just be mindful of having less aggressive jumps each week in progressions for heavy
+> exercises — that being total load and low reps, that being under the six rep range especially — as a good
+> rule of thumb all the time for six week blocks."*
+
+**Rule — the same total progress is spread over more weeks, not extended at the same rate.** A six-week block
+is not a four-week block with two extra weeks bolted on the end. The weekly increment shrinks so the load at
+the end of week 6 is not far beyond where week 4 of a four-week block would have landed. Running a four-week
+ramp for six weeks arrives two rungs too high with no relief in sight.
+
+**Rule — the reduction is not uniform. It scales with absolute load and inversely with reps.**
+
+| Rep range | 4-week block | 6-week block | Why |
+|---|---|---|---|
+| **Under 6 reps** | normal jump | **roughly half**, and skip weeks | Highest absolute load. This is where the rule bites hardest and where Jack named it explicitly. |
+| 6–10 reps | normal jump | about two thirds | Real load, moderate risk. |
+| 10–15 reps | normal jump | near normal | Load is low; the limiter is metabolic, not structural. |
+| 15+ / isolation | normal jump | normal | Effectively unconstrained — add reps freely. |
+
+**The mechanism is why the tiering exists.** Muscle recovers in days; tendon, ligament and joint capsule
+recover in weeks, and they are loaded in proportion to *absolute weight on the bar*, not to how hard the set
+felt. A deload is what lets that tissue catch up. Push the deload out from week 4 to week 6 and the tissue
+gets two extra weeks of accumulating load with no relief — so the load itself has to accumulate more slowly.
+This is C6's ceiling logic (injury risk is a function of absolute load, which is why the engine can be
+permissive with high-rep work and must not be with low-rep work) applied along the time axis instead of the
+intensity axis. Same reason, different variable.
+
+**Consequence — under six reps in a six-week block, a week that holds is a legitimate week.** Where a
+four-week block adds load nearly every week, a six-week block on a heavy compound should expect to repeat a
+load and add a rep or a set instead, at least once. Holding is not a failed week; it is the plan.
+
+**Consequence — this compounds with C7.** Below five sessions a week there is no scheduled deload at all, so
+a six-week block at 2–4×/week means the connective tissue never gets the relief this rule is pricing in. The
+restraint matters *more* there, not less — the block boundary is the only relief that arrives.
+
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 
 > *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of
