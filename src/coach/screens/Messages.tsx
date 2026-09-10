@@ -93,12 +93,12 @@ export default function Messages() {
           </div>
         }
       >
-        <HeroStat value={unreadCount} label="unread" valueColor={unreadCount > 0 ? "var(--color-accent)" : "var(--color-neutral-200)"}>
-          <div className="row" style={{ fontSize: 12.5 }}>
-            <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Total threads</span>
-            <span className="num" style={{ fontWeight: 700, color: "var(--color-neutral-200)" }}>{state.threads.length}</span>
-          </div>
-        </HeroStat>
+        <HeroStat
+          value={unreadCount}
+          label="unread"
+          valueColor={unreadCount > 0 ? "var(--color-accent)" : "var(--color-neutral-200)"}
+          rows={[{ label: "Total threads", value: state.threads.length, tone: "neutral" }]}
+        />
       </HeroHeader>
       <div className="screen-scroll">
         <div className="input row" style={{ height: 38, gap: 8, color: "var(--color-neutral-600)" }}>

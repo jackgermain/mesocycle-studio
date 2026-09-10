@@ -340,19 +340,91 @@ export function HeroHeader({ kicker, title, right, children }: { kicker?: string
   );
 }
 
+/** One line inside a HeroStat.
+ *
+ * `value` is what the bar is drawn from, so omit it for a row that isn't a count -- a coach's name, or
+ * "12 weeks" -- and that row prints without one rather than drawing a bar off a number that has no
+ * magnitude. `display` is what gets printed when that differs from the raw value. */
+export interface HeroRow {
+  label: React.ReactNode;
+  value?: number;
+  display?: React.ReactNode;
+  /** "warning" marks the category you'd want to look at first. Reserve it -- if everything is amber,
+   * nothing is. */
+  tone?: "accent" | "warning" | "neutral";
+}
+
+const HERO_BAR_TONE: Record<NonNullable<HeroRow["tone"]>, string> = {
+  accent: "var(--color-accent)",
+  warning: "var(--color-warning)",
+  neutral: "var(--color-neutral-600)",
+};
+
 /** A boxed, oversized stat used inside a HeroHeader — one big number carries far more weight than a tiny
- * uppercase kicker, with room for a secondary breakdown list (Desk's volume/joint/weigh-in counts,
- * Messages' thread count) alongside it. */
-export function HeroStat({ value, label, valueColor = "var(--color-accent)", children }: { value: React.ReactNode; label: React.ReactNode; valueColor?: string; children?: React.ReactNode }) {
+ * uppercase kicker, with a breakdown beneath it.
+ *
+ * Each row carries a hairline track scaled to the largest value in the set, so **the shape is readable
+ * before the numbers are**: which category is loud is obvious without counting. The bars are relative to
+ * each other rather than to any absolute ceiling, because these counts have no natural maximum — three
+ * volume proposals is a lot on a roster of four and nothing on a roster of forty.
+ *
+ * At zero every track sits empty and flat, which is the state that actually matters: a coach whose roster
+ * is in good shape sees this panel most days, and the previous design — a big 0 beside four more zeros —
+ * read as data that had failed to load rather than as good news. */
+export function HeroStat({
+  value,
+  label,
+  valueColor = "var(--color-accent)",
+  rows,
+  children,
+}: {
+  value: React.ReactNode;
+  label: React.ReactNode;
+  valueColor?: string;
+  rows?: HeroRow[];
+  children?: React.ReactNode;
+}) {
+  // Scaled off the biggest row, never off zero -- dividing by a max of 0 gives every bar a NaN width.
+  const max = Math.max(1, ...(rows ?? []).map((r) => r.value ?? 0));
+  // Bars are a comparison, so they need something to compare against. With one countable row the bar is
+  // always full and says nothing at all -- Messages' "total threads", Progress' "program length" -- so
+  // below two the panel drops back to plain rows rather than drawing a decoration.
+  const showBars = (rows ?? []).filter((r) => r.value !== undefined).length >= 2;
+
   return (
     <div className="hero-box">
-      <div className="row" style={{ gap: 0, alignItems: "stretch", width: "100%" }}>
-        <div style={{ flex: children ? "none" : 1, paddingRight: children ? 14 : 0, borderRight: children ? "1px solid var(--color-neutral-800)" : undefined }}>
-          <div className="num" style={{ fontSize: 32, lineHeight: 1, color: valueColor }}>{value}</div>
-          <div className="scr" style={{ marginTop: 5, lineHeight: 1.3 }}>{label}</div>
-        </div>
-        {children && <div style={{ flex: 1, paddingLeft: 14, display: "flex", flexDirection: "column", justifyContent: "center", gap: 7, minWidth: 0 }}>{children}</div>}
+      <div className="row" style={{ alignItems: "baseline", justifyContent: "space-between", gap: 10, marginBottom: rows?.length || children ? 13 : 0 }}>
+        <div className="num" style={{ fontSize: 32, lineHeight: 1, color: valueColor }}>{value}</div>
+        <div className="scr" style={{ textAlign: "right", lineHeight: 1.3 }}>{label}</div>
       </div>
+
+      {rows?.map((r, i) => {
+        const v = r.value;
+        const pct = v === undefined || !showBars ? null : Math.round((v / max) * 100);
+        return (
+          <div key={i} style={{ marginBottom: i === rows.length - 1 && !children ? 0 : 10 }}>
+            <div className="row" style={{ fontSize: 12.5, marginBottom: pct === null ? 0 : 5 }}>
+              <span style={{ flex: 1, minWidth: 0, color: "var(--color-neutral-400)" }}>{r.label}</span>
+              {/* Mono only for actual figures. A coach's name set in JetBrains Mono reads as data. */}
+              <span
+                className={v === undefined ? undefined : "num"}
+                style={{ fontWeight: v === undefined ? 500 : 700, fontFamily: v === undefined ? "var(--font-heading)" : undefined, color: "var(--color-neutral-200)" }}
+              >
+                {r.display ?? v}
+              </span>
+            </div>
+            {pct !== null && (
+              <div className="hero-track">
+                {/* Rendered even at 0% so the row keeps its height and the panel doesn't reflow as counts
+                    change; width 0 simply draws nothing. */}
+                <div className="hero-fill" style={{ width: `${pct}%`, background: HERO_BAR_TONE[r.tone ?? "accent"] }} />
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {children}
     </div>
   );
 }
