@@ -373,13 +373,25 @@ const HERO_TONE: Record<string, string> = {
   none: "var(--color-neutral-200)",
 };
 
+/** Worst first. The dial takes its colour from the most severe row that actually has something in it, so
+ * the ring answers "how bad" at a glance and the list answers "what". A red ring over a red row is one
+ * fact told twice; a green ring over a red row is the summary contradicting the detail. */
+const TONE_RANK: ("danger" | "warn" | "caution")[] = ["danger", "warn", "caution"];
+
+function worstTone(rows: HeroRow[] | undefined): string {
+  for (const tone of TONE_RANK) {
+    if (rows?.some((r) => r.tone === tone && (r.value ?? 0) > 0)) return HERO_TONE[tone];
+  }
+  return "var(--color-accent)";
+}
+
 /** The dial. Drawn rather than charted: one arc, the figure inside it, and no axis or scale, because
  * "how much is waiting" has no units worth labelling.
  *
  * At zero the ring closes into a complete circle in a muted tone instead of showing an empty track. A
  * finished circle reads as done; an empty one reads as broken, and that is the state a coach with a
  * healthy roster sees most days. */
-function HeroRing({ value, quiet }: { value: number; quiet?: boolean }) {
+function HeroRing({ value, quiet, color }: { value: number; quiet?: boolean; color: string }) {
   const R = 34;
   const C = 2 * Math.PI * R;
   const frac = quiet ? 1 : Math.min(1, Math.max(0.06, value / RING_FULL_AT));
@@ -387,10 +399,12 @@ function HeroRing({ value, quiet }: { value: number; quiet?: boolean }) {
     <div style={{ position: "relative", width: 84, height: 84, flex: "none" }}>
       <svg width="84" height="84" viewBox="0 0 84 84" style={{ transform: "rotate(-90deg)" }} aria-hidden="true">
         <defs>
+          {/* One hue, lit across the arc. A gradient between two different alert colours would read as
+              a scale from one problem to another, which is not what it means. */}
           <linearGradient id="hero-ring" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="var(--color-accent-300)" />
-            <stop offset="55%" stopColor="var(--color-accent)" />
-            <stop offset="100%" stopColor="var(--color-accent-600)" />
+            <stop offset="0" stopColor={color} stopOpacity="0.55" />
+            <stop offset="55%" stopColor={color} />
+            <stop offset="100%" stopColor={color} stopOpacity="0.75" />
           </linearGradient>
         </defs>
         <circle cx="42" cy="42" r={R} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
@@ -403,7 +417,7 @@ function HeroRing({ value, quiet }: { value: number; quiet?: boolean }) {
         />
       </svg>
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <span className="num" style={{ fontSize: 24, fontWeight: 700, lineHeight: 1, color: quiet ? "var(--color-neutral-500)" : "var(--color-accent)" }}>{value}</span>
+        <span className="num" style={{ fontSize: 24, fontWeight: 700, lineHeight: 1, color: quiet ? "var(--color-neutral-500)" : color }}>{value}</span>
         <span className="scr" style={{ fontSize: 8.5, marginTop: 3 }}>{quiet ? "all clear" : "waiting"}</span>
       </div>
     </div>
@@ -432,7 +446,7 @@ export function HeroStat({
     return (
       <div className={`hero-box${quiet ? " is-quiet" : ""}`}>
         <div className="hero-inner row" style={{ gap: 16, alignItems: "center" }}>
-          <HeroRing value={value} quiet={quiet} />
+          <HeroRing value={value} quiet={quiet} color={worstTone(rows)} />
           <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 }}>
             {rows?.map((r, i) => (
               <div key={i} className="row" style={{ fontSize: 12.5 }}>
