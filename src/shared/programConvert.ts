@@ -162,6 +162,9 @@ export interface DraftExercise {
   /** The weight, when `load` is already spoken for by a percentage or an effort. Same reason as
    * BuilderSet.weightLb: one number per set could not hold "70% at 315 lb". */
   weight?: number;
+  /** What the spreadsheet or photo actually said, when the importer replaced it with the library's own
+   * name for the same movement. Present only when a rename happened, so it doubles as the flag for one. */
+  sourceName?: string;
 }
 export interface DraftDay {
   name: string;

@@ -251,7 +251,13 @@ export function normalizeExerciseName(s: string): string {
     .replace(/\([^)]*\)/g, " ")
     .replace(/[^a-z0-9\s]/g, " ")
     .replace(/\s+/g, " ")
-    .trim();
+    .trim()
+    // Compounds that are one word in the library and two in the wild. This has to happen at string level
+    // rather than in the token map below, because joining two words is not something a per-word lookup
+    // can do -- "lat pull down" tokenises to three words and never meets "pulldown".
+    .replace(/\bpull down\b/g, "pulldown")
+    .replace(/\bpush down\b/g, "pushdown")
+    .replace(/\blay down\b/g, "lying");
 }
 
 /** Word-level normalisation on top of the string-level pass above.
@@ -264,6 +270,9 @@ const ABBREV: Record<string, string> = {
   db: "dumbbell", bb: "barbell", kb: "kettlebell", rdl: "romanian deadlift",
   ohp: "overhead press", bw: "bodyweight", "1arm": "single arm", alt: "alternating",
   ext: "extension", raises: "raise", machines: "machine",
+  // Written short in almost every real sheet. "Inc" was the one that made "DB Inc Press" resolve to a
+  // flat Dumbbell Bench Press -- the wrong exercise, and the wrong half of the chest.
+  inc: "incline", dec: "decline", rev: "reverse",
   // Written as one word about as often as two, and the hyphen is gone by the time this runs.
   pullup: "pull up", chinup: "chin up", pushup: "push up", situp: "sit up", stepup: "step up",
   // "Abductor Machine" and "Hip Abduction Machine" are the same machine; the stems differ by two letters.
@@ -294,7 +303,21 @@ function words(name: string): Set<string> {
  * row and never updated (a real, common issue in hand-maintained templates, not something we can fix by
  * parsing more carefully). Matching the exercise name against the app's own library gives a more reliable
  * answer when the name is recognizable, so this is tried first and the sheet's tag is only a fallback. */
-export function guessMuscleFromLibrary(name: string): string | undefined {
+/** How sure the match is, because the two ends of this scale deserve opposite treatment.
+ *
+ * "exact" and "subset" are safe enough to rename an imported exercise with -- they mean every word of one
+ * name appears in the other. "fuzzy" is a scored token overlap that is right often enough to pick a muscle
+ * group from and *not* right often enough to silently retitle a coach's exercise with. */
+export type MatchConfidence = "exact" | "subset" | "fuzzy";
+
+/** Resolve a written exercise name to the library entry it means.
+ *
+ * `guessMuscleFromLibrary` has always done this work and then thrown the entry away, returning only the
+ * muscle -- which is all the soreness check and the volume counter need. But anything that reasons about
+ * *which movement this is* (rep range, set cap, where it belongs in a session, what it shouldn't be
+ * stacked with) is keyed on the library entry itself, and an imported "DB Inc Press" that stays a
+ * free-text string is invisible to all of it. Same matcher, fuller answer. */
+export function resolveLibraryExercise(name: string): { exercise: LibraryExercise; confidence: MatchConfidence } | undefined {
   const norm = normalizeExerciseName(name);
   if (!norm) return undefined;
   const tokens = words(name);
@@ -306,7 +329,7 @@ export function guessMuscleFromLibrary(name: string): string | undefined {
   // Most-specific wins. "Barbell RDL" contains both "Barbell Deadlift" and "Romanian Deadlift"; taking
   // whichever came first in the file returned Back instead of Hamstrings -- the right answer is the one
   // that uses more of what was actually written.
-  let subset: { muscle: string; matched: number; generic: number } | undefined;
+  let subset: { exercise: LibraryExercise; matched: number; generic: number } | undefined;
   for (const ex of libraryExercises) {
     const exTokens = words(ex.name);
     if (!exTokens.size) continue;
@@ -318,16 +341,16 @@ export function guessMuscleFromLibrary(name: string): string | undefined {
     // just the bar it's held with, so the one with fewer equipment words wins.
     const generic = [...exTokens].filter((t) => GENERIC_WORDS.has(t)).length;
     if (!subset || smaller.size > subset.matched || (smaller.size === subset.matched && generic < subset.generic)) {
-      subset = { muscle: ex.muscle, matched: smaller.size, generic };
+      subset = { exercise: ex, matched: smaller.size, generic };
     }
   }
-  if (subset) return subset.muscle;
+  if (subset) return { exercise: subset.exercise, confidence: "subset" };
 
-  let best: { muscle: string; score: number } | undefined;
+  let best: { exercise: LibraryExercise; score: number } | undefined;
   for (const ex of libraryExercises) {
     const exNorm = normalizeExerciseName(ex.name);
     if (!exNorm) continue;
-    if (exNorm === norm) return ex.muscle;
+    if (exNorm === norm) return { exercise: ex, confidence: "exact" };
 
     const exTokens = [...words(ex.name)];
     const overlap = exTokens.filter((t) => tokens.has(t)).length;
@@ -340,7 +363,30 @@ export function guessMuscleFromLibrary(name: string): string | undefined {
     // movement, and the opposite muscle, on the strength of the words "hip" and "machine".
     const union = new Set([...exTokens, ...tokens]).size;
     const score = overlap / union;
-    if (!best || score > best.score) best = { muscle: ex.muscle, score };
+    if (!best || score > best.score) best = { exercise: ex, score };
   }
-  return best?.muscle;
+  return best ? { exercise: best.exercise, confidence: "fuzzy" } : undefined;
+}
+
+/** Turn a name written on a spreadsheet into the library's own name for the same movement.
+ *
+ * Renames only on an "exact" or "subset" match -- every word of one name appearing in the other. A fuzzy
+ * score is right often enough to pick a muscle group and not right often enough to retitle a coach's
+ * exercise behind their back: silently turning "Banana Split Squat" into "Bulgarian Split Squat" is worse
+ * than leaving it alone, because the coach has no way to see it happened.
+ *
+ * The written name is kept in `sourceName` whenever it is replaced, so the sheet stays auditable and the
+ * rename is reversible. */
+export function canonicalizeImportedName(raw: string, sheetMuscle?: string): { name: string; muscle: string; sourceName?: string } {
+  const written = raw.trim();
+  const hit = resolveLibraryExercise(written);
+  const muscle = hit?.exercise.muscle || (sheetMuscle ?? "").trim() || "General";
+  if (!hit || hit.confidence === "fuzzy" || hit.exercise.name === written) return { name: written, muscle };
+  return { name: hit.exercise.name, muscle, sourceName: written };
+}
+
+/** The muscle group a written exercise name belongs to. Unchanged in behaviour -- it is the same matcher
+ * it always was, now reading the answer off `resolveLibraryExercise` instead of computing it inline. */
+export function guessMuscleFromLibrary(name: string): string | undefined {
+  return resolveLibraryExercise(name)?.exercise.muscle;
 }

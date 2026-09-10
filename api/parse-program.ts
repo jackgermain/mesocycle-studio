@@ -82,7 +82,19 @@ const SYSTEM = `You read training programs out of photos, screenshots and PDFs a
 - Read the numbers off the source. Don't invent reps or loads that aren't there -- leave the field out and the coach fills it in.
 - "load" is only a weight when loadMode is "lb". Use "pct1rm" for percentages, "rpe" or "rir" when the source prescribes effort rather than weight.
 - Keep the source's exercise names as written. Don't rename a movement to something you think is better.
-- Put anything you guessed, couldn't read, or had to interpret into "notes". A coach checks your work, and a wrong number is worse than a flagged one. If the image is unreadable, return an empty days list and say why.`;
+- Put anything you guessed, couldn't read, or had to interpret into "notes". A coach checks your work, and a wrong number is worse than a flagged one. If the image is unreadable, return an empty days list and say why.
+
+How coaches actually write these sheets, which is not how a clean data table looks:
+
+- "s" after a number is seconds, and only on work genuinely done for time -- planks, holds, carries. It is never a weight and never a side count. A sheet that says "30s" on a plank means thirty seconds; a sheet that says "20s" next to a dumbbell press means twenty-pound dumbbells and the coach was being sloppy. Judge by the exercise, and flag it in notes when you had to.
+- "/s", "ea", "ea." or "each" after a rep count means per side, not total. "10/s" on a lunge is ten each leg. Record the per-side number as the reps and say so in notes.
+- A rep cell like "8-10", "8~10" or "8/10" is a target range, not two sets. Take the bottom of the range as the rep number and put the range in notes.
+- Sets whose reps descend across a row -- 10, 8, 8 or 12, 10, 8 -- are one exercise with a descending scheme, not three exercises. That shape is what fatigue does on its own and it is written deliberately as often as not.
+- Loads that climb across a row -- 50, 55, 55 -- are one exercise with a staggered top set. Same thing: one entry, and the highest load is the working load.
+- Warm-up rows sit above the working sets and are often lighter and unnumbered, sometimes marked "w/u", "warm", or just left blank in the load column. Leave them out of the sets count and mention them in notes.
+- A muscle-group or "tier" column next to an exercise is frequently stale -- copy-pasted from the row above and never corrected. Trust the exercise name over that column when they disagree.
+- An unlabelled single number in a column headed RPE, RIR, @, or "effort" is an effort prescription, not a weight. RPE runs 6 to 10 and RIR runs 0 to 4; a bare number in that range in an otherwise empty load column is almost always effort.
+- Percentages -- "75%", "0.75", "75% x5" -- are percent of one-rep max. Use loadMode "pct1rm" and record the number as written, not multiplied out.`;
 
 async function readJson(req: any): Promise<any> {
   if (req.body && typeof req.body === "object") return req.body;

@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabase";
 import type { DraftDay } from "./programConvert";
+import { canonicalizeImportedName } from "../coach/exerciseLibrary";
 import { toStringArray } from "../coach/programAiEdit";
 
 export interface AiProgramResult {
@@ -70,6 +71,19 @@ function normalizeSets(days: DraftDay[]): DraftDay[] {
   return days.map((d) => ({ ...d, exercises: d.exercises.map((e) => ({ ...e, sets: e.sets ?? 1 })) }));
 }
 
+/** Map every name the model read off the page onto the library's own name for the same movement.
+ *
+ * The model is told to keep the source's names as written -- it should not be inventing a rename, and a
+ * photo of "DB Inc Press" says "DB Inc Press". Resolving that to the library entry is the app's job, not
+ * the model's, and doing it here rather than in the prompt means the spreadsheet importer and the photo
+ * importer resolve names the same way instead of two ways that drift apart. */
+function canonicalizeNames(days: DraftDay[]): DraftDay[] {
+  return days.map((d) => ({
+    ...d,
+    exercises: d.exercises.map((e) => ({ ...e, ...canonicalizeImportedName(e.name, e.muscle) })),
+  }));
+}
+
 /** Repeats the distinct sessions across the week the coach actually asked for.
  *
  * This exists so the model never has to know that the length of the days array is what decides training
@@ -133,6 +147,6 @@ export async function parseProgramWithAi(files: { mediaType: string; data: strin
   if (result.days.length === 0) {
     throw new Error(result.notes?.[0] ?? "Nothing readable came back — try a clearer photo.");
   }
-  const { days, note } = expandToFrequency(normalizeSets(result.days), result.daysPerWeek);
+  const { days, note } = expandToFrequency(canonicalizeNames(normalizeSets(result.days)), result.daysPerWeek);
   return { ...result, days, notes: note ? [...(result.notes ?? []), note] : result.notes };
 }

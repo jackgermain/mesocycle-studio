@@ -702,7 +702,12 @@ function DraftExerciseCard({ ex, onChange, onRemove }: { ex: DraftExercise; onCh
       <div className="row" style={{ marginBottom: 8 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="trunc" style={{ fontSize: 12.5 }}>{ex.name}</div>
-          <div className="mu" style={{ marginTop: 1 }}>{ex.muscle}</div>
+          {/* A rename the importer made on its own has to be visible, or the coach has no way to know the
+              sheet said something else. Shown only when it happened -- sourceName is absent otherwise. */}
+          <div className="mu" style={{ marginTop: 1 }}>
+            {ex.muscle}
+            {ex.sourceName && <span style={{ opacity: 0.75 }}> · sheet said "{ex.sourceName}"</span>}
+          </div>
         </div>
         <button onClick={onRemove} style={{ background: "none", border: "none", color: "var(--color-neutral-500)", cursor: "pointer", display: "flex" }} aria-label={`Remove ${ex.name}`}>
           <i className="ph ph-trash" style={{ fontSize: 14 }} />

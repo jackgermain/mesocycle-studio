@@ -1,5 +1,5 @@
 import type { DraftDay } from "../shared/programConvert";
-import { guessMuscleFromLibrary } from "./exerciseLibrary";
+import { canonicalizeImportedName } from "./exerciseLibrary";
 
 /** A minimal RFC-4180-ish CSV parser -- handles quoted fields, escaped quotes ("") inside them, and both
  * \n and \r\n line endings. No external dependency needed for a format this simple. */
@@ -108,7 +108,7 @@ export function rowsToDraftDays(rows: string[][]): CsvParseResult {
       byDay.set(dayName, { name: dayName, exercises: [] });
       dayOrder.push(dayName);
     }
-    byDay.get(dayName)!.exercises.push({ name: exerciseName, muscle, sets, reps, load: load !== undefined && Number.isFinite(load) ? load : undefined });
+    byDay.get(dayName)!.exercises.push({ ...canonicalizeImportedName(exerciseName, muscle), sets, reps, load: load !== undefined && Number.isFinite(load) ? load : undefined });
     rowCount++;
   }
 
@@ -212,8 +212,7 @@ export function parseGridLayoutToDraftDays(rows: string[][]): CsvParseResult {
       const reps = Number(lastReps);
       const load = Number(lastLoad);
       exercises.push({
-        name: titleCase(name),
-        muscle: guessMuscleFromLibrary(name) || sheetMuscle || "General",
+        ...canonicalizeImportedName(titleCase(name), sheetMuscle),
         sets,
         reps: Number.isFinite(reps) && reps > 0 ? reps : undefined,
         load: Number.isFinite(load) && load > 0 ? load : undefined,
