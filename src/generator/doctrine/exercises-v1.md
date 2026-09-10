@@ -1782,6 +1782,50 @@ load and add a rep or a set instead, at least once. Holding is not a failed week
 a six-week block at 2–4×/week means the connective tissue never gets the relief this rule is pricing in. The
 restraint matters *more* there, not less — the block boundary is the only relief that arrives.
 
+**G62 — Ask how hard the set was twice per exercise: before the last set, and after it.**
+
+> *"During the second to last set of the exercise I want immediate feedback right there and then, after the
+> last set of the exercise. How hard was this set? 1 easy, 5 could not have done another. Make sure I get
+> that feedback because it can inform the actual after the final set. Include that popup on every exercise
+> every day. Give the coach a notification of the feedback if it's a 5."*
+
+**The scale.** 1 easy · 2 moderate · 3 hard · 4 very hard · 5 could not have done another rep. It is RIR
+inverted and bounded — a 5 is RIR 0, a 1 is roughly RIR 4+ — and it is asked in the language a client
+actually thinks in rather than as a number they have to convert.
+
+**Rule — two readings, and they do different jobs.**
+
+| | Asked | What it decides |
+|---|---|---|
+| **Second-to-last set** | before the final set is performed | **This session.** A 5 here means the last set is already beyond the intended effort, and the last set should hold load or drop a rep rather than push. A 1–2 means there is room to add load or reps on it. |
+| **Last set** | after the exercise is finished | **Next week.** This is the effort the prescription actually produced, and it is the input the progression rule needs. |
+
+The second reading alone was never enough. A single number collected after everything is over can only be
+acted on seven days later; asking one set early is what makes the same question able to change something
+now.
+
+**Rule — a 5 on the last set caps next week's jump.** The prescription already reached RIR 0, so the
+week's effort target was met or exceeded and there is no headroom to spend. Hold the load and add a rep,
+or hold both — do not jump. This is the per-exercise version of C6's ceiling: effort has been spent, so
+load must not also rise.
+
+**Rule — a 1 or 2 on the last set means the prescription was too light.** The exercise finished with
+several reps left in reserve, so the next jump can be a full increment rather than the staggered one, and
+on a rep-first exercise the rep target can move rather than waiting for the range to top out.
+
+**Rule — only a 5 reaches the coach.** Every rating is stored; one is notified. Anything below 5 is
+ordinary training, and a roster of ten people rating four sets an exercise would bury a coach in
+notifications within a day. This is the same reasoning as the joint scale, where a 1 is noticed and
+trained through and is not worth interrupting anyone over.
+
+**Interaction with G61.** Under six reps in a six-week block, a 5 is a stop sign rather than a data point:
+the load is already at the top of what the tissue is being asked to take, the deload is still weeks away,
+and the next week holds regardless of what the progression rule would otherwise do.
+
+**Interaction with the deload question (C7).** Below five sessions a week there is no scheduled deload, so
+a run of 5s across several exercises in the same week is the only early warning that exists. Two or more
+exercises finishing at 5 in one session is a session that was too hard, not a client who tried hard.
+
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 
 > *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of
