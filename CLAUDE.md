@@ -143,6 +143,24 @@ This has bitten the project twice, both times the same way:
 **So: when a change needs SQL, hand Jack the SQL to run, confirm it succeeded, and only then push the
 code that depends on it.** Never assume a migration file in the repo is live.
 
+Two more things this has cost real time on:
+
+**Hand him raw SQL, not a shell command.** A `cat … | pbcopy` line is for a terminal; pasted into the
+Supabase SQL editor it produces `Failed to fetch (api.supabase.com)` and looks like a Supabase problem.
+Anything destined for the SQL editor goes in the message as SQL.
+
+**`revoke … from public` does nothing on its own here.** Supabase's project bootstrap grants EXECUTE on
+everything in schema `public` to `anon`, `authenticated` and `service_role` *by name*, on top of
+Postgres's own default grant to PUBLIC. Revoking from PUBLIC removes one grant and leaves the explicit
+ones, so the function stays callable by exactly the roles you thought you had just cut off. **Name every
+role you mean to revoke from.** This shipped wrong twice — `0018` closed nothing at all, and `0019` closed
+`bootstrap_coach` but left `claim_invite` open — and both times the SQL read as though it had worked.
+
+**Verify a security change by probing, not by reading the SQL.** Both of the above were caught by calling
+the function with just the publishable key and no session, and looking at what came back. `permission
+denied for function …` is the answer you want; a `raise exception` message or a not-null violation means
+the body ran and the grant is still there.
+
 ---
 
 ## Build verification — do not skip
