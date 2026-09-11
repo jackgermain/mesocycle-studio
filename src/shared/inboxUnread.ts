@@ -36,10 +36,14 @@ function useCoachBubbles(): Bubble[] {
 }
 
 /** How many coach messages have landed since `readAt`. A never-opened inbox counts everything. */
-export function useInboxUnreadCount(readAt: string | null): number {
+export function useInboxUnreadCount(readAt: string | null, poll = true): number {
   const all = useCoachBubbles();
 
+  // `poll` is false for the copy of the navigation that isn't on screen. On a computer the phone tab bar is
+  // still mounted (rendering nothing) beside the side menu that shows this same badge, and two polls would
+  // double every request.
   useEffect(() => {
+    if (!poll) return;
     void refreshInboxBubbles();
     // Polling rather than realtime: there's no subscription on these tables yet, and a message landing up
     // to half a minute late on a badge is not worth the machinery.
@@ -50,7 +54,7 @@ export function useInboxUnreadCount(readAt: string | null): number {
       clearInterval(id);
       window.removeEventListener("focus", onFocus);
     };
-  }, []);
+  }, [poll]);
 
   if (!all.length) return 0;
   if (!readAt) return all.length;

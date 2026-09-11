@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HashRouter, Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import { HashRouter, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { StoreProvider, useStore } from "./state/store";
 import { AuthProvider, useAuth } from "./lib/auth";
 import { supabase } from "./lib/supabase";
@@ -30,6 +30,9 @@ import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "./shar
 import { progressionDueDay } from "./shared/progressionProposal";
 import { sendProgressionProposals } from "./shared/progressionSignals";
 import { isoToday } from "./shared/dayStatus";
+import { ClientSideNav } from "./components/TabBar";
+import { CoachSideNav } from "./coach/components/CoachTabBar";
+import { useIsDesktop } from "./shared/useMediaQuery";
 import type { Program } from "./data/types";
 
 import { CoachStoreProvider, useCoachStore } from "./coach/store";
@@ -125,6 +128,8 @@ function ClientLayout() {
   const { state, dispatch } = useStore();
   const { account, previewingAsClient } = useAuth();
   const showingPreviewBanner = account?.role === "coach" && previewingAsClient;
+  const desktop = useIsDesktop();
+  const { pathname } = useLocation();
   // A prescribed client's block belongs to their coach, so the button isn't theirs to have. Everyone
   // self-directed -- friends and family, and a coach training themselves -- owns their own program.
   const selfDirected = account?.role === "friend" || previewingAsClient;
@@ -165,7 +170,15 @@ function ClientLayout() {
   return (
     <div className={`app-shell${showingPreviewBanner ? " has-preview-banner" : ""}`}>
       {showingPreviewBanner && <PreviewBanner />}
-      <Outlet />
+      {/* On a phone these two wrappers are invisible and the screen fills the column as it always has. On a
+          computer the side menu sits beside the page. Not during onboarding: every destination in it would
+          bounce straight back to the setup screen. */}
+      <div className="app-body">
+        {desktop && !pathname.startsWith("/onboarding") && <ClientSideNav />}
+        <div className="app-main">
+          <Outlet />
+        </div>
+      </div>
       <AiFabHost hidden={!selfDirected} />
       {state.toast && <Toast message={state.toast} />}
     </div>
@@ -210,9 +223,15 @@ function ClientProviders() {
 
 function CoachLayout() {
   const { state } = useCoachStore();
+  const desktop = useIsDesktop();
   return (
     <div className="app-shell">
-      <Outlet />
+      <div className="app-body">
+        {desktop && <CoachSideNav />}
+        <div className="app-main">
+          <Outlet />
+        </div>
+      </div>
       <CoachAiFab />
       {state.toast && <Toast message={state.toast} />}
     </div>

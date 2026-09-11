@@ -205,7 +205,10 @@ export function AuthHero({ children }: { children: React.ReactNode }) {
       }}
     >
       <div className="screen-scroll" style={{ gap: 0, padding: "24px 24px calc(24px + env(safe-area-inset-bottom))" }}>
-        <div style={{ margin: "auto 0", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        {/* Capped at a sign-in card's width and centred both ways. A phone is narrower than the cap, so nothing
+            changes there; on a computer the form used to stretch across the whole window -- a Sign in button
+            1400px wide -- because this scroller sets its own padding and so opts out of the page column. */}
+        <div style={{ margin: "auto", width: "100%", maxWidth: 420, display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Logomark size={120} />
           {/* Bigger and tighter than before. Uppercase at negative tracking reads as a brand rather than
               as a heading, which is what this screen is doing. */}

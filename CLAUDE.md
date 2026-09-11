@@ -270,6 +270,16 @@ everything six times), and transcriptapi sits behind Cloudflare, which rejects P
 Chromium-only; Safari has never shipped it, and this app's real target is an installed iOS PWA. This was
 shipped wrong once and had to be redone — don't "simplify" it back to the native API.
 
+**Computer layout.** From 1024px wide the app fills the browser window instead of showing a framed phone
+column. `DESKTOP_QUERY` in `src/shared/useMediaQuery.ts` decides which navigation is mounted — the client
+and coach layouts render `SideNav` beside the page, and `TabBar` / `CoachTabBar` render nothing — and the
+"computer" block in `styles.css` does the layout: `.screen-scroll` and `.hdr` centre content in a 1080px
+column, sheets become centred windows, the toast and AI button move to the corner. **That block sits after
+`.ai-fab` on purpose**: a media query adds no specificity, so placed earlier every rule below it wins back.
+The two breakpoints must stay equal. Badge polling (`useInboxUnreadCount`, the coach signal refresh) runs
+only in whichever navigation is on screen. A screen that sets its own inline `.screen-scroll` padding opts
+out of the column; `AuthHero` caps its own content at 420px for that reason. Below 1024px nothing changed.
+
 **Viewport sizing.** `.app-root` uses `position: fixed; inset: 0` rather than any `vh`/`dvh`/`%` height.
 Every height-unit approach tried previously left a gap of background below the tab bar on real iOS. Don't
 reintroduce one.
