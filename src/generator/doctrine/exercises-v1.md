@@ -1821,6 +1821,216 @@ and the next week holds regardless of what the progression rule would otherwise 
 a run of 5s across several exercises in the same week is the only early warning that exists. Two or more
 exercises finishing at 5 in one session is a session that was too hard, not a client who tried hard.
 
+**G63 — Recovery is one budget, not one variable. "Only one thing moves" is wrong.**
+
+> *"You don't have to change only one thing per week. So you have reps, load and sets. And if you change
+> more of one, then you can only change one of them. But if you change one of them a little bit, you might
+> just have enough recovery in the pool — from your entire pool of recovery — such that you are able to
+> increase a little bit of both."*
+
+**This overturns a rule that was written down as doctrine and was wrong.** The engine had "one thing moves
+per exercise per week — reps, load or sets, never two", justified by volume and load drawing on the same
+recovery budget. The budget is real; the binary is not. What is capped is **how much total stress the week
+adds**, and there is more than one way to spend it.
+
+| Move | Costs |
+|---|---|
+| A full load increment | most of the week's budget on that exercise — nothing else moves |
+| +2 reps | most of it — nothing else moves |
+| A minimum increment **and** +1 rep | roughly the same total, split two ways |
+| +1 set | the whole budget, always — a set is the most expensive thing you can add |
+
+So the rule is not "one variable" but **"one budget"**, and a small move on two variables is a legitimate
+way to spend it. A set is still the exception: adding one is always the whole week's spend.
+
+**G64 — The effort curve is the plan. Reverse-engineer week one from where the peak has to land.**
+
+> *"What we want is for them to be pretty close to five by the end of week four, or week six if that's the
+> last week of the block. You have your base week, then your load week, then your peak week, then you
+> deload. So your peak week — the third week — should be the highest on that feedback chart. It should be
+> a four or a five, ideally. That's the goal. So if that's where you want to end, you have to reverse
+> engineer that into weeks two and one."*
+
+**Rule — the target is an effort trajectory, not a load trajectory.** A four-week block is planned
+backwards from "peak week finishes at 4–5", which fixes what weeks one and two have to look like. Week one
+is not "wherever they land"; it is the number that makes the peak arrive on time.
+
+| Week | Named | Effort it should produce |
+|---|---|---|
+| 1 | base | 7–7.5 target, landing around 3 |
+| 2 | load | 3–4 |
+| 3 | **peak** | **4–5 — the highest of the block** |
+| 4 | deload, or a second peak below five sessions a week (C7) | — |
+
+This is why the engine cannot just react. Reacting produces whatever effort curve the client's own choices
+happen to make; **the curve is supposed to be aimed.**
+
+**G65 — Where a block starts is set by where the next one has to finish.**
+
+> *"You want to be progressing to a place where, if you were to run the same block two times in a row, the
+> end of your second block would be higher than your first. Maybe you netted a fifteen pound gain on your
+> strength exercises. The only way that happens is: okay, if I wanted to go up fifteen pounds this block
+> and I ended the last one here, I would have to start week one at this as a minimum — because I need to
+> finish here, which is slightly above where I ended the last one. And the gap between where you finished
+> and where you want to be has to be increased week over week with smooth jumps. You can't do it all at
+> once."*
+
+**Rule — a block is a segment of a longer line, not a standalone unit.** The planner works from a target
+end point (last block's finish plus the intended gain), subtracts backwards through the number of weeks,
+and that quotient is the weekly jump. If the arithmetic says the weekly jump has to be larger than the
+exercise can absorb, the *gain target* is too big — not the week.
+
+**Rule — this governs load-dominant work specifically.** *"This strictly applies to things where the load
+starts getting heavier relatively — your strength exercises. But you could also apply it to reps as well."*
+On a lateral raise the same logic runs on reps instead.
+
+**Consequence — G61 falls out of this rather than sitting beside it.** A six-week block has the same end
+point as a four-week one and two more weeks to reach it, which *is* the smaller weekly jump. The two rules
+are one rule seen from different ends.
+
+**G66 — Keep a muscle group's work together in a session.**
+
+> *"Move the mid cable fly up to where the lateral raise is, and have the lateral raise be done after the
+> mid cable fly. Usually, by a good rule of thumb, I really try to keep muscle groups together. I like to
+> try to live by that as a bodybuilder. At the end of the day there are times where they can't be like
+> that — but when it can be possible, and you just have a couple of accessories afterwards that aren't
+> major crazy heavy compounds, it's totally fine."*
+
+**Rule — finish a muscle before starting the next one.** Chest work runs consecutively, then delts, then
+arms. Interleaving a fly between a lateral raise and a pushdown splits the chest's stimulus across a
+session for no gain.
+
+**Rule — the exception is cost, not muscle.** G60 still orders by systemic cost first: a heavy compound
+goes early regardless of whose muscle it is. Grouping applies to everything *after* the expensive work,
+which on most days is most of the session — *"a lateral raise, a tricep extension and a rope pushdown are
+totally easy."*
+
+**G67 — A major compound goes first, even when its muscle is not the day's priority.**
+
+> *"If you're going to do RDLs, have them be done first, because RDLs are like a major compound. And yeah,
+> these should be done first. And then after that you can put the two back exercises together, and then you
+> can have the seated leg curls afterwards."*
+
+Sharpens G60 where it collides with G66: **cost wins the opening slot, grouping orders everything after
+it.** An RDL on a back day leads, the back work runs together behind it, and the leg curl — an accessory —
+closes.
+
+**G68 — A block does not have to open at 7.**
+
+> *"It's also fine to have blocks start at a seven point five on some exercises, especially ones where the
+> rep count is a little bit higher. So maybe for sets of eight if you wanted to — especially for the ones
+> that are earlier in the session, or for body parts that you're trying to train a little bit harder as
+> per the priority of the client."*
+
+**Rule — the opening effort target is per exercise, not per block.** Three things raise it to 7.5: a higher
+rep count (the absolute load is lower, so the same effort costs less), an early slot in the session (they
+are fresh), and the client's stated priority (the muscle that is supposed to grow gets the harder start).
+Everything else opens at 7.
+
+**G69 — Two compound leg movements in one session share a six-set ceiling.**
+
+> *"There's nothing wrong with doing Smith machine squats and leg presses right in front of each other, but
+> it's just a lot of volume. If you're going to group compound leg exercises like this, it's smart that you
+> did one that's not axial loading and the other one is. But four sets of ten on the Smith machine squat
+> and three sets of twelve on the leg press will absolutely demolish somebody. For the Smith machine squat
+> and the leg press, if I were going to have both of them together in the same day, I wouldn't do more than
+> six sets total, even for an intermediate."*
+
+**Rule — pairing one axial and one supported movement is correct, and is not a licence to add their
+volumes.** The pairing is what makes two compounds survivable; the ceiling is what makes it sensible. Seven
+sets across the two is past it.
+
+**Rule — training age sets the floor underneath that ceiling.** *"I would definitely not give this to
+somebody who is having their first sort of getting into lifting. If somebody was getting into lifting, I'd
+probably only have them do about two sets on everything starting out."* So: beginner two sets per exercise
+regardless of what the movement would normally take; intermediate six across the pair; the full grouping
+only for someone who already tolerates training.
+
+**G70 — Around an injured area, hold the reps high so the relative load stays low.**
+
+> *"Good job avoiding the heavy incline work especially. With an injured area like this, even heavy
+> dumbbell press — any heavy chest exercise — could aggravate it. I would probably keep it closer to the
+> ten rep range, just because the relative load won't have to be so high. And then if his feedback is good,
+> you could even pull the reps down — go from ten reps down to eight by the end of the block."*
+
+**Rule — the lever is the rep range, not the exercise list.** Removing the movement that hurt is the
+obvious half; the half that gets missed is that whatever replaces it must also run at a rep count that
+keeps absolute load down, because it is load that aggravates tissue, not the exercise's name.
+
+**Rule — reps come down only after the feedback earns it.** Ten to eight by the end of the block is a
+reward for a clean month, not a plan made in advance.
+
+**Rule — week one is a test, and the exercise is replaceable.** *"After he does it in his first week, pay
+attention to his pain feedback, and be able to switch an exercise if you need to."* A substitution chosen
+on intake is a hypothesis; the first week's joint report is the result.
+
+**G71 — Effort flat or falling while the load went up is the signal that it is working.**
+
+> *"If you look at feedback and their effort level goes from a three to a two, but you made a decently
+> sized jump in stress — if you add weight to the exercise or you add reps and their effort level is lower
+> or the same as where it was last week — that's a pretty good sign that those are net gains. And when that
+> happens you just keep taking them as they come."*
+
+**Rule — read the pair, not the number.** Effort 2 after a load increase is a completely different fact
+from effort 2 after a week of no change: the first is adaptation, the second is an under-prescription. The
+engine has to compare this week's effort against last week's *together with* what it did to the
+prescription in between.
+
+**Rule — when they come, take them.** A run of "stress up, effort flat" weeks is not a reason to get
+cautious. Keep progressing at the same rate until the effort actually rises.
+
+**G72 — Two hard sessions for the same muscle need more than one day between them.**
+
+> *"I don't think there's enough time in between the leg day exercises on day two and day four. They're too
+> close to each other in time. You only have one day to heal from that much volume. What I would do is put
+> them on almost opposite ends of the week — or just lower the volume on each exercise by a set at least,
+> and maybe altogether remove the leg extensions on day four. Because remember, you have to look at the
+> total sets per week for a body part, and you are doing a lot for quads and glutes and hamstrings."*
+
+**Rule — frequency and volume are one decision.** Two leg days is fine; two *heavy* leg days with one day
+between them is not. The three ways out, in his order: move them apart in the week, cut a set from each
+exercise, or drop an accessory from the second session.
+
+**Rule — check the weekly total before checking the session.** The session looked defensible on its own;
+the week did not. The per-session ceiling (G49) and the weekly total are separate tests and both have to
+pass.
+
+**G73 — Dumbbell jumps are percentages, and the small ones are the brutal ones.**
+
+> *"With exercises that have really long levers, like a dumbbell lateral raise — when you're dealing with
+> people who are pretty weak on them, as in they do less than twenty pounds — jumping from a ten pound to a
+> fifteen pound is massive relatively. It's fifty percent. If you're going to have somebody make that jump,
+> you better make sure they're able to do more than fifteen reps with the ten pound dumbbells, and maybe
+> then they'll be able to do six or eight with the fifteens. So I like to use the twelves in between. If you
+> could do fifteen reps with tens, you could probably do around eleven or twelve reps with the twelve pound
+> dumbbells."*
+
+**Rule — the gate for a dumbbell jump is a rep count, not a week number.** Before 10 → 15 on a lateral
+raise, they must be doing **more than fifteen reps with the tens**. Otherwise the jump lands them at six.
+
+**Rule — the 12.5s exist for exactly this.** They turn a 50% jump into two jumps of 25% and 20%. Expected
+landing: fifteen reps at 10 lb ≈ eleven or twelve at 12.5 lb.
+
+**Rule — it applies hardest to long levers and light loads.** *"Especially for lateral raises. A little bit
+for curls too, but not as much as the lateral raises for sure. And after that point it gets a bit easier."*
+Above roughly 20 lb the same 5 lb step is a far smaller fraction, and the gate relaxes.
+
+**G74 — An irritated elbow or bicep tendon does not rule out curling, only some grips.**
+
+> *"If straight bar curls hurt, I still might not recommend EZ-bar curls — but you could definitely, or very
+> likely, do any sort of regular dumbbell curl, especially if it's light, so prioritise a bit more reps. And
+> the one where you're laying down with your stomach on an inclined bench, doing curls as if you're in the
+> same position where you'd do a chest-supported dumbbell row — you can always do those on occasion like
+> that. Especially if you have a hurt bicep, those might be more comfortable."*
+
+**Rule — the ladder, in order of tolerance.** Straight bar out. EZ-bar **still out** — the fixed bar is the
+problem, and a slightly kinder angle does not fix it. Dumbbells in, light, with the reps carrying the
+stimulus. **Spider curls** (prone on an incline bench) are the most tolerable of the lot, because the arm
+hangs at a fixed angle and the tendon is never loaded at full stretch with the elbow behind the body.
+
+**Rule — light and high-rep, not light and the same.** Dropping the load without raising the reps just
+removes the stimulus. The trade is explicit: less load, more reps, same work.
+
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 
 > *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of
