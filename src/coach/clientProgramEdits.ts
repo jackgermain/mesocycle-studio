@@ -2,6 +2,7 @@ import { supabase } from "../lib/supabase";
 import type { Program } from "../data/types";
 import { addWarmupSetByName, replaceExerciseByName } from "../shared/programEdits";
 import { equipmentOf } from "../screens/exerciseHelpers";
+import { applyProgressionToProgram, type ProgressionPayload } from "../shared/progressionProposal";
 import type { LibraryExercise } from "./types";
 
 /** Read-modify-write of a client's live program, from the coach's side. Same access pattern and the same
@@ -50,6 +51,19 @@ export function swapExerciseForClient(clientAccountId: string, exerciseName: str
       hasVideo: replacement.hasVideo,
     }),
   );
+}
+
+/** Writes approved progression proposals into next week's occurrence of the session they came from. Works
+ * for a coach approving their own training too: their client_state row is their own, and RLS lets them
+ * write it the same way. The usual caveat applies -- a client with the app open holds a stale copy and can
+ * overwrite this until they reload. */
+export function applyProgressionForClient(
+  accountId: string,
+  sourceDayId: string,
+  payload: ProgressionPayload,
+  include: (index: number) => boolean,
+): Promise<number | null> {
+  return editClientProgram(accountId, (p) => applyProgressionToProgram(p, sourceDayId, payload, include));
 }
 
 /** Reads a client's live program without editing it — used when the AI button is invoked from somewhere

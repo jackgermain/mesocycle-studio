@@ -42,6 +42,9 @@ export interface Proposal {
   logged: string;
   effort: number | null;
   next: string;
+  /** The proposed sets as numbers, for writing into next week on approval. Absent on proposals sent before
+   * approval existed -- parseSets reads those back off `next`. */
+  nextSets?: PerformedSet[];
   move: MoveKind;
   label: string;
   why: string;
@@ -73,7 +76,7 @@ function targetText(t: number): string {
 export function proposeNextWeek(i: ProposalInput): Proposal {
   const logged = formatSets(i.sets, i.units);
   const out = (move: MoveKind, next: PerformedSet[], label: string, why: string): Proposal => ({
-    exercise: i.name, logged, effort: i.effort, next: formatSets(next, i.units), move, label, why,
+    exercise: i.name, logged, effort: i.effort, next: formatSets(next, i.units), nextSets: next, move, label, why,
   });
   const hold = (why: string, label = "Hold") => out("hold", i.sets, label, why);
 
@@ -246,11 +249,25 @@ export function progressionRecipient(account: { id: string; role: string; coach_
   return account.coach_id ?? (account.role === "coach" ? account.id : null);
 }
 
+/** A reviewer's verdict on one proposal. Kept inside the payload, next to the exact numbers it judged, so
+ * the training data can never be separated from what the engine actually proposed. */
+export interface ProposalReview {
+  verdict: "good" | "bad";
+  /** What they would have done instead. Only asked on a Bad. */
+  note?: string;
+  at: string;
+}
+
 export interface ProgressionPayload {
   v: 1;
   week: number;
   totalWeeks: number;
   proposals: Proposal[];
+  /** Keyed by the proposal's index. */
+  reviews?: Record<string, ProposalReview>;
+  approvedAt?: string;
+  /** How many exercises approval actually wrote into next week. */
+  appliedCount?: number;
 }
 
 export function encodeProgression(p: DayProposals): string {
@@ -269,4 +286,73 @@ export function decodeProgression(detail: string | null | undefined): Progressio
   } catch {
     return null;
   }
+}
+
+export function encodeProgressionPayload(p: ProgressionPayload): string {
+  return JSON.stringify(p);
+}
+
+/** Reads formatSets' own output back into sets: "2 × 8 @ 140 lb, 1 × 10 @ 135 lb". Only for proposals sent
+ * before `nextSets` was stored; null for anything that isn't that exact shape, so nothing is guessed. */
+export function parseSets(text: string): PerformedSet[] | null {
+  const out: PerformedSet[] = [];
+  for (const part of text.split(", ")) {
+    const m = part.match(/^(\d+) × (\d+) @ (BW|[\d.]+)(?: \S+)?$/);
+    if (!m) return null;
+    const load = m[3] === "BW" ? null : Number(m[3]);
+    for (let i = 0; i < Number(m[1]); i++) out.push({ reps: Number(m[2]), load });
+  }
+  return out.length ? out : null;
+}
+
+/** Writes approved proposals into next week's occurrence of the session they came from.
+ *
+ * "Next week's occurrence" is the same day code one week on, falling back to the same position in the
+ * week. A session that has already been started is never touched -- rewriting sets someone has trained
+ * would falsify them -- and neither is the week after the last. Warm-ups are left alone. Where approval
+ * proposes fewer sets than the session has (a deload), the extra ones are removed with that reason, which
+ * is how a set comes out of a session everywhere else in the app. */
+export function applyProgressionToProgram(
+  program: Program,
+  sourceDayId: string,
+  payload: ProgressionPayload,
+  include: (index: number) => boolean,
+): { program: Program; touched: number } {
+  const next = structuredClone(program);
+  let weekIdx = -1;
+  let dayIdx = -1;
+  next.weeks.forEach((w, wi) => w.days.forEach((d, di) => {
+    if (d.id === sourceDayId) {
+      weekIdx = wi;
+      dayIdx = di;
+    }
+  }));
+  if (weekIdx < 0) return { program, touched: 0 };
+  const source = next.weeks[weekIdx].days[dayIdx];
+  const following = next.weeks[weekIdx + 1];
+  if (!following) return { program, touched: 0 };
+  const target = following.days.find((d) => d.code === source.code) ?? following.days[dayIdx];
+  if (!target) return { program, touched: 0 };
+  if (Object.values(target.exercises).some((ex) => ex.sets.some((s) => s.checked))) return { program, touched: 0 };
+
+  let touched = 0;
+  payload.proposals.forEach((p, i) => {
+    if (!include(i) || p.move === "finished") return;
+    const sets = p.nextSets ?? parseSets(p.next);
+    if (!sets) return;
+    const ex = Object.values(target.exercises).find((e) => e.name === p.exercise);
+    if (!ex || ex.timed) return;
+    const working = ex.sets.filter((s) => !s.isWarmup && !s.removed);
+    if (working.length === 0) return;
+    working.forEach((s, k) => {
+      const want = sets[k];
+      if (!want) {
+        s.removed = { reason: p.move === "deload" ? "Deload" : "Approved progression" };
+        return;
+      }
+      s.prescribed = { ...s.prescribed, reps: want.reps, load: want.load };
+    });
+    touched++;
+  });
+  return touched ? { program: next, touched } : { program, touched: 0 };
 }

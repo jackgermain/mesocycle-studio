@@ -444,7 +444,7 @@ export default function Desk() {
                     </div>
                     <div className="row" style={{ gap: 8, marginTop: 9 }}>
                       <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => setActingOn(s)}>
-                        Attention
+                        {s.kind === "progression" ? "Review" : "Attention"}
                       </button>
                       <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => clearSignal(s.id)}>
                         Ignore
@@ -586,6 +586,7 @@ export default function Desk() {
           signal={actingOn}
           clientName={signalClientName(actingOn)}
           canOpenSession={state.clients.some((x) => x.accountId === actingOn.client_id)}
+          onDetailSaved={(detail) => setAllSignals((prev) => prev.map((x) => (x.id === actingOn.id ? { ...x, detail } : x)))}
           week={state.clients.find((x) => x.accountId === actingOn.client_id)?.week}
           totalWeeks={state.clients.find((x) => x.accountId === actingOn.client_id)?.totalWeeks}
           onClose={() => setActingOn(null)}

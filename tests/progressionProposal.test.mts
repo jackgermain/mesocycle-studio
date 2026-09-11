@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   proposeNextWeek, targetEffortFor, proposalsForDay, progressionDueDay, progressionRecipient,
-  encodeProgression, decodeProgression, formatSets, type ProposalInput,
+  encodeProgression, decodeProgression, formatSets, parseSets, applyProgressionToProgram, type ProposalInput,
 } from "../src/shared/progressionProposal.ts";
 
 const base: ProposalInput = {
@@ -155,4 +155,68 @@ test("the payload round-trips, and anything else decodes to nothing", () => {
 
 test("sets are written the way a coach says them", () => {
   assert.equal(formatSets([{ reps: 8, load: 140 }, { reps: 8, load: 140 }, { reps: 10, load: 135 }], "lb"), "2 × 8 @ 140 lb, 1 × 10 @ 135 lb");
+});
+
+test("proposals carry their sets as numbers, and older text reads back into the same sets", () => {
+  const p = proposeNextWeek({ ...base, week: 2, sets: sets(3, 10, 135), effort: 3 });
+  assert.deepEqual(parseSets(p.next), p.nextSets);
+  assert.deepEqual(parseSets("3 × 11 @ BW"), [{ reps: 11, load: null }, { reps: 11, load: null }, { reps: 11, load: null }]);
+  assert.equal(parseSets("hold"), null);
+});
+
+// Two weeks of the same lower session. Week two starts unticked unless told otherwise.
+function sessionDay(id: string, started = false) {
+  const mk = (sid: string, o: Record<string, unknown> = {}) => ({
+    id: sid, index: 0, type: "straight", checked: started, actual: null,
+    prescribed: { reps: 10, load: 135, effort: { scale: "RIR", value: 2 }, restSec: 90 }, ...o,
+  });
+  return {
+    id, code: "L1", label: "Lower", dow: "Mon", date: "2026-09-10", status: "visible", muscleSummary: "", setCount: 5,
+    order: ["sq", "lp"],
+    exercises: {
+      sq: {
+        id: "sq", name: "Smith Machine Squat", muscle: "Quads", metaLine: "", hasVideo: false,
+        sets: [mk(`${id}-w`, { isWarmup: true, prescribed: { reps: 5, load: 95, effort: { scale: "RIR", value: 4 }, restSec: 60 } }), mk(`${id}-1`), mk(`${id}-2`), mk(`${id}-3`)],
+      },
+      lp: { id: "lp", name: "Leg Press", muscle: "Quads", metaLine: "", hasVideo: false, sets: [mk(`${id}-l1`), mk(`${id}-l2`)] },
+    },
+  };
+}
+const twoWeeks = (nextStarted = false) => ({
+  name: "P", totalWeeks: 2, coachName: "",
+  weeks: [
+    { number: 1, phase: "accumulation", days: [sessionDay("w1")] },
+    { number: 2, phase: "accumulation", days: [sessionDay("w2", nextStarted)] },
+  ],
+});
+const proposal = (o: Record<string, unknown>) => ({ exercise: "Smith Machine Squat", logged: "", effort: 3, next: "", move: "stagger", label: "", why: "", ...o });
+const payloadOf = (proposals: unknown[]) => ({ v: 1, week: 1, totalWeeks: 2, proposals });
+
+test("approval writes only the included proposals into next week's same session, and leaves warm-ups and this week alone", () => {
+  const res = applyProgressionToProgram(twoWeeks() as never, "w1", payloadOf([
+    proposal({ nextSets: [{ reps: 8, load: 140 }, { reps: 8, load: 140 }, { reps: 10, load: 135 }] }),
+    proposal({ exercise: "Leg Press", next: "2 × 12 @ 300 lb", move: "load" }),
+  ]) as never, (i) => i === 0);
+  assert.equal(res.touched, 1);
+  const sq = res.program.weeks[1].days[0].exercises.sq.sets;
+  assert.equal(sq[0].prescribed.load, 95, "the warm-up is untouched");
+  assert.deepEqual(sq.slice(1).map((s) => [s.prescribed.reps, s.prescribed.load]), [[8, 140], [8, 140], [10, 135]]);
+  assert.equal(res.program.weeks[1].days[0].exercises.lp.sets[0].prescribed.load, 135, "a Bad one is not applied");
+  assert.equal(res.program.weeks[0].days[0].exercises.sq.sets[1].prescribed.load, 135, "this week is not rewritten");
+});
+
+test("an approved deload removes the sets it drops, and text-only proposals still apply", () => {
+  const res = applyProgressionToProgram(twoWeeks() as never, "w1", payloadOf([proposal({ next: "2 × 10 @ 135 lb", move: "deload" })]) as never, () => true);
+  const sq = res.program.weeks[1].days[0].exercises.sq.sets;
+  assert.equal(sq[3].removed?.reason, "Deload");
+  assert.equal(sq[1].removed, undefined);
+});
+
+test("a session already started, or no week after this one, is never touched", () => {
+  const started = twoWeeks(true);
+  const a = applyProgressionToProgram(started as never, "w1", payloadOf([proposal({ next: "3 × 10 @ 140 lb" })]) as never, () => true);
+  assert.equal(a.touched, 0);
+  assert.equal(a.program, started, "the same program comes back, unchanged");
+  const last = applyProgressionToProgram(twoWeeks() as never, "w2", payloadOf([proposal({ next: "3 × 10 @ 140 lb" })]) as never, () => true);
+  assert.equal(last.touched, 0);
 });
