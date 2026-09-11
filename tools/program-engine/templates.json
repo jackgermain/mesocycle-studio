@@ -1,0 +1,1466 @@
+{
+ "M": {
+  "2": [
+   "Full body ×2 · chest-led",
+   [
+    [
+     "Day A · full body",
+     [
+      [
+       "Incline Dumbbell Press",
+       3,
+       "8–10"
+      ],
+      [
+       "Smith Machine Squat",
+       3,
+       "10"
+      ],
+      [
+       "Chest Supported Row",
+       3,
+       "10"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       3,
+       "15"
+      ],
+      [
+       "Overhead Cable Triceps Ext.",
+       2,
+       "12"
+      ],
+      [
+       "Cable Curl",
+       2,
+       "12"
+      ],
+      [
+       "Captain's Chair Leg Raise",
+       2,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day B · full body",
+     [
+      [
+       "Incline Smith Press",
+       3,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       3,
+       "10"
+      ],
+      [
+       "Lat Pulldown",
+       3,
+       "10"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       3,
+       "15"
+      ],
+      [
+       "Rope Pushdown",
+       2,
+       "15"
+      ],
+      [
+       "Dumbbell Curl",
+       2,
+       "10"
+      ],
+      [
+       "Cable Rotation",
+       2,
+       "15/s"
+      ]
+     ]
+    ]
+   ]
+  ],
+  "3": [
+   "Push / Pull+hams / Legs+chest",
+   [
+    [
+     "Day 1 · chest, delts, triceps",
+     [
+      [
+       "Incline Dumbbell Press",
+       4,
+       "8–10"
+      ],
+      [
+       "Chest Press Machine",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       4,
+       "15"
+      ],
+      [
+       "Cable Fly — Mid",
+       2,
+       "15"
+      ],
+      [
+       "Overhead Cable Triceps Ext.",
+       3,
+       "12"
+      ],
+      [
+       "Rope Pushdown",
+       2,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 2 · back, biceps, hamstrings",
+     [
+      [
+       "Lat Pulldown",
+       4,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       3,
+       "10"
+      ],
+      [
+       "Chest Supported Row",
+       4,
+       "10"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Cable Curl",
+       3,
+       "12"
+      ],
+      [
+       "Hanging Leg Raise",
+       2,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 3 · legs, chest, delts",
+     [
+      [
+       "Smith Machine Squat",
+       4,
+       "10"
+      ],
+      [
+       "Leg Press",
+       3,
+       "12"
+      ],
+      [
+       "Incline Smith Press",
+       3,
+       "10"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       3,
+       "15"
+      ],
+      [
+       "Hammer Curl",
+       2,
+       "12"
+      ],
+      [
+       "V-Up",
+       2,
+       "15"
+      ]
+     ]
+    ]
+   ]
+  ],
+  "4": [
+   "Upper / Lower / Upper / Lower",
+   [
+    [
+     "Day 1 · upper, chest-led",
+     [
+      [
+       "Incline Dumbbell Press",
+       4,
+       "8–10"
+      ],
+      [
+       "Chest Supported Row",
+       4,
+       "10"
+      ],
+      [
+       "Chest Press Machine",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       4,
+       "15"
+      ],
+      [
+       "Overhead Cable Triceps Ext.",
+       3,
+       "12"
+      ],
+      [
+       "Cable Curl",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 2 · lower",
+     [
+      [
+       "Smith Machine Squat",
+       4,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       3,
+       "10"
+      ],
+      [
+       "Leg Press",
+       3,
+       "12"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Standing Calf Raise",
+       3,
+       "15"
+      ],
+      [
+       "Captain's Chair Leg Raise",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 3 · upper, delt-led",
+     [
+      [
+       "Incline Smith Press",
+       4,
+       "10"
+      ],
+      [
+       "Lat Pulldown",
+       4,
+       "10"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       4,
+       "15"
+      ],
+      [
+       "Reverse Pec Deck",
+       3,
+       "15"
+      ],
+      [
+       "Rope Pushdown",
+       3,
+       "15"
+      ],
+      [
+       "Dumbbell Curl",
+       3,
+       "10"
+      ]
+     ]
+    ],
+    [
+     "Day 4 · lower and core",
+     [
+      [
+       "Dumbbell Reverse Lunge",
+       3,
+       "10/s"
+      ],
+      [
+       "Leg Press",
+       3,
+       "15"
+      ],
+      [
+       "Leg Extension",
+       3,
+       "15"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Front Raise — Cable",
+       2,
+       "12"
+      ],
+      [
+       "Cable Rotation",
+       3,
+       "15/s"
+      ]
+     ]
+    ]
+   ]
+  ],
+  "5": [
+   "Push / Pull / Legs / Upper / Legs",
+   [
+    [
+     "Day 1 · push, chest-led",
+     [
+      [
+       "Incline Dumbbell Press",
+       4,
+       "8–10"
+      ],
+      [
+       "Chest Press Machine",
+       3,
+       "12"
+      ],
+      [
+       "Cable Fly — Mid",
+       3,
+       "15"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       4,
+       "15"
+      ],
+      [
+       "Overhead Cable Triceps Ext.",
+       3,
+       "12"
+      ],
+      [
+       "Rope Pushdown",
+       3,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 2 · pull",
+     [
+      [
+       "Lat Pulldown",
+       4,
+       "10"
+      ],
+      [
+       "Chest Supported Row",
+       4,
+       "10"
+      ],
+      [
+       "Seated Cable Row",
+       3,
+       "12"
+      ],
+      [
+       "Reverse Pec Deck",
+       3,
+       "15"
+      ],
+      [
+       "Cable Curl",
+       3,
+       "12"
+      ],
+      [
+       "Hammer Curl",
+       2,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 3 · legs",
+     [
+      [
+       "Smith Machine Squat",
+       4,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       4,
+       "10"
+      ],
+      [
+       "Leg Press",
+       3,
+       "12"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Standing Calf Raise",
+       3,
+       "15"
+      ],
+      [
+       "Hanging Leg Raise",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 4 · upper, delt-led",
+     [
+      [
+       "Incline Smith Press",
+       4,
+       "10"
+      ],
+      [
+       "Freemotion Y Raise",
+       4,
+       "15"
+      ],
+      [
+       "Dumbbell Fly",
+       3,
+       "12"
+      ],
+      [
+       "Front Raise — Cable",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Skullcrusher",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Curl",
+       3,
+       "10"
+      ]
+     ]
+    ],
+    [
+     "Day 5 · legs and core",
+     [
+      [
+       "Dumbbell Reverse Lunge",
+       3,
+       "10/s"
+      ],
+      [
+       "Leg Press",
+       4,
+       "15"
+      ],
+      [
+       "Leg Extension",
+       3,
+       "15"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "15"
+      ],
+      [
+       "Standing Calf Raise",
+       3,
+       "20"
+      ],
+      [
+       "V-Up",
+       2,
+       "15"
+      ]
+     ]
+    ]
+   ]
+  ],
+  "6": [
+   "Push / Pull / Legs ×2",
+   [
+    [
+     "Day 1 · push, chest-led",
+     [
+      [
+       "Incline Dumbbell Press",
+       4,
+       "8–10"
+      ],
+      [
+       "Chest Press Machine",
+       3,
+       "12"
+      ],
+      [
+       "Cable Fly — Mid",
+       3,
+       "15"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       4,
+       "15"
+      ],
+      [
+       "Overhead Cable Triceps Ext.",
+       3,
+       "12"
+      ],
+      [
+       "Rope Pushdown",
+       3,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 2 · pull",
+     [
+      [
+       "Weighted / Assisted Pull-Up",
+       4,
+       "8"
+      ],
+      [
+       "Chest Supported Row",
+       4,
+       "10"
+      ],
+      [
+       "Lat Pulldown",
+       3,
+       "12"
+      ],
+      [
+       "Reverse Pec Deck",
+       3,
+       "15"
+      ],
+      [
+       "Cable Curl",
+       3,
+       "12"
+      ],
+      [
+       "Incline Dumbbell Curl",
+       2,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 3 · legs",
+     [
+      [
+       "Smith Machine Squat",
+       4,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       4,
+       "10"
+      ],
+      [
+       "Leg Press",
+       3,
+       "12"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Standing Calf Raise",
+       3,
+       "15"
+      ],
+      [
+       "Hanging Leg Raise",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 4 · push, delt-led",
+     [
+      [
+       "Incline Smith Press",
+       4,
+       "10"
+      ],
+      [
+       "Freemotion Y Raise",
+       4,
+       "15"
+      ],
+      [
+       "Dumbbell Fly",
+       3,
+       "12"
+      ],
+      [
+       "Front Raise — Cable",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Skullcrusher",
+       3,
+       "12"
+      ],
+      [
+       "Rope Pushdown",
+       2,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 5 · pull",
+     [
+      [
+       "Seated Cable Row",
+       4,
+       "10"
+      ],
+      [
+       "Lat Pulldown",
+       4,
+       "12"
+      ],
+      [
+       "Straight-Arm Pulldown",
+       2,
+       "15"
+      ],
+      [
+       "Cybex Lateral Raise Machine",
+       4,
+       "15"
+      ],
+      [
+       "Dumbbell Curl",
+       3,
+       "10"
+      ],
+      [
+       "Barbell Reverse Curl",
+       2,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 6 · legs and core",
+     [
+      [
+       "Dumbbell Reverse Lunge",
+       3,
+       "10/s"
+      ],
+      [
+       "Leg Press",
+       4,
+       "15"
+      ],
+      [
+       "Leg Extension",
+       3,
+       "15"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "15"
+      ],
+      [
+       "Standing Calf Raise",
+       3,
+       "20"
+      ],
+      [
+       "Cable Rotation",
+       3,
+       "15/s"
+      ]
+     ]
+    ]
+   ]
+  ]
+ },
+ "F": {
+  "2": [
+   "Full body ×2 · glute-led",
+   [
+    [
+     "Day A · full body",
+     [
+      [
+       "Barbell Hip Thrust",
+       4,
+       "10"
+      ],
+      [
+       "Smith Machine Squat",
+       3,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       3,
+       "10"
+      ],
+      [
+       "Chest Supported Row",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       2,
+       "15"
+      ],
+      [
+       "Captain's Chair Leg Raise",
+       2,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day B · full body",
+     [
+      [
+       "Smith Machine Split Lunge",
+       4,
+       "10/s"
+      ],
+      [
+       "Barbell Hip Thrust",
+       3,
+       "12"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Lat Pulldown",
+       3,
+       "12"
+      ],
+      [
+       "Cable Curl",
+       2,
+       "12"
+      ],
+      [
+       "Cable Rotation",
+       2,
+       "15/s"
+      ]
+     ]
+    ]
+   ]
+  ],
+  "3": [
+   "Lower / Upper / Lower",
+   [
+    [
+     "Day 1 · glutes and hamstrings",
+     [
+      [
+       "Barbell Hip Thrust",
+       4,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       4,
+       "10"
+      ],
+      [
+       "Bulgarian Split Squat",
+       3,
+       "10/s"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Hip Abduction Machine",
+       3,
+       "18"
+      ],
+      [
+       "Captain's Chair Leg Raise",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 2 · upper",
+     [
+      [
+       "Chest Supported Row",
+       4,
+       "10"
+      ],
+      [
+       "Lat Pulldown",
+       3,
+       "12"
+      ],
+      [
+       "Incline Dumbbell Press",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       3,
+       "15"
+      ],
+      [
+       "Cable Curl",
+       3,
+       "12"
+      ],
+      [
+       "Rope Pushdown",
+       2,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 3 · quads and glutes",
+     [
+      [
+       "Smith Machine Squat",
+       4,
+       "10"
+      ],
+      [
+       "Smith Machine Split Lunge",
+       4,
+       "10/s"
+      ],
+      [
+       "Leg Press",
+       3,
+       "15"
+      ],
+      [
+       "Smith Machine Hip Thrust",
+       3,
+       "12"
+      ],
+      [
+       "Leg Extension",
+       3,
+       "15"
+      ],
+      [
+       "Cable Rotation",
+       3,
+       "15/s"
+      ]
+     ]
+    ]
+   ]
+  ],
+  "4": [
+   "Lower / Upper / Lower / Upper",
+   [
+    [
+     "Day 1 · glutes and hamstrings",
+     [
+      [
+       "Barbell Hip Thrust",
+       4,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       4,
+       "10"
+      ],
+      [
+       "Bulgarian Split Squat",
+       3,
+       "10/s"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Hip Abduction Machine",
+       3,
+       "18"
+      ],
+      [
+       "Hanging Leg Raise",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 2 · upper",
+     [
+      [
+       "Chest Supported Row",
+       4,
+       "10"
+      ],
+      [
+       "Lat Pulldown",
+       4,
+       "12"
+      ],
+      [
+       "Incline Dumbbell Press",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       3,
+       "15"
+      ],
+      [
+       "Cable Curl",
+       3,
+       "12"
+      ],
+      [
+       "Rope Pushdown",
+       3,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 3 · quads and glutes",
+     [
+      [
+       "Smith Machine Squat",
+       4,
+       "10"
+      ],
+      [
+       "Smith Machine Split Lunge",
+       4,
+       "10/s"
+      ],
+      [
+       "Leg Press",
+       3,
+       "15"
+      ],
+      [
+       "Smith Machine Hip Thrust",
+       3,
+       "12"
+      ],
+      [
+       "Leg Extension",
+       3,
+       "15"
+      ],
+      [
+       "Cable Rotation",
+       3,
+       "15/s"
+      ]
+     ]
+    ],
+    [
+     "Day 4 · upper and core",
+     [
+      [
+       "Assisted Pull-Up",
+       4,
+       "8"
+      ],
+      [
+       "Seated Cable Row",
+       3,
+       "12"
+      ],
+      [
+       "Chest Press Machine",
+       3,
+       "12"
+      ],
+      [
+       "Freemotion Y Raise",
+       3,
+       "15"
+      ],
+      [
+       "Reverse Pec Deck",
+       3,
+       "15"
+      ],
+      [
+       "Starfish Crunch",
+       3,
+       "15"
+      ]
+     ]
+    ]
+   ]
+  ],
+  "5": [
+   "Glutes / Upper / Quads / Upper / Glutes",
+   [
+    [
+     "Day 1 · glutes and hamstrings",
+     [
+      [
+       "Barbell Hip Thrust",
+       4,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       4,
+       "10"
+      ],
+      [
+       "Bulgarian Split Squat",
+       3,
+       "10/s"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Hip Abduction Machine",
+       3,
+       "18"
+      ],
+      [
+       "Hanging Leg Raise",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 2 · upper",
+     [
+      [
+       "Chest Supported Row",
+       4,
+       "10"
+      ],
+      [
+       "Lat Pulldown",
+       4,
+       "12"
+      ],
+      [
+       "Incline Dumbbell Press",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       3,
+       "15"
+      ],
+      [
+       "Cable Curl",
+       3,
+       "12"
+      ],
+      [
+       "Rope Pushdown",
+       3,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 3 · quads",
+     [
+      [
+       "Smith Machine Squat",
+       4,
+       "10"
+      ],
+      [
+       "Leg Press",
+       4,
+       "12"
+      ],
+      [
+       "Smith Machine Split Lunge",
+       3,
+       "10/s"
+      ],
+      [
+       "Leg Extension",
+       3,
+       "15"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Cable Rotation",
+       3,
+       "15/s"
+      ]
+     ]
+    ],
+    [
+     "Day 4 · upper",
+     [
+      [
+       "Assisted Pull-Up",
+       4,
+       "8"
+      ],
+      [
+       "Seated Cable Row",
+       3,
+       "12"
+      ],
+      [
+       "Chest Press Machine",
+       3,
+       "12"
+      ],
+      [
+       "Freemotion Y Raise",
+       4,
+       "15"
+      ],
+      [
+       "Reverse Pec Deck",
+       3,
+       "15"
+      ],
+      [
+       "Dumbbell Curl",
+       2,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 5 · glutes and core",
+     [
+      [
+       "Smith Machine Hip Thrust",
+       4,
+       "12"
+      ],
+      [
+       "Cable Pull-Through",
+       3,
+       "15"
+      ],
+      [
+       "Dumbbell Reverse Lunge",
+       3,
+       "12/s"
+      ],
+      [
+       "Cable Glute Kickback",
+       3,
+       "15/s"
+      ],
+      [
+       "Hip Abduction Machine",
+       3,
+       "20"
+      ],
+      [
+       "Starfish Crunch",
+       3,
+       "15"
+      ]
+     ]
+    ]
+   ]
+  ],
+  "6": [
+   "Glutes / Upper / Quads / Upper / Glutes / Core+accessory",
+   [
+    [
+     "Day 1 · glutes and hamstrings",
+     [
+      [
+       "Barbell Hip Thrust",
+       4,
+       "10"
+      ],
+      [
+       "Barbell RDL",
+       4,
+       "10"
+      ],
+      [
+       "Bulgarian Split Squat",
+       3,
+       "10/s"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Hip Abduction Machine",
+       3,
+       "18"
+      ],
+      [
+       "Hanging Leg Raise",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 2 · upper, back-led",
+     [
+      [
+       "Chest Supported Row",
+       4,
+       "10"
+      ],
+      [
+       "Lat Pulldown",
+       4,
+       "12"
+      ],
+      [
+       "Seated Cable Row",
+       3,
+       "12"
+      ],
+      [
+       "Dumbbell Lateral Raise",
+       3,
+       "15"
+      ],
+      [
+       "Cable Curl",
+       3,
+       "12"
+      ],
+      [
+       "Rope Pushdown",
+       3,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 3 · quads",
+     [
+      [
+       "Smith Machine Squat",
+       4,
+       "10"
+      ],
+      [
+       "Leg Press",
+       4,
+       "12"
+      ],
+      [
+       "Smith Machine Split Lunge",
+       3,
+       "10/s"
+      ],
+      [
+       "Leg Extension",
+       3,
+       "15"
+      ],
+      [
+       "Seated Leg Curl",
+       3,
+       "12"
+      ],
+      [
+       "Cable Rotation",
+       3,
+       "15/s"
+      ]
+     ]
+    ],
+    [
+     "Day 4 · upper, shoulder-led",
+     [
+      [
+       "Assisted Pull-Up",
+       4,
+       "8"
+      ],
+      [
+       "Incline Dumbbell Press",
+       3,
+       "12"
+      ],
+      [
+       "Freemotion Y Raise",
+       4,
+       "15"
+      ],
+      [
+       "Reverse Pec Deck",
+       3,
+       "15"
+      ],
+      [
+       "Dumbbell Curl",
+       3,
+       "12"
+      ],
+      [
+       "Overhead Cable Triceps Ext.",
+       3,
+       "12"
+      ]
+     ]
+    ],
+    [
+     "Day 5 · glutes",
+     [
+      [
+       "Smith Machine Hip Thrust",
+       4,
+       "12"
+      ],
+      [
+       "Cable Pull-Through",
+       3,
+       "15"
+      ],
+      [
+       "Dumbbell Reverse Lunge",
+       3,
+       "12/s"
+      ],
+      [
+       "Cable Glute Kickback",
+       3,
+       "15/s"
+      ],
+      [
+       "Hip Abduction Machine",
+       3,
+       "20"
+      ],
+      [
+       "Glute Bridge",
+       2,
+       "15"
+      ]
+     ]
+    ],
+    [
+     "Day 6 · core and accessory",
+     [
+      [
+       "Captain's Chair Leg Raise",
+       3,
+       "15"
+      ],
+      [
+       "Starfish Crunch",
+       3,
+       "15"
+      ],
+      [
+       "Cable Rotation",
+       3,
+       "15/s"
+      ],
+      [
+       "Plank Alternating Limb Touch",
+       3,
+       "30 s"
+      ],
+      [
+       "Cybex Lateral Raise Machine",
+       3,
+       "18"
+      ],
+      [
+       "Hammer Curl",
+       2,
+       "15"
+      ]
+     ]
+    ]
+   ]
+  ]
+ }
+}
