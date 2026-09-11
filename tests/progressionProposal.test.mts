@@ -5,7 +5,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   proposeNextWeek, targetEffortFor, proposalsForDay, progressionDueDay, progressionRecipient,
-  encodeProgression, decodeProgression, formatSets, parseSets, applyProgressionToProgram, type ProposalInput,
+  encodeProgression, decodeProgression, formatSets, parseSets, applyProgressionToProgram,
+  proposedSets, readProgression, plainWhy, type ProposalInput,
 } from "../src/shared/progressionProposal.ts";
 
 const base: ProposalInput = {
@@ -196,7 +197,7 @@ test("approval writes only the included proposals into next week's same session,
   const res = applyProgressionToProgram(twoWeeks() as never, "w1", payloadOf([
     proposal({ nextSets: [{ reps: 8, load: 140 }, { reps: 8, load: 140 }, { reps: 10, load: 135 }] }),
     proposal({ exercise: "Leg Press", next: "2 × 12 @ 300 lb", move: "load" }),
-  ]) as never, (i) => i === 0);
+  ]) as never, (i, p) => (i === 0 ? proposedSets(p) : null));
   assert.equal(res.touched, 1);
   const sq = res.program.weeks[1].days[0].exercises.sq.sets;
   assert.equal(sq[0].prescribed.load, 95, "the warm-up is untouched");
@@ -206,7 +207,7 @@ test("approval writes only the included proposals into next week's same session,
 });
 
 test("an approved deload removes the sets it drops, and text-only proposals still apply", () => {
-  const res = applyProgressionToProgram(twoWeeks() as never, "w1", payloadOf([proposal({ next: "2 × 10 @ 135 lb", move: "deload" })]) as never, () => true);
+  const res = applyProgressionToProgram(twoWeeks() as never, "w1", payloadOf([proposal({ next: "2 × 10 @ 135 lb", move: "deload" })]) as never, (_, p) => proposedSets(p));
   const sq = res.program.weeks[1].days[0].exercises.sq.sets;
   assert.equal(sq[3].removed?.reason, "Deload");
   assert.equal(sq[1].removed, undefined);
@@ -214,9 +215,35 @@ test("an approved deload removes the sets it drops, and text-only proposals stil
 
 test("a session already started, or no week after this one, is never touched", () => {
   const started = twoWeeks(true);
-  const a = applyProgressionToProgram(started as never, "w1", payloadOf([proposal({ next: "3 × 10 @ 140 lb" })]) as never, () => true);
+  const a = applyProgressionToProgram(started as never, "w1", payloadOf([proposal({ next: "3 × 10 @ 140 lb" })]) as never, (_, p) => proposedSets(p));
   assert.equal(a.touched, 0);
   assert.equal(a.program, started, "the same program comes back, unchanged");
-  const last = applyProgressionToProgram(twoWeeks() as never, "w2", payloadOf([proposal({ next: "3 × 10 @ 140 lb" })]) as never, () => true);
+  const last = applyProgressionToProgram(twoWeeks() as never, "w2", payloadOf([proposal({ next: "3 × 10 @ 140 lb" })]) as never, (_, p) => proposedSets(p));
   assert.equal(last.touched, 0);
+});
+
+test("a blank weight never erases a programmed one, and an edit can add a set", () => {
+  const res = applyProgressionToProgram(twoWeeks() as never, "w1", payloadOf([proposal({})]) as never, () => [
+    { reps: 12, load: null }, { reps: 12, load: null }, { reps: 12, load: null }, { reps: 12, load: 150 },
+  ]);
+  const sq = res.program.weeks[1].days[0].exercises.sq.sets;
+  assert.deepEqual(sq.slice(1, 4).map((s) => [s.prescribed.reps, s.prescribed.load]), [[12, 135], [12, 135], [12, 135]]);
+  assert.equal(sq.length, 5, "the fourth set was added");
+  assert.equal(sq[4].prescribed.load, 150);
+  assert.equal(sq[4].checked, false);
+  assert.notEqual(sq[4].id, sq[3].id);
+});
+
+test("a weighted lift with no weight logged asks for the weight instead of treating it as bodyweight", () => {
+  const p = proposeNextWeek({ ...base, name: "Incline Barbell Bench Press", equipment: "barbell", sets: sets(4, 6, null), effort: 4 });
+  assert.equal(p.move, "hold");
+  assert.equal(p.label, "Log the weight");
+});
+
+test("a payload that landed in the note is still read, and reasons read without rule numbers", () => {
+  const json = encodeProgression({ dayId: "d1", week: 1, totalWeeks: 6, proposals: [] });
+  assert.equal(readProgression({ detail: null, note: json })?.dayId, "d1");
+  assert.equal(readProgression({ detail: "final set", note: null }), null);
+  assert.equal(plainWhy("G73: light weight, so reps climb."), "Light weight, so reps climb.");
+  assert.equal(plainWhy("Finish the jump already started."), "Finish the jump already started.");
 });

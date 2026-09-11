@@ -61,22 +61,31 @@ export async function sendSignals(clientId: string, coachId: string | null, sign
     day_id: signals[i].dayId ?? null,
   }));
 
-  const { error } = await supabase.from("client_signals").insert(rows);
+  let attempt: Record<string, unknown>[] = rows;
+  let { error } = await supabase.from("client_signals").insert(attempt);
   if (!error) return;
 
-  // Migrations here are applied by hand, so a deploy can briefly run ahead of the database. PostgREST
-  // rejects the whole insert when a column it doesn't know about is named -- which would mean no coach
-  // gets notified of anything until someone runs the SQL. Retry without the new columns instead, folding
-  // the detail into the note so the words at least survive; the exercise name is the part that's lost.
-  if (error.code === "PGRST204") {
-    console.warn("client_signals is missing columns from migration 0014 or 0015 -- run them in supabase/migrations/");
-    const legacy = base.map((r, i) => {
-      const extra = [signals[i].exercise, signals[i].detail].filter(Boolean).join(" · ");
-      return { ...r, note: [r.note, extra].filter(Boolean).join(" · ") || null };
+  // Migrations here are applied by hand, so a deploy can run ahead of the database, and PostgREST rejects
+  // the whole insert when it names a column the table doesn't have -- no coach would hear anything until
+  // someone ran the SQL. So drop just the column it names and try again, up to all three newer ones.
+  //
+  // This used to drop all three at once and fold them into `note`. With only day_id missing (0015 was never
+  // applied), that put a progression's entire JSON payload into the title of a real notification.
+  for (let tries = 0; tries < 3 && error?.code === "PGRST204"; tries++) {
+    const missing = /'([a-z_]+)' column/.exec(error.message ?? "")?.[1];
+    if (!missing || !["exercise", "detail", "day_id"].includes(missing)) break;
+    console.warn(`client_signals has no ${missing} column -- run its migration in supabase/migrations/`);
+    attempt = attempt.map((row, i) => {
+      const rest = { ...row };
+      const dropped = rest[missing];
+      delete rest[missing];
+      // An exercise name or a detail is still words a coach can read, so it survives in the note. A
+      // progression's detail is data: without the column there is nowhere sensible for it to go.
+      if (missing === "day_id" || dropped == null || signals[i].kind === "progression") return rest;
+      return { ...rest, note: [rest.note, dropped].filter(Boolean).join(" · ") || null };
     });
-    const retry = await supabase.from("client_signals").insert(legacy);
-    if (retry.error) console.error("Failed to send client signals", retry.error);
-    return;
+    ({ error } = await supabase.from("client_signals").insert(attempt));
+    if (!error) return;
   }
   console.error("Failed to send client signals", error);
 }

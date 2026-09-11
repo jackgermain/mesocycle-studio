@@ -214,12 +214,18 @@ themselves, to their own desk. That self-addressed insert is the one thing migra
 and only sessions finished in the last three days are ever sent, so the first open after a deploy
 doesn't send someone's whole history.
 
-Review happens in `SignalActionSheet`: every exercise is marked Good or Bad (a Bad takes an optional "what
-would you have done" note), and Approve stays disabled until all of them have a verdict. The verdicts are
-written back into the signal's own `detail` payload, next to the exact numbers they judged, which is the
-training data. Approve writes only the Good ones into next week's occurrence of that session
-(`applyProgressionToProgram` — same day code one week on), never into a session already started, then
-clears the signal. No migration: the coach update policy from 0012 already covers `detail`.
+Review is its own screen, `/coach/review/:signalId` (`coach/screens/ReviewProgression.tsx`), opened from the
+red Progression row on the desk: one card per exercise showing what was done, how hard, the suggestion and
+why, each with its own submit — Approve, or Edit the sets and say why (the reason is required). Every
+submission writes that exercise into next week's occurrence of the session (`applyProgressionToProgram`:
+same day code one week on; never a session already started; a blank weight never erases a programmed one)
+and records the verdict, with the exact sets and reason, inside the signal's own `detail` payload — that is
+the training data. The signal clears once every exercise is in. No migration: 0012's coach update policy
+covers `detail`.
+
+`sendSignals` drops only the column the database reports missing and retries. It used to drop all the newer
+columns and fold them into `note`, which — with migration 0015 (`day_id`) never applied — put a
+progression's whole JSON payload into a notification title. `readProgression` still reads that one.
 
 **Nutrition.** Macros or hand-portions mode. Food search hits USDA FoodData Central (primary — real
 manufacturer label data, plain `fetch`) plus Open Food Facts (secondary — **JSONP, because their server

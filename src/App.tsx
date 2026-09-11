@@ -47,6 +47,7 @@ import LogSession from "./coach/screens/LogSession";
 import InviteRoster from "./coach/screens/InviteRoster";
 import AssignProgram from "./coach/screens/AssignProgram";
 import AssignProgramPickClient from "./coach/screens/AssignProgramPickClient";
+import ReviewProgression from "./coach/screens/ReviewProgression";
 
 function LoadingShell() {
   return (
@@ -282,6 +283,7 @@ export default function App() {
               <Route path="/coach/messages/:threadId" element={<CoachThread />} />
               <Route path="/coach/library" element={<Library />} />
               <Route path="/coach/admin" element={<PlatformAdmin />} />
+              <Route path="/coach/review/:signalId" element={<ReviewProgression />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

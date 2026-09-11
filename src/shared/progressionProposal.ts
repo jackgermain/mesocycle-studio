@@ -95,6 +95,12 @@ export function proposeNextWeek(i: ProposalInput): Proposal {
     const half = i.sets.slice(0, Math.max(1, Math.round(i.sets.length / 2)));
     return out("deload", half, "Deload", `C7a: at ${i.sessionsPerWeek} sessions a week the block's last week is the deload — half the sets, same weight.`);
   }
+  // A barbell bench with no weight on any set is not bodyweight work -- the weight simply wasn't entered,
+  // which is what ticking sets straight off a program with no weights in it looks like. Proposing reps for
+  // it as if it were a push-up would be confidently wrong.
+  if (i.equipment !== "bodyweight" && i.sets.every((s) => s.load === null)) {
+    return hold("No weight was logged, so there's nothing to progress from. Log the weight next session.", "Log the weight");
+  }
   if (e === null) return hold("No how-hard rating on the last set, so nothing moves until there is one.");
 
   const target = targetEffortFor(i.week + 1, lastTraining);
@@ -252,10 +258,16 @@ export function progressionRecipient(account: { id: string; role: string; coach_
 /** A reviewer's verdict on one proposal. Kept inside the payload, next to the exact numbers it judged, so
  * the training data can never be separated from what the engine actually proposed. */
 export interface ProposalReview {
-  verdict: "good" | "bad";
-  /** What they would have done instead. Only asked on a Bad. */
+  /** Approved as proposed, or edited before it went in. An edit is the most useful training data there is:
+   * the exact numbers the coach wanted instead, and why. */
+  verdict: "approved" | "edited";
+  /** What went into next week -- the proposal's own sets when approved. */
+  sets: PerformedSet[];
+  /** Why it was changed. Required on an edit, absent on an approval. */
   note?: string;
   at: string;
+  /** False when nothing could be written: next week's session already started, or there is no next week. */
+  applied: boolean;
 }
 
 export interface ProgressionPayload {
@@ -263,15 +275,16 @@ export interface ProgressionPayload {
   week: number;
   totalWeeks: number;
   proposals: Proposal[];
+  /** The session these came from. Also in the signal's day_id column, which not every database has. */
+  dayId?: string;
   /** Keyed by the proposal's index. */
   reviews?: Record<string, ProposalReview>;
-  approvedAt?: string;
-  /** How many exercises approval actually wrote into next week. */
-  appliedCount?: number;
+  /** When the last exercise was submitted. */
+  completedAt?: string;
 }
 
 export function encodeProgression(p: DayProposals): string {
-  const payload: ProgressionPayload = { v: 1, week: p.week, totalWeeks: p.totalWeeks, proposals: p.proposals };
+  const payload: ProgressionPayload = { v: 1, week: p.week, totalWeeks: p.totalWeeks, dayId: p.dayId, proposals: p.proposals };
   return JSON.stringify(payload);
 }
 
@@ -286,6 +299,26 @@ export function decodeProgression(detail: string | null | undefined): Progressio
   } catch {
     return null;
   }
+}
+
+/** A signal's payload, wherever it landed. While day_id was missing from the database, a failed insert was
+ * retried with the payload folded into `note`, so at least one real notification carries it there. */
+export function readProgression(signal: { detail?: string | null; note?: string | null }): ProgressionPayload | null {
+  return decodeProgression(signal.detail) ?? decodeProgression(signal.note);
+}
+
+/** The reason without its rule number, for a screen meant to be read at a glance. The number stays in the
+ * stored payload, where it is what ties a verdict back to the rule that produced it. */
+export function plainWhy(why: string): string {
+  return why
+    .replace(/^(?:G\d+(?: \+ G\d+)*|C7a):\s*/, "")
+    .replace(/\s*\((?:G\d+(?:, G\d+)*|Model C)\)/g, "")
+    .replace(/^./, (c) => c.toUpperCase());
+}
+
+/** The sets a proposal suggests, as numbers. */
+export function proposedSets(p: Proposal): PerformedSet[] | null {
+  return p.nextSets ?? parseSets(p.next);
 }
 
 export function encodeProgressionPayload(p: ProgressionPayload): string {
@@ -316,7 +349,7 @@ export function applyProgressionToProgram(
   program: Program,
   sourceDayId: string,
   payload: ProgressionPayload,
-  include: (index: number) => boolean,
+  setsFor: (index: number, proposal: Proposal) => PerformedSet[] | null,
 ): { program: Program; touched: number } {
   const next = structuredClone(program);
   let weekIdx = -1;
@@ -337,9 +370,9 @@ export function applyProgressionToProgram(
 
   let touched = 0;
   payload.proposals.forEach((p, i) => {
-    if (!include(i) || p.move === "finished") return;
-    const sets = p.nextSets ?? parseSets(p.next);
-    if (!sets) return;
+    if (p.move === "finished") return;
+    const sets = setsFor(i, p);
+    if (!sets || sets.length === 0) return;
     const ex = Object.values(target.exercises).find((e) => e.name === p.exercise);
     if (!ex || ex.timed) return;
     const working = ex.sets.filter((s) => !s.isWarmup && !s.removed);
@@ -350,8 +383,23 @@ export function applyProgressionToProgram(
         s.removed = { reason: p.move === "deload" ? "Deload" : "Approved progression" };
         return;
       }
-      s.prescribed = { ...s.prescribed, reps: want.reps, load: want.load };
+      // A suggestion with no weight never erases one that is programmed: "no weight" there means nobody
+      // entered one, not that the lift became bodyweight.
+      s.prescribed = { ...s.prescribed, reps: want.reps, load: want.load ?? s.prescribed.load };
     });
+    // An edit can ask for more sets than next week has. They are copies of its last working set, so they
+    // keep the same rest, effort target and set type.
+    const last = working[working.length - 1];
+    for (let k = working.length; k < sets.length; k++) {
+      const copy = structuredClone(last);
+      copy.id = `${last.id}-added-${k}`;
+      copy.checked = false;
+      copy.actual = null;
+      delete copy.effort;
+      delete copy.removed;
+      copy.prescribed = { ...copy.prescribed, reps: sets[k].reps, load: sets[k].load ?? copy.prescribed.load };
+      ex.sets.push(copy);
+    }
     touched++;
   });
   return touched ? { program: next, touched } : { program, touched: 0 };

@@ -6,7 +6,7 @@ import { BUILD_ID, BUILT_AT } from "../../shared/build";
 import { ago } from "../../shared/ago";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
-import { decodeProgression } from "../../shared/progressionProposal";
+import { readProgression } from "../../shared/progressionProposal";
 import { loadWeighInGaps, applyWeighInDismissals, weighInKeys, type ClientWeighInGap } from "../weighInWatch";
 import { loadComplianceGaps, totalComplianceItems, applyDismissals, complianceKeys, type ClientComplianceGap } from "../complianceWatch";
 import { listFormChecks, type FormCheck } from "../../shared/formChecks";
@@ -100,7 +100,7 @@ export default function Desk() {
     // second-to-last set the client was told to hold their last set, so the exercise is already handled
     // for today and this is a note for next week's numbers.
     if (s.kind === "progression") {
-      const n = decodeProgression(s.detail)?.proposals.length ?? s.severity;
+      const n = readProgression(s)?.proposals.length ?? s.severity;
       return `Next week's numbers ready — ${n} exercise${n === 1 ? "" : "s"}`;
     }
     if (s.kind === "nutrition") {
@@ -432,7 +432,8 @@ export default function Desk() {
                         </div>
                       </div>
                       <div style={{ flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-                        <span className={`tag ${urgent ? "tag-accent" : "tag-neutral"}`}>
+                        {/* Red, so next week's numbers waiting on a decision stand out from reports that are only read. */}
+                        <span className={`tag ${s.kind === "progression" ? "tag-danger" : urgent ? "tag-accent" : "tag-neutral"}`}>
                           {s.kind === "progression" ? "Progression" : s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : s.kind === "nutrition" ? (s.detail === "missed" ? "No meals" : "Nutrition") : "Pump"}
                         </span>
                         {times > 1 && (
@@ -443,7 +444,7 @@ export default function Desk() {
                       </div>
                     </div>
                     <div className="row" style={{ gap: 8, marginTop: 9 }}>
-                      <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => setActingOn(s)}>
+                      <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => (s.kind === "progression" ? nav(`/coach/review/${s.id}`) : setActingOn(s))}>
                         {s.kind === "progression" ? "Review" : "Attention"}
                       </button>
                       <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => clearSignal(s.id)}>
@@ -585,9 +586,7 @@ export default function Desk() {
         <SignalActionSheet
           signal={actingOn}
           clientName={signalClientName(actingOn)}
-          canOpenSession={state.clients.some((x) => x.accountId === actingOn.client_id)}
-          onDetailSaved={(detail) => setAllSignals((prev) => prev.map((x) => (x.id === actingOn.id ? { ...x, detail } : x)))}
-          week={state.clients.find((x) => x.accountId === actingOn.client_id)?.week}
+          canOpenSession={state.clients.some((x) => x.accountId === actingOn.client_id)}          week={state.clients.find((x) => x.accountId === actingOn.client_id)?.week}
           totalWeeks={state.clients.find((x) => x.accountId === actingOn.client_id)?.totalWeeks}
           onClose={() => setActingOn(null)}
           onOpenSession={() => {

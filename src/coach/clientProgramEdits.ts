@@ -61,9 +61,9 @@ export function applyProgressionForClient(
   accountId: string,
   sourceDayId: string,
   payload: ProgressionPayload,
-  include: (index: number) => boolean,
+  setsFor: Parameters<typeof applyProgressionToProgram>[3],
 ): Promise<number | null> {
-  return editClientProgram(accountId, (p) => applyProgressionToProgram(p, sourceDayId, payload, include));
+  return editClientProgram(accountId, (p) => applyProgressionToProgram(p, sourceDayId, payload, setsFor));
 }
 
 /** Reads a client's live program without editing it — used when the AI button is invoked from somewhere
