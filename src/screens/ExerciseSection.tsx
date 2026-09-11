@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
-import { useAuth } from "../lib/auth";
-import { sendSignals } from "../shared/signals";
-import { coachOnTheOtherEnd } from "../shared/coachName";
 import { SetEffortSheet } from "./SetEffortSheet";
-import { EFFORT_ALERT_AT, EFFORT_WORDING } from "../shared/signals";
+import { useRecordEffort } from "./useRecordEffort";
+import { effortOwedSet } from "../shared/effortOwed";
 import type { WorkExercise, WorkSet } from "../data/types";
 import type { LoadMode } from "../coach/types";
 import { isSpecialSet, specialSummary, stepLoad, typeLabel } from "./exerciseHelpers";
@@ -86,6 +84,7 @@ export function ExerciseSection({
   onRemoveExercise,
   onFormCheck,
   readOnly,
+  askEffort = true,
 }: {
   index: number;
   dayId: string;
@@ -103,61 +102,30 @@ export function ExerciseSection({
   /** Absent when there's no coach to send it to -- a coach training themselves has nobody to ask. */
   onFormCheck?: () => void;
   readOnly?: "future" | "past";
+  /** False where nobody present can answer for the set -- a coach opening a client's older session to act
+   * on a report was being stopped by a rating on sets logged before ratings existed. */
+  askEffort?: boolean;
 }) {
   const locked = readOnly === "past";
-  const { state, dispatch } = useStore();
-  const { account } = useAuth();
+  const { dispatch } = useStore();
+  const recordEffort = useRecordEffort();
   const nav = useNavigate();
   const doneCount = ex.sets.filter((s) => s.checked).length;
   const allDone = doneCount === ex.sets.length;
 
-  /** Warm-ups and removed sets are not the exercise. "Second to last" means second-to-last thing you
-   * actually work through, which on a day with three warm-up rungs is not the same as the array index. */
-  const workingSets = ex.sets.filter((s) => !s.isWarmup && !s.removed);
-  const [asking, setAsking] = useState<WorkSet | null>(null);
-
-  /** The last working set of the exercise, and only that one. Asking on the second-to-last as well meant
-   * two prompts per exercise and, across a session, more prompts than sets on a short day -- enough that
-   * people tap through them, which is worse than not asking. */
-  function isFinalSet(s: WorkSet): boolean {
-    return workingSets.length > 0 && workingSets[workingSets.length - 1].id === s.id;
-  }
+  /** The how-hard rating this exercise still owes: its last working set, once ticked and until rated (G62,
+   * last set only). Derived from the logged sets rather than set when a box is ticked -- a cluster, tempo
+   * or assisted set is ticked on the live-set screen and never came through here, and a question lost to
+   * leaving the screen was never asked again. The sheet has no skip and no backdrop dismiss, so it stays up
+   * until the answer is stored. See effortOwed.ts. */
+  const owedSet = readOnly || !askEffort ? null : effortOwedSet(ex);
 
   function toggle(s: WorkSet) {
-    const checking = !s.checked;
-    dispatch({ type: "SET_CHECKED", dayId, exerciseId: ex.id, setId: s.id, checked: checking });
-    // Asked on the way in only. Unchecking a set to fix a number should not re-interrogate someone, and
-    // a set that already carries an answer is not asked twice.
-    if (!checking || locked || s.effort !== undefined) return;
-    if (isFinalSet(s)) setAsking(s);
+    dispatch({ type: "SET_CHECKED", dayId, exerciseId: ex.id, setId: s.id, checked: !s.checked });
   }
 
   function answerEffort(effort: number) {
-    const target = asking;
-    setAsking(null);
-    if (!target) return;
-    dispatch({ type: "SET_EFFORT", dayId, exerciseId: ex.id, setId: target.id, effort });
-    if (effort < EFFORT_ALERT_AT || !account) return;
-    // Only a 5 travels. Everything below it is ordinary training, and a roster rating a set an exercise
-    // would bury a coach in notifications inside a day.
-    void sendSignals(account.id, account.coach_id, [
-      {
-        kind: "effort",
-        severity: effort,
-        exercise: ex.name,
-        muscle: ex.muscle ?? null,
-        dayId,
-        detail: "final set",
-        note: `${EFFORT_WORDING[effort - 1]} on the final set of ${ex.name}.`,
-      },
-    ]);
-    const coach = coachOnTheOtherEnd(account.coach_id, state.program.coachName);
-    dispatch({
-      type: "SHOW_TOAST",
-      // Nothing was sent anywhere when there is no coach, so nothing is promised.
-      message: coach ? `${coach} will see that.` : "Noted — that's on record for next week.",
-    });
-    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+    if (owedSet) recordEffort(dayId, ex, owedSet.id, effort);
   }
   // On a timed exercise the number is seconds, so the nudge is five at a time -- a one-second step on a
   // plank is not a meaningful adjustment.
@@ -417,7 +385,7 @@ export function ExerciseSection({
         ) : null}
       </div>
 
-      {asking && (
+      {owedSet && (
         <SetEffortSheet exerciseName={ex.name} onPick={answerEffort} />
       )}
     </div>

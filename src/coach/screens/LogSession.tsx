@@ -15,6 +15,7 @@ import { AiEditShell } from "../components/AiEditSheet";
 import { useRegisterAiScope } from "../../shared/aiScope";
 import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "../../shared/liveProgramAiEdit";
 import { getSignal, type ClientSignal } from "../../shared/signals";
+import { isoToday } from "../../shared/dayStatus";
 import { jointReasonLabels } from "../../data/mockData";
 import type { Program, TrainingDay } from "../../data/types";
 import type { LibraryExercise } from "../types";
@@ -393,6 +394,9 @@ function LogSessionBody({
               index={i + 1}
               dayId={day.id}
               ex={ex}
+              // A coach logging today in person answers for the set like anyone else. An older day is
+              // opened to read or act on a report, and its sets may predate ratings entirely.
+              askEffort={day.date === isoToday()}
               menuOpen={openMenu === id}
               onToggleMenu={(e) => {
                 e.stopPropagation();

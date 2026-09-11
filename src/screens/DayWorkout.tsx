@@ -14,6 +14,9 @@ import { SwapScopeSheet } from "../shared/SwapScopeSheet";
 import { RemoveExerciseSheet } from "../shared/RemoveExerciseSheet";
 import { equipmentOf } from "./exerciseHelpers";
 import { ExerciseSection } from "./ExerciseSection";
+import { SetEffortSheet } from "./SetEffortSheet";
+import { useRecordEffort } from "./useRecordEffort";
+import { effortOwedForDay, type OwedRating } from "../shared/effortOwed";
 
 type ConfirmAction = "session" | "mesocycle" | null;
 
@@ -35,6 +38,9 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   // The bucket and table land by hand-run migration, so the button only appears once they exist -- a
   // client tapping into a 404 is worse than the option not being there yet.
   const [canFormCheck, setCanFormCheck] = useState(false);
+  // Ratings still owed when a session is ended early, asked one at a time before it closes.
+  const [ratingQueue, setRatingQueue] = useState<OwedRating[] | null>(null);
+  const recordEffort = useRecordEffort();
   useEffect(() => {
     let active = true;
     formChecksAvailable().then((ok) => active && setCanFormCheck(ok));
@@ -57,7 +63,10 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   // builder day empty and it still gets scheduled (see expandCoachProgramToProgram), so this is reachable
   // by a real client on a real program. Nothing to resolve means it is finishable.
   const nothingProgrammed = totalSets === 0;
-  const canFinish = allResolved || nothingProgrammed;
+  // Every exercise's last set rated, as well as every set logged. The card asks the moment a last set is
+  // ticked, so this is the backstop for anything that got past it: the session cannot close without them.
+  const ratingsOwed = effortOwedForDay(day).length;
+  const canFinish = (allResolved && ratingsOwed === 0) || nothingProgrammed;
 
   const swappingEx = swapKey ? day.exercises[swapKey] : null;
 
@@ -97,6 +106,13 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   function runConfirmedAction() {
     if (confirmAction === "session") {
       closeOptions();
+      // Ending early still owes a rating on every exercise that was started, on its last set actually
+      // done. Asked one at a time; the session only closes once every one is answered.
+      const owed = effortOwedForDay(day, true);
+      if (owed.length > 0) {
+        setRatingQueue(owed);
+        return;
+      }
       nav(`/block/day/${dayId}/finish`);
     } else if (confirmAction === "mesocycle") {
       dispatch({ type: "SET_PROGRAM", program: { name: "Your program", totalWeeks: 0, coachName: state.program.coachName, weeks: [] } });
@@ -226,7 +242,13 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
           >
             {nothingProgrammed ? "Nothing to log — mark it done" : "Finish session"}
           </button>
-          {!canFinish && <div className="mu" style={{ textAlign: "center", marginTop: 7 }}>Log or remove every set to finish · {totalSets - doneSets} left</div>}
+          {!canFinish && (
+            <div className="mu" style={{ textAlign: "center", marginTop: 7 }}>
+              {allResolved
+                ? `Rate how hard the last set was on ${ratingsOwed} exercise${ratingsOwed === 1 ? "" : "s"} to finish`
+                : `Log or remove every set to finish · ${totalSets - doneSets} left`}
+            </div>
+          )}
         </div>
       </div>
       {formCheckFor && (
@@ -238,6 +260,22 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
         />
       )}
       <TabBar />
+
+      {ratingQueue && ratingQueue.length > 0 && day.exercises[ratingQueue[0].exerciseId] && (
+        <SetEffortSheet
+          exerciseName={day.exercises[ratingQueue[0].exerciseId].name}
+          onPick={(effort) => {
+            const [head, ...rest] = ratingQueue;
+            recordEffort(dayId, day.exercises[head.exerciseId], head.setId, effort);
+            if (rest.length > 0) {
+              setRatingQueue(rest);
+              return;
+            }
+            setRatingQueue(null);
+            nav(`/block/day/${dayId}/finish`);
+          }}
+        />
+      )}
 
       {swapKey && swappingEx && !pendingSwap && (
         <SimpleExercisePicker
