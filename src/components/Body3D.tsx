@@ -32,6 +32,19 @@ function loadFrames(onLoad: () => void): void {
   for (const img of frames) if (!img.complete) img.addEventListener("load", onLoad, { once: true });
 }
 
+/** This angle's frame, or the nearest angle that has loaded. Dragging before every frame has arrived would
+ * otherwise flash the placeholder figure between pictures. */
+function nearestLoaded(index: number): HTMLImageElement | null {
+  if (!frames) return null;
+  for (let d = 0; d <= FRAME_COUNT / 2; d++) {
+    for (const i of [index + d, index - d]) {
+      const img = frames[((i % FRAME_COUNT) + FRAME_COUNT) % FRAME_COUNT];
+      if (img.complete && img.naturalWidth > 0) return img;
+    }
+  }
+  return null;
+}
+
 export function Body3D({
   selectedId,
   selectedColor,
@@ -68,9 +81,9 @@ export function Body3D({
     const unit = Math.min(w / VIEW_W, h / VIEW_H);
     const turn = ((yaw.current % TAU) + TAU) % TAU;
     const index = Math.round((turn / TAU) * FRAME_COUNT) % FRAME_COUNT;
-    const img = frames?.[index];
+    const img = nearestLoaded(index);
 
-    if (img && img.complete && img.naturalWidth > 0) {
+    if (img) {
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, w / 2 - (VIEW_W / 2) * unit, h / 2 - (VIEW_H / 2) * unit, VIEW_W * unit, VIEW_H * unit);
       const marked = PARTS.filter((p) => p.id === selectedId || p.id === openId);
@@ -165,7 +178,10 @@ export function Body3D({
       onPointerMove={move}
       onPointerUp={up}
       onPointerCancel={up}
-      style={{ width: "100%", height: 380, display: "block", touchAction: "pan-y", cursor: "grab" }}
+      // Height is what limits the body's size on a phone -- it is far taller than it is wide -- so the panel's
+      // height is its zoom. 380 left the knees and ankles too small to hit reliably; 520 is about 37% larger
+      // and still leaves the card narrower than the body's arms need before width takes over as the limit.
+      style={{ width: "100%", height: 520, display: "block", touchAction: "pan-y", cursor: "grab" }}
       aria-label="Body model — drag to turn, tap where it hurts"
       role="img"
     />

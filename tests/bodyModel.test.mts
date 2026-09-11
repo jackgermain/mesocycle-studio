@@ -7,8 +7,8 @@ import { PARTS, pick, project, labelFor } from "../src/components/bodyModel.ts";
 import { JOINTS } from "../src/components/bodyJoints.ts";
 
 // A phone-width card at the panel's fixed height.
-const W = 324;
-const H = 380;
+const W = 340;
+const H = 520;
 
 test("every tap area sits inside the window the pictures were rendered for, from every side", () => {
   const w = 108 * 4;
@@ -28,7 +28,7 @@ test("tapping a joint in the picture picks that joint, from the front and from b
     ["rKnee", "r-knee"], ["lKnee", "l-knee"],
     ["rElbow", "r-elbow"], ["lElbow", "l-elbow"],
     ["rShoulder", "r-shoulder"], ["lShoulder", "l-shoulder"],
-    ["rWrist", "r-wrist"], ["lAnkle", "l-ankle"],
+    ["rWrist", "r-wrist"], ["lAnkle", "l-ankle"], ["rAnkle", "r-ankle"],
   ] as const;
   for (const yaw of [0, Math.PI]) {
     for (const [joint, id] of cases) {
@@ -36,6 +36,35 @@ test("tapping a joint in the picture picks that joint, from the front and from b
       assert.equal(pick(q.x, q.y, yaw, W, H)?.id, id, `${joint} at yaw ${yaw.toFixed(2)}`);
     }
   }
+});
+
+test("a tap a finger's width above or below a knee or ankle still picks the joint", () => {
+  const cases = [["rKnee", "r-knee"], ["lKnee", "l-knee"], ["rAnkle", "r-ankle"], ["lAnkle", "l-ankle"]] as const;
+  for (const yaw of [0, Math.PI]) {
+    for (const [joint, id] of cases) {
+      const q = project(JOINTS[joint], yaw, W, H);
+      for (const dy of [-12, 12]) {
+        assert.equal(pick(q.x, q.y + dy, yaw, W, H)?.id, id, `${joint} ${dy}px at yaw ${yaw.toFixed(2)}`);
+      }
+    }
+  }
+});
+
+test("from behind, a tap on the back of the shoulder picks the shoulder, not the upper back", () => {
+  // Toward the spine and a little down from the joint: the rear delt, where the torso's wide outline used
+  // to win.
+  for (const [joint, id] of [["rShoulder", "r-shoulder"], ["lShoulder", "l-shoulder"]] as const) {
+    const j = JOINTS[joint];
+    const q = project([j[0] * 0.8, j[1] + 2, j[2]], Math.PI, W, H);
+    assert.equal(pick(q.x, q.y, Math.PI, W, H)?.id, id, joint);
+  }
+});
+
+test("the middle of the upper back is still the upper back", () => {
+  const q = project([0, JOINTS.spine1[1], JOINTS.spine1[2]], Math.PI, W, H);
+  const part = pick(q.x, q.y, Math.PI, W, H);
+  assert.equal(part?.id, "chest");
+  assert.equal(labelFor(part!, Math.PI), "Upper back");
 });
 
 test("the lifter's right is on the viewer's left from the front, and on the right from behind", () => {

@@ -32,7 +32,9 @@ const FRAMES = Number(process.argv[2] || 36);
 const VIEW_W = 108;
 const VIEW_H = 178;
 const DIST = 340;
-const PX_PER_UNIT = 5; // 540 x 890: sharp on a 3x phone at the panel's 380px height
+// 756 x 1246. The panel is 520px tall, which puts about 2.9 CSS pixels on each body unit -- 8 or 9 device
+// pixels on a 3x phone. 7 per unit keeps the upscale under 1.3x; 5 went soft once the body was zoomed in.
+const PX_PER_UNIT = 7;
 const BODY_HEIGHT = 163; // body units, head to heel -- leaves a margin inside the 178-unit window
 
 // The body, and its eyeballs so the face is not two empty sockets. Hair, eyelashes, teeth and the clothing

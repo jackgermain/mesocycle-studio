@@ -40,26 +40,27 @@ const P = (
 ): Part => ({ id, label, a, b, r, r2, flatten });
 
 /** One side's limbs, from that side's own joints -- not mirrored, since the model has both. Each part
- * stops short of the joint it meets, and the joint gets its own small capsule, so a tap right on an elbow
- * is the elbow and not the end of the biceps. */
+ * stops short of the joint it meets, and the joint gets its own capsule covering about an eighth of each
+ * bone either side of it. That span is deliberately generous: the joints are what people report, and
+ * "hard to tap the knee" was the complaint when a joint only covered a sixteenth. */
 function side(s: "r" | "l"): Part[] {
   const L = s === "r" ? "R" : "L";
   const j = (name: string) => J[`${s}${name}` as keyof typeof J];
   const clavicle = j("Clavicle"), shoulder = j("Shoulder"), elbow = j("Elbow"), wrist = j("Wrist");
   const hip = j("Hip"), knee = j("Knee"), ankle = j("Ankle"), midfoot = j("Midfoot"), toes = j("Toes");
   return [
-    P(`${s}-shoulder`, `${L} shoulder`, mix(clavicle, shoulder, 0.6), mix(shoulder, elbow, 0.12), 7.5, 6.5),
-    P(`${s}-biceps`, `${L} biceps`, mix(shoulder, elbow, 0.24), mix(shoulder, elbow, 0.86), 6, 4.8),
-    P(`${s}-elbow`, `${L} elbow`, mix(shoulder, elbow, 0.94), mix(elbow, wrist, 0.06), 4.6),
-    P(`${s}-forearm`, `${L} forearm`, mix(elbow, wrist, 0.16), mix(elbow, wrist, 0.86), 4.6, 3.3),
+    P(`${s}-shoulder`, `${L} shoulder`, mix(clavicle, shoulder, 0.45), mix(shoulder, elbow, 0.18), 8, 7),
+    P(`${s}-biceps`, `${L} biceps`, mix(shoulder, elbow, 0.3), mix(shoulder, elbow, 0.78), 6, 4.8),
+    P(`${s}-elbow`, `${L} elbow`, mix(shoulder, elbow, 0.86), mix(elbow, wrist, 0.12), 5.2),
+    P(`${s}-forearm`, `${L} forearm`, mix(elbow, wrist, 0.22), mix(elbow, wrist, 0.8), 4.6, 3.3),
     // Ends at the fingertips, not past them: at 1.35 the muscular model's hand tap area poked outside the
     // rendered frame. A tap just beyond the fingers still lands, through pick's minimum outline.
-    P(`${s}-wrist`, `${L} wrist / hand`, mix(elbow, wrist, 0.95), mix(elbow, wrist, 1.12), 3.3, 3.9),
-    P(`${s}-hip`, `${L} hip`, mix(J.pelvis, hip, 0.7), mix(hip, knee, 0.08), 8.5, 8, 0.8),
-    P(`${s}-quad`, `${L} quad`, mix(hip, knee, 0.18), mix(hip, knee, 0.86), 8, 5.6),
-    P(`${s}-knee`, `${L} knee`, mix(hip, knee, 0.94), mix(knee, ankle, 0.06), 5.2),
-    P(`${s}-shin`, `${L} shin`, mix(knee, ankle, 0.14), mix(knee, ankle, 0.9), 5, 3.4),
-    P(`${s}-ankle`, `${L} ankle / foot`, mix(knee, ankle, 0.97), mix(midfoot, toes, 0.6), 3.3, 3.6),
+    P(`${s}-wrist`, `${L} wrist / hand`, mix(elbow, wrist, 0.88), mix(elbow, wrist, 1.12), 3.8, 4),
+    P(`${s}-hip`, `${L} hip`, mix(J.pelvis, hip, 0.7), mix(hip, knee, 0.1), 8.5, 8, 0.8),
+    P(`${s}-quad`, `${L} quad`, mix(hip, knee, 0.2), mix(hip, knee, 0.8), 8, 5.8),
+    P(`${s}-knee`, `${L} knee`, mix(hip, knee, 0.87), mix(knee, ankle, 0.12), 6),
+    P(`${s}-shin`, `${L} shin`, mix(knee, ankle, 0.2), mix(knee, ankle, 0.84), 5, 3.6),
+    P(`${s}-ankle`, `${L} ankle / foot`, mix(knee, ankle, 0.9), mix(midfoot, toes, 0.65), 4, 4),
   ];
 }
 
@@ -103,13 +104,21 @@ export function project(p: V3, yaw: number, w: number, h: number): Projected {
   return { x: w / 2 + x * unit * k, y: h / 2 + p[1] * unit * k, scale: unit * k, z };
 }
 
+/** Joints win a close call. They are what people come here to report, and a tap that lands between a knee
+ * and a quad is far more often a knee. In pixels, subtracted from a joint's distance. */
+const JOINT_PREFERENCE_PX = 8;
+const isJoint = (part: Part) => /-(shoulder|elbow|wrist|hip|knee|ankle)$/.test(part.id);
+
 /** Which part a tap landed on.
  *
  * Every part whose projected outline contains the point is a candidate. Of those, only the ones at about
  * the front-most depth compete -- from the side, an arm in front of the torso is what you tapped even if the
- * torso's centre line is nearer the finger -- and among them the nearest centre line wins. Nearest, not
- * front-most, is what makes a tap exactly on an elbow the elbow rather than the end of the forearm.
- * Outlines are generous and floored, because a finger is wider than a wrist. */
+ * torso's centre line is nearer the finger -- and among them the nearest centre line wins, with joints
+ * given a small head start. Outlines are generous and floored, because a finger is wider than a wrist.
+ *
+ * Nearest in pixels, not relative to each part's size. Dividing by size let the torso, the widest part by
+ * far, claim the back of the shoulder from behind: a tap there was nearer the shoulder's centre line, but a
+ * smaller fraction of the torso's enormous outline. */
 export function pick(px: number, py: number, yaw: number, w: number, h: number): Part | null {
   const hits: { part: Part; z: number; score: number }[] = [];
   for (const part of PARTS) {
@@ -117,9 +126,18 @@ export function pick(px: number, py: number, yaw: number, w: number, h: number):
     for (let t = 0; t <= 1.0001; t += 0.1) {
       const q = project(mix(part.a, part.b, t), yaw, w, h);
       const r = part.r + ((part.r2 ?? part.r) - part.r) * t;
-      const rad = Math.max(r * q.scale * 1.5, 22);
-      const score = Math.hypot(px - q.x, py - q.y) / rad;
-      if (score <= 1 && (!best || score < best.score)) best = { z: q.z, score };
+      const rad = Math.max(r * q.scale * 1.5, 26);
+      const dist = Math.hypot(px - q.x, py - q.y);
+      if (dist > rad) continue;
+      const score = dist - (isJoint(part) ? JOINT_PREFERENCE_PX : 0);
+      // Distance comes from the nearest point, but depth from the part's front-most point under the finger.
+      // Taking both from the nearest point let a foot pointing away from the camera -- seen from behind --
+      // compete at its toes' depth, so the shin's depth filtered it out and stole taps on the ankle itself.
+      if (!best) best = { z: q.z, score };
+      else {
+        best.z = Math.max(best.z, q.z);
+        best.score = Math.min(best.score, score);
+      }
     }
     if (best) hits.push({ part, ...best });
   }
