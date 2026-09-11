@@ -1,16 +1,37 @@
 import React from "react";
-import { PARTS, project, pick, labelFor, type Part } from "./bodyModel";
+import { PARTS, pick, labelFor, ellipsesOf, type Part } from "./bodyModel";
+import { FRAME_COUNT } from "./bodyJoints";
 
-/** The body, drawn on a canvas and turned with your finger.
+/** The body, turned with your finger.
  *
- * Each capsule is painted as a run of shaded ellipses along its axis, back to front. Depth sorting is per
- * ellipse rather than per part, which is what lets an arm pass in front of the torso from one angle and
- * behind it from another without any special cases.
+ * What you see is a real human model rendered from FRAME_COUNT angles (scripts/bake-body.mjs), flipped
+ * through as you drag. What you tap is the capsule model in bodyModel.ts, built from that model's joints and
+ * projected through the same camera, so the two agree. The chosen part is tinted onto the picture itself,
+ * clipped to the body's own pixels, so the colour lies on the skin.
  *
- * Shading is a single light from the upper left. Each ellipse gets a radial gradient offset toward the
- * light, so a limb has a highlight running down its lit side and falls away on the other — that gradient,
- * more than the silhouette, is what makes it read as a solid rather than a sticker.
+ * Until the pictures have loaded the capsules are drawn instead, so the panel is never empty and a tap
+ * already works.
  */
+
+const TAU = Math.PI * 2;
+// The window the pictures were rendered for, in body units -- the same numbers as bodyModel.project.
+const VIEW_W = 108;
+const VIEW_H = 178;
+
+// Loaded once per page and shared, so leaving the joint question and coming back does not fetch them again.
+let frames: HTMLImageElement[] | null = null;
+function loadFrames(onLoad: () => void): void {
+  if (!frames) {
+    frames = Array.from({ length: FRAME_COUNT }, (_, i) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = `${import.meta.env.BASE_URL}body/frame-${String(i).padStart(2, "0")}.webp`;
+      return img;
+    });
+  }
+  for (const img of frames) if (!img.complete) img.addEventListener("load", onLoad, { once: true });
+}
+
 export function Body3D({
   selectedId,
   selectedColor,
@@ -44,45 +65,43 @@ export function Body3D({
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
 
-    // Every ellipse from every part, then one sort. Sorting parts instead would draw a whole arm in front
-    // of or behind the whole torso, and there is no angle where that is right for both ends of it.
-    type Blob = { x: number; y: number; rx: number; ry: number; z: number; part: Part };
-    const blobs: Blob[] = [];
-    for (const part of PARTS) {
-      const len = Math.hypot(part.b[0] - part.a[0], part.b[1] - part.a[1], part.b[2] - part.a[2]);
-      const steps = Math.max(2, Math.ceil(len / 1.2));
-      for (let i = 0; i <= steps; i++) {
-        const t = i / steps;
-        const p: [number, number, number] = [
-          part.a[0] + (part.b[0] - part.a[0]) * t,
-          part.a[1] + (part.b[1] - part.a[1]) * t,
-          part.a[2] + (part.b[2] - part.a[2]) * t,
-        ];
-        const q = project(p, yaw.current, w, h);
-        // Taper along the capsule. A constant radius is what makes a limb read as a balloon.
-        const r = part.r + ((part.r2 ?? part.r) - part.r) * t;
-        const rx = r * q.scale;
-        // `flatten` is how deep the part is relative to how wide, so a chest is a slab: full width
-        // head-on, thin from the side. face is 1 looking at the front or back and 0 from the side, so the
-        // drawn width runs from the full radius to `flatten` of it as the body turns.
-        //
-        // This was the other way round at first, which drew the torso narrow head-on and wide in profile
-        // -- the figure came out as a plank facing you and a barrel side-on.
-        const f = part.flatten ?? 1;
-        const face = Math.abs(Math.cos(yaw.current));
-        blobs.push({ x: q.x, y: q.y, rx: rx * (f + (1 - f) * face), ry: rx, z: q.z, part });
-      }
-    }
-    blobs.sort((a, b) => a.z - b.z);
+    const unit = Math.min(w / VIEW_W, h / VIEW_H);
+    const turn = ((yaw.current % TAU) + TAU) % TAU;
+    const index = Math.round((turn / TAU) * FRAME_COUNT) % FRAME_COUNT;
+    const img = frames?.[index];
 
+    if (img && img.complete && img.naturalWidth > 0) {
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, w / 2 - (VIEW_W / 2) * unit, h / 2 - (VIEW_H / 2) * unit, VIEW_W * unit, VIEW_H * unit);
+      const marked = PARTS.filter((p) => p.id === selectedId || p.id === openId);
+      if (marked.length) {
+        ctx.save();
+        // source-atop paints only where the body already is, so the tint follows the body's real outline
+        // instead of hanging off it as a capsule-shaped blob.
+        ctx.globalCompositeOperation = "source-atop";
+        for (const part of marked) {
+          const isSel = part.id === selectedId;
+          ctx.globalAlpha = isSel ? 0.58 : 0.26;
+          ctx.fillStyle = isSel ? selectedColor : "#ffffff";
+          for (const e of ellipsesOf(part, yaw.current, w, h)) {
+            ctx.beginPath();
+            ctx.ellipse(e.x, e.y, Math.max(0.5, e.rx * 0.92), Math.max(0.5, e.ry * 0.92), 0, 0, TAU);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      }
+      return;
+    }
+
+    // Still loading. Every ellipse from every part, then one sort, so an arm can pass in front of the torso
+    // from one angle and behind it from another.
+    const blobs = PARTS.flatMap((part) => ellipsesOf(part, yaw.current, w, h).map((e) => ({ ...e, part })));
+    blobs.sort((a, b) => a.z - b.z);
     for (const bl of blobs) {
       const isSel = bl.part.id === selectedId;
       const isOpen = bl.part.id === openId;
-      // Detail sits darker than the body it lies on, so it reads as a crease or a shadow rather than a
-      // sticker. It never takes the selection colour -- a highlighted head should not light up its eyes.
-      const base = bl.part.detail
-        ? "#191d23"
-        : isSel ? selectedColor : isOpen ? "#6d7684" : "#2b323a";
+      const base = isSel ? selectedColor : isOpen ? "#6d7684" : "#2b323a";
       const grad = ctx.createRadialGradient(
         bl.x - bl.rx * 0.45, bl.y - bl.ry * 0.55, bl.rx * 0.12,
         bl.x, bl.y, Math.max(bl.rx, bl.ry) * 1.25,
@@ -92,17 +111,25 @@ export function Body3D({
       grad.addColorStop(1, shade(base, 0.42));
       ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.ellipse(bl.x, bl.y, Math.max(0.5, bl.rx), Math.max(0.5, bl.ry), 0, 0, Math.PI * 2);
+      ctx.ellipse(bl.x, bl.y, Math.max(0.5, bl.rx), Math.max(0.5, bl.ry), 0, 0, TAU);
       ctx.fill();
     }
   }, [selectedId, selectedColor, openId]);
 
+  // The load listeners outlive any one render, so they redraw through a ref that always holds the latest
+  // draw -- otherwise a picture arriving after a tap would repaint with the selection from before it.
+  const drawRef = React.useRef(draw);
   React.useEffect(() => {
+    drawRef.current = draw;
     draw();
-    const ro = new ResizeObserver(draw);
+    const ro = new ResizeObserver(() => drawRef.current());
     if (canvas.current) ro.observe(canvas.current);
     return () => ro.disconnect();
   }, [draw]);
+
+  React.useEffect(() => {
+    loadFrames(() => drawRef.current());
+  }, []);
 
   function down(e: React.PointerEvent<HTMLCanvasElement>) {
     drag.current = { x: e.clientX, yaw: yaw.current, moved: false };
@@ -147,8 +174,8 @@ export function Body3D({
 
 export { labelFor };
 
-/** Lighten or darken a hex or css colour by a factor. Hex only for the model's own greys; a selected part
- * is handed a resolved colour by the caller, since a CSS variable cannot be multiplied. */
+/** Lighten or darken a hex colour by a factor. A selected part is handed a resolved colour by the caller,
+ * since a CSS variable cannot be multiplied. */
 function shade(c: string, f: number): string {
   const m = /^#([0-9a-f]{6})$/i.exec(c);
   if (!m) return c;

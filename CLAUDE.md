@@ -227,6 +227,15 @@ covers `detail`.
 columns and fold them into `note`, which — with migration 0015 (`day_id`) never applied — put a
 progression's whole JSON payload into a notification title. `readProgression` still reads that one.
 
+**Body picker (joint pain location).** What you see is MakeHuman's CC0 base mesh
+(`tools/body-model/makehuman-base.obj`, licence notes in that folder's README) rendered from 36 angles into
+`public/body/frame-NN.webp`; the app flips through them as you drag, so no 3D library ships. What you tap is
+the capsule model in `src/components/bodyModel.ts`, built from the model's own joint markers in
+`bodyJoints.ts`. **Both are written by `node scripts/bake-body.mjs` from the same numbers — never hand-edit
+`bodyJoints.ts`, and never change the camera in `project()` without rebaking,** or the tap areas slide off the
+body. `tests/bodyModel.test.mts` pins that tapping each joint in the picture picks that joint from the front
+and from behind.
+
 **Nutrition.** Macros or hand-portions mode. Food search hits USDA FoodData Central (primary — real
 manufacturer label data, plain `fetch`) plus Open Food Facts (secondary — **JSONP, because their server
 sends no CORS headers**). Both sources are filtered by a plausibility check that drops entries where

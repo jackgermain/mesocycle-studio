@@ -1,22 +1,19 @@
-/** A humanoid as 3D geometry, and the maths to draw and pick it. No WebGL and no library.
+/** The body picker's tap areas, and the maths to project and pick them. No WebGL and no library.
  *
- * The figure is a set of tapered capsules in body space — x right, y down, z forward — projected through
- * a perspective camera onto a 2D canvas. A capsule is painted as a run of shaded ellipses along its axis,
- * which is the cheap way to get a rounded limb that still reads as solid from any angle.
+ * What you see is not these any more. It is MakeHuman's CC0 base mesh, rendered from every angle by
+ * scripts/bake-body.mjs. These capsules are what a tap is tested against, built from that same model's own
+ * joint positions (bodyJoints.ts, written by the same script), so a tap on the knee in the picture lands on
+ * the knee capsule from every angle. Hand-placed capsules could not line up with a real body.
  *
- * Why not three.js: it is ~600KB into a bundle with no code splitting, so every screen in the app would
- * pay for one panel in the feedback flow, and a procedural figure needs no mesh, no materials and no
- * scene graph. The whole projection is one rotate-and-divide.
+ * Body space: x toward the viewer's right at yaw 0, y down, z toward the camera. The lifter's right is
+ * negative x, so from the front it is on the viewer's left -- a mirror, which is what a person facing you is.
  *
- * Two things make it read as a person rather than a stack of balloons:
- *
- * **Limbs taper.** A thigh is thick at the hip and half that at the knee; a forearm narrows to the wrist.
- * Constant-radius tubes are what the Michelin man is made of, and it was the single biggest tell.
- *
- * **Detail lives in 3D and hides itself.** The eyes sit in front of the skull and the spine behind it, so
- * depth sorting reveals a face from the front and a back from behind with no special-casing anywhere —
- * turn the body and the right details occlude on their own.
+ * The capsules are also drawn flat while the pictures load, and they tint the chosen part on top of the
+ * picture once they have.
  */
+import { JOINTS as J } from "./bodyJoints";
+
+type V3 = readonly [number, number, number];
 
 export interface Part {
   id: string;
@@ -28,73 +25,50 @@ export interface Part {
   r2?: number;
   /** Depth relative to width. 1 is round; a torso is a slab, so it is well under. */
   flatten?: number;
-  /** Surface detail — a brow, the spine, a kneecap. Drawn darker and never tappable: they exist to say
-   * which way the body is facing, and a tap near one means the part underneath. */
-  detail?: boolean;
 }
+
+const mix = (p: V3, q: V3, t: number): [number, number, number] => [
+  p[0] + (q[0] - p[0]) * t,
+  p[1] + (q[1] - p[1]) * t,
+  p[2] + (q[2] - p[2]) * t,
+];
 
 const P = (
   id: string, label: string,
   a: [number, number, number], b: [number, number, number],
-  r: number, r2?: number, flatten = 1, detail = false,
-): Part => ({ id, label, a, b, r, r2, flatten, detail });
+  r: number, r2?: number, flatten = 1,
+): Part => ({ id, label, a, b, r, r2, flatten });
 
-const D = (a: [number, number, number], b: [number, number, number], r: number, r2?: number): Part =>
-  P("detail", "", a, b, r, r2, 1, true);
-
-/** Mirror to the body's other side. Authored on the lifter's right and mirrored, so the halves cannot
- * drift apart. */
-const mir = (p: Part, id: string, label: string): Part =>
-  ({ ...p, id, label, a: [-p.a[0], p.a[1], p.a[2]], b: [-p.b[0], p.b[1], p.b[2]] });
-
-// Roughly seven and a half heads tall, shoulders a shade over two heads wide, waist narrower than both
-// shoulders and hips. The taper from shoulder to waist to hip is most of what makes a silhouette human.
-const R_SHOULDER = P("r-shoulder", "R shoulder", [-20, -52, 0], [-24, -46, 0], 8.6, 7.4);
-const R_BICEPS   = P("r-biceps", "R biceps", [-26, -45, 0], [-29, -26, 1], 7, 5.4);
-const R_ELBOW    = P("r-elbow", "R elbow", [-29, -24, 1], [-29, -22, 1], 5.2);
-const R_FOREARM  = P("r-forearm", "R forearm", [-29, -21, 1], [-31, -2, 2], 5.4, 3.6);
-const R_WRIST    = P("r-wrist", "R wrist / hand", [-31, 1, 2], [-32, 9, 3], 3.4, 4.4);
-const R_QUAD     = P("r-quad", "R quad", [-10, 13, 0], [-11, 38, 0], 9, 6);
-const R_KNEE     = P("r-knee", "R knee", [-11, 40, 0], [-11, 43, 0], 5.8, 5.4);
-const R_SHIN     = P("r-shin", "R shin", [-11, 44, 0], [-10, 66, 1], 5.8, 3.6);
-const R_ANKLE    = P("r-ankle", "R ankle / foot", [-10, 68, 0], [-10, 72, -7], 3.4, 4.2);
-const R_HIP      = P("r-hip", "R hip", [-7, 4, 0], [-10, 13, 0], 9, 9.5, 0.8);
+/** One side's limbs, from that side's own joints -- not mirrored, since the model has both. Each part
+ * stops short of the joint it meets, and the joint gets its own small capsule, so a tap right on an elbow
+ * is the elbow and not the end of the biceps. */
+function side(s: "r" | "l"): Part[] {
+  const L = s === "r" ? "R" : "L";
+  const j = (name: string) => J[`${s}${name}` as keyof typeof J];
+  const clavicle = j("Clavicle"), shoulder = j("Shoulder"), elbow = j("Elbow"), wrist = j("Wrist");
+  const hip = j("Hip"), knee = j("Knee"), ankle = j("Ankle"), midfoot = j("Midfoot"), toes = j("Toes");
+  return [
+    P(`${s}-shoulder`, `${L} shoulder`, mix(clavicle, shoulder, 0.6), mix(shoulder, elbow, 0.12), 7.5, 6.5),
+    P(`${s}-biceps`, `${L} biceps`, mix(shoulder, elbow, 0.24), mix(shoulder, elbow, 0.86), 6, 4.8),
+    P(`${s}-elbow`, `${L} elbow`, mix(shoulder, elbow, 0.94), mix(elbow, wrist, 0.06), 4.6),
+    P(`${s}-forearm`, `${L} forearm`, mix(elbow, wrist, 0.16), mix(elbow, wrist, 0.86), 4.6, 3.3),
+    P(`${s}-wrist`, `${L} wrist / hand`, mix(elbow, wrist, 0.95), mix(elbow, wrist, 1.35), 3.3, 3.9),
+    P(`${s}-hip`, `${L} hip`, mix(J.pelvis, hip, 0.7), mix(hip, knee, 0.08), 8.5, 8, 0.8),
+    P(`${s}-quad`, `${L} quad`, mix(hip, knee, 0.18), mix(hip, knee, 0.86), 8, 5.6),
+    P(`${s}-knee`, `${L} knee`, mix(hip, knee, 0.94), mix(knee, ankle, 0.06), 5.2),
+    P(`${s}-shin`, `${L} shin`, mix(knee, ankle, 0.14), mix(knee, ankle, 0.9), 5, 3.4),
+    P(`${s}-ankle`, `${L} ankle / foot`, mix(knee, ankle, 0.97), mix(midfoot, toes, 0.6), 3.3, 3.6),
+  ];
+}
 
 export const PARTS: Part[] = [
-  // Skull: wider at the cranium, narrowing to the jaw, which is what stops a head reading as a ball.
-  P("head", "Head / neck", [0, -77, -1], [0, -68, 1], 10, 7.5, 0.92),
-  P("neck", "Head / neck", [0, -66, 0], [0, -58, 0], 5.2, 6),
-  // Chest to waist to hip, as three tapered sections rather than one tube.
-  P("chest", "Chest", [0, -55, 0], [0, -42, 0], 15, 18, 0.52),
-  P("chest", "Chest", [0, -42, 0], [0, -31, 0], 18, 14, 0.52),
-  P("abs", "Abs", [0, -31, 0], [0, -18, 0], 14, 11.5, 0.56),
-  P("abs", "Abs", [0, -18, 0], [0, -8, 0], 11.5, 13, 0.62),
-  R_HIP, mir(R_HIP, "l-hip", "L hip"),
-  R_SHOULDER, mir(R_SHOULDER, "l-shoulder", "L shoulder"),
-  R_BICEPS, mir(R_BICEPS, "l-biceps", "L biceps"),
-  R_ELBOW, mir(R_ELBOW, "l-elbow", "L elbow"),
-  R_FOREARM, mir(R_FOREARM, "l-forearm", "L forearm"),
-  R_WRIST, mir(R_WRIST, "l-wrist", "L wrist / hand"),
-  R_QUAD, mir(R_QUAD, "l-quad", "L quad"),
-  R_KNEE, mir(R_KNEE, "l-knee", "L knee"),
-  R_SHIN, mir(R_SHIN, "l-shin", "L shin"),
-  R_ANKLE, mir(R_ANKLE, "l-ankle", "L ankle / foot"),
-
-  // ——— which way they are facing ———————————————————————————————————————
-  // In front of the skull, so they vanish the moment the head turns away. Small: these are cues, not a
-  // portrait, and eyes drawn any larger tip the whole figure into a cartoon.
-  D([-3.2, -73, 8], [-3.2, -73, 8], 1.2),
-  D([3.2, -73, 8], [3.2, -73, 8], 1.2),
-  D([0, -69.5, 9], [0, -68.5, 9], 0.9),
-  // Collarbones as two short segments angling down from the throat, not one bar across the chest -- a
-  // straight line plus a sternum drew a literal letter T on the front of the body.
-  D([-1, -54, 8.5], [-10, -51, 7], 1.1, 0.8),
-  D([1, -54, 8.5], [10, -51, 7], 1.1, 0.8),
-  // Behind the spine, so they only show once you have turned them round. The spine tapers away at the
-  // small of the back; the blades are short and angled rather than two vertical slashes.
-  D([0, -52, -8.5], [0, -20, -7.5], 1.2, 0.6),
-  D([-5, -49, -8.5], [-11, -42, -7], 1.3, 0.7),
-  D([5, -49, -8.5], [11, -42, -7], 1.3, 0.7),
+  P("head", "Head / neck", mix(J.head, J.headTop, 0.55), mix(J.neck, J.head, 0.45), 8.6, 7, 0.95),
+  P("neck", "Head / neck", mix(J.neck, J.head, 0.25), mix(J.spine1, J.neck, 0.55), 4.6, 5.2),
+  P("chest", "Chest", [0, J.rShoulder[1], J.spine1[2] + 1.5], [0, J.spine2[1], J.spine2[2] + 1.5], 15, 14, 0.55),
+  P("abs", "Abs", [0, J.spine2[1], J.spine2[2] + 1], [0, J.spine4[1], J.spine4[2] + 1], 13.5, 12.5, 0.6),
+  P("abs", "Abs", [0, J.spine4[1], J.spine4[2]], [0, J.pelvis[1], J.pelvis[2]], 12.5, 13.5, 0.65),
+  ...side("r"),
+  ...side("l"),
 ];
 
 /** The torso reads as different parts depending on which way round the body is. Everything else keeps one
@@ -113,9 +87,10 @@ export function facingAway(yaw: number): boolean {
 
 export interface Projected { x: number; y: number; scale: number; z: number }
 
-/** Rotate about the body's vertical axis, then divide by depth. `dist` is how far the camera sits back —
- * large enough that the perspective reads as a body rather than a fisheye. */
-export function project(p: [number, number, number], yaw: number, w: number, h: number): Projected {
+/** Rotate about the body's vertical axis, then divide by depth. scripts/bake-body.mjs renders the pictures
+ * through a camera built from these same three numbers -- the 108 x 178 window and the 340 distance -- so
+ * change them there too, and rebake, or the tap areas slide off the body. */
+export function project(p: V3, yaw: number, w: number, h: number): Projected {
   const cos = Math.cos(yaw);
   const sin = Math.sin(yaw);
   const x = p[0] * cos + p[2] * sin;
@@ -126,28 +101,47 @@ export function project(p: [number, number, number], yaw: number, w: number, h: 
   return { x: w / 2 + x * unit * k, y: h / 2 + p[1] * unit * k, scale: unit * k, z };
 }
 
-/** Which part a tap landed on: the nearest one whose projected circle contains the point, breaking ties
- * toward whatever is closest to the camera — the thing you can see is the thing you meant. Details are
- * skipped, so tapping someone's eye selects their head. */
+/** Which part a tap landed on.
+ *
+ * Every part whose projected outline contains the point is a candidate. Of those, only the ones at about
+ * the front-most depth compete -- from the side, an arm in front of the torso is what you tapped even if the
+ * torso's centre line is nearer the finger -- and among them the nearest centre line wins. Nearest, not
+ * front-most, is what makes a tap exactly on an elbow the elbow rather than the end of the forearm.
+ * Outlines are generous and floored, because a finger is wider than a wrist. */
 export function pick(px: number, py: number, yaw: number, w: number, h: number): Part | null {
-  let best: { part: Part; z: number } | null = null;
+  const hits: { part: Part; z: number; score: number }[] = [];
   for (const part of PARTS) {
-    if (part.detail) continue;
+    let best: { z: number; score: number } | null = null;
     for (let t = 0; t <= 1.0001; t += 0.1) {
-      const p: [number, number, number] = [
-        part.a[0] + (part.b[0] - part.a[0]) * t,
-        part.a[1] + (part.b[1] - part.a[1]) * t,
-        part.a[2] + (part.b[2] - part.a[2]) * t,
-      ];
-      const q = project(p, yaw, w, h);
+      const q = project(mix(part.a, part.b, t), yaw, w, h);
       const r = part.r + ((part.r2 ?? part.r) - part.r) * t;
-      // Generous: a finger is wider than a wrist. Floored so the smallest parts stay reachable.
       const rad = Math.max(r * q.scale * 1.5, 22);
-      if ((px - q.x) ** 2 + (py - q.y) ** 2 <= rad * rad) {
-        if (!best || q.z > best.z) best = { part, z: q.z };
-        break;
-      }
+      const score = Math.hypot(px - q.x, py - q.y) / rad;
+      if (score <= 1 && (!best || score < best.score)) best = { z: q.z, score };
     }
+    if (best) hits.push({ part, ...best });
   }
-  return best?.part ?? null;
+  if (hits.length === 0) return null;
+  const front = Math.max(...hits.map((hit) => hit.z));
+  const nearFront = hits.filter((hit) => hit.z >= front - 8);
+  return nearFront.reduce((a, b) => (b.score < a.score ? b : a)).part;
+}
+
+/** The ellipses a capsule is drawn as, back to front along its axis. Shared by the loading fallback and the
+ * tint over the picture. */
+export function ellipsesOf(part: Part, yaw: number, w: number, h: number): { x: number; y: number; rx: number; ry: number; z: number }[] {
+  const len = Math.hypot(part.b[0] - part.a[0], part.b[1] - part.a[1], part.b[2] - part.a[2]);
+  const steps = Math.max(2, Math.ceil(len / 1.2));
+  const out: { x: number; y: number; rx: number; ry: number; z: number }[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const q = project(mix(part.a, part.b, t), yaw, w, h);
+    const r = (part.r + ((part.r2 ?? part.r) - part.r) * t) * q.scale;
+    // `flatten` is how deep the part is relative to how wide, so a chest is a slab: full width head-on,
+    // thin from the side.
+    const f = part.flatten ?? 1;
+    const face = Math.abs(Math.cos(yaw));
+    out.push({ x: q.x, y: q.y, rx: r * (f + (1 - f) * face), ry: r, z: q.z });
+  }
+  return out;
 }
