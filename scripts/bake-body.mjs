@@ -55,6 +55,51 @@ for (const line of readFileSync(MODEL, "utf8").split("\n")) {
   }
 }
 
+// ---- 1b. Shape it: a young, muscular man. ------------------------------------------------------------
+// The base mesh is MakeHuman's neutral average, which reads slightly female. MakeHuman shapes a person by
+// adding weighted "targets" -- per-vertex offsets, CC0 like the mesh -- and these are the weights its own
+// sliders produce for: male, 25 years old, maximum muscle, a little under average weight (so the muscle
+// reads as definition rather than bulk), ideal proportions, and its default even mix of the three ethnic
+// shapes. Gender lives in the ethnic targets; muscle and weight in the universal ones. MakeHuman's two
+// ideal-proportions files for average and minimum weight are byte-identical, so their 0.7/0.3 split below is
+// simply that one shape at full weight -- kept as two lines so the weights still read as the sliders do.
+const TARGET_DIR = resolve("tools/body-model/targets");
+const TARGETS = [
+  ["african-male-young.target", 1 / 3],
+  ["asian-male-young.target", 1 / 3],
+  ["caucasian-male-young.target", 1 / 3],
+  ["universal-male-young-maxmuscle-averageweight.target", 0.7],
+  ["universal-male-young-maxmuscle-minweight.target", 0.3],
+  ["male-young-maxmuscle-averageweight-idealproportions.target", 0.7],
+  ["male-young-maxmuscle-minweight-idealproportions.target", 0.3],
+];
+for (const [file, weight] of TARGETS) {
+  let moved = 0;
+  for (const line of readFileSync(resolve(TARGET_DIR, file), "utf8").split("\n")) {
+    const t = line.trim();
+    if (!t || t.startsWith("#")) continue;
+    const [i, dx, dy, dz] = t.split(/\s+/);
+    const v = V[Number(i)];
+    if (!v) throw new Error(`${file} moves vertex ${i}, which the mesh does not have`);
+    v[0] += weight * Number(dx);
+    v[1] += weight * Number(dy);
+    v[2] += weight * Number(dz);
+    moved++;
+  }
+  console.log(`applied ${file} x ${weight.toFixed(2)} (${moved} vertices)`);
+}
+
+// The render reads an OBJ, so the shaped positions go back into a copy of the file, line for line.
+const SHAPED = resolve("tools/body-model/.shaped.obj");
+{
+  let n = 0;
+  const text = readFileSync(MODEL, "utf8")
+    .split("\n")
+    .map((line) => (line.startsWith("v ") ? `v ${V[n++].map((c) => c.toFixed(6)).join(" ")}` : line))
+    .join("\n");
+  writeFileSync(SHAPED, text);
+}
+
 function centre(name) {
   const idx = groups.get(name);
   if (!idx) throw new Error(`the model has no ${name} group`);
@@ -163,7 +208,7 @@ try {
   const rimB = new THREE.DirectionalLight(0x4ce08f, 1.0); rimB.position.set(-160, 120, -300); scene.add(rimB);
 
   const keep = new Set(${JSON.stringify(KEEP)});
-  const root = await new OBJLoader().loadAsync("file://${MODEL}");
+  const root = await new OBJLoader().loadAsync("file://${SHAPED}");
   const skin = new THREE.MeshStandardMaterial({ color: 0xaeb6c1, roughness: 0.52, metalness: 0 });
   for (const child of [...root.children]) {
     if (!child.isMesh || !keep.has(child.name)) { root.remove(child); continue; }
@@ -215,6 +260,7 @@ const dom = execFileSync(
   { maxBuffer: 1024 * 1024 * 400 },
 ).toString();
 rmSync(pagePath, { force: true });
+rmSync(SHAPED, { force: true });
 
 const m = dom.match(/<pre id="out">([\s\S]*?)<\/pre>/);
 if (!m) {

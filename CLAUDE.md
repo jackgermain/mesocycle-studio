@@ -228,7 +228,8 @@ columns and fold them into `note`, which — with migration 0015 (`day_id`) neve
 progression's whole JSON payload into a notification title. `readProgression` still reads that one.
 
 **Body picker (joint pain location).** What you see is MakeHuman's CC0 base mesh
-(`tools/body-model/makehuman-base.obj`, licence notes in that folder's README) rendered from 36 angles into
+(`tools/body-model/makehuman-base.obj`, licence notes in that folder's README), shaped into a muscular man by
+MakeHuman's own CC0 targets in `tools/body-model/targets/`, and rendered from 36 angles into
 `public/body/frame-NN.webp`; the app flips through them as you drag, so no 3D library ships. What you tap is
 the capsule model in `src/components/bodyModel.ts`, built from the model's own joint markers in
 `bodyJoints.ts`. **Both are written by `node scripts/bake-body.mjs` from the same numbers — never hand-edit

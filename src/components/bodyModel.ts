@@ -52,7 +52,9 @@ function side(s: "r" | "l"): Part[] {
     P(`${s}-biceps`, `${L} biceps`, mix(shoulder, elbow, 0.24), mix(shoulder, elbow, 0.86), 6, 4.8),
     P(`${s}-elbow`, `${L} elbow`, mix(shoulder, elbow, 0.94), mix(elbow, wrist, 0.06), 4.6),
     P(`${s}-forearm`, `${L} forearm`, mix(elbow, wrist, 0.16), mix(elbow, wrist, 0.86), 4.6, 3.3),
-    P(`${s}-wrist`, `${L} wrist / hand`, mix(elbow, wrist, 0.95), mix(elbow, wrist, 1.35), 3.3, 3.9),
+    // Ends at the fingertips, not past them: at 1.35 the muscular model's hand tap area poked outside the
+    // rendered frame. A tap just beyond the fingers still lands, through pick's minimum outline.
+    P(`${s}-wrist`, `${L} wrist / hand`, mix(elbow, wrist, 0.95), mix(elbow, wrist, 1.12), 3.3, 3.9),
     P(`${s}-hip`, `${L} hip`, mix(J.pelvis, hip, 0.7), mix(hip, knee, 0.08), 8.5, 8, 0.8),
     P(`${s}-quad`, `${L} quad`, mix(hip, knee, 0.18), mix(hip, knee, 0.86), 8, 5.6),
     P(`${s}-knee`, `${L} knee`, mix(hip, knee, 0.94), mix(knee, ankle, 0.06), 5.2),
