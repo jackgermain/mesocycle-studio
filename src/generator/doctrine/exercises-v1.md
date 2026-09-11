@@ -2210,6 +2210,204 @@ following week to recover.
 This is G77 applied to a pair of sessions: volume follows the recovery that comes after each one, rather than
 being split evenly between them.
 
+**G83 — A first-ever block barely moves the bar on an RDL.**
+
+> *"The thing I'd be careful of is just how fast the weight increase is going up on the RDL. Because it's her
+> first block ever, I think it's okay to have it progress just from, like, two sets of ten to maybe a hundred
+> and twenty or a hundred and fifteen pounds with more reps by the end of the block at the most."*
+
+The prototype took a beginner from 95 lb to 125 lb in four weeks, a full jump every week. **That is the pace
+of someone who has hinged for years.**
+
+**Rule — on a hinge, a first block ends about two small steps up.** 95 to 115 or 120, and reps carry the rest.
+
+**Rule — the limit is the tissue, not the muscle.** The hamstrings and the lower back are meeting load for the
+first time, which is why the same caution does not apply to the hip thrust (G84).
+
+**G84 — The hip thrust is the safe lift: weight leads, and weight and reps can move in the same week.**
+
+> *"In beginners and intermediates, especially beginners, it's not unreasonable to add weight and reps at the
+> same time, especially on the hip thrust. Hip thrust is a very safe exercise, so you can get pretty aggressive
+> with weight jumps on it... Unlike an RDL where your hamstrings and your lower back are just getting used to
+> load really quickly. But with the hip thrust, it's not like that at all... you can be a little bit more
+> aggressive with hip thrust weight increases, especially in the eight-to-ten rep range and even the twelve rep
+> range too."*
+
+> *"I would honestly mostly prioritize weight progressions on hip thrust... until they can hip thrust around at
+> least two hundred and twenty five pounds for a set of eight. That will do wonders."*
+
+**Rule — weight leads until about 225 lb for eight.** Reps still move, but the weight is the point.
+
+**Rule — both can move in one week**, for beginners included. This is the named exception to spending the
+recovery budget on one thing (G63): the movement is safe enough that the budget stretches.
+
+**G85 — A wrist that hurts changes the implement, not the progression.**
+
+> *"On the incline dumbbell press, why is the reps just being held? ... we could just give her a wrist wrap and
+> keep it there. I would try to progress it still. In this case, if somebody has a wrist injury like this, I
+> would try to get them onto a pressing machine specifically. That way, they don't have to worry about the
+> dumbbell falling back at all... A barbell is definitely not a good idea in general, but you could get away
+> with a Smith machine, or you could get away with a machine press, for sure, most likely."*
+
+The prototype put the press on a "slow track" and held it for the whole block. **Freezing a lift for four weeks
+is not a plan.**
+
+**Rule — move it to a machine press (or a Smith), add a wrist wrap, and progress it like anything else.**
+Dumbbells beat a barbell here; a machine beats both, because nothing can fall back on the wrist.
+
+**G86 — A block that ends under its aimed effort left stress on the table.**
+
+> *"On Leah's cable curl... her exertion is not hard enough by the end of the block, so more stress needs to be
+> added. So maybe in the last week of the cable curls, you had two reps with the same weight if you kept at
+> thirty five, which I think is a better idea than bumping it to forty. So maybe instead of eleven reps, you do
+> twelve reps."*
+
+**Rule — if the last weeks keep landing at 3 while they are aimed at 4-5, add more.** The aim curve (G64) is not
+advice; a block that finishes at 3 was under-prescribed.
+
+**Rule — where the extra comes from depends on the lift.** On a light cable curl it is reps at the same weight,
+because the next pin is a big percentage. On a triceps pushdown it can be the weight: *"you could jump it to a
+forty the last week... you could add a little bit more on the rope pushdown, or most tricep cable pushdowns."*
+
+**Rule — the last week before a deload is where a machine takes both.** *"I like the progression on the chest
+supported row on the second day, specifically it being the weight jump and the rep jump in the final week of the
+block before deloading. I think that was really smart... You could do that on a lot of machine exercises, but I
+think it works really well for any row machine or pulldown machines specifically, especially the row."*
+
+**G87 — Price the two moves as percentages before choosing between them.**
+
+> *"Going from, you know, ninety, ninety five pounds on the bar to, you know, a hundred pounds on the bar is a
+> five percent increase in stress. And going from ten reps or eleven reps to twelve reps is a little bit less
+> than a ten percent increase in stress. Don't be afraid of little load progressions like that too."*
+
+**Rule — a rep is worth about 1/reps of the set; a plate is worth its share of the load.** At ten reps a rep is
+~10%; five pounds on a 95 lb bar is ~5%. **So on a moderate-rep lift the small plate is the *smaller* step**,
+and it is how a week takes a moderate step rather than standing still.
+
+**Rule — a jump worth most of a rep is paid for with that rep.** On a lat pulldown going 130 to 140:
+
+> *"That is a big jump... I would do nine reps instead of ten."*
+
+Ten pounds on 130 is 7.7% and a rep at eleven is 9.1%, so the step is most of a rep's worth and the reps come
+down one. Five pounds on a 95 lb bar (5.3% against 10%) is not, and the reps stay — that is the little load
+progression not to be afraid of. **The threshold is about three quarters of what one rep is worth.**
+
+**G88 — A beginner's leg day is two or three exercises, not five.**
+
+> *"This is a really big leg day. I would definitely not do this much. I would remove the leg extension
+> altogether for sure... Honestly, I would either have the leg press or the Smith machine squat. I would not do
+> all of this. This is way too much volume. You have four exercises that will cook the heck out of your quads
+> and your glutes. There's five glute exercises in here."*
+
+**Rule — squat or leg press, not both**, on a beginner's day.
+
+**Rule — no leg extension on it at all.**
+
+**Rule — count exercises per muscle, not only sets.** Four movements into the same two muscles is a hard day
+however few sets each one carries.
+
+**G89 — Reps stop around sixteen or seventeen.**
+
+> *"High rep leg extensions are brutal. I would not let these get past the sixteen, seventeen mark, though. Pull
+> them back down."*
+
+**Rule — when a rep climb reaches 16-17, the weight goes up and the reps come back down**, whatever the written
+range says. With G80 (a 20% jump waits for reps past fifteen) the two meet: past fifteen earns the jump, and
+sixteen or seventeen forces it.
+
+**Rule — the ceiling governs a climb, not a prescription.** A written range that already sits higher wins: a
+hip abduction written at 15-18 is a prescription, not reps that crept up, and the ceiling for that exercise is
+the top of its own range. Otherwise the first week of a high-rep machine would trip a rule aimed at runaway
+reps.
+
+**G90 — Tendinopathy is a doctor's problem first.**
+
+> *"If he has patellar tendinopathy in the right knee, he should not be doing excessive weight training at all.
+> Tendinopathy is deterioration of the tendon, and the way that you get the tendon to heal is by applying stress
+> to it. So we would not be taking on somebody to heal their patellar tendinopathy through this app -- only if
+> they're cleared to be able to exercise from their physician."*
+
+**Rule — intake asks whether they are cleared.** Without clearance the app does not program around it.
+
+**Rule — without clearance, the leg press and the leg extension come out entirely.** Hip hinges, pull-throughs
+and hamstring curls are fine: *"the cable pull through is totally fine. They could absolutely do this. They could
+also do any hip hinging, like RDLs. They could do hamstring curls."*
+
+**G91 — Every week adds stress. There are no held weeks.**
+
+> *"I don't understand why every week two of every block is being held... You have to add stress every week...
+> You wanna have progression every week no matter what."*
+
+> *"Remember that over the course -- you have six weeks to progress things. So you don't need to be as
+> aggressive as you would be in a four week block, because you have a whole another two weeks of training. So
+> you can slow down on the pacing of the gains throughout the whole block. Spread it out a little bit."*
+
+The prototype held week two of nearly every exercise, because the logged rating already matched that week's aim.
+**Matching the aim is not a reason to stand still** -- the aim is a floor for the week's feel, not a licence to
+repeat it.
+
+**Rule — a week never repeats the week before it.** The smallest honest move is G92's half step.
+
+**Rule — a longer block spreads smaller steps, it does not pause.**
+
+**Rule — a move may never reduce the session's total work.** The prototype once added five pounds to one set and
+took four reps off the session (Incline Smith Press, week five): *"You just took away stress pretty much. So you
+added five pounds on one set and dropped the total reps per session by four reps. That doesn't add up."* Any move
+whose arithmetic comes out negative is not a progression, whatever it is called.
+
+**G92 — The half step: move some sets, not all.**
+
+> *"Instead of holding, you add a rep to the first two sets or the first one set... For example, you could have
+> one set of sixteen and three sets of fifteen for week four. And then for week five, you could have three sets
+> of sixteen and then one set of fifteen... If you add a rep to half the sets, it's essentially half of a
+> progression, assuming you don't change anything else. So that can be a way to take a moderate step forward as
+> opposed to taking a full step forward."*
+
+**Rule — the staggering already used for load (Model C) works on reps too**, and gives the engine a move between
+"nothing" and "a full step". It is what replaces holding.
+
+**G93 — An RDL and a leg curl on the same day is intermediate-plus.**
+
+> *"If this person's training age or experience is pretty low, I definitely would remove the seated leg curls
+> altogether, or just have two sets of the barbell RDLs and then have two sets of the seated leg curls... I would
+> only have both these barbell RDLs and the seated leg curls in the same day if this person is definitely
+> intermediate at least."*
+
+**G94 — Three is the floor; a two is a wasted week.**
+
+> *"The goal is that we get them to at least a minimum of three, pretty much at all times. You pretty much never
+> wanna see a two on how hard was this -- but that might happen in the first week of people joining, because
+> they are picking their weights... And when you see a two, you wanna give it a solid enough of a bump that the
+> training is at least productive after that, because training at a two is not productive pretty much at all."*
+
+**Rule — the aim curve's floor is 3, in every week including the first.**
+
+**Rule — a 2 is repaired in one move, not walked back gradually.**
+
+**G95 — Rear delts go after the arms.**
+
+> *"Ideally, I would do the reverse pec deck after rope pushdowns and dumbbell curls, because usually rope curls
+> and dumbbell curls are always of more importance, cosmetically, than rear delt exercises. So I would probably
+> put the reverse pec deck at the end and swap the order around for the other ones."*
+
+**G96 — The questionnaire has to carry training age, consistency, and what a typical workout looks like.**
+
+> *"You didn't take enough information about the individual. I wanna know their training age and the other
+> general questions to what we would want as a questionnaire -- a very detailed questionnaire. That way we can go
+> even more in depth, because I can make implications based off of their training age, how consistent they've
+> been, what does a typical workout look like for them."*
+
+Half the rules above key off training age (G83, G88, G93), so a program built without it is guessing at the one
+input that decides them.
+
+**G97 — Name the implement.**
+
+> *"For the chest supported row, you need to specify if it's a chest supported dumbbell row, machine row, or
+> whatever."*
+
+An exercise name that does not say what it is loaded with cannot be progressed correctly -- the increment, the
+percentage and the rep range all follow from the implement.
+
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 
 > *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of
