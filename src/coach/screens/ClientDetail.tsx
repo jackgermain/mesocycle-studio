@@ -188,7 +188,7 @@ export default function ClientDetail() {
         {!accepted ? (
           <>
             <InfoBanner icon="ph-user-plus">
-              {client.role === "friend" ? "This friend/family invite hasn't been accepted yet." : "This client hasn't accepted their invite yet."}
+              {client.role === "friend" ? "This general account invite hasn't been accepted yet." : "This client hasn't accepted their invite yet."}
             </InfoBanner>
 
             {!client.inviteCode && (

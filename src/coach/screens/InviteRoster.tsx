@@ -16,7 +16,7 @@ const ROLE_COPY: Record<InviteRole, string> = {
   client:
     "A fully prescribed client — you build every program and set their nutrition targets, same as the rest of your roster.",
   friend:
-    "A self-directed friend/family account — they can build their own programs from scratch or clone one of your saved templates and modify it, and they get full nutrition tracking. They can't onboard anyone else, and can only message you in the app. You can still view and edit anything they set up.",
+    "A general account — self-directed, so they can build their own programs from scratch or clone one of your saved templates and modify it, and they get full nutrition tracking. They can't onboard anyone else, and can only message you in the app. You can still view and edit anything they set up.",
   coach:
     "A fully independent coach — their own separate roster, clients and programs, completely walled off from yours. They don't join your roster; the link just creates their account under the name you give it here.",
 };
@@ -99,7 +99,7 @@ export default function InviteRoster() {
                 onChange={setRole}
                 options={[
                   { value: "client" as InviteRole, label: "Client" },
-                  { value: "friend" as InviteRole, label: "Friend / family" },
+                  { value: "friend" as InviteRole, label: "General" },
                   { value: "coach" as InviteRole, label: "Coach" },
                 ]}
               />
@@ -129,7 +129,7 @@ export default function InviteRoster() {
             <InfoBanner icon="ph-check-circle" tone="accent">
               {sent.role === "coach"
                 ? `${sent.name}'s coach account is ready to claim — they won't appear on your roster.`
-                : `${sent.name} was added to your roster as ${sent.role === "friend" ? "a friend/family account" : "a client"}.`}
+                : `${sent.name} was added to your roster as ${sent.role === "friend" ? "a general account" : "a client"}.`}
             </InfoBanner>
 
             <div className="cell">

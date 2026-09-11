@@ -6,7 +6,7 @@ import { DeleteAccountSheet } from "../components/DeleteAccountSheet";
 
 type Filter = "all" | "coach" | "client" | "friend";
 
-const ROLE_LABEL: Record<string, string> = { coach: "Coach", client: "Client", friend: "Friend/family" };
+const ROLE_LABEL: Record<string, string> = { coach: "Coach", client: "Client", friend: "General" };
 
 /** Platform-owner only. Lists every account on the platform -- name, role, whose roster they're on,
  * signup date, access status -- and lets this account revoke, restore, or permanently delete one.

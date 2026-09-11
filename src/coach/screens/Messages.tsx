@@ -42,7 +42,7 @@ export default function Messages() {
   const groups: { key: string; label: string; threads: typeof filtered }[] = [
     { key: "broadcast", label: "Everyone", threads: filtered.filter((t) => t.isBroadcast) },
     { key: "clients", label: "My clients", threads: filtered.filter((t) => !t.isBroadcast && roleOf(t) !== "friend") },
-    { key: "friends", label: "Friends & family", threads: filtered.filter((t) => !t.isBroadcast && roleOf(t) === "friend") },
+    { key: "friends", label: "General", threads: filtered.filter((t) => !t.isBroadcast && roleOf(t) === "friend") },
   ].filter((g) => g.threads.length > 0);
 
   return (

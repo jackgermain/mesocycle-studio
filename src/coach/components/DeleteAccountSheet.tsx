@@ -59,7 +59,7 @@ export function DeleteAccountSheet({
 
         {role === "coach" ? (
           <InfoBanner icon="ph-warning">
-            {firstName} is a coach. Deleting them also deletes every client and friend on their roster, and
+            {firstName} is a coach. Deleting them also deletes every client and general account on their roster, and
             all of those people's programs, logs and history. There is no undo.
           </InfoBanner>
         ) : (

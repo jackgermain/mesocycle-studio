@@ -163,7 +163,7 @@ export default function Clients() {
                 Clients <span className="mono">{clientCount}</span>
               </button>
               <button className={`chip${filter === "friends" ? " on" : ""}`} onClick={() => setFilter("friends")}>
-                Friends <span className="mono">{friendCount}</span>
+                General <span className="mono">{friendCount}</span>
               </button>
               {/* Owner only. Every other coach's roster is invisible to them by design, so this chip
                   would show an empty screen and imply something was broken. */}
@@ -220,7 +220,7 @@ export default function Clients() {
                   expect of them -- a friend builds their own programs and sets their own macros -- so
                   "no tag" being the answer for half the roster made it something you had to remember. */}
               <span className={`tag ${c.role === "friend" ? "tag-outline" : "tag-neutral"}`} style={{ flex: "none" }}>
-                {c.role === "friend" ? "Friend" : "Client"}
+                {c.role === "friend" ? "General" : "Client"}
               </span>
               {c.status === "unassigned" ? (
                 <span style={{ fontSize: 12.5, color: "var(--color-accent)", flex: "none" }}>{c.accountId ? "Open" : "Invite"}</span>
@@ -283,7 +283,7 @@ function CoachDirectory({ coaches, onOpen }: { coaches: CoachSummary[] | null; o
                 {c.active ? "" : "Revoked · "}
                 {total === 0
                   ? "No one on their roster yet"
-                  : `${c.clientCount} client${c.clientCount === 1 ? "" : "s"}${c.friendCount ? ` · ${c.friendCount} friend${c.friendCount === 1 ? "" : "s"}` : ""}`}
+                  : `${c.clientCount} client${c.clientCount === 1 ? "" : "s"}${c.friendCount ? ` · ${c.friendCount} general` : ""}`}
                 {c.createdAt ? ` · joined ${new Date(c.createdAt).toLocaleDateString(undefined, { month: "short", year: "numeric" })}` : ""}
               </div>
             </div>
@@ -375,7 +375,7 @@ function CoachRosterSheet({ coach, onClose, onChanged }: { coach: CoachSummary; 
                   </div>
                 </div>
                 <span className={`tag ${m.role === "friend" ? "tag-outline" : "tag-neutral"}`} style={{ flex: "none" }}>
-                  {m.role === "friend" ? "Friend" : "Client"}
+                  {m.role === "friend" ? "General" : "Client"}
                 </span>
               </div>
             ))}

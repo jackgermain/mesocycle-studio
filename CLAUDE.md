@@ -65,7 +65,7 @@ One row per person in `accounts`, 1:1 with Supabase `auth.users`. Sign-in is **p
 |---|---|
 | `coach` | Own roster, own clients, own programs. Fully isolated from other coaches. |
 | `client` | Fully prescribed — sees only what their coach builds for them. |
-| `friend` | Self-directed friend/family. Builds/clones their own programs, sets their own nutrition targets. Still attached to a coach who can view and edit their stuff. |
+| `friend` | Self-directed. **Shown in the app as "General"** (renamed from "friend/family"); the stored role value is still `friend`, so the rename needed no migration and every RLS policy and RPC that checks `role = 'friend'` is untouched. Builds/clones their own programs, sets their own nutrition targets. Still attached to a coach who can view and edit their stuff. |
 
 Two flags sit on top of the roles:
 
