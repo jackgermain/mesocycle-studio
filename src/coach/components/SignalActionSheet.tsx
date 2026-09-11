@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import type { ClientSignal } from "../../shared/signals";
+import { EFFORT_WORDING } from "../../shared/signalScales";
+import { decodeProgression } from "../../shared/progressionProposal";
 import { InfoBanner } from "../../components/UI";
 import { addWarmupSetForClient } from "../clientProgramEdits";
 
@@ -8,7 +10,10 @@ import { addWarmupSetForClient } from "../clientProgramEdits";
  * in its place -- so it happens right here. Swapping or dropping the movement is a judgement call that
  * wants the session in front of you, so it lives one tap away in the day itself, which "Open their
  * session" now goes straight to. Both need the client to have named the exercise (migration 0014); an
- * older report, or one where they said it wasn't any single movement, can only be opened and read. */
+ * older report, or one where they said it wasn't any single movement, can only be opened and read.
+ *
+ * A progression signal is read rather than acted on here: every exercise from the session, what was
+ * logged and how hard it was, and the proposed next week with its reason, side by side. */
 export function SignalActionSheet({
   signal,
   clientName,
@@ -17,6 +22,7 @@ export function SignalActionSheet({
   onClose,
   week,
   totalWeeks,
+  canOpenSession = true,
 }: {
   signal: ClientSignal;
   clientName: string;
@@ -28,11 +34,17 @@ export function SignalActionSheet({
   onOpenSession: () => void;
   onApplied: (message: string) => void;
   onClose: () => void;
+  /** False for a coach's own sessions -- they are not on their own roster, so there is no client session
+   * to open, and the row would close the sheet and go nowhere. */
+  canOpenSession?: boolean;
 }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
   const exercise = signal.exercise ?? null;
   const first = clientName.split(" ")[0];
+  const progression = signal.kind === "progression" ? decodeProgression(signal.detail) : null;
+  const shownWeek = progression?.week ?? week;
+  const shownTotal = progression?.totalWeeks ?? totalWeeks;
 
   function describe(touched: number | null, done: string): string | null {
     if (touched === null) return `Couldn't update ${first}'s program — check your connection and try again.`;
@@ -60,15 +72,17 @@ export function SignalActionSheet({
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 16 }}>
               {/* Every kind names itself. "effort" and "nutrition" both fell through to "Low pump" here,
                   so a failure on a final set was reported to the coach as a pump problem. */}
-              {signal.kind === "joint"
-                ? "Joint pain"
-                : signal.kind === "soreness"
-                  ? "Still sore"
-                  : signal.kind === "effort"
-                    ? "Hit failure"
-                    : signal.kind === "nutrition"
-                      ? signal.detail === "missed" ? "No meals logged" : "Off target"
-                      : "Low pump"}
+              {signal.kind === "progression"
+                ? "Next week's numbers"
+                : signal.kind === "joint"
+                  ? "Joint pain"
+                  : signal.kind === "soreness"
+                    ? "Still sore"
+                    : signal.kind === "effort"
+                      ? "Hit failure"
+                      : signal.kind === "nutrition"
+                        ? signal.detail === "missed" ? "No meals logged" : "Off target"
+                        : "Low pump"}
               {signal.note ? ` — ${signal.note}` : ""}
             </div>
           </div>
@@ -84,29 +98,59 @@ export function SignalActionSheet({
               {exercise}
             </div>
           )}
-          {signal.detail && <div style={{ fontSize: 12.5, lineHeight: 1.5 }}>{signal.detail}</div>}
+          {/* A progression's detail is its JSON payload, rendered below -- never as text. */}
+          {signal.detail && signal.kind !== "progression" && <div style={{ fontSize: 12.5, lineHeight: 1.5 }}>{signal.detail}</div>}
           <div className="mu">
             {signal.day_label ?? "Session"}
-            {week ? ` · week ${week}${totalWeeks ? ` of ${totalWeeks}` : ""}` : ""}
-            {` · reported ${new Date(signal.created_at).toLocaleDateString()}`}
+            {shownWeek ? ` · week ${shownWeek}${shownTotal ? ` of ${shownTotal}` : ""}` : ""}
+            {` · ${signal.kind === "progression" ? "sent" : "reported"} ${new Date(signal.created_at).toLocaleDateString()}`}
           </div>
         </div>
 
+        {signal.kind === "progression" && !progression && (
+          <InfoBanner icon="ph-warning">These numbers couldn't be read — open the session to see what was logged.</InfoBanner>
+        )}
+
+        {progression && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {progression.proposals.map((p, idx) => (
+              <div key={`${p.exercise}-${idx}`} className="cell" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 13.5 }}>{p.exercise}</div>
+                <div style={{ fontSize: 12.5 }}>
+                  <span className="mu">Did </span>
+                  {p.logged}
+                  {p.effort ? <span className="mu">{` · how hard ${p.effort} (${EFFORT_WORDING[p.effort - 1] ?? ""})`}</span> : null}
+                </div>
+                <div style={{ fontSize: 12.5, color: "var(--color-accent)" }}>
+                  <span className="mu">Next week </span>
+                  {p.next}
+                </div>
+                <div style={{ fontSize: 12 }}>{p.label}</div>
+                <div className="mu" style={{ lineHeight: 1.5 }}>{p.why}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {failed && <InfoBanner icon="ph-warning">{failed}</InfoBanner>}
 
-        <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={onOpenSession}>
-          <i className="ph ph-arrow-square-out" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12.5 }}>Open their session</div>
-            <div className="mu" style={{ marginTop: 1 }}>
-              {exercise
-                ? `Goes straight to ${exercise} on the day it happened, where you can swap or drop it.`
-                : "Opens the day it was reported on, where you can say which exercise it was and act on it."}
+        {canOpenSession && (
+          <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={onOpenSession}>
+            <i className="ph ph-arrow-square-out" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 12.5 }}>Open their session</div>
+              <div className="mu" style={{ marginTop: 1 }}>
+                {exercise
+                  ? `Goes straight to ${exercise} on the day it happened, where you can swap or drop it.`
+                  : signal.kind === "progression"
+                    ? "Opens the session these numbers came from."
+                    : "Opens the day it was reported on, where you can say which exercise it was and act on it."}
+              </div>
             </div>
-          </div>
-        </button>
+          </button>
+        )}
 
-        {exercise ? (
+        {signal.kind === "progression" ? null : exercise ? (
           <button className="link-row" style={{ padding: "12px 12px" }} disabled={!!busy} onClick={addWarmup}>
             <i className="ph ph-thermometer-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
             <div style={{ flex: 1 }}>

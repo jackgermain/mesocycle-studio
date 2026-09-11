@@ -6,6 +6,7 @@ import { BUILD_ID, BUILT_AT } from "../../shared/build";
 import { ago } from "../../shared/ago";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
+import { decodeProgression } from "../../shared/progressionProposal";
 import { loadWeighInGaps, applyWeighInDismissals, weighInKeys, type ClientWeighInGap } from "../weighInWatch";
 import { loadComplianceGaps, totalComplianceItems, applyDismissals, complianceKeys, type ClientComplianceGap } from "../complianceWatch";
 import { listFormChecks, type FormCheck } from "../../shared/formChecks";
@@ -88,6 +89,8 @@ export default function Desk() {
   }
 
   function signalClientName(s: ClientSignal): string {
+    // A coach training themselves sends their own sessions' proposals to their own desk (migration 0027).
+    if (s.client_id === account?.id) return "You";
     return state.clients.find((c) => c.accountId === s.client_id)?.name ?? "A client";
   }
 
@@ -96,6 +99,10 @@ export default function Desk() {
     // `detail` says which of the two sets it came from, and that changes what the coach should do: on the
     // second-to-last set the client was told to hold their last set, so the exercise is already handled
     // for today and this is a note for next week's numbers.
+    if (s.kind === "progression") {
+      const n = decodeProgression(s.detail)?.proposals.length ?? s.severity;
+      return `Next week's numbers ready — ${n} exercise${n === 1 ? "" : "s"}`;
+    }
     if (s.kind === "nutrition") {
       // Two shapes share this kind. "missed" means nothing was logged at all, so there is no number to
       // report; otherwise severity is the miss in kcal, not a 1..5 rating.
@@ -408,7 +415,8 @@ export default function Desk() {
                   // Nothing logged all day is a different problem from a day that came in 200 under, and
                   // the one worth chasing first.
                   (s.kind === "nutrition" && s.detail === "missed");
-                const times = recurrenceCount(allSignals, s);
+                // Every finished session sends one of these, so "recurring" would be true of all of them.
+                const times = s.kind === "progression" ? 0 : recurrenceCount(allSignals, s);
                 return (
                   <div key={s.id} className="cell elev-sm" style={urgent ? { borderLeft: "2px solid var(--color-accent)" } : undefined}>
                     <div className="row">
@@ -425,7 +433,7 @@ export default function Desk() {
                       </div>
                       <div style={{ flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                         <span className={`tag ${urgent ? "tag-accent" : "tag-neutral"}`}>
-                          {s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : s.kind === "nutrition" ? (s.detail === "missed" ? "No meals" : "Nutrition") : "Pump"}
+                          {s.kind === "progression" ? "Progression" : s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : s.kind === "nutrition" ? (s.detail === "missed" ? "No meals" : "Nutrition") : "Pump"}
                         </span>
                         {times > 1 && (
                           <span className="tag tag-accent" title={`Reported ${times} times in the last 90 days`}>
@@ -577,6 +585,7 @@ export default function Desk() {
         <SignalActionSheet
           signal={actingOn}
           clientName={signalClientName(actingOn)}
+          canOpenSession={state.clients.some((x) => x.accountId === actingOn.client_id)}
           week={state.clients.find((x) => x.accountId === actingOn.client_id)?.week}
           totalWeeks={state.clients.find((x) => x.accountId === actingOn.client_id)?.totalWeeks}
           onClose={() => setActingOn(null)}

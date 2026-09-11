@@ -118,6 +118,9 @@ export interface TrainingDay {
    * so anything earlier means there was room for more work. 0 means it never got sore. Absent when the
    * client was still sore, which needs no follow-up -- that case is already unambiguous. */
   sorenessAnswers?: Record<string, { severity: number; lastTrainedDaysAgo: number; recoveredOnDay?: number }>;
+  /** When next week's proposed numbers for this session were sent for review. Marked before sending, so a
+   * re-render or a reload never sends the same session twice. Absent on sessions from before it existed. */
+  progressionSentAt?: string;
 }
 
 export interface TrainingWeek {

@@ -203,6 +203,17 @@ muscles today trains — primary movers *plus* a conservative synergist table (t
 on back day) — and asks whether each has recovered since it was last trained. The exercise library only
 tags one primary muscle per movement, hence the separate synergist mapping.
 
+**Progression proposals.** When a session is finished, `ClientLayout` (App.tsx) sends next week's proposed
+numbers for every exercise in it as one `progression` signal: what was logged, how hard the last set was,
+the proposed sets × reps × weight, and why. The rules are in `src/shared/progressionProposal.ts` (no
+Supabase import, tested in `tests/progressionProposal.test.mts`) and use only doctrine already written
+down — G62, G64, G65, G73, C7a, and Model C in `generator/doubleProgression.ts`. **Nothing is written to
+the program**; it is a proposal for review. It goes to the person's coach, or, for a coach training
+themselves, to their own desk. That self-addressed insert is the one thing migration `0027` allows beyond
+0012's policy, and only for `kind = 'progression'`. A day is marked `progressionSentAt` before sending,
+and only sessions finished in the last three days are ever sent, so the first open after a deploy
+doesn't send someone's whole history.
+
 **Nutrition.** Macros or hand-portions mode. Food search hits USDA FoodData Central (primary — real
 manufacturer label data, plain `fetch`) plus Open Food Facts (secondary — **JSONP, because their server
 sends no CORS headers**). Both sources are filtered by a plausibility check that drops entries where

@@ -27,6 +27,9 @@ import IntakeForm from "./screens/IntakeForm";
 import { AiFabHost } from "./shared/AiFabHost";
 import { CoachAiFab } from "./coach/components/CoachAiFab";
 import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "./shared/liveProgramAiEdit";
+import { progressionDueDay } from "./shared/progressionProposal";
+import { sendProgressionProposals } from "./shared/progressionSignals";
+import { isoToday } from "./shared/dayStatus";
 import type { Program } from "./data/types";
 
 import { CoachStoreProvider, useCoachStore } from "./coach/store";
@@ -124,6 +127,18 @@ function ClientLayout() {
   // A prescribed client's block belongs to their coach, so the button isn't theirs to have. Everyone
   // self-directed -- friends and family, and a coach training themselves -- owns their own program.
   const selfDirected = account?.role === "friend" || previewingAsClient;
+
+  // Next week's proposed numbers for a finished session, sent for review. Here rather than in the finish
+  // handler so it also catches a session finished on an older build or while offline: whatever is finished
+  // and unsent goes the next time this side of the app is open. Marked before sending, so the store saving
+  // and this effect re-running can never send the same session twice.
+  useEffect(() => {
+    if (!account) return;
+    const due = progressionDueDay(state.program, isoToday());
+    if (!due) return;
+    dispatch({ type: "MARK_PROGRESSION_SENT", dayId: due });
+    void sendProgressionProposals(account, state.program, due, state.profile.units);
+  }, [account, state.program, state.profile.units, dispatch]);
 
   // Registered once here rather than per screen: on this side there is only ever one program, so it's in
   // scope on the calendar, a workout, progress, nutrition — anywhere they happen to be.

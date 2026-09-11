@@ -14,8 +14,10 @@
  *  - nutrition two shapes. detail "missed" means nothing was logged all day and severity is 0; otherwise
  *              severity is the day's miss in kcal, absolute. Not a 1..5 scale at all — it is a magnitude,
  *              and only sent once the miss is already past the tolerance below.
+ *  - progression  not a scale. One per finished session: severity is how many exercises it covers, and
+ *              detail is the JSON payload from progressionProposal.ts, which is never shown raw.
  */
-export type SignalKind = "pump" | "joint" | "soreness" | "effort" | "nutrition";
+export type SignalKind = "pump" | "joint" | "soreness" | "effort" | "nutrition" | "progression";
 
 export const PUMP_ALERT_BELOW = 3;
 export const SORENESS_ALERT_BELOW = 3;
