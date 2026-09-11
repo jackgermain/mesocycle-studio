@@ -1865,6 +1865,14 @@ is not "wherever they land"; it is the number that makes the peak arrive on time
 This is why the engine cannot just react. Reacting produces whatever effort curve the client's own choices
 happen to make; **the curve is supposed to be aimed.**
 
+> *"What week in the block is this??? Remember, need to have an endpoint in mind from the starting point."*
+
+Asked what should follow three sets of ten rated a 3, without saying which week it was. **The question has no
+answer without the week.** The same log is under-prescribed early in a block that has to finish near 5, and
+about right just before its peak; every move is judged against where the block has to end. This is the rule
+above, restated by its author when the question left it out. (How a jump is spread across the sets once it is
+due is Model C, in doubleProgression.ts.)
+
 **G65 — Where a block starts is set by where the next one has to finish.**
 
 > *"You want to be progressing to a place where, if you were to run the same block two times in a row, the
@@ -2030,6 +2038,177 @@ hangs at a fixed angle and the tendon is never loaded at full stretch with the e
 
 **Rule — light and high-rep, not light and the same.** Dropping the load without raising the reps just
 removes the stimulus. The trade is explicit: less load, more reps, same work.
+
+**G75 — Hip thrusts and pull-throughs each carry their own six-set ceiling.**
+
+> *"6 for the pull through.. I'd say no more than 6 for the hip thrusts at least for now."*
+
+Answered when asked whether these two share G69's ceiling with the squat and the leg press. **They do not
+share it — each has its own.** A pull-through gets at most six sets in a session, and so does a hip thrust.
+The engine prototype had guessed they sat outside any ceiling at all, which was half right: outside G69's,
+but not uncapped.
+
+"At least for now" is his: this is a working limit, not a settled one, and is expected to move with feedback.
+Read as per session and per movement.
+
+**G76 — A third compound in a session is bodybuilding work, and how tired it starts depends on the volume
+before it.**
+
+> *"If you have three compound lifts in one day, it's likely that the third one is going to be not very good
+> for strength because you'll be too fatigued at that point. Like, for example, if you do an Olympic lift and
+> then you squat afterwards, you're not gonna wanna bench heavy afterwards as in six rep range and below for
+> sure. So if you're gonna do another compound, I keep it more closer to a body building volume or the, you
+> know, eight plus rep range for sure. It depends on how much volume you did on the cleans and squats. For
+> example, if you did a lot of volume on the squats, it's gonna be even worse. But if you did, like, three
+> triples or five triples while squatting as an example, the benching won't be as bad as it would be if you
+> did a set of twelve on squats for two sets or whatnot."*
+
+**Rule — the third compound is kept, and moved to 8+ reps.** It is not a strength slot: nothing at six reps
+and below after two compounds have gone before it. This overturns the prototype's guess that a third
+compound leg movement should simply be removed.
+
+**Rule — what it inherits is the volume before it, not the count.** Three or five heavy triples leave far
+more in the tank than two sets of twelve, even though both are "a squat". The fatigue the third lift starts
+under scales with the sets and reps already done, which is the same budget G63 describes, seen across
+exercises instead of across weeks.
+
+**G77 — Priorities set how often a muscle is trained, that sets the spacing, and the spacing sets how much
+volume a session can carry.**
+
+> *"So the spread on the day depends on how many days per week you choose to train that body part. That's why
+> we go back to the examples of what people want. If you want to train shoulders, for example, as a big
+> priority, you should probably train them three times a week, which means that the spread on them has to be
+> a certain way. Like, you'd have to have a day in the beginning of the week and in the middle of the week and
+> at the end of the week in order to get three times. And when you place things, that is what affects your
+> volume because your volume is, like, going to determine whether you heal on time or you heal early or you
+> heal late. So if you have two days in between, you're able to do more volume than you otherwise would have
+> been able to do if you had one day in between, if that makes sense."*
+
+Answered when asked whether four-to-six-day programs should be assumed to run on back-to-back days. **There is
+no fixed assumption to make** — the order runs the other way:
+
+1. **What the person wants decides frequency per muscle.** A priority muscle is trained more often — shoulders
+   as a big priority is about three times a week.
+2. **Frequency decides placement.** Three times a week means start, middle and end of the week.
+3. **Placement decides volume.** The days between two sessions for the same muscle are how long it has to
+   heal, so two days between allows more volume per session than one day does.
+
+This is G72 generalised: G72 said two hard leg days need more than a day between them; this says why, and
+that the answer is to size each session's volume to the gap rather than to pick a gap and hope.
+
+**G78 — A block opens at RPE 7.5 only on some lifts: the first two on occasion, more for advanced lifters,
+and about a third of the lifts at most.**
+
+> *"The first two exercises on occasion, especially in more of a large strength block. But, also, people who
+> are a bit more advanced and high intermediates might have to train closer to failure more often in order
+> to elicit gains. Also, more effort contributes to total body fatigue. So if you have a slightly higher
+> exertion on, you know, maybe a third of all of your lifts, the cumulative effect of it only being a third
+> higher over the course of a block might not be aggressive enough in order to cause any harm."*
+
+Sharpens G68, which listed rep count, slot and priority as reasons to open at 7.5.
+
+**Rule — the first two exercises, on occasion, and more so in a strength block.**
+
+**Rule — training age raises it.** Advanced and high-intermediate lifters need to work closer to failure more
+often to keep progressing, so they open at 7.5 more often than a beginner or a low intermediate.
+
+**Rule — about a third of the program's lifts, at most.** Effort adds to whole-body fatigue, not just to the
+muscle being trained. At roughly a third of the lifts, the extra across a block is small enough not to do
+harm; past that it starts to add up.
+
+**G79 — A squat goes before a machine press on the same day, even for a chest priority; the priority is served
+across the week.**
+
+> *"So it depends what was done on the other chest day and the other leg day if there was one. If you had
+> another hard chest day before, as in earlier in the week or later in the week, whenever -- that... there's
+> enough volume overall spread out across the whole week. That is fine. If it were me, though, I would
+> probably do the squat first just because the squat is more of a compound, and it's not really going to affect
+> the chest press machine much. And when you use the chest press machine anyways, you're not really going below
+> eight reps for the most part."*
+
+Answered when asked whether a chest-priority man presses before he squats. **The engine prototype had guessed
+yes, and it was wrong for this pairing.**
+
+**Rule — the bigger compound leads.** The squat is the more demanding lift and goes first.
+
+**Rule — a machine press loses little by following it.** It runs at eight reps and up, where the squat's
+fatigue costs the least. (G60's incline dumbbell press leading for a chest priority is a different pairing and
+still stands.)
+
+**Rule — the priority is met by the week, not the slot.** If there is another hard chest day somewhere in the
+week and the weekly volume is there, where the press sits on this day does not matter much.
+
+**G80 — A jump of about 20% has to be earned with more than fifteen reps, and the week that takes it comes down in
+effort.**
+
+> *"No stack is fifty pounds. Every stack is usually somewhere between, like, a hundred and fifty pounds and two
+> hundred pounds even. So I wouldn't worry about that at all. But the general concept of this, remember, if you
+> have to take a twenty percent weight jump for whatever reason just in general on any exercise, you have to
+> remember that when you make that jump, it's gonna kill your strength a lot on your reps, mostly because of
+> your GTOs limiting force output. So I would try to get the reps to be over fifteen before you ever do that.
+> And if you're going to add that much stress in one week, pull back the relative exertion -- the rep count a
+> bit more conservative."*
+
+G73's lateral-raise rule, generalised to any exercise.
+
+**Rule — stacks are not the problem.** A machine stack runs 150–200 lb, so a stack increment is rarely a large
+percentage. The prototype's worry about a 50 lb stack described a machine that does not exist.
+
+**Rule — a ~20% jump waits for more than fifteen reps.** Whatever the exercise, a jump that size costs a lot of
+reps — the Golgi tendon organs limit force at a load the body is not used to. Earn it first.
+
+**Rule — the week that takes it gets a more conservative rep target.** Adding that much stress in one week is
+paid for by pulling back relative exertion.
+
+**G81 — What a block adds to the bar depends on the rep scheme and the rep range, not a fixed number; aggressive
+blocks back to back are paid for in the joints.**
+
+> *"Not necessarily. But I think that it depends on the rep scheme you're running. So if you're adding a lot of
+> reps as your main source of stress for this exercise or weekly progression, then probably not. But if your
+> reps are staying relatively the same and... or going down even, it could be higher than ten pounds. It also
+> depends on the rep count. Remember, if you're in a low rep range and you're lifting a lot of weight, adding 10
+> pounds on the bar at a nonmaximal RPE is much less stressful than adding a rep. I would say that as long as
+> their joints and connective tissues are good as well. And you also have to take note if they've been doing
+> this for multiple blocks in a row, where they're being really aggressive with weight jumps -- you just have to
+> be mindful of their joints, especially so. So when joints start getting a little bit agitated, you'll just
+> feel like you need to warm them up a little bit more before you're ready to go. That might even be just a
+> little bit sensitive here and there, and that's just the wear pattern on the tendon. That can happen just from
+> lifting heavy loads on a lift over time. And when that happens, you usually have to come out of that rep range
+> and take a little bit of time away from the exercise for a little bit, and then you come right back to it."*
+
+Answered when asked whether Smith and barbell lifts should have a planned finish of +10 lb (four weeks) or
++15 lb (six weeks) that caps the load. **No fixed cap** — the prototype's cap is overturned.
+
+**Rule — the rep scheme decides the load gain.** Where reps are the week's main source of added stress, the bar
+gains little or nothing. Where reps hold or come down, it can gain more than 10 lb.
+
+**Rule — in low rep ranges, load is the cheaper move.** At a non-maximal RPE, 10 lb on the bar costs less than
+another rep — provided the joints and connective tissue are fine.
+
+**Rule — watch the joints after aggressive blocks in a row.** The early signs: needing a longer warm-up before
+the lift feels ready, sensitivity here and there. That is tendon wear from heavy loading over time. The answer is
+to come out of that rep range and take the exercise away for a while, then bring it back.
+
+**G82 — When two leg days have to sit close together, each session's volume is sized to the gap after it.**
+
+> *"It depends on what days of the week they are. If they both have to be there, though, what you do is you
+> decrease the volume on both of them such that you have enough recovery time to be healed for the second
+> session. And on the second session, you can do a lot more volume because you'll have all the way until the
+> first leg day the following week to heal."*
+
+Answered when asked what gives when two heavy leg days are too close and cannot be moved apart. **Overturns the
+prototype's guess** that the day with more leg volume simply loses a set per exercise.
+
+**Rule — which days they are decides it first.** The gap is the input, so the answer changes with the days.
+
+**Rule — the session before the short gap is cut to what heals in time.** Both come down from what they would
+carry if the week were evenly spaced, so the muscle is healed for the second session.
+
+**Rule — the session before the long gap can carry a lot more.** It has until the first leg day of the
+following week to recover.
+
+This is G77 applied to a pair of sessions: volume follows the recovery that comes after each one, rather than
+being split evenly between them.
 
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 

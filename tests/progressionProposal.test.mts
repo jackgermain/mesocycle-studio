@@ -56,6 +56,17 @@ test("a light dumbbell climbs reps, and only jumps once the top of the range is 
   assert.ok(!beaten.next.includes("15 lb"), "never skips the 12.5s");
 });
 
+test("a jump of 20% or more waits for more than fifteen reps, even on an 8-12 exercise (G80)", () => {
+  // A 30 lb cable: the next pin is +10 lb, a third of the load.
+  const light = { ...base, name: "Cable Curl", equipment: "cable" as const, targetReps: 10 };
+  const at13 = proposeNextWeek({ ...light, sets: sets(3, 13, 30), effort: 3 });
+  assert.equal(at13.move, "reps", "past the top of 8-12 but not past 15, so reps keep climbing");
+  assert.ok(at13.next.startsWith("3 × 14"), at13.next);
+  const at16 = proposeNextWeek({ ...light, sets: sets(3, 16, 30), effort: 3 });
+  assert.equal(at16.move, "load");
+  assert.ok(at16.next.includes("40 lb"), at16.next);
+});
+
 test("five sessions a week: the week before the last is followed by a deload, not a jump (C7a)", () => {
   const p = proposeNextWeek({ ...base, week: 3, totalWeeks: 4, sessionsPerWeek: 5, sets: sets(4, 10, 135), effort: 2 });
   assert.equal(p.move, "deload");

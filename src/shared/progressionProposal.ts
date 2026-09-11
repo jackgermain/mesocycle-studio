@@ -140,15 +140,18 @@ export function proposeNextWeek(i: ProposalInput): Proposal {
   const unchanged = (next: PerformedSet[]) => formatSets(next, i.units) === logged;
 
   if (isLightLoad(heaviest, i.equipment)) {
-    if (reps.every((r) => r > hi)) {
+    // G80: a jump this size (20% or more of the load) waits until every set is past fifteen reps, whatever
+    // the exercise's usual range -- so on a light weight the reps may climb past the top of that range to get
+    // there. Jumping at the top of an 8-12 range used to be allowed, which is the jump G80 says kills reps.
+    const gate = Math.max(hi, 15);
+    if (reps.every((r) => r > gate)) {
       const next = jumpLoad(i.sets, { equipment: i.equipment, band, promote: i.sets.length });
       if (unchanged(next)) return hold("No heavier weight on this equipment — reps carry it from here.");
-      return out("load", next, `${stepText}, back to ${lo} reps`, `G73: the top of the range was beaten on a light weight — one step up, and the reps start again from ${lo}.`);
+      return out("load", next, `${stepText}, back to ${lo} reps`, `G80: past ${gate} reps on a light weight — one step up, and the reps start again from ${lo} so the week that takes the jump stays conservative.`);
     }
-    if (allAtTop) return hold(`G73: on a light weight the next step is a big percentage — it waits until every set beats ${hi} reps.`, "Beat the top of the range");
     if (gap < 0.25) return hold(`G64: rated ${e}, already at next week's target of ${targetText(target)}.`);
     const by = e <= 2 ? 2 : 1;
-    return out("reps", addReps(i.sets, band, by), `+${by} rep${by > 1 ? "s" : ""}`, `G73: light weight, so reps climb before the weight does. Rated ${e}, next week aims at ${targetText(target)}.`);
+    return out("reps", addReps(i.sets, { min: lo, max: gate + 1 }, by), `+${by} rep${by > 1 ? "s" : ""}`, `G80: light weight, so reps climb past ${gate} before the weight moves. Rated ${e}, next week aims at ${targetText(target)}.`);
   }
 
   if (e <= 2) {
