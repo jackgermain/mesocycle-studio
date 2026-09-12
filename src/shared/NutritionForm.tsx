@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Seg, Stepper, TickButton } from "../components/UI";
 import { defaultPortionTargets } from "../data/mockData";
-import { buildPlan, estimateMaintenance, cutCapPct } from "./nutritionPlan";
+import { buildPlan, estimateMaintenance, cutCapPct, proteinPerLb } from "./nutritionPlan";
 import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../data/types";
 
 type Cadence = "off" | "3x" | "5x";
@@ -15,6 +15,20 @@ const UNIT_OPTIONS: { value: PortionUnit; label: string; icon: string }[] = [
   { value: "plate", label: "Plate", icon: "ph-circle" },
 ];
 const PLATE_FRACTIONS = [0.25, 0.33, 0.5, 1];
+
+/** The phase, as a rate in % of bodyweight per week. Picking one sets the rate; the stepper underneath
+ * still fine-tunes it.
+ *
+ * "Fast cut" deliberately asks for more than the standard cap. N3 clamps it back to 0.5%/wk unless body fat
+ * is high enough for N5 to raise it, and the card says so — so the button is honest by construction rather
+ * than by wording. */
+const RATE_PRESETS: { label: string; pct: number }[] = [
+  { label: "Fast cut", pct: -1.0 },
+  { label: "Cut", pct: -0.5 },
+  { label: "Maintain", pct: 0 },
+  { label: "Lean bulk", pct: 0.25 },
+  { label: "Bulk", pct: 0.5 },
+];
 
 function fmtQty(t: PortionTarget) {
   if (t.unit === "plate") {
@@ -57,7 +71,6 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   const [carbs, setCarbs] = useState(profile.macroTargets.carbs);
   const [fat, setFat] = useState(profile.macroTargets.fat);
   const [carbBonus, setCarbBonus] = useState(profile.macroTargets.trainingDayCarbBonus);
-  const [rate, setRate] = useState(profile.rateTargetLabel);
   const [portions, setPortions] = useState<PortionTarget[]>(profile.portionTargets.length ? profile.portionTargets : defaultPortionTargets);
   // Seeded from the profile rather than from hardcoded numbers: the calculator was starting every person at
   // 200 lb regardless of what they actually weigh, so its first answer was wrong for everyone.
@@ -68,9 +81,6 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   const [maintenance, setMaintenance] = useState(
     profile.maintenanceKcal ?? estimateMaintenance({ bodyweightLb: profile.bodyweight || 200, bodyFatPct: profile.bodyFatPct ?? 20 }).kcal,
   );
-
-  const lbm = Math.round(calcBw * (1 - calcBf / 100));
-  const suggestedProtein = lbm;
 
   function applySuggestion() {
     const p = suggestedProtein;
@@ -95,10 +105,13 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   const targetKcal = plan.targetKcal;
   const estimated = estimateMaintenance({ bodyweightLb: calcBw, bodyFatPct: calcBf > 0 ? calcBf : undefined });
   const capPct = cutCapPct(calcBf > 0 ? calcBf : undefined);
+  // Protein is per pound of BODYWEIGHT and follows the phase. Read off the CAPPED rate, so a "fast cut" that
+  // N3 held back does not prescribe protein for a deficit they are not actually running.
+  const proteinPerLbNow = proteinPerLb(plan.rate.pct);
+  const suggestedProtein = Math.round(calcBw * proteinPerLbNow);
 
   function applyRate() {
     setKcal(targetKcal);
-    setRate(plan.label);
     // N3 binds on the request, not just on the advice: if they asked for more than the cap allows, the
     // stored target comes back to the cap too, rather than leaving the form showing one thing and the
     // saved number meaning another.
@@ -130,7 +143,9 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
         ? { kcal: plan.targetKcal, protein: plan.macros.protein, carbs: plan.macros.carbs, fat: plan.macros.fat, trainingDayCarbBonus: carbBonus }
         : { kcal, protein, carbs, fat, trainingDayCarbBonus: carbBonus },
       portionTargets: portions,
-      rateTargetLabel: derived ? plan.label : rate,
+      // Always the plan's own label, so it can never drift from the rate actually stored beside it. It used
+      // to be a free-text box that said whatever was last typed there.
+      rateTargetLabel: plan.label,
       bodyFatPct: calcBf,
       maintenanceKcal: maintenance,
       // Never store a rate the doctrine forbids, whatever the stepper was left on.
@@ -223,16 +238,19 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Protein-first calculator</span>
             </div>
             <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
-              Protein is set from lean body mass — around 1 g per lb LBM — not total bodyweight, so a higher body-fat person isn't over-prescribed. Fat and carbs fill in around it. Optional — you can still hand-edit anything below.
+              Per pound of bodyweight, moving with the phase — a gram at maintenance, 1.1–1.2 cutting, and as
+              little as 0.85 bulking. A surplus spares protein; a deficit is where muscle is at risk, so that
+              is where it goes up. Fat and carbs fill in around it, and you can hand-edit anything below.
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={5} />
-              <CalcRow label="Body fat" unit="%" value={calcBf} onChange={setCalcBf} step={1} max={100} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
               <div className="row">
-                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Lean mass</span>
-                <span className="num" style={{ fontWeight: 700,  }}>{lbm} lb</span>
+                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>
+                  {plan.direction === "gain" ? "Bulking" : plan.direction === "cut" ? "Cutting" : "Holding"} — per lb
+                </span>
+                <span className="num" style={{ fontWeight: 700 }}>{proteinPerLbNow.toFixed(2)} g</span>
               </div>
               <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Suggested protein</span>
@@ -277,6 +295,18 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
               1 lb of tissue is 3,500 kcal, so 500 a day under maintenance is a pound a week off and 500 over is a pound on. Set it as a % of bodyweight — half a percent is a very different number of calories at 140 lb than at 250 lb.
             </div>
+            <div className="row" style={{ gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
+              {RATE_PRESETS.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  className={`chip${Math.abs(ratePct - preset.pct) < 0.001 ? " on" : ""}`}
+                  onClick={() => setRatePct(preset.pct)}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <CalcRow label="Rate" unit="% BW / wk" value={ratePct} onChange={setRatePct} step={0.1} min={-2} max={2} />
             </div>
@@ -319,14 +349,11 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
           </div>
           <div className="cell" style={{ marginTop: 8 }}>
             <CalcRow label="Training day bonus" unit="g carbs" value={carbBonus} onChange={setCarbBonus} step={10} />
+            {/* Read-only now. It was a free-text box, so it could say "Maintenance" while the stored rate
+                said something else entirely — two fields describing the same thing and free to disagree. */}
             <div className="row" style={{ marginTop: 6 }}>
               <span style={{ flex: 1, fontSize: 12.5 }}>Rate target</span>
-              <input
-                className="input"
-                style={{ width: 150, flex: "none", height: 30, fontSize: 12.5, textAlign: "center" }}
-                value={rate}
-                onChange={(e) => setRate(e.target.value)}
-              />
+              <span className="num" style={{ fontSize: 12.5, fontWeight: 700, color: "var(--color-accent-300)" }}>{plan.label}</span>
             </div>
           </div>
         </div>

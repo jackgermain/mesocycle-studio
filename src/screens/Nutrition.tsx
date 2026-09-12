@@ -225,6 +225,19 @@ export default function Nutrition() {
 
         <AutoNutritionToggle />
 
+        {/* On the tab, not behind the ⋮ menu. Once tracking is set up there was no visible way back to the
+            numbers — you had to know the options sheet existed. */}
+        {canSelfServe && (
+          <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => setEditingTargets(true)}>
+            <i className="ph ph-sliders-horizontal" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 12.5 }}>Change macros</div>
+              <div className="mu" style={{ marginTop: 1 }}>Calories, protein, carbs and fat, your rate, and weigh-in days.</div>
+            </div>
+            <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
+          </button>
+        )}
+
         {state.meals.map((meal) => {
           const eaten = eatenItems(meal);
           const mealTotals = totalsFor(eaten);
@@ -446,6 +459,17 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
         </InfoBanner>
 
         <AutoNutritionToggle />
+
+        {canSelfServe && (
+          <button className="link-row" style={{ padding: "11px 12px" }} onClick={onEditTargets}>
+            <i className="ph ph-sliders-horizontal" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 12.5 }}>Change portions</div>
+              <div className="mu" style={{ marginTop: 1 }}>Portion sizes, how you track, and weigh-in days.</div>
+            </div>
+            <i className="ph ph-caret-right" style={{ fontSize: 14, color: "var(--color-neutral-600)" }} />
+          </button>
+        )}
 
         <div className="cell elev-sm" style={{ position: "relative" }}>
           {canSelfServe && (

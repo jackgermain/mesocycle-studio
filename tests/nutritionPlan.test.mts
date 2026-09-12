@@ -13,6 +13,11 @@ import {
   weeklyChangeLb,
   dailyDeltaKcal,
   macrosFor,
+  proteinPerLb,
+  PROTEIN_G_PER_LB,
+  PROTEIN_G_PER_LB_CUT_LO,
+  PROTEIN_G_PER_LB_CUT_HI,
+  PROTEIN_G_PER_LB_BULK,
   buildPlan,
   observedRate,
   correctMaintenance,
@@ -118,16 +123,35 @@ test("lean mass comes off bodyweight and body fat", () => {
 
 // ---- macros ---------------------------------------------------------------
 
-test("protein is set from lean mass, not scale weight", () => {
-  const lean = macrosFor(2500, 250, 30);
-  const light = macrosFor(2500, 175, 0.1);
-  assert.equal(lean.protein, 175);
-  assert.ok(light.protein > lean.protein - 5);
+test("protein is per pound of BODYWEIGHT, not lean mass", () => {
+  assert.equal(proteinPerLb(undefined), PROTEIN_G_PER_LB);
+  assert.equal(proteinPerLb(0), PROTEIN_G_PER_LB);
+  assert.equal(macrosFor(2500, 200, 0).protein, 200);
+  // Two people at the same scale weight get the same protein now, whatever their body fat.
+  assert.equal(macrosFor(2500, 200, 0).protein, macrosFor(2500, 200, 0).protein);
+});
+
+test("a surplus needs the LEAST protein and a deficit the most", () => {
+  assert.ok(proteinPerLb(0.5) < proteinPerLb(0), "bulking below maintenance");
+  assert.ok(proteinPerLb(0) < proteinPerLb(-0.5), "maintenance below cutting");
+  assert.equal(proteinPerLb(0.5), PROTEIN_G_PER_LB_BULK);
+  assert.equal(macrosFor(3000, 200, 0.5).protein, Math.round(200 * PROTEIN_G_PER_LB_BULK));
+});
+
+test("a cut sits in the 1.1–1.2 band, and steeper means more", () => {
+  assert.equal(proteinPerLb(-CUT_CAP_PCT), PROTEIN_G_PER_LB_CUT_HI);
+  assert.ok(proteinPerLb(-0.2) >= PROTEIN_G_PER_LB_CUT_LO);
+  assert.ok(proteinPerLb(-0.2) < proteinPerLb(-0.4));
+});
+
+test("1.2 is the top of the band — nothing goes past it", () => {
+  assert.equal(proteinPerLb(-1), PROTEIN_G_PER_LB_CUT_HI);
+  assert.equal(proteinPerLb(-3), PROTEIN_G_PER_LB_CUT_HI);
 });
 
 test("a steep deficit takes carbs to zero rather than cutting protein", () => {
-  const m = macrosFor(1000, 250, 20);
-  assert.equal(m.protein, 200);
+  const m = macrosFor(1000, 250, -0.5);
+  assert.equal(m.protein, Math.round(250 * PROTEIN_G_PER_LB_CUT_HI));
   assert.ok(m.carbs >= 0);
 });
 

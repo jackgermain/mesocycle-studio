@@ -192,6 +192,9 @@ function BodyTab() {
             className="input"
             style={{ flex: 1 }}
             type="number"
+            // The phone keypad rather than the full keyboard. Every other numeric field in the app already
+            // carries this; the weigh-in box was the one that got missed.
+            inputMode="decimal"
             step="0.1"
             value={weightInput}
             onChange={(e) => setWeightInput(e.target.value)}

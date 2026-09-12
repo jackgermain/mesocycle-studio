@@ -24,9 +24,31 @@ export const CUT_CAP_PCT = 0.5;
 export const HIGH_BF_CUT_CAP_PCT = 1.0;
 export const VERY_OVERWEIGHT_BF_PCT = 30;
 
-/** Protein at a gram per pound of lean mass, which is what the app's own protein calculator already does --
- * set from lean mass rather than scale weight so a higher-body-fat person is not over-prescribed. */
-export const PROTEIN_G_PER_LB_LEAN = 1;
+/** Protein, per pound of BODYWEIGHT, moving with the phase. Jack: "make it 1 g per pound, and if they're
+ * in a cutting phase suggest about 1.1-1.2 g protein/lb bodyweight for cutting" and "0.85 minimum for
+ * bulking".
+ *
+ * Bodyweight, not lean mass: the app used to set protein from lean mass so a higher-body-fat person was not
+ * over-prescribed, and this deliberately overrides that.
+ *
+ * The ordering is the point. A surplus SPARES protein — there are calories to burn, so less of it gets used
+ * for fuel and less lean tissue is at risk. A deficit is the opposite: it is exactly where muscle is spent
+ * (N4), and protein is the main thing defending it. So bulking needs the least and cutting the most. */
+export const PROTEIN_G_PER_LB = 1.0;
+export const PROTEIN_G_PER_LB_BULK = 0.85;
+export const PROTEIN_G_PER_LB_CUT_LO = 1.1;
+export const PROTEIN_G_PER_LB_CUT_HI = 1.2;
+
+/** Grams of protein per pound of bodyweight for a given rate of change. */
+export function proteinPerLb(ratePctPerWeek?: number): number {
+  const r = ratePctPerWeek ?? 0;
+  if (r > 0.05) return PROTEIN_G_PER_LB_BULK;
+  if (r >= -0.05) return PROTEIN_G_PER_LB;
+  // Inside the cut band, steeper means more: 1.1 at the gentlest, 1.2 at the cap and beyond. 1.2 is the top
+  // of the band and nothing goes past it.
+  const steepness = Math.min(1, Math.abs(r) / CUT_CAP_PCT);
+  return PROTEIN_G_PER_LB_CUT_LO + steepness * (PROTEIN_G_PER_LB_CUT_HI - PROTEIN_G_PER_LB_CUT_LO);
+}
 /** Fat as a share of total calories, with carbs taking whatever is left. */
 export const FAT_SHARE_OF_KCAL = 0.25;
 
@@ -164,9 +186,8 @@ export interface Macros {
  * Protein is floored rather than allowed to squeeze: in a steep deficit the calorie budget can be small
  * enough that a quarter to fat plus a gram per lb lean leaves negative carbs, and the answer there is fewer
  * carbs, never less protein. */
-export function macrosFor(kcal: number, bodyweightLb: number, bodyFatPct?: number): Macros {
-  const lean = bodyFatPct != null && bodyFatPct > 0 ? leanMassLb(bodyweightLb, bodyFatPct) : bodyweightLb * 0.8;
-  const protein = Math.round(lean * PROTEIN_G_PER_LB_LEAN);
+export function macrosFor(kcal: number, bodyweightLb: number, ratePctPerWeek?: number): Macros {
+  const protein = Math.round(bodyweightLb * proteinPerLb(ratePctPerWeek));
   const fat = Math.round((kcal * FAT_SHARE_OF_KCAL) / 9);
   const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
   return { kcal, protein, carbs, fat };
@@ -214,7 +235,7 @@ export function buildPlan(input: PlanInput): Plan {
     lbPerWeek,
     dailyDelta,
     targetKcal,
-    macros: macrosFor(targetKcal, input.bodyweightLb, input.bodyFatPct),
+    macros: macrosFor(targetKcal, input.bodyweightLb, rate.pct),
     direction: rate.pct < 0 ? "cut" : rate.pct > 0 ? "gain" : "maintain",
     label: rateLabel(rate.pct, lbPerWeek),
     cappedNote: rate.capped
