@@ -21,6 +21,10 @@ export const clientProfile: ClientProfile = {
   macroTargets: { kcal: 2500, protein: 200, carbs: 300, fat: 70, trainingDayCarbBonus: 40 },
   portionTargets: defaultPortionTargets,
   rateTargetLabel: "Maintenance",
+  bodyFatPct: 20,
+  maintenanceKcal: 2500,
+  rateTargetPct: 0,
+  autoNutrition: false,
 };
 
 /** A blank starting profile for anyone training themself outside the client roster — no coach is setting their nutrition or weigh-in targets, so those start off and they're free to log ad hoc. */
@@ -38,6 +42,10 @@ export function buildSelfProfile(name: string): ClientProfile {
     macroTargets: { kcal: 2500, protein: 180, carbs: 250, fat: 70, trainingDayCarbBonus: 0 },
     portionTargets: defaultPortionTargets,
     rateTargetLabel: "Maintenance",
+    // No body-fat guess for someone we know nothing about: absent is a usable state that downgrades the
+    // maintenance formula honestly, where a made-up 20% would silently unlock or withhold N5's raised cap.
+    rateTargetPct: 0,
+    autoNutrition: false,
   };
 }
 

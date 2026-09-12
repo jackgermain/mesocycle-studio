@@ -71,7 +71,7 @@ type Action =
   | { type: "SET_PROGRAM"; program: Program }
   | { type: "RENAME_PROGRAM"; name: string }
   | { type: "PROMOTE_NEXT_PROGRAM" }
-  | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel"> }
+  | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel" | "bodyFatPct" | "maintenanceKcal" | "rateTargetPct" | "autoNutrition"> }
   | { type: "TICK_SET"; dayId: string; exerciseId: string; setId: string; actual: { reps: number; load: number | null; clusterBlocks?: number[]; assistanceSplit?: { unassisted: number; assisted: number } } }
   | { type: "EDIT_SET_TARGET"; dayId: string; exerciseId: string; setId: string; reps?: number; load?: number }
   | { type: "SET_EXERCISE_REST"; dayId: string; exerciseId: string; restSec: number }

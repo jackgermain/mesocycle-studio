@@ -170,6 +170,24 @@ export interface ClientProfile {
   macroTargets: { kcal: number; protein: number; carbs: number; fat: number; trainingDayCarbBonus: number };
   portionTargets: PortionTarget[];
   rateTargetLabel: string;
+
+  /* The nutrition algorithm's inputs — see shared/nutritionPlan.ts and doctrine/nutrition-v1.md.
+   *
+   * All four are optional and every reader must tolerate undefined. HYDRATE replaces `profile` wholesale
+   * rather than merging field by field, so any account saved before today arrives without them. */
+
+  /** Body-fat estimate, percent. Picks the maintenance formula (no sex is stored anywhere, which rules out
+   * Mifflin-St Jeor and leaves Katch-McArdle off lean mass) and decides N5's raised cut cap. */
+  bodyFatPct?: number;
+  /** The maintenance figure targets are an offset from (N1). Estimated to begin with, then corrected from
+   * their own weigh-ins by N6 — the scale beats the formula. */
+  maintenanceKcal?: number;
+  /** Desired rate as a percent of bodyweight per week, negative to lose. Stored as the number rather than
+   * only as `rateTargetLabel` prose, because N3's cap and N6's correction both have to compute against it. */
+  rateTargetPct?: number;
+  /** When on, calories and macros are recomputed from maintenance and the capped rate instead of being
+   * hand-set, and maintenance itself is re-derived from the weigh-in trend. */
+  autoNutrition?: boolean;
 }
 
 export interface LoggedFoodItem {

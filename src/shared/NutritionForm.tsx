@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Seg, Stepper } from "../components/UI";
 import { defaultPortionTargets } from "../data/mockData";
+import { buildPlan, estimateMaintenance, cutCapPct } from "./nutritionPlan";
 import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../data/types";
 
 type Cadence = "off" | "3x" | "5x";
@@ -30,6 +31,10 @@ export interface NutritionProtocolPatch {
   macroTargets: ClientProfile["macroTargets"];
   portionTargets: PortionTarget[];
   rateTargetLabel: string;
+  bodyFatPct: number;
+  maintenanceKcal: number;
+  rateTargetPct: number;
+  autoNutrition: boolean;
 }
 
 /** The full nutrition-targets form -- used both when a coach sets a real client's protocol
@@ -54,10 +59,15 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   const [carbBonus, setCarbBonus] = useState(profile.macroTargets.trainingDayCarbBonus);
   const [rate, setRate] = useState(profile.rateTargetLabel);
   const [portions, setPortions] = useState<PortionTarget[]>(profile.portionTargets.length ? profile.portionTargets : defaultPortionTargets);
-  const [calcBw, setCalcBw] = useState(200);
-  const [calcBf, setCalcBf] = useState(20);
-  const [ratePct, setRatePct] = useState(-0.5);
-  const [maintenance, setMaintenance] = useState(profile.macroTargets.kcal);
+  // Seeded from the profile rather than from hardcoded numbers: the calculator was starting every person at
+  // 200 lb regardless of what they actually weigh, so its first answer was wrong for everyone.
+  const [calcBw, setCalcBw] = useState(profile.bodyweight || 200);
+  const [calcBf, setCalcBf] = useState(profile.bodyFatPct ?? 20);
+  const [ratePct, setRatePct] = useState(profile.rateTargetPct ?? -0.5);
+  const [auto, setAuto] = useState(profile.autoNutrition ?? false);
+  const [maintenance, setMaintenance] = useState(
+    profile.maintenanceKcal ?? estimateMaintenance({ bodyweightLb: profile.bodyweight || 200, bodyFatPct: profile.bodyFatPct ?? 20 }).kcal,
+  );
 
   const lbm = Math.round(calcBw * (1 - calcBf / 100));
   const suggestedProtein = lbm;
@@ -72,14 +82,31 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
     setCarbs(carbsG);
   }
 
-  // 1 lb of tissue ≈ 3,500 kcal — a steady daily deficit/surplus compounds to that lb/week change.
-  const lbPerWeek = Math.round(calcBw * (ratePct / 100) * 10) / 10;
-  const dailyKcalDelta = Math.round((lbPerWeek * 3500) / 7);
-  const targetKcal = Math.max(0, maintenance + dailyKcalDelta);
+  // N1/N2/N3 all live in shared/nutritionPlan.ts so the cap is enforced in one tested place rather than
+  // re-derived in the form. Names kept as they were so the JSX below reads unchanged.
+  const plan = buildPlan({
+    bodyweightLb: calcBw,
+    bodyFatPct: calcBf > 0 ? calcBf : undefined,
+    ratePctPerWeek: ratePct,
+    maintenanceKcal: maintenance,
+  });
+  const lbPerWeek = plan.lbPerWeek;
+  const dailyKcalDelta = plan.dailyDelta;
+  const targetKcal = plan.targetKcal;
+  const estimated = estimateMaintenance({ bodyweightLb: calcBw, bodyFatPct: calcBf > 0 ? calcBf : undefined });
+  const capPct = cutCapPct(calcBf > 0 ? calcBf : undefined);
 
   function applyRate() {
     setKcal(targetKcal);
-    setRate(`${ratePct > 0 ? "+" : ""}${ratePct.toFixed(1)}% BW / wk (${lbPerWeek > 0 ? "+" : ""}${lbPerWeek} lb/wk)`);
+    setRate(plan.label);
+    // N3 binds on the request, not just on the advice: if they asked for more than the cap allows, the
+    // stored target comes back to the cap too, rather than leaving the form showing one thing and the
+    // saved number meaning another.
+    if (plan.rate.capped) setRatePct(plan.rate.pct);
+  }
+
+  function applyMaintenance() {
+    setMaintenance(estimated.kcal);
   }
 
   function toggleDay(i: number) {
@@ -91,13 +118,24 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   }
 
   function save() {
+    const derived = auto && mode === "macros";
     onSave({
       weighInsPerWeek: cadence === "off" ? 0 : cadence === "3x" ? 3 : 5,
       weighInDays: DAY_KEYS.filter((_, i) => days[i]),
       nutritionMode: mode,
-      macroTargets: { kcal, protein, carbs, fat, trainingDayCarbBonus: carbBonus },
+      // With auto programming on, the numbers ARE the plan: derived from maintenance and the capped rate
+      // rather than whatever the hand-edit fields were last left on. Off, nothing is computed behind their
+      // back and the typed values stand.
+      macroTargets: derived
+        ? { kcal: plan.targetKcal, protein: plan.macros.protein, carbs: plan.macros.carbs, fat: plan.macros.fat, trainingDayCarbBonus: carbBonus }
+        : { kcal, protein, carbs, fat, trainingDayCarbBonus: carbBonus },
       portionTargets: portions,
-      rateTargetLabel: rate,
+      rateTargetLabel: derived ? plan.label : rate,
+      bodyFatPct: calcBf,
+      maintenanceKcal: maintenance,
+      // Never store a rate the doctrine forbids, whatever the stepper was left on.
+      rateTargetPct: plan.rate.pct,
+      autoNutrition: auto,
     });
   }
 
@@ -119,6 +157,20 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
           {mode === "macros" && "Full calorie and gram targets with meal logging — for whoever wants the precision."}
           {mode === "portions" && "Hand and plate portions, no numbers to log — for whoever does better with a simpler system."}
         </div>
+      </div>
+
+      <div>
+        <div className="sh">Auto nutrition programming</div>
+        <CheckRow
+          checked={auto}
+          onChange={setAuto}
+          label="Work the numbers out automatically"
+          hint={
+            mode === "macros"
+              ? `Calories and macros come from maintenance and a rate instead of being typed in, the rate is held inside the ${capPct}%-a-week cap, and maintenance keeps getting corrected from ${whoPossessive} weigh-in trend.`
+              : "Only drives calorie and macro targets — switch tracking to Macros above for it to do anything."
+          }
+        />
       </div>
 
       <div>
@@ -192,30 +244,67 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             </button>
           </div>
 
+          {/* N1: every target is an offset from maintenance, so maintenance is the first number. */}
           <div className="cell" style={{ marginBottom: 10 }}>
             <div className="row" style={{ marginBottom: 4 }}>
-              <i className="ph ph-scales" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
-              <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Rate-of-change calculator</span>
+              <i className="ph ph-flame" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
+              <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Maintenance calculator</span>
             </div>
             <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
-              1 lb of tissue ≈ 3,500 kcal, so a steady daily surplus or deficit compounds into a weekly weight change. Set the rate as a % of bodyweight instead of guessing an absolute calorie number — negative loses, positive gains.
+              What {who} burn{subjectFirstName ? "s" : ""} in a day, holding weight. Everything below is an offset from it, so a wrong number here makes every target wrong the same way. Worked out from lean mass, which needs no age or sex.
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={5} />
-              <CalcRow label="Rate" unit="% BW / wk" value={ratePct} onChange={setRatePct} step={0.1} min={-2} max={2} />
+              <CalcRow label="Body fat" unit="%" value={calcBf} onChange={setCalcBf} step={1} max={75} />
               <CalcRow label="Maintenance" unit="kcal" value={maintenance} onChange={setMaintenance} step={50} />
+            </div>
+            <div className="row" style={{ marginTop: 9, fontSize: 12.5 }}>
+              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Estimate</span>
+              <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{estimated.kcal} kcal</span>
+            </div>
+            <div className="mu" style={{ marginTop: 4, lineHeight: 1.5 }}>{estimated.how}. It is a starting point — once there are a few weeks of weigh-ins, the scale corrects it.</div>
+            <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applyMaintenance}>
+              Use the estimate
+            </button>
+          </div>
+
+          {/* N2 the arithmetic, N3/N5 the cap. Both come from shared/nutritionPlan.ts. */}
+          <div className="cell" style={{ marginBottom: 10 }}>
+            <div className="row" style={{ marginBottom: 4 }}>
+              <i className="ph ph-scales" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
+              <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Rate of change</span>
+            </div>
+            <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
+              1 lb of tissue is 3,500 kcal, so 500 a day under maintenance is a pound a week off and 500 over is a pound on. Set it as a % of bodyweight — half a percent is a very different number of calories at 140 lb than at 250 lb.
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <CalcRow label="Rate" unit="% BW / wk" value={ratePct} onChange={setRatePct} step={0.1} min={-2} max={2} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
               <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Weekly change</span>
-                <span className="num" style={{ fontWeight: 700,  }}>{lbPerWeek > 0 ? "+" : ""}{lbPerWeek} lb/wk</span>
+                <span className="num" style={{ fontWeight: 700 }}>{lbPerWeek > 0 ? "+" : ""}{lbPerWeek} lb/wk</span>
               </div>
               <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Daily intake</span>
-                <span className="num" style={{ fontWeight: 700,  }}>
+                <span className="num" style={{ fontWeight: 700 }}>
                   {dailyKcalDelta >= 0 ? "+" : ""}{dailyKcalDelta} → <b style={{ color: "var(--color-accent-300)" }}>{targetKcal} kcal</b>
                 </span>
               </div>
+              <div className="row">
+                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Fastest cut allowed</span>
+                <span className="num" style={{ fontWeight: 700 }}>{capPct}% / wk</span>
+              </div>
+            </div>
+            {plan.cappedNote && (
+              <div className="mu" style={{ marginTop: 8, lineHeight: 1.5, color: "var(--color-accent-200)" }}>
+                <i className="ph ph-shield-check" style={{ fontSize: 13, marginRight: 5 }} />
+                {plan.cappedNote}
+              </div>
+            )}
+            <div className="mu" style={{ marginTop: 8, lineHeight: 1.5 }}>
+              Losing faster than the cap does not get {who} there sooner — past that rate, more of what comes off is muscle.
+              {calcBf >= 30 && " Body fat is high enough here that the cap is raised."}
             </div>
             <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applyRate}>
               Apply — sets kcal target and rate label below
@@ -361,6 +450,34 @@ function CalcRow({
       </span>
       <Stepper value={value} onChange={onChange} step={step} min={min} max={max} width={54} fontSize={14} />
     </div>
+  );
+}
+
+/** The app's checkbox is a 22px ticked square, the same shape as ticking off a set or a logged food —
+ * reused here rather than introducing a switch, so it reads as the same act. */
+function CheckRow({ checked, onChange, label, hint }: { checked: boolean; onChange: (v: boolean) => void; label: string; hint: string }) {
+  return (
+    <button
+      onClick={() => onChange(!checked)}
+      aria-pressed={checked}
+      className="cell row"
+      style={{ width: "100%", textAlign: "left", cursor: "pointer", alignItems: "flex-start", gap: 10, border: `1px solid ${checked ? "var(--color-accent)" : "var(--color-divider)"}`, background: checked ? "var(--color-accent-900)" : undefined }}
+    >
+      <span
+        style={{
+          width: 22, height: 22, flex: "none", borderRadius: 7, marginTop: 1,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: checked ? "var(--color-accent)" : "none",
+          border: checked ? "none" : "1.5px solid var(--color-accent)",
+        }}
+      >
+        {checked && <i className="ph-bold ph-check" style={{ fontSize: 12, color: "var(--color-bg)" }} />}
+      </span>
+      <span style={{ flex: 1 }}>
+        <span style={{ display: "block", fontSize: 12.5, color: checked ? "var(--color-accent-200)" : "var(--color-neutral-200)" }}>{label}</span>
+        <span className="mu" style={{ display: "block", marginTop: 3, lineHeight: 1.5 }}>{hint}</span>
+      </span>
+    </button>
   );
 }
 

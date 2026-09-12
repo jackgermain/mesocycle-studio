@@ -244,6 +244,26 @@ protein + carbs + fat outweigh the serving itself; USDA's branded data contains 
 data-entry errors and this catches the worst of them. Users can also create custom foods, stored per
 account in `customFoods`.
 
+**Nutrition algorithm.** `src/shared/nutritionPlan.ts` is the whole of it — pure arithmetic, no Supabase
+import, tested in `tests/nutritionPlan.test.mts`. Doctrine is `src/generator/doctrine/nutrition-v1.md`, the
+**N** series, which is the first written-down nutrition rule set (training doctrine is C/P in `v1.md` and G in
+`exercises-v1.md`). The rules that matter: every target is an offset from maintenance (N1); 3,500 kcal is a
+pound of tissue either way, so 500/day is a pound a week (N2); **a cut is capped at 0.5% of bodyweight per
+week** unless body fat is high (N3/N5), because past that rate more of the loss is muscle (N4); and the
+estimate is corrected from the person's own weigh-ins, where the scale beats the formula (N6).
+
+Two things about it are load-bearing and easy to get wrong. **Maintenance uses Katch-McArdle, off lean mass,
+because the app stores no sex anywhere** — Mifflin-St Jeor needs one, so it is not an option without adding an
+intake field; body fat is already collected by the protein calculator, so this costs no new intake. And
+**the observed rate is fitted by least squares against the dates**, never against the number of weigh-ins:
+someone who misses half of theirs has fewer points over the same elapsed time, and counting entries makes
+their loss look slower than it was, which would then drive a correction the wrong way. `Progress.tsx` still
+has its own older count-based `ratePerWeek` for the trend chart — the two should be reconciled.
+
+The four profile fields it added (`bodyFatPct`, `maintenanceKcal`, `rateTargetPct`, `autoNutrition`) are all
+optional and every reader must tolerate `undefined`: `HYDRATE` replaces `profile` wholesale rather than
+merging field by field, so any account saved before they existed arrives without them.
+
 **AI program import.** `api/parse-program.ts` is the project's only serverless function — a Vercel Node
 function, outside `tsconfig.app.json`'s `include: ["src"]`, so `tsc -b` never sees it and Vercel compiles
 it separately. It takes a photo/screenshot/PDF plus a plain-English instruction ("run these two days twice

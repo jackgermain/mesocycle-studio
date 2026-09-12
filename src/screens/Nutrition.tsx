@@ -375,10 +375,10 @@ export default function Nutrition() {
               </button>
             </div>
             <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => { setShowNutritionOptions(false); setEditingTargets(true); }}>
-              <i className="ph ph-pencil-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+              <i className="ph ph-sliders-horizontal" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12.5 }}>Edit nutrition targets</div>
-                <div className="mu" style={{ marginTop: 1 }}>Change how you track and your calorie/macro goals.</div>
+                <div style={{ fontSize: 12.5 }}>Nutrition settings</div>
+                <div className="mu" style={{ marginTop: 1 }}>Auto programming, maintenance and rate, and your calorie/macro goals.</div>
               </div>
             </button>
           </div>
@@ -570,10 +570,10 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
               </button>
             </div>
             <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => { setShowNutritionOptions(false); onEditTargets(); }}>
-              <i className="ph ph-pencil-simple" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+              <i className="ph ph-sliders-horizontal" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12.5 }}>Edit nutrition targets</div>
-                <div className="mu" style={{ marginTop: 1 }}>Change how you track and your portion goals.</div>
+                <div style={{ fontSize: 12.5 }}>Nutrition settings</div>
+                <div className="mu" style={{ marginTop: 1 }}>Auto programming, and how you track and your portion goals.</div>
               </div>
             </button>
           </div>
