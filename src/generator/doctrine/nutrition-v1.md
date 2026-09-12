@@ -90,6 +90,30 @@ their loss look slower than it is — which would then feed a correction in the 
 of real loss. A correction needs a window long enough and a fit across all the points in it, not a comparison
 of the first weigh-in to the last.
 
+**N7 — Protein is per pound of bodyweight, and the phase moves it.**
+
+> *"Make it 1 g per pound, and if they're in a cutting phase suggest about 1.1-1.2 g protein/lb bodyweight
+> for cutting"* … *"0.85 minimum for bulking."*
+
+| Phase | g per lb of bodyweight |
+|---|---|
+| Bulking | **0.85** |
+| Maintenance | **1.0** |
+| Cutting | **1.1 → 1.2**, steeper meaning more |
+
+**Rule — bodyweight, not lean mass.** This overturns the app's previous rule, which set protein from lean
+mass so a higher-body-fat person was not over-prescribed. Scale weight is the number now.
+
+**Rule — the ordering is the substance.** A surplus **spares** protein: there are calories to burn, so less
+of it gets used for fuel and less lean tissue is at risk. A deficit is the opposite — it is exactly where
+muscle is spent (N4), and protein is the main thing defending it. **So bulking needs the least and cutting
+the most.** Any implementation where a bulk demands more protein than a cut has the rule upside down.
+
+**Rule — 1.2 is the top of the band.** A steeper cut climbs toward it and stops there; nothing goes past it.
+
+**Rule — read protein off the *capped* rate,** not the requested one. A "fast cut" that N3 held back to 0.5%
+is not actually running a steep deficit, and should not be fed as though it were.
+
 ---
 
 ## Still to rule on
@@ -99,5 +123,6 @@ of the first weigh-in to the last.
    (Katch-McArdle from lean mass, since Mifflin-St Jeor needs sex).
 3. **Gaining has no cap.** Jack specified the arithmetic for a surplus but no ceiling on it, so nothing
    currently stops a bulk being set at +2%/week. A lean-gain cap is the obvious counterpart to N3.
-4. **Protein in a deficit.** The app already sets protein at ~1 g per lb of lean mass. A hard cut is where
-   that matters most, and whether it should rise when the deficit is steeper is unruled.
+4. **Whether the cut band should widen.** N7 settles the numbers, but 1.1–1.2 is a narrow band and the top
+   of it is reached at the ordinary 0.5%/week cap — so an aggressive cut and a standard one are prescribed
+   the same protein. Whether a genuinely hard cut deserves more than 1.2 is open.
