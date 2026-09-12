@@ -6,6 +6,7 @@ import { useAuth } from "../lib/auth";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { TabBar } from "../components/TabBar";
 import { Seg, InfoBanner, HeroHeader, HeroStat } from "../components/UI";
+import { phaseStatus, RATE_WINDOW_DAYS, type PhaseStatus } from "../shared/nutritionPlan";
 
 function todayISO() {
   const t = new Date();
@@ -142,23 +143,17 @@ function BodyTab() {
   const [logging, setLogging] = useState(false);
   const [weightInput, setWeightInput] = useState(String(p.bodyweight));
 
-  const history = state.weighIns.slice(-14); // most recent ~14 logged weigh-ins
-  const values = history.map((w) => w.weight);
-  const max = Math.max(...values, p.bodyweight);
-  const min = Math.min(...values, p.bodyweight);
-  const points = history
-    .map((w, i) => {
-      const x = history.length > 1 ? (i / (history.length - 1)) * 96 + 2 : 50;
-      const y = 34 - ((w.weight - min) / (max - min || 1)) * 28;
-      return `${x},${y}`;
-    })
-    .join(" ");
-
-  const latest = history[history.length - 1]?.weight ?? p.bodyweight;
+  // The chart shows exactly the window the rate is fitted over, so the picture and the number can never
+  // disagree. This used to slice the last 14 entries and divide by how MANY there were -- someone who
+  // missed weigh-ins had their loss reported slower than it really was.
+  const windowStart = new Date();
+  windowStart.setDate(windowStart.getDate() - RATE_WINDOW_DAYS);
+  const cutoff = windowStart.toISOString().slice(0, 10);
+  const history = state.weighIns.filter((w) => w.date >= cutoff);
+  const latest = state.weighIns[state.weighIns.length - 1]?.weight ?? p.bodyweight;
   const first = history[0]?.weight ?? latest;
   const totalChange = Math.round((latest - first) * 10) / 10;
-  const weeks = Math.max(1, history.length / (p.weighInsPerWeek || 3));
-  const ratePerWeek = Math.round((totalChange / weeks) * 10) / 10;
+  const phase = phaseStatus(p.rateTargetPct, p.bodyFatPct, state.weighIns);
 
   const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const weekDates = thisWeekISO();
@@ -209,43 +204,9 @@ function BodyTab() {
         </div>
       )}
 
+      <PhaseCard phase={phase} latest={latest} totalChange={totalChange} units={p.units} />
       <div className="cell elev-sm">
-        <div className="row" style={{ alignItems: "baseline" }}>
-          <div style={{ flex: 1 }}>
-            <div className="scr">Trend weight</div>
-            <div className="num" style={{ fontSize: 21, lineHeight: 1.1, marginTop: 3 }}>
-              {latest.toFixed(1)} <span style={{ fontSize: 14, color: "var(--color-neutral-500)" }}>{p.units}</span>
-            </div>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 12.5, color: ratePerWeek <= 0 ? "var(--color-accent-300)" : "var(--color-neutral-300)" }}>
-              {ratePerWeek > 0 ? "+" : ""}
-              {ratePerWeek} {p.units}/wk
-            </div>
-            <div className="mu" style={{ marginTop: 2 }}>
-              {totalChange > 0 ? "+" : ""}
-              {totalChange} total
-            </div>
-          </div>
-        </div>
-        {history.length > 1 ? (
-          <div style={{ position: "relative", height: 76, marginTop: 14 }}>
-            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "flex-end", gap: 4 }}>
-              {history.map((w, i) => (
-                <div key={i} style={{ flex: 1, height: `${((w.weight - min) / (max - min || 1)) * 80 + 15}%`, background: "var(--color-neutral-900)", borderRadius: 2 }} />
-              ))}
-            </div>
-            <svg viewBox="0 0 100 40" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
-              <polyline points={points} fill="none" stroke="#4ce08f" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-        ) : (
-          <div className="mu" style={{ marginTop: 14, textAlign: "center", padding: "20px 0" }}>Log a weigh-in to start the chart.</div>
-        )}
-        <div className="row" style={{ marginTop: 8, fontSize: 11, color: "var(--color-neutral-600)" }}>
-          <span>{history[0] ? new Date(history[0].date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""}</span>
-          <span style={{ marginLeft: "auto" }}>each point is a logged weigh-in</span>
-        </div>
+        <WeightTrend history={history} phase={phase} units={p.units} />
       </div>
 
       {p.weighInsPerWeek > 0 && (
@@ -310,6 +271,160 @@ function BodyTab() {
             <div className="mu" style={{ marginTop: 2 }}>next due wk 12</div>
           </div>
         </div>
+      </div>
+    </>
+  );
+}
+
+const PHASE_TONE: Record<PhaseStatus["phase"], { fg: string; bg: string; arrow: string }> = {
+  cut: { fg: "var(--color-accent-300)", bg: "var(--color-accent-900)", arrow: "▼" },
+  gain: { fg: "var(--color-info)", bg: "rgba(122,162,255,.14)", arrow: "▲" },
+  hold: { fg: "var(--color-neutral-400)", bg: "rgba(147,151,171,.14)", arrow: "—" },
+};
+
+/** What they're doing and whether it's working, above everything else on the tab.
+ *
+ * Progress opened on "current week" and a coach name and never said whether someone was cutting, gaining
+ * or holding -- the one thing a person wants confirmed when they open it. The direction is read from the
+ * rate they set; the speed is read from the scale. */
+function PhaseCard({ phase, latest, totalChange, units }: { phase: PhaseStatus; latest: number; totalChange: number; units: string }) {
+  const tone = PHASE_TONE[phase.phase];
+  const fast = phase.tooFast;
+  const obs = phase.observed;
+  const pct = Math.min(100, Math.round((phase.capUsed ?? 0) * 100));
+
+  return (
+    <div className="cell elev-sm">
+      <div className="row" style={{ justifyContent: "space-between" }}>
+        <span
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700,
+            padding: "4px 9px", borderRadius: 999,
+            background: fast ? "rgba(255,224,102,.13)" : tone.bg,
+            color: fast ? "var(--color-caution)" : tone.fg,
+          }}
+        >
+          {tone.arrow} {fast ? `${phase.label.toUpperCase()} FAST` : phase.label.toUpperCase()}
+        </span>
+        <span className="mu mono">{latest.toFixed(1)} {units}</span>
+      </div>
+
+      <div style={{ marginTop: 13 }}>
+        <div className="scr">{totalChange === 0 ? "No change" : totalChange < 0 ? "Down" : "Up"} over the last 4 weeks</div>
+        <div className="row" style={{ alignItems: "baseline", gap: 6, marginTop: 4 }}>
+          <span className="num" style={{ fontSize: 32, fontWeight: 700, lineHeight: 1, color: tone.fg }}>
+            {totalChange > 0 ? "+" : ""}{totalChange}
+          </span>
+          <span style={{ fontSize: 14, color: "var(--color-neutral-600)" }}>{units}</span>
+        </div>
+      </div>
+
+      {obs ? (
+        <>
+          <div style={{ height: 1, background: "var(--color-divider)", margin: "12px 0" }} />
+          <div className="row" style={{ justifyContent: "space-between" }}>
+            <span className="mu">Actual rate</span>
+            <span className="num" style={{ fontSize: 13, fontWeight: 700, color: fast ? "var(--color-caution)" : undefined }}>
+              {obs.lbPerWeek > 0 ? "+" : ""}{obs.lbPerWeek} {units}/wk · {obs.pctPerWeek > 0 ? "+" : ""}{obs.pctPerWeek}%
+            </span>
+          </div>
+          {phase.capUsed !== null && (
+            <div style={{ marginTop: 9 }}>
+              <div className="meter">
+                <div className="meter-fill" style={{ width: `${pct}%`, background: fast ? "var(--color-caution)" : "var(--color-accent)" }} />
+              </div>
+              <div className="mu" style={{ marginTop: 7, lineHeight: 1.5, color: fast ? "var(--color-caution)" : undefined }}>
+                {fast
+                  ? `Past the ${phase.capPct}% a week cap. More of this is coming off as muscle — eat a bit more.`
+                  : `Inside the ${phase.capPct}% a week cap.`}
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="mu" style={{ marginTop: 11, lineHeight: 1.5 }}>
+          Not enough weigh-ins yet to call a rate — it needs about four spread over a couple of weeks.
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Raw weigh-ins as dots, the fitted trend as the line, and the rate you're allowed to lose at as a lane.
+ *
+ * Staying in the lane is the whole goal of a cut, so it's drawn rather than described. The old chart put
+ * grey bars behind a green line and encoded the same thing twice. */
+function WeightTrend({ history, phase, units }: { history: { date: string; weight: number }[]; phase: PhaseStatus; units: string }) {
+  if (history.length < 2) {
+    return <div className="mu" style={{ textAlign: "center", padding: "26px 0" }}>Log a weigh-in to start the chart.</div>;
+  }
+  const W = 340, H = 124, PAD = 14, BOT = 26;
+  const ms = (d: string) => Date.parse(`${d}T00:00:00`);
+  const t0 = ms(history[0].date);
+  const tN = ms(history[history.length - 1].date);
+  const span = Math.max(1, tN - t0);
+  const weeks = span / (7 * 86400000);
+  const startW = history[0].weight;
+
+  // The lane runs from holding weight down to the cap, over the same elapsed time. Only a cut has one.
+  const capLb = phase.phase === "cut" ? ((startW * phase.capPct) / 100) * weeks : 0;
+  const laneLo = startW - capLb;
+
+  const ws = history.map((h) => h.weight);
+  const lo = Math.min(...ws, laneLo) - 0.4;
+  const hi = Math.max(...ws, startW) + 0.4;
+  const x = (d: string) => PAD + ((ms(d) - t0) / span) * (W - PAD * 2);
+  const y = (w: number) => PAD + ((hi - w) / (hi - lo || 1)) * (H - PAD - BOT);
+
+  // The least-squares line passes through the mean of the points, so the fitted rate alone places it.
+  const meanW = ws.reduce((a, b) => a + b, 0) / ws.length;
+  const meanT = history.reduce((a, h) => a + ms(h.date), 0) / history.length;
+  const slope = (phase.observed?.lbPerWeek ?? 0) / (7 * 86400000);
+  const fit = (t: number) => meanW + slope * (t - meanT);
+  const fast = phase.tooFast;
+
+  return (
+    <>
+      <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline" }}>
+        <span className="scr">Trend · last 4 weeks</span>
+        <span className="mu mono">{history.length} weigh-ins</span>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", marginTop: 8 }} role="img"
+           aria-label={`Weight trend, ${phase.observed?.lbPerWeek ?? 0} ${units} per week`}>
+        <defs>
+          <linearGradient id="capLane" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#4ce08f" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="#4ce08f" stopOpacity="0.03" />
+          </linearGradient>
+        </defs>
+        {phase.phase === "cut" && (
+          <>
+            <path d={`M${PAD},${y(startW)} L${W - PAD},${y(startW)} L${W - PAD},${y(laneLo)} Z`} fill="url(#capLane)" />
+            <line x1={PAD} y1={y(startW)} x2={W - PAD} y2={y(startW)} stroke="var(--color-neutral-800)" strokeWidth="1" strokeDasharray="3 4" />
+            <line x1={PAD} y1={y(startW)} x2={W - PAD} y2={y(laneLo)} stroke="var(--color-accent-700)" strokeWidth="1.2" strokeDasharray="4 4" />
+          </>
+        )}
+        {history.map((h, i) => (
+          <circle key={i} cx={x(h.date)} cy={y(h.weight)} r="2.6" fill="var(--color-neutral-700)" />
+        ))}
+        {phase.observed && (
+          <polyline
+            points={`${PAD},${y(fit(t0))} ${W - PAD},${y(fit(tN))}`}
+            fill="none"
+            stroke={fast ? "var(--color-caution)" : "var(--color-accent)"}
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
+        )}
+        <text x={PAD} y={H - 6} fill="var(--color-text-muted)" fontFamily="var(--font-mono)" fontSize="9">
+          {new Date(`${history[0].date}T00:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+        </text>
+        <text x={W - PAD} y={H - 6} textAnchor="end" fill="var(--color-text-muted)" fontFamily="var(--font-mono)" fontSize="9">today</text>
+      </svg>
+      <div className="mu" style={{ marginTop: 4, lineHeight: 1.5 }}>
+        {phase.phase === "cut"
+          ? "Dots are what the scale said. The line is the real trend through them — staying inside the shaded lane is the whole goal."
+          : "Dots are what the scale said. The line is the real trend through them."}
       </div>
     </>
   );

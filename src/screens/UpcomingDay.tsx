@@ -7,6 +7,7 @@ import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
 import { ExerciseSection } from "./ExerciseSection";
+import { ProgressionToggle } from "../shared/AutomationToggles";
 
 function daysAway(iso: string) {
   const today = new Date();
@@ -47,6 +48,8 @@ export default function UpcomingDay({ dayId }: { dayId: string }) {
             ? `${daysAway(day.date)} · ${day.setCount} sets${day.muscleSummary ? ` · ${day.muscleSummary}` : ""}. You can look ahead any time — this unlocks for logging on the day.`
             : `${daysAway(day.date)} · nothing added to this day yet.`}
         </InfoBanner>
+
+        <ProgressionToggle />
 
         {exIds.map((id, i) => {
           const ex = day.exercises[id];

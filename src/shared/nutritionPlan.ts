@@ -331,3 +331,45 @@ export function isCuttingTooFast(observed: ObservedRate | null, bodyFatPct?: num
   if (!observed) return false;
   return observed.pctPerWeek < -cutCapPct(bodyFatPct);
 }
+
+export type Phase = "cut" | "gain" | "hold";
+
+export interface PhaseStatus {
+  phase: Phase;
+  /** "Cutting" / "Gaining" / "Holding" — what to put on the chip. */
+  label: string;
+  targetPct: number;
+  /** What the scale says, or null when there is not enough of it yet to say anything honest. */
+  observed: ObservedRate | null;
+  capPct: number;
+  /** How much of the cap the actual rate is using, 0..1 and beyond. Null unless cutting with data. */
+  capUsed: number | null;
+  tooFast: boolean;
+}
+
+/** Which direction they are going, how fast, and whether that is inside the cap.
+ *
+ * The direction comes from the rate they SET, not from the scale: someone holding weight on a deliberate
+ * cut is failing at a cut, not maintaining, and the screen should say so. The rate comes from the scale,
+ * because that is the only honest source for what is actually happening. */
+export function phaseStatus(
+  ratePctPerWeek: number | undefined,
+  bodyFatPct: number | undefined,
+  weighIns: { date: string; weight: number }[],
+  today: Date = new Date(),
+): PhaseStatus {
+  const target = ratePctPerWeek ?? 0;
+  // A hair either side of zero is maintenance, not a half-hearted cut.
+  const phase: Phase = target < -0.05 ? "cut" : target > 0.05 ? "gain" : "hold";
+  const capPct = cutCapPct(bodyFatPct);
+  const observed = observedRate(weighIns, RATE_WINDOW_DAYS, today);
+  return {
+    phase,
+    label: phase === "cut" ? "Cutting" : phase === "gain" ? "Gaining" : "Holding",
+    targetPct: target,
+    observed,
+    capPct,
+    capUsed: observed && phase === "cut" ? Math.max(0, -observed.pctPerWeek) / capPct : null,
+    tooFast: isCuttingTooFast(observed, bodyFatPct),
+  };
+}

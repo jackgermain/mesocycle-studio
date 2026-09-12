@@ -7,6 +7,7 @@ import { InfoBanner } from "../components/UI";
 import { canSelfBuildProgram } from "../shared/canBuild";
 import { repeatProgram } from "../shared/programConvert";
 import { WeighInDue } from "../components/WeighInDue";
+import { ProgressionToggle } from "../shared/AutomationToggles";
 
 /** The "Train" tab's landing spot — always today's lift, no overview page in between. */
 export default function TodayRedirect() {
@@ -71,6 +72,7 @@ export default function TodayRedirect() {
               Nice work. {state.program.coachName} will set your next block — message them if you haven't heard.
             </InfoBanner>
           )}
+          <ProgressionToggle />
         </div>
         <TabBar />
       </div>
@@ -101,6 +103,7 @@ export default function TodayRedirect() {
           ) : (
             <InfoBanner icon="ph-hourglass">{state.program.coachName} hasn't built your program yet — check back once they've published it.</InfoBanner>
           )}
+          <ProgressionToggle />
         </div>
         <TabBar />
       </div>

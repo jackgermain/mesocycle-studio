@@ -10,6 +10,7 @@ import DayWorkout from "./DayWorkout";
 import UpcomingDay from "./UpcomingDay";
 import Soreness from "./Soreness";
 import { ExerciseSection } from "./ExerciseSection";
+import { ProgressionToggle } from "../shared/AutomationToggles";
 import { computeSorenessDue } from "../shared/soreness";
 import { isoToday } from "../shared/dayStatus";
 import { coachOnTheOtherEnd } from "../shared/coachName";
@@ -63,6 +64,8 @@ function ReopenedDay({ dayId }: { dayId: string }) {
           <StatCell label="Time" value={day.log ? `${day.log.timeMin}m` : "—"} />
           <StatCell label="Pump" value={day.log?.pumpAvg ?? "—"} valueColor="var(--color-accent-300)" />
         </div>
+
+        <ProgressionToggle />
 
         {exIds.map((id, i) => {
           const ex = day.exercises[id];

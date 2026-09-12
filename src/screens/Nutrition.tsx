@@ -9,6 +9,7 @@ import { isoToday } from "../shared/dayStatus";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, Meter, HeroHeader, BackHeader, TickButton } from "../components/UI";
 import { NutritionForm } from "../shared/NutritionForm";
+import { AutoNutritionToggle } from "../shared/AutomationToggles";
 import FoodSearchSheet from "./FoodSearchSheet";
 import type { FoodItem } from "../data/foodDatabase";
 import type { PortionCategory, LoggedFoodItem } from "../data/types";
@@ -90,6 +91,7 @@ export default function Nutrition() {
               Set up nutrition tracking
             </button>
           )}
+          <AutoNutritionToggle />
         </div>
         <TabBar />
       </div>
@@ -221,30 +223,7 @@ export default function Nutrition() {
           </div>
         </div>
 
-        {/* On the tab itself rather than buried in the settings form: this is the switch someone actually
-            wants to reach, and only a self-directed account owns their own targets. */}
-        {canSelfServe && (
-          <button
-            className="cell row"
-            style={{ width: "100%", textAlign: "left", cursor: "pointer", alignItems: "flex-start", gap: 11 }}
-            onClick={() => {
-              const next = !(profile.autoNutrition ?? false);
-              dispatch({ type: "UPDATE_PROFILE", profile: { autoNutrition: next } });
-              dispatch({ type: "SHOW_TOAST", message: next ? "Auto nutrition on — targets follow your maintenance and rate." : "Auto nutrition off — your typed targets stand." });
-              setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
-            }}
-          >
-            <TickButton checked={profile.autoNutrition ?? false} size={22} style={{ marginTop: 1 }} />
-            <span style={{ flex: 1 }}>
-              <span style={{ display: "block", fontSize: 12.5, fontWeight: 600 }}>Auto nutrition programming</span>
-              <span className="mu" style={{ display: "block", marginTop: 3 }}>
-                {profile.autoNutrition
-                  ? "On — calories and macros are worked out from your maintenance and rate, held inside the cut cap."
-                  : "Off — the targets you typed stand. Turn on to have them worked out from maintenance and a rate."}
-              </span>
-            </span>
-          </button>
-        )}
+        <AutoNutritionToggle />
 
         {state.meals.map((meal) => {
           const eaten = eatenItems(meal);
@@ -465,6 +444,8 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
         <InfoBanner icon="ph-hand-palm">
           No calorie counting — just hit your portions each meal. {canSelfServe ? "You set these targets." : `${state.program.coachName} set these targets for you.`}
         </InfoBanner>
+
+        <AutoNutritionToggle />
 
         <div className="cell elev-sm" style={{ position: "relative" }}>
           {canSelfServe && (

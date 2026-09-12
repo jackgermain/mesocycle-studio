@@ -17,6 +17,7 @@ import {
   observedRate,
   correctMaintenance,
   isCuttingTooFast,
+  phaseStatus,
 } from "../src/shared/nutritionPlan";
 
 // ---- N2: the arithmetic Jack stated outright ------------------------------
@@ -196,6 +197,55 @@ test("N6: a rate on plan produces no correction", () => {
   const today = new Date("2026-03-01T00:00:00Z");
   const obs = observedRate(series(200, -1, 10, 3), 28, today)!;
   assert.equal(correctMaintenance(2800, -1, obs), null);
+});
+
+// ---- phase: what the screen says they are doing ---------------------------
+
+test("phase comes from the rate they SET, not from the scale", () => {
+  const today = new Date("2026-03-01T00:00:00Z");
+  // Holding weight while a cut is set is a failing cut, not maintenance.
+  const flat = series(200, 0, 10, 3);
+  assert.equal(phaseStatus(-0.5, 20, flat, today).phase, "cut");
+  assert.equal(phaseStatus(0.25, 20, flat, today).phase, "gain");
+  assert.equal(phaseStatus(0, 20, flat, today).phase, "hold");
+});
+
+test("a hair either side of zero is maintenance, not a half-hearted cut", () => {
+  assert.equal(phaseStatus(-0.02, 20, [], new Date()).phase, "hold");
+  assert.equal(phaseStatus(undefined, 20, [], new Date()).phase, "hold");
+});
+
+test("cap usage is null until there is enough scale data to be honest", () => {
+  const today = new Date("2026-03-01T00:00:00Z");
+  assert.equal(phaseStatus(-0.5, 20, [], today).capUsed, null);
+  assert.equal(phaseStatus(-0.5, 20, series(200, -1, 3, 2), today).capUsed, null, "under the point floor");
+});
+
+test("cap usage reads as a fraction of the cap, and passes 1 when too fast", () => {
+  const today = new Date("2026-03-01T00:00:00Z");
+  const onPlan = phaseStatus(-0.5, 20, series(200, -1, 10, 3), today);
+  assert.ok(onPlan.capUsed !== null && onPlan.capUsed > 0.8 && onPlan.capUsed <= 1.05, `${onPlan.capUsed}`);
+  assert.equal(onPlan.tooFast, false);
+
+  const fast = phaseStatus(-0.5, 20, series(200, -2.4, 10, 3), today);
+  assert.ok(fast.capUsed !== null && fast.capUsed > 1);
+  assert.equal(fast.tooFast, true);
+});
+
+test("gaining never reports cap usage — there is no cap on a surplus", () => {
+  const today = new Date("2026-03-01T00:00:00Z");
+  const s = phaseStatus(0.5, 20, series(200, 1, 10, 3), today);
+  assert.equal(s.capUsed, null);
+  assert.equal(s.tooFast, false);
+});
+
+test("the raised cap moves the usage fraction, not just the verdict", () => {
+  const today = new Date("2026-03-01T00:00:00Z");
+  const lean = phaseStatus(-0.5, 18, series(200, -1.6, 10, 3), today);
+  const heavy = phaseStatus(-0.5, 35, series(200, -1.6, 10, 3), today);
+  assert.ok(lean.capUsed! > heavy.capUsed!, "same loss is a bigger share of a stricter cap");
+  assert.equal(lean.tooFast, true);
+  assert.equal(heavy.tooFast, false);
 });
 
 test("N4: losing past the cap is flagged, not congratulated", () => {
