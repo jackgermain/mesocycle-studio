@@ -56,7 +56,7 @@ export function ProgressionToggle() {
   return (
     <ToggleRow
       on={on}
-      title="Progression suggestions"
+      title="Auto training programming"
       hint={
         on
           ? "On — finishing a session works out next week's sets, reps and load for you to approve. Nothing changes your program on its own."
@@ -67,8 +67,8 @@ export function ProgressionToggle() {
         dispatch({
           type: "SHOW_TOAST",
           message: !on
-            ? "Progression suggestions on — next week's numbers come to you after each session."
-            : "Progression suggestions off — nothing will be worked out for next week.",
+            ? "Auto training programming on — next week's numbers come to you after each session."
+            : "Auto training programming off — nothing will be worked out for next week.",
         });
         setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
       }}
