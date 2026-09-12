@@ -30,11 +30,15 @@ const PLATE_FRACTIONS = [0.25, 0.33, 0.5, 1];
 /** The phase, as a rate in % of bodyweight per week. Picking one sets the rate; the stepper underneath
  * still fine-tunes it.
  *
- * "Fast cut" deliberately asks for more than the standard cap. N3 clamps it back to 0.5%/wk unless body fat
- * is high enough for N5 to raise it, and the card says so — so the button is honest by construction rather
- * than by wording. */
+ * The five tiers and their numbers are Jack's: "0.75% total bodyweight per week is a fast cut, 0.5% is a
+ * regular cut, 0 is maintenance, +0.25% = lean bulk, +0.5% = bulk."
+ *
+ * "Fast cut" still asks for more than N3's standard cap, which clamps it back to 0.5%/wk unless body fat is
+ * high enough for N5 to raise it, and the card says so — so the button is honest by construction rather than
+ * by wording. Whether 0.75% should instead BE the cap for everyone is open: naming a tier is not the same as
+ * permitting it, and N3's own wording is "no more than 0.5%". */
 const RATE_PRESETS: { label: string; pct: number }[] = [
-  { label: "Fast cut", pct: -1.0 },
+  { label: "Fast cut", pct: -0.75 },
   { label: "Cut", pct: -0.5 },
   { label: "Maintain", pct: 0 },
   { label: "Lean bulk", pct: 0.25 },

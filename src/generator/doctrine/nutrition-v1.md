@@ -144,6 +144,32 @@ and 70 g fat and it lands on 1,802. Showing the 1,800 that was typed while the g
 the thing this rule forbids. The same holds at the floor — below protein and fat alone, carbs stop at zero
 and the calorie line reads the real total, which is higher than what was asked for.
 
+**N9 — Five named phases, and the rate that defines each one.**
+
+> *"0.75% total bodyweight per week is a fast cut… 0.5% is a regular cut… 0 is maintenance, +0.25% = lean
+> bulk, +0.5% = bulk."*
+
+| Phase | % of bodyweight per week |
+|---|---|
+| Fast cut | **−0.75** |
+| Cut | **−0.5** |
+| Maintenance | **0** |
+| Lean bulk | **+0.25** |
+| Bulk | **+0.5** |
+
+**Rule — these five are the phases the app offers.** They are the preset buttons on the rate card, and the
+stepper underneath still sets anything in between.
+
+**Rule — naming a tier is not the same as permitting it.** N3's cap is separate doctrine and still binds: a
+fast cut asks for 0.75% and is held at 0.5% for anyone under N5's body-fat threshold, who is told it was
+held. **Which means that today "Fast cut" and "Cut" produce identical numbers for a lean person,** and only
+someone at 30%+ body fat — whose cap is 1% — actually gets 0.75%. Whether 0.75% should instead *become* the
+cap for everyone is the open question below; N3's own words are "no more than 0.5%", so it is not mine to
+assume either way.
+
+**Rule — the top bulk tier is +0.5%, not the +2% the stepper allows.** Gaining still has no cap in the code
+(see below), but the offered ceiling is now named.
+
 ---
 
 ## Still to rule on
@@ -152,7 +178,14 @@ and the calorie line reads the real total, which is higher than what was asked f
 2. **No sex is stored**, which forces both the single N5 threshold and the choice of maintenance formula
    (Katch-McArdle from lean mass, since Mifflin-St Jeor needs sex).
 3. **Gaining has no cap.** Jack specified the arithmetic for a surplus but no ceiling on it, so nothing
-   currently stops a bulk being set at +2%/week. A lean-gain cap is the obvious counterpart to N3.
+   currently stops a bulk being set at +2%/week. N9 now names +0.5% as the top *offered* tier, which is a
+   strong hint but not a stated ceiling — the stepper still goes past it. A lean-gain cap is the obvious
+   counterpart to N3.
+6. **Does N9's fast cut raise N3's cap?** N9 names 0.75%/week as a fast cut; N3 says a cut runs at "no more
+   than 0.5%" unless body fat is high. Both cannot be fully true for a lean person. Either the cap becomes
+   0.75% and the fast cut is genuinely available, or the cap stays at 0.5% and the Fast cut button is
+   identical to Cut for everyone under 30% body fat. The code currently does the latter, because that is
+   what the older explicit rule says.
 4. **Whether the cut band should widen.** N7 settles the numbers, but 1.1–1.2 is a narrow band and the top
    of it is reached at the ordinary 0.5%/week cap — so an aggressive cut and a standard one are prescribed
    the same protein. Whether a genuinely hard cut deserves more than 1.2 is open.
