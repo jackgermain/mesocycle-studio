@@ -75,6 +75,12 @@ KNEE_LOADED = {ren(n) for n in ("Leg Press", "Leg Extension", "Bulgarian Split S
 # exercises. So I would probably put the reverse pec deck at the end."
 TAIL_MUSCLES = {"Rear delts"}
 
+# G99: "don't give guys hip thrusts much if ever really." Keyed on sex rather than on priorities or injuries,
+# and enforced as a filter so it cannot arrive later in a hand-written template.
+MALE_AVOID = {ren(n) for n in ("Barbell Hip Thrust", "Smith Machine Hip Thrust", "Glute Bridge")}
+# G100: chest is trained twice a week on a five-day split or bigger, whatever else is prioritised.
+TWICE_WEEKLY = ("Chest",)
+
 
 def short(dayname):
     return dayname.split(" · ")[0]
@@ -127,6 +133,36 @@ def clearance(p, days, notes):
     else:
         notes.append(("G90", "no physician clearance on record — the intake note is flagged to the coach rather "
                       "than programmed around"))
+
+
+def sex_filter(p, days, notes):
+    """G99: hip-thrust work is women's programming, so it comes off a man's program."""
+    if p["sex"] != "M":
+        return
+    dropped = set()
+    for dayname, row in days:
+        for r in list(row):
+            if r[0] in MALE_AVOID:
+                row.remove(r)
+                dropped.add(r[0])
+    if dropped:
+        notes.append(("G99", "off a man's program: " + ", ".join(sorted(dropped))
+                      + " — his glutes get what they need from squatting, pressing and hinging"))
+
+
+def frequency_floor(p, days, notes):
+    """G100: "even though other muscles are important, chest is still an important group so it should be hit
+    twice a week with the best exercises." A floor checked after assembly, not a preference."""
+    if p["days"] < 5:
+        return
+    for m in TWICE_WEEKLY:
+        hit = [short(dn) for dn, row in days if any(muscle(r[0]) == m for r in row)]
+        if len(hit) >= 2:
+            notes.append(("G100", f"{m.lower()} is trained on {len(hit)} days ({', '.join(hit)}) — the "
+                          f"twice-a-week floor for a {p['days']}-day split is met"))
+        else:
+            notes.append(("G100", f"NOT MET: {m.lower()} is trained on {len(hit)} day of {p['days']}, and a "
+                          f"five-day split owes it two"))
 
 
 def beginner_legs(p, days, notes):
@@ -345,6 +381,7 @@ def build(p):
     notes = []
     beginner = p["level"] == "beginner"
     clearance(p, days, notes)
+    sex_filter(p, days, notes)
     if beginner:
         for _, row in days:
             for r in row:
@@ -365,6 +402,7 @@ def build(p):
     leg_compounds(days, notes)
     cap_families(days, notes)
     size_to_gaps(p["days"], days, notes)
+    frequency_floor(p, days, notes)
     picks = opening_efforts(p, days)
     total_lifts = sum(len(row) for _, row in days)
     if picks:

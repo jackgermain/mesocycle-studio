@@ -23,7 +23,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 import build4
 from build4 import (order_day, leg_compounds, cap_families, size_to_gaps, opening_efforts,
-                    WEEKDAY, CSS, CLS, HOWTO, gain_txt, plural, short, muscle)
+                    sex_filter, frequency_floor, WEEKDAY, CSS, CLS, HOWTO, gain_txt, plural, short, muscle)
 from progress4 import simulate, parse_reps, targets, aim_label, fmt_w, track
 
 HERE = pathlib.Path(__file__).parent
@@ -48,9 +48,13 @@ PERSON = dict(
             "itself: the erectors get trained, they just never get loaded heavily. A 45° extension on Day 2 "
             "and a reverse hyper on Day 5 are the main stimulus, and every row climbs the rep range instead of "
             "the weight. A row does not have to be chest-supported to be safe — the cap is on load, not on the "
-            "pad — so a light single-arm dumbbell row is in.",
+            "pad — so a light single-arm dumbbell row is in. G99 takes the hip thrust off a man's program "
+            "entirely, and G100 spends that slot where it was actually missing: chest was one day and six "
+            "sets, which is not enough on a five-day split however much the upper back is the priority. It is "
+            "now two days and real pressing — an incline dumbbell press on Day 3, a chest press machine on "
+            "Day 5 — rather than a machine and a fly on one afternoon.",
     # G98: the rows and the erector work carry a rep floor so they cannot drift into heavy territory.
-    guard=["Barbell Hip Thrust", "Plate-Loaded Leg Press", "Chest-Supported Machine Row",
+    guard=["Plate-Loaded Leg Press", "Chest-Supported Machine Row",
            "Seated Cable Row", "Single-Arm Dumbbell Row", "Reverse Hyperextension"],
     flag=None,
 )
@@ -80,9 +84,9 @@ DAYS = [
         ["Standing Calf Raise Machine", 3, "15"],
         ["Cable Rotation", 3, "15/s"],
     ]],
-    ["Day 3 · shoulders and chest", [
+    ["Day 3 · chest and shoulders", [
+        ["Incline Dumbbell Press", 4, "8–10"],
         ["Seated Shoulder Press Machine", 4, "10"],
-        ["Chest Press Machine", 3, "12"],
         ["Cybex Lateral Raise Machine", 4, "15"],
         ["Cable Fly — Mid", 3, "15"],
         ["Freemotion Y Raise", 3, "15"],
@@ -96,8 +100,8 @@ DAYS = [
         ["Single-Arm Dumbbell Row", 3, "12–15"],
         ["Plank Alternating Limb Touch", 3, "12"],
     ]],
-    ["Day 5 · hips, arms and lower back", [
-        ["Barbell Hip Thrust", 4, "10"],
+    ["Day 5 · chest, arms and lower back", [
+        ["Chest Press Machine", 4, "10–12"],
         ["Cable Pull-Through", 3, "15"],
         ["Seated Leg Curl", 3, "15"],
         ["Seated Calf Raise Machine", 3, "15"],
@@ -143,6 +147,11 @@ def build():
             out.append([name, sets, reps])
         days.append([dn, out])
 
+    sex_filter(p, days, notes)
+    # sex_filter finds nothing to remove here because the template was written without a hip thrust in the
+    # first place, so the rule would otherwise be invisible on the page. Say it outright.
+    notes.append(("G99", "no hip thrust anywhere — it is women's programming, and on a man's five-day split "
+                  "that Day 5 slot is worth far more as the second chest session"))
     notes.append(("G90", "physician and physiotherapist clearance is on record, which is the only reason this "
                   "intake is taken on at all — without it the answer is a referral, not a program"))
     notes.append(("G98", "the erectors get trained but never heavily — a 45° extension and a reverse hyper are "
@@ -172,6 +181,7 @@ def build():
     leg_compounds(days, notes)
     cap_families(days, notes)
     size_to_gaps(p["days"], days, notes)
+    frequency_floor(p, days, notes)
     picks = opening_efforts(p, days)
     total = sum(len(row) for _, row in days)
     if picks:
@@ -308,10 +318,12 @@ def render():
       '<li><b>Hamstrings are light on purpose — six sets.</b> The RDL is the best hamstring builder he has and '
       'it is the exact thing that hurts. Leg curls carry it instead. If six is too few, the fix is a third leg '
       'curl slot, not putting the hinge back.</li>'
-      '<li><b>The hip thrust and the leg press are both guarded at ten-plus reps.</b> G84 says push a hip '
-      'thrust hard, but heavy low-rep hip thrusting and a deep heavy leg press are two places a lumbar spine '
-      'gets loaded by accident. Guarding costs him some progress on the one lift you said to be aggressive '
-      'with.</li>'
+      '<li><b>The leg press is guarded at ten-plus reps.</b> A deep heavy leg press is one of the places a '
+      'lumbar spine gets loaded by accident, so it carries a rep floor. It still climbed 40 lb across the '
+      'block, which may be more than the guard was meant to allow.</li>'
+      '<li><b>With the hip thrust gone he has no direct glute work.</b> G99 took it off, and what is left for '
+      'glutes is the leg press and the reverse hyper doing it indirectly. For most men that is normal; for '
+      'someone whose back hurts, glute strength is part of the fix, so tell me if that wants a slot.</li>'
       '</ol></section>')
 
     A('<div class="note"><b>How to give feedback.</b> The logs are simulated so every decision has something '

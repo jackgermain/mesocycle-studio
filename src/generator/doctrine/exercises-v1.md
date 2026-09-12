@@ -2426,6 +2426,34 @@ than down it, and the extension work never chases a plate.
 rows, not unsupported ones — so the filter is on how much is on the bar, not on whether a pad is behind the
 chest. See [[G90]] for the clearance that has to exist before any of this is programmed at all.
 
+**G99 — Hip thrusts are women's programming.**
+
+> *"Don't give guys hip thrusts much if ever really."*
+
+**Rule — a man's program does not carry hip thrust work.** Not the barbell hip thrust, not the Smith version,
+not the barbell glute bridge. A man's glutes get what they need from squatting, pressing and hinging, and the
+slot is worth more spent somewhere else.
+
+This is the first rule keyed on the client's sex rather than on their priorities or their injuries, so it is
+enforced as a filter rather than left to whoever writes the template: the male templates happen not to contain
+hip thrusts today, and the rule is what stops one arriving later.
+
+**G100 — On a five-day split, chest is trained twice a week, whatever else is prioritised.**
+
+> *"If there's a 5 day split, even though other muscles are important, chest is still an important group so it
+> should be hit twice a week with the best exercises."*
+
+A client asking for an upper-back-and-shoulder priority is not asking for chest to disappear. With five days
+to spend there is room for both, and a priority means a muscle leads — not that every other important group
+drops to one session.
+
+**Rule — five days or more means chest on two separate days.** It is a floor, checked after the program is
+assembled, not a preference.
+
+**Rule — "the best exercises" means real pressing.** An incline dumbbell press and a press machine, not two
+fly variations and a cable. A second chest day built out of isolation work satisfies the count and misses the
+point.
+
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 
 > *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of

@@ -553,9 +553,12 @@ def simulate(ex):
         # a 15-18 hip abduction is a legitimate prescription, not reps that crept up.
         ceiling, force = max(REP_CEILING, hi), max(FORCE_JUMP, hi)
         room = min(room, ceiling)
-        # G86: a block that lands under its aim was under-prescribed. The last training week is allowed past
-        # the usual room, because that is where the stress has to come from.
-        if w == last_training and target is not None and target - e_prev >= 0.75:
+        # G86: a block that lands under its aim was under-prescribed, so the last training week may push past
+        # the usual rep room -- but ONLY where the weight cannot move instead. Where a jump is legal, the jump
+        # IS the added stress, and widening the room first steals it: this left the main chest press on the
+        # same dumbbells for a whole block while its reps drifted two past the top of its range.
+        if (w == last_training and target is not None and target - e_prev >= 0.75
+                and (big or st["kind"] == "bw")):
             room = min(ceiling, room + 2)
         if st["kind"] == "db" and L[0] >= 20 and not big:
             beat_top = d_prev >= hi and e_prev <= 3
@@ -643,6 +646,15 @@ def simulate(ex):
                     code, var = "rep", min(2, max(1, room - max(R)))
                     why = (f"G94: a {e_prev} is not productive training — one move puts it back over "
                            f"{EFFORT_FLOOR}, it is not walked back gradually")
+                elif max(R) >= room and req >= 0.75 and st["kind"] != "bw":
+                    # G86: at the top of the rep range and still under the aim, the weight is where the stress
+                    # comes from. least_move would offer a half step here because one set still sits below the
+                    # room -- and that drifts reps past the range while the block gains no load at all, which
+                    # is how the main chest press finished a whole block on the dumbbells it started on.
+                    # G80's check below still overrides this if the jump is a big one that is not yet earned.
+                    code, var = ("db", None) if st["kind"] == "db" else ("pin", None)
+                    why = (f"G86: {max(R)} reps is the top of this lift's range and it is still under an aim "
+                           f"of {aim_label(target)} — the weight is the stress, not more reps")
                 elif max(R) >= room:
                     code, var, why = least_move(f"at {max(R)} reps, the top of what this lift is allowed")
                 elif req >= 0.25:
