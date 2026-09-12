@@ -39,6 +39,7 @@ import {
   PROTEIN_G_PER_LB_CUT_HI,
   PROTEIN_G_PER_LB_BULK,
   buildPlan,
+  rateLabel,
   observedRate,
   correctMaintenance,
   isCuttingTooFast,
@@ -553,4 +554,42 @@ test("N12: fat gives first, and never past its floor or ceiling", () => {
   let up = start;
   for (let i = 0; i < 12; i++) up = applyAdjustment(up, 150, bw);
   assert.ok(up.fat <= ceil, `${up.fat} above the ceiling`);
+});
+
+// ---- The rate is named, never spelled out as arithmetic --------------------
+
+test("N9: the rate is named by its phase", () => {
+  assert.equal(rateLabel(0), "Maintenance");
+  assert.equal(rateLabel(-0.75), "Fast cut");
+  assert.equal(rateLabel(-0.5), "Cut");
+  assert.equal(rateLabel(0.25), "Lean bulk");
+  assert.equal(rateLabel(0.5), "Bulk");
+});
+
+test("a rate set between the presets still gets a name", () => {
+  assert.equal(rateLabel(-0.33), "Cut");
+  assert.equal(rateLabel(-1.2), "Fast cut");
+  assert.equal(rateLabel(0.9), "Bulk");
+  assert.equal(rateLabel(0.02), "Maintenance", "a hair either side of zero is maintenance");
+});
+
+test("no label anywhere leaks the percentage-per-week notation", () => {
+  for (const pct of [-2, -1.2, -0.75, -0.5, -0.2, 0, 0.25, 0.5, 1, 2]) {
+    const label = rateLabel(pct);
+    assert.ok(!label.includes("%"), `${pct} leaked a percentage: ${label}`);
+    assert.ok(!label.includes("lb/wk"), `${pct} leaked a weekly pound figure: ${label}`);
+  }
+  const plan = buildPlan({ bodyweightLb: 200, bodyFatPct: 18, ratePctPerWeek: -0.5 });
+  assert.ok(!plan.label.includes("%"));
+  assert.ok(!plan.label.includes("lb/wk"));
+});
+
+test("N11: 200 g is exactly where the fat drop kicks in", () => {
+  const bw = 200, protein = 200, age = 30;
+  // What protein plus the under-40 fat start costs, before carbs get anything.
+  const fixed = protein * KCAL_PER_G_PROTEIN + Math.round(FAT_G_PER_LB_YOUNG * bw) * KCAL_PER_G_FAT;
+  const landsOnFloor = fixed + CARB_FLOOR_G * KCAL_PER_G_CARB;
+  assert.equal(fatPerLbFor(landsOnFloor, bw, protein, age), FAT_G_PER_LB_YOUNG, "200 g is not under 200 g");
+  // One carb gram less, and fat gives way to buy carbs back.
+  assert.equal(fatPerLbFor(landsOnFloor - KCAL_PER_G_CARB, bw, protein, age), FAT_G_PER_LB_MIN, "199 g is");
 });

@@ -390,10 +390,24 @@ export interface Plan {
   cappedNote?: string;
 }
 
-export function rateLabel(ratePct: number, lbPerWeek: number): string {
-  if (ratePct === 0) return "Maintenance";
-  const s = (n: number) => (n > 0 ? `+${n}` : `${n}`);
-  return `${s(round(ratePct, 2))}% BW / wk (${s(lbPerWeek)} lb/wk)`;
+/** The phase, named. N9's vocabulary, and deliberately no arithmetic in it.
+ *
+ * This used to read "-0.5% BW / wk (-1 lb/wk)" — the rate notation Jack asked to make invisible. Removing
+ * the unit from the stepper alone was not enough, because this string is the same notation shown in the
+ * other place it appears, the read-only "Rate target" row.
+ *
+ * Nothing is lost by naming it: `rateTargetPct` stores the actual number, and this was only ever prose for
+ * display (see the comment on ClientProfile.rateTargetPct).
+ *
+ * Bucketed rather than matched against the presets exactly, because the stepper sets values in between them
+ * and every one of those still needs a name. The zero band matches phaseStatus's, so a hair either side of
+ * zero reads as maintenance in both places rather than as a half-hearted cut in one of them. */
+export function rateLabel(ratePct: number): string {
+  if (Math.abs(ratePct) < 0.05) return "Maintenance";
+  if (ratePct <= -0.625) return "Fast cut";
+  if (ratePct < 0) return "Cut";
+  if (ratePct <= 0.375) return "Lean bulk";
+  return "Bulk";
 }
 
 /** The whole calculation, start to finish. */
@@ -415,7 +429,7 @@ export function buildPlan(input: PlanInput): Plan {
     // path would silently prescribe the over-40 split to everybody.
     macros: macrosFor(targetKcal, input.bodyweightLb, rate.pct, input.ageYears),
     direction: rate.pct < 0 ? "cut" : rate.pct > 0 ? "gain" : "maintain",
-    label: rateLabel(rate.pct, lbPerWeek),
+    label: rateLabel(rate.pct),
     cappedNote: rate.capped
       ? `Asked for ${round(rate.requested, 2)}% a week — held at ${rate.cap}% to protect muscle` +
         (rate.cap === CUT_CAP_PCT ? "." : " (raised, since body fat is high enough to spend faster).")
