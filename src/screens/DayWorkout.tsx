@@ -5,7 +5,7 @@ import { useAuth } from "../lib/auth";
 import { WeighInDue } from "../components/WeighInDue";
 import { FormCheckSheet } from "../shared/FormCheckSheet";
 import { formChecksAvailable } from "../shared/formChecks";
-import { BackHeader, InfoBanner } from "../components/UI";
+import { BackHeader, InfoBanner, TickButton } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
@@ -164,6 +164,38 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
             <i className="ph ph-dots-three-vertical" style={{ fontSize: 16 }} />
           </button>
         </div>
+
+        {/* Self-directed only: a coached client's progressions are their coach's mechanism, not theirs to
+            switch off. On the page rather than inside the options sheet because this is a switch someone
+            should be able to find without hunting for it. */}
+        {selfDirected && (
+          <button
+            className="cell row"
+            style={{ width: "100%", textAlign: "left", cursor: "pointer", alignItems: "flex-start", gap: 11 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              const next = state.profile.autoProgressions === false;
+              dispatch({ type: "UPDATE_PROFILE", profile: { autoProgressions: next } });
+              dispatch({
+                type: "SHOW_TOAST",
+                message: next
+                  ? "Progression suggestions on — next week's numbers come to you after each session."
+                  : "Progression suggestions off — nothing will be worked out for next week.",
+              });
+              setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
+            }}
+          >
+            <TickButton checked={state.profile.autoProgressions !== false} size={22} style={{ marginTop: 1 }} />
+            <span style={{ flex: 1 }}>
+              <span style={{ display: "block", fontSize: 12.5, fontWeight: 600 }}>Progression suggestions</span>
+              <span className="mu" style={{ display: "block", marginTop: 3 }}>
+                {state.profile.autoProgressions === false
+                  ? "Off — finishing a session works nothing out for next week."
+                  : "On — finishing a session works out next week's sets, reps and load for you to approve. Nothing changes your program on its own."}
+              </span>
+            </span>
+          </button>
+        )}
 
         {exIds.map((id, i) => {
           const ex = day.exercises[id];

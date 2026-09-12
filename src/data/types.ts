@@ -188,6 +188,14 @@ export interface ClientProfile {
   /** When on, calories and macros are recomputed from maintenance and the capped rate instead of being
    * hand-set, and maintenance itself is re-derived from the weigh-in trend. */
   autoNutrition?: boolean;
+  /** When on, finishing a session sends next week's proposed numbers for review. Off stops the proposal
+   * being generated at all.
+   *
+   * Read as `=== false`, never as `!autoProgressions`: proposals send for everyone today, and HYDRATE
+   * replaces `profile` wholesale rather than merging, so every account saved before this field existed
+   * arrives with `undefined`. A falsy check would switch a live feature off for the entire roster on their
+   * next load. Absent means on. */
+  autoProgressions?: boolean;
 }
 
 export interface LoggedFoodItem {

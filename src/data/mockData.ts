@@ -25,6 +25,7 @@ export const clientProfile: ClientProfile = {
   maintenanceKcal: 2500,
   rateTargetPct: 0,
   autoNutrition: false,
+  autoProgressions: true,
 };
 
 /** A blank starting profile for anyone training themself outside the client roster — no coach is setting their nutrition or weigh-in targets, so those start off and they're free to log ad hoc. */
@@ -46,6 +47,7 @@ export function buildSelfProfile(name: string): ClientProfile {
     // maintenance formula honestly, where a made-up 20% would silently unlock or withhold N5's raised cap.
     rateTargetPct: 0,
     autoNutrition: false,
+    autoProgressions: true,
   };
 }
 

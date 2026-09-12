@@ -221,6 +221,31 @@ export default function Nutrition() {
           </div>
         </div>
 
+        {/* On the tab itself rather than buried in the settings form: this is the switch someone actually
+            wants to reach, and only a self-directed account owns their own targets. */}
+        {canSelfServe && (
+          <button
+            className="cell row"
+            style={{ width: "100%", textAlign: "left", cursor: "pointer", alignItems: "flex-start", gap: 11 }}
+            onClick={() => {
+              const next = !(profile.autoNutrition ?? false);
+              dispatch({ type: "UPDATE_PROFILE", profile: { autoNutrition: next } });
+              dispatch({ type: "SHOW_TOAST", message: next ? "Auto nutrition on — targets follow your maintenance and rate." : "Auto nutrition off — your typed targets stand." });
+              setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
+            }}
+          >
+            <TickButton checked={profile.autoNutrition ?? false} size={22} style={{ marginTop: 1 }} />
+            <span style={{ flex: 1 }}>
+              <span style={{ display: "block", fontSize: 12.5, fontWeight: 600 }}>Auto nutrition programming</span>
+              <span className="mu" style={{ display: "block", marginTop: 3 }}>
+                {profile.autoNutrition
+                  ? "On — calories and macros are worked out from your maintenance and rate, held inside the cut cap."
+                  : "Off — the targets you typed stand. Turn on to have them worked out from maintenance and a rate."}
+              </span>
+            </span>
+          </button>
+        )}
+
         {state.meals.map((meal) => {
           const eaten = eatenItems(meal);
           const mealTotals = totalsFor(eaten);

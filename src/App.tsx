@@ -140,11 +140,16 @@ function ClientLayout() {
   // and this effect re-running can never send the same session twice.
   useEffect(() => {
     if (!account) return;
+    // Switched off from the Train tab. `=== false` rather than `!`: absent means on, because proposals
+    // send for everyone today and every account saved before this field existed hydrates without it.
+    // Nothing is marked as sent while it is off, so turning it back on picks up whatever is still recent
+    // enough to qualify rather than replaying the whole block.
+    if (state.profile.autoProgressions === false) return;
     const due = progressionDueDay(state.program, isoToday());
     if (!due) return;
     dispatch({ type: "MARK_PROGRESSION_SENT", dayId: due });
     void sendProgressionProposals(account, state.program, due, state.profile.units);
-  }, [account, state.program, state.profile.units, dispatch]);
+  }, [account, state.program, state.profile.units, state.profile.autoProgressions, dispatch]);
 
   // Registered once here rather than per screen: on this side there is only ever one program, so it's in
   // scope on the calendar, a workout, progress, nutrition — anywhere they happen to be.
