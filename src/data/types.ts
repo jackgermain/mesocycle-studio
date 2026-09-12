@@ -176,9 +176,18 @@ export interface ClientProfile {
    * All four are optional and every reader must tolerate undefined. HYDRATE replaces `profile` wholesale
    * rather than merging field by field, so any account saved before today arrives without them. */
 
-  /** Body-fat estimate, percent. Picks the maintenance formula (no sex is stored anywhere, which rules out
-   * Mifflin-St Jeor and leaves Katch-McArdle off lean mass) and decides N5's raised cut cap. */
+  /** Body-fat estimate, percent. Decides N5's raised cut cap, and still picks the maintenance formula for
+   * anyone who has not answered the Mifflin-St Jeor questions below. */
   bodyFatPct?: number;
+  /** Mifflin-St Jeor's inputs (N10). Sex is stored here and nowhere else, and only because that formula
+   * cannot be evaluated without it — its male and female forms differ by a flat 166 kcal. Height is kept in
+   * centimetres, separately from the free-text `heightLabel` above, because that field is unvalidated prose
+   * ("5' 11\"", "71", "180cm", "") and a formula cannot depend on parsing it. */
+  sex?: "male" | "female";
+  ageYears?: number;
+  heightCm?: number;
+  /** Which physical-activity level they picked, as a PAL multiplier key. */
+  activityLevel?: "sedentary" | "light" | "moderate" | "very" | "extra";
   /** The maintenance figure targets are an offset from (N1). Estimated to begin with, then corrected from
    * their own weigh-ins by N6 — the scale beats the formula. */
   maintenanceKcal?: number;

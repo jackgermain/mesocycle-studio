@@ -49,8 +49,41 @@ export function proteinPerLb(ratePctPerWeek?: number): number {
   const steepness = Math.min(1, Math.abs(r) / CUT_CAP_PCT);
   return PROTEIN_G_PER_LB_CUT_LO + steepness * (PROTEIN_G_PER_LB_CUT_HI - PROTEIN_G_PER_LB_CUT_LO);
 }
-/** Fat as a share of total calories, with carbs taking whatever is left. */
+/** Fat as a share of total calories. Superseded by the per-pound band below for target-setting (N11) and
+ * kept only for the older callers that still split a fixed budget by share. */
 export const FAT_SHARE_OF_KCAL = 0.25;
+
+/** N11. Fat is a band in grams per pound of bodyweight, not a share of calories, and carbs take the rest.
+ *
+ * Jack: "keep fats no less than 0.25g/lb and no more than .6g/lb… ideally keep it somewhere in the middle.
+ * If the person gets less than 200g carbs a day keep it closer to the lower limit for fats so more carbs can
+ * be stored."
+ *
+ * Carbs are the priority for the under-40s — "for younger folks as in aged 40 and less, prioritize
+ * carbohydrates over fats" — which is spent by starting them lower in the band, not by leaving it. */
+export const FAT_G_PER_LB_MIN = 0.25;
+export const FAT_G_PER_LB_MAX = 0.6;
+/** The "somewhere in the middle" default -- the actual midpoint of the band. */
+export const FAT_G_PER_LB_MID = 0.425;
+/** MY CALL, not Jack's: where the under-40s start. Roughly halfway between the floor and the middle, so
+ * "prioritize carbs" costs fat something real without pinning it to the minimum before the carb rule has
+ * even been consulted. */
+export const FAT_G_PER_LB_YOUNG = 0.35;
+/** Below this many carbs a day, fat drops to its floor to buy more of them back. */
+export const CARB_FLOOR_G = 200;
+/** "Aged 40 and less." Inclusive. */
+export const CARB_PRIORITY_MAX_AGE = 40;
+
+/** Grams of fat per pound of bodyweight for this person at this calorie figure.
+ *
+ * Two passes, because the carb rule depends on the fat answer: pick the starting point from age, see what
+ * carbs that leaves, and if it leaves under 200 g drop fat to the floor and let carbs have the difference. */
+export function fatPerLbFor(kcal: number, bodyweightLb: number, proteinG: number, ageYears?: number): number {
+  const start = ageYears != null && ageYears <= CARB_PRIORITY_MAX_AGE ? FAT_G_PER_LB_YOUNG : FAT_G_PER_LB_MID;
+  const carbsAt = (perLb: number) => carbsToHitKcal(kcal, proteinG, Math.round(perLb * bodyweightLb));
+  const chosen = carbsAt(start) < CARB_FLOOR_G ? FAT_G_PER_LB_MIN : start;
+  return Math.min(FAT_G_PER_LB_MAX, Math.max(FAT_G_PER_LB_MIN, chosen));
+}
 
 /** Atwater factors: what a gram of each macro is worth in calories. These are physiology, not doctrine —
  * every food label, and both food databases this app reads, are built on them. Which is exactly why the
@@ -87,14 +120,102 @@ export const RATE_WINDOW_DAYS = 28;
 export const MIN_RATE_SPAN_DAYS = 10;
 export const MIN_RATE_POINTS = 4;
 
-export type MaintenanceBasis = "katch" | "bodyweight";
+export type MaintenanceBasis = "mifflin" | "katch" | "bodyweight";
+
+/** Biological sex, and only ever for the arithmetic that needs it.
+ *
+ * Mifflin-St Jeor's two forms differ by a flat 166 kcal, so the formula cannot be evaluated without this.
+ * The app deliberately stored none until now -- which is exactly why maintenance used Katch-McArdle -- and
+ * Jack's ruling to adopt Mifflin-St Jeor is what added it. */
+export type Sex = "male" | "female";
 
 export interface BodyInputs {
   bodyweightLb: number;
   /** Percent, 0-100. Absent is common and must stay usable -- it only downgrades the formula. */
   bodyFatPct?: number;
-  /** Training sessions per week, from intake. Drives the activity multiplier. */
+  /** Training sessions per week, from intake. Drives the activity multiplier when no PAL is chosen. */
   sessionsPerWeek?: number;
+  /** Mifflin-St Jeor's three extra inputs. All three are needed together or none of them are usable, and
+   * every account saved before today arrives without them -- HYDRATE replaces `profile` wholesale. */
+  sex?: Sex;
+  ageYears?: number;
+  heightCm?: number;
+  /** The physical-activity level they picked. Overrides the sessions-per-week guess when present. */
+  activity?: ActivityLevel;
+}
+
+/** Physical Activity Level, the multiplier on BMR that turns it into a day's burn. Jack's five tiers. */
+export type ActivityLevel = "sedentary" | "light" | "moderate" | "very" | "extra";
+
+export const PAL: Record<ActivityLevel, number> = {
+  sedentary: 1.2,
+  light: 1.375,
+  moderate: 1.55,
+  very: 1.725,
+  extra: 1.9,
+};
+
+export const ACTIVITY_LABELS: Record<ActivityLevel, string> = {
+  sedentary: "Little or no exercise",
+  light: "Light exercise, 1–3 days a week",
+  moderate: "Moderate exercise, 3–5 days a week",
+  very: "Hard exercise, 6–7 days a week",
+  extra: "Very hard exercise, or a physical job",
+};
+
+export const LB_PER_KG = 2.2046226218;
+
+export function lbToKg(lb: number): number {
+  return lb / LB_PER_KG;
+}
+
+export function feetInchesToCm(feet: number, inches: number): number {
+  return round((feet * 12 + inches) * 2.54, 1);
+}
+
+/** Read a height out of the free-text `heightLabel` the app has always stored.
+ *
+ * That field is an unvalidated string typed by hand in two different screens, so it genuinely arrives as
+ * `5' 11"`, `5'11`, `5 ft 11`, `71`, `180cm` or empty. Returns cm, or null when nothing usable is in there --
+ * null is a normal answer and the caller must fall back rather than treat it as zero.
+ *
+ * A bare number is ambiguous, so it is read the way the value's own size implies: under 96 is inches (8 ft
+ * is taller than anyone), at or above 96 is centimetres. */
+export function parseHeightToCm(label: string | undefined): number | null {
+  if (!label) return null;
+  const s = label.trim().toLowerCase();
+  if (!s) return null;
+
+  const cm = s.match(/^([\d.]+)\s*(?:cm|centimet(?:er|re)s?)$/);
+  if (cm) {
+    const n = parseFloat(cm[1]);
+    return Number.isFinite(n) && n > 0 ? round(n, 1) : null;
+  }
+
+  // Feet and inches, in the several shapes the field actually contains.
+  const ftIn = s.match(/^(\d+)\s*(?:'|’|ft|feet|f)\s*(\d+(?:\.\d+)?)?\s*(?:"|”|''|in|inch(?:es)?)?$/);
+  if (ftIn) {
+    const feet = parseInt(ftIn[1], 10);
+    const inches = ftIn[2] ? parseFloat(ftIn[2]) : 0;
+    return feet > 0 || inches > 0 ? feetInchesToCm(feet, inches) : null;
+  }
+
+  const bare = s.match(/^([\d.]+)$/);
+  if (bare) {
+    const n = parseFloat(bare[1]);
+    if (!Number.isFinite(n) || n <= 0) return null;
+    return n < 96 ? round(n * 2.54, 1) : round(n, 1);
+  }
+  return null;
+}
+
+/** Mifflin-St Jeor. Jack's ruling, and the two forms differ only by their constant.
+ *
+ *   men:   10 × kg + 6.25 × cm − 5 × age + 5
+ *   women: 10 × kg + 6.25 × cm − 5 × age − 161 */
+export function mifflinStJeorBmr(i: { bodyweightLb: number; heightCm: number; ageYears: number; sex: Sex }): number {
+  const base = 10 * lbToKg(i.bodyweightLb) + 6.25 * i.heightCm - 5 * i.ageYears;
+  return base + (i.sex === "male" ? 5 : -161);
 }
 
 export function round(n: number, dp = 0): number {
@@ -142,10 +263,31 @@ export interface MaintenanceEstimate {
 
 /** N1. Maintenance, from whatever we actually know about them.
  *
- * Katch-McArdle (370 + 21.6 × lean kg) when body fat is known, because it needs no sex -- and the app stores
- * none, which rules out Mifflin-St Jeor entirely. Falls back to calories-per-pound when it isn't. */
+ * Mifflin-St Jeor first, which is Jack's ruling -- it needs sex, age and height together, and every account
+ * saved before those fields existed arrives without them, so the older paths stay as fallbacks rather than
+ * being deleted:
+ *
+ *   1. Mifflin-St Jeor  -- sex, age and height all present.
+ *   2. Katch-McArdle    -- body fat known (needs no sex, which is why it was the original choice).
+ *   3. Calories per lb  -- nothing but a scale weight.
+ *
+ * The activity multiplier is the PAL they picked when there is one, and otherwise the old guess from how
+ * often they train. */
 export function estimateMaintenance(i: BodyInputs): MaintenanceEstimate {
-  const mult = activityMultiplier(i.sessionsPerWeek);
+  const mult = i.activity ? PAL[i.activity] : activityMultiplier(i.sessionsPerWeek);
+
+  if (i.sex && i.ageYears != null && i.ageYears > 0 && i.heightCm != null && i.heightCm > 0) {
+    const bmr = mifflinStJeorBmr({ bodyweightLb: i.bodyweightLb, heightCm: i.heightCm, ageYears: i.ageYears, sex: i.sex });
+    return {
+      kcal: Math.round((bmr * mult) / 10) * 10,
+      basis: "mifflin",
+      bmr: Math.round(bmr),
+      multiplier: mult,
+      leanMassLb: i.bodyFatPct != null && i.bodyFatPct > 0 ? leanMassLb(i.bodyweightLb, i.bodyFatPct) : null,
+      how: `Mifflin-St Jeor, ×${mult} for activity`,
+    };
+  }
+
   if (i.bodyFatPct != null && i.bodyFatPct > 0) {
     const lean = leanMassLb(i.bodyweightLb, i.bodyFatPct);
     const bmr = 370 + 21.6 * (lean / 2.2046226218);
@@ -216,9 +358,9 @@ export interface Macros {
  * Protein is floored rather than allowed to squeeze: in a steep deficit the calorie budget can be small
  * enough that a quarter to fat plus a gram per lb lean leaves negative carbs, and the answer there is fewer
  * carbs, never less protein. */
-export function macrosFor(kcal: number, bodyweightLb: number, ratePctPerWeek?: number): Macros {
+export function macrosFor(kcal: number, bodyweightLb: number, ratePctPerWeek?: number, ageYears?: number): Macros {
   const protein = Math.round(bodyweightLb * proteinPerLb(ratePctPerWeek));
-  const fat = Math.round((kcal * FAT_SHARE_OF_KCAL) / 9);
+  const fat = Math.round(fatPerLbFor(kcal, bodyweightLb, protein, ageYears) * bodyweightLb);
   const carbs = carbsToHitKcal(kcal, protein, fat);
   // The true sum of the grams above, not the `kcal` that was asked for. Rounding each macro to a whole gram
   // moves the total by a few calories, and floored carbs can move it a lot; reporting the requested figure
@@ -269,7 +411,9 @@ export function buildPlan(input: PlanInput): Plan {
     lbPerWeek,
     dailyDelta,
     targetKcal,
-    macros: macrosFor(targetKcal, input.bodyweightLb, rate.pct),
+    // Age is threaded through because N11's fat band starts lower for the under-40s. Without it the plan
+    // path would silently prescribe the over-40 split to everybody.
+    macros: macrosFor(targetKcal, input.bodyweightLb, rate.pct, input.ageYears),
     direction: rate.pct < 0 ? "cut" : rate.pct > 0 ? "gain" : "maintain",
     label: rateLabel(rate.pct, lbPerWeek),
     cappedNote: rate.capped
@@ -427,4 +571,90 @@ export function phaseStatus(
     capUsed: observed && phase === "cut" ? Math.max(0, -observed.pctPerWeek) / capPct : null,
     tooFast: isCuttingTooFast(observed, bodyFatPct),
   };
+}
+
+// ---- N12: correcting the intake from what the scale actually did -----------
+
+/** N12. How much to move calories by, and when.
+ *
+ * Jack: "If there is no weight gain or loss after the second week… if the goal is to lose weight, pull 150
+ * calories starting from fats and/or carbs. Same thing goes if trying to gain except increase 150… Once they
+ * are either gaining or losing, if they taper down on progress 1 week add 75 calories if gaining or pull 75
+ * calories if losing."
+ *
+ * This is the first rule that changes what somebody eats without being asked, which is why it is gated on
+ * `autoNutrition` at the call site and why every threshold it needs is named and overturnable here. */
+export const STALL_ADJUST_KCAL = 150;
+export const TAPER_ADJUST_KCAL = 75;
+/** "After the second week" — a stall cannot be called before there are two weeks of scale to call it on. */
+export const STALL_MIN_SPAN_DAYS = 14;
+/** MY CALL: what counts as "no weight gain or loss". Daily bodyweight swings on water and food volume are
+ * larger than a week of real change, so this is a rate band around zero rather than a literal zero. */
+export const STALL_PCT_PER_WEEK = 0.1;
+/** MY CALL: "taper down on progress" — the recent trend has fallen to under half of the fuller one. */
+export const TAPER_FRACTION = 0.5;
+/** The shorter window the recent trend is read over, against RATE_WINDOW_DAYS for the fuller one. */
+export const TAPER_WINDOW_DAYS = 14;
+
+export type AdjustmentKind = "stall" | "taper";
+
+export interface IntakeAdjustment {
+  kind: AdjustmentKind;
+  /** Signed, and already pointing the right way: negative pulls calories, positive adds them. */
+  deltaKcal: number;
+  observed: ObservedRate;
+  note: string;
+}
+
+/** N12. Whether the intake should move, and by how much. Null means leave it alone. */
+export function intakeAdjustment(args: {
+  goal: "lose" | "gain";
+  weighIns: { date: string; weight: number }[];
+  today?: Date;
+}): IntakeAdjustment | null {
+  const today = args.today ?? new Date();
+  const losing = args.goal === "lose";
+  const overall = observedRate(args.weighIns, RATE_WINDOW_DAYS, today);
+  if (!overall || overall.spanDays < STALL_MIN_SPAN_DAYS) return null;
+
+  // A stall: two weeks in and the scale has not moved either way.
+  if (Math.abs(overall.pctPerWeek) < STALL_PCT_PER_WEEK) {
+    return {
+      kind: "stall",
+      deltaKcal: losing ? -STALL_ADJUST_KCAL : STALL_ADJUST_KCAL,
+      observed: overall,
+      note: `Two weeks with the scale flat, so ${losing ? "pull" : "add"} ${STALL_ADJUST_KCAL} calories.`,
+    };
+  }
+
+  // Moving the wrong way entirely is not a stall and not a taper -- it is a bigger problem than 150 calories
+  // and belongs in front of a person, not in an automatic nudge.
+  const movingRightWay = losing ? overall.pctPerWeek < 0 : overall.pctPerWeek > 0;
+  if (!movingRightWay) return null;
+
+  const recent = observedRate(args.weighIns, TAPER_WINDOW_DAYS, today);
+  if (!recent) return null;
+  if (Math.abs(recent.pctPerWeek) < Math.abs(overall.pctPerWeek) * TAPER_FRACTION) {
+    return {
+      kind: "taper",
+      deltaKcal: losing ? -TAPER_ADJUST_KCAL : TAPER_ADJUST_KCAL,
+      observed: recent,
+      note: `Progress has tapered off this week, so ${losing ? "pull" : "add"} ${TAPER_ADJUST_KCAL} calories.`,
+    };
+  }
+  return null;
+}
+
+/** Apply a calorie change to a set of macros without touching protein.
+ *
+ * "Starting from fats and/or carbs" -- so fat moves first, down to its floor or up to its ceiling, and carbs
+ * absorb whatever is left over. Protein is prescribed from bodyweight by N7 and is never what gives. */
+export function applyAdjustment(m: Macros, deltaKcal: number, bodyweightLb: number): Macros {
+  const targetKcal = Math.max(0, m.kcal + deltaKcal);
+  const fatFloor = Math.round(FAT_G_PER_LB_MIN * bodyweightLb);
+  const fatCeil = Math.round(FAT_G_PER_LB_MAX * bodyweightLb);
+  const wantedFatChange = Math.round(deltaKcal / KCAL_PER_G_FAT);
+  const fat = Math.min(fatCeil, Math.max(fatFloor, m.fat + wantedFatChange));
+  const carbs = carbsToHitKcal(targetKcal, m.protein, fat);
+  return { kcal: kcalFromMacros({ protein: m.protein, carbs, fat }), protein: m.protein, carbs, fat };
 }

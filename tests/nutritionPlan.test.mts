@@ -13,6 +13,21 @@ import {
   weeklyChangeLb,
   dailyDeltaKcal,
   macrosFor,
+  mifflinStJeorBmr,
+  parseHeightToCm,
+  feetInchesToCm,
+  lbToKg,
+  PAL,
+  fatPerLbFor,
+  FAT_G_PER_LB_MIN,
+  FAT_G_PER_LB_MAX,
+  FAT_G_PER_LB_MID,
+  FAT_G_PER_LB_YOUNG,
+  CARB_FLOOR_G,
+  intakeAdjustment,
+  applyAdjustment,
+  STALL_ADJUST_KCAL,
+  TAPER_ADJUST_KCAL,
   kcalFromMacros,
   carbsToHitKcal,
   KCAL_PER_G_PROTEIN,
@@ -359,4 +374,183 @@ test("a whole plan's macros agree with their own calorie figure", () => {
   // The target is what was aimed at; whole-gram rounding puts a few calories between the two, which is
   // exactly why the stored figure is the macros' own and not the target.
   assert.ok(Math.abs(plan.macros.kcal - plan.targetKcal) <= 4);
+});
+
+// ---- N10: Mifflin-St Jeor, units, and the free-text height field ----------
+
+test("N10: Mifflin-St Jeor, men", () => {
+  // 80 kg, 180 cm, 30 years: 800 + 1125 - 150 + 5 = 1780.
+  const bmr = mifflinStJeorBmr({ bodyweightLb: 80 * 2.2046226218, heightCm: 180, ageYears: 30, sex: "male" });
+  assert.ok(Math.abs(bmr - 1780) < 0.5, `expected ~1780, got ${bmr}`);
+});
+
+test("N10: Mifflin-St Jeor, women", () => {
+  const bmr = mifflinStJeorBmr({ bodyweightLb: 80 * 2.2046226218, heightCm: 180, ageYears: 30, sex: "female" });
+  assert.ok(Math.abs(bmr - 1614) < 0.5, `expected ~1614, got ${bmr}`);
+});
+
+test("N10: the two forms differ by exactly 166 kcal, which is why sex had to be stored", () => {
+  const common = { bodyweightLb: 190, heightCm: 178, ageYears: 41 };
+  const m = mifflinStJeorBmr({ ...common, sex: "male" });
+  const f = mifflinStJeorBmr({ ...common, sex: "female" });
+  assert.equal(Math.round(m - f), 166);
+});
+
+test("N10: pounds convert to kilos and feet/inches to centimetres", () => {
+  assert.ok(Math.abs(lbToKg(220.462) - 100) < 0.001);
+  assert.equal(feetInchesToCm(5, 11), 180.3);
+  assert.equal(feetInchesToCm(6, 0), 182.9);
+});
+
+test("N10: the free-text height field is read in every shape it really contains", () => {
+  assert.equal(parseHeightToCm(`5' 11"`), 180.3);
+  assert.equal(parseHeightToCm("5'11"), 180.3);
+  assert.equal(parseHeightToCm("5 ft 11"), 180.3);
+  assert.equal(parseHeightToCm("6 ft 1"), 185.4);
+  assert.equal(parseHeightToCm("180cm"), 180);
+  assert.equal(parseHeightToCm("180 cm"), 180);
+  // A bare number is read by its own size: 71 is inches, 180 is centimetres.
+  assert.equal(parseHeightToCm("71"), 180.3);
+  assert.equal(parseHeightToCm("180"), 180);
+});
+
+test("N10: an unusable height is null, never zero", () => {
+  assert.equal(parseHeightToCm(""), null);
+  assert.equal(parseHeightToCm(undefined), null);
+  assert.equal(parseHeightToCm("   "), null);
+  assert.equal(parseHeightToCm("tall"), null);
+  assert.equal(parseHeightToCm("0"), null);
+});
+
+test("N10: PAL is the five tiers Jack gave", () => {
+  assert.deepEqual(PAL, { sedentary: 1.2, light: 1.375, moderate: 1.55, very: 1.725, extra: 1.9 });
+});
+
+test("N10: Mifflin-St Jeor is used once sex, age and height are all known", () => {
+  const m = estimateMaintenance({ bodyweightLb: 208, heightCm: 180.3, ageYears: 34, sex: "male", activity: "moderate" });
+  assert.equal(m.basis, "mifflin");
+  assert.equal(m.multiplier, 1.55);
+});
+
+test("N10: a profile saved before those fields existed still gets a number", () => {
+  // HYDRATE replaces `profile` wholesale, so every older account arrives with none of them.
+  assert.equal(estimateMaintenance({ bodyweightLb: 208, bodyFatPct: 18 }).basis, "katch");
+  assert.equal(estimateMaintenance({ bodyweightLb: 208 }).basis, "bodyweight");
+  // Two of the three is not enough to evaluate the formula.
+  assert.notEqual(estimateMaintenance({ bodyweightLb: 208, ageYears: 34, heightCm: 180 }).basis, "mifflin");
+});
+
+// ---- N11: the fat band and carb priority ----------------------------------
+
+test("N11: fat stays inside 0.25-0.5 g/lb whatever the inputs", () => {
+  for (const kcal of [1200, 2000, 2500, 4000]) {
+    for (const age of [undefined, 25, 40, 41, 65]) {
+      const perLb = fatPerLbFor(kcal, 200, 200, age);
+      assert.ok(perLb >= FAT_G_PER_LB_MIN && perLb <= FAT_G_PER_LB_MAX, `${perLb} outside the band`);
+    }
+  }
+});
+
+test("N11: 40 and under start lower in the band than over-40s", () => {
+  // A budget roomy enough that the carb floor is not what is driving the answer.
+  assert.equal(fatPerLbFor(3400, 200, 200, 30), FAT_G_PER_LB_YOUNG);
+  assert.equal(fatPerLbFor(3400, 200, 200, 40), FAT_G_PER_LB_YOUNG, "40 is inclusive");
+  assert.equal(fatPerLbFor(3400, 200, 200, 41), FAT_G_PER_LB_MID);
+  assert.ok(FAT_G_PER_LB_YOUNG < FAT_G_PER_LB_MID);
+});
+
+test("N11: under 200 g of carbs, fat drops to its floor to buy them back", () => {
+  const kcal = 2000, bw = 200, protein = 200;
+  const perLb = fatPerLbFor(kcal, bw, protein, 30);
+  assert.equal(perLb, FAT_G_PER_LB_MIN);
+  // And the carbs that buys are more than the starting split would have left.
+  const carbsAtFloor = (kcal - protein * 4 - Math.round(FAT_G_PER_LB_MIN * bw) * 9) / 4;
+  const carbsAtStart = (kcal - protein * 4 - Math.round(FAT_G_PER_LB_YOUNG * bw) * 9) / 4;
+  assert.ok(carbsAtFloor > carbsAtStart);
+});
+
+test("N11: macrosFor honours the band and still adds up", () => {
+  for (const age of [undefined, 30, 50]) {
+    const m = macrosFor(2600, 200, 0, age);
+    assert.equal(m.kcal, kcalFromMacros(m));
+    assert.ok(m.fat >= Math.round(FAT_G_PER_LB_MIN * 200) - 1);
+    assert.ok(m.fat <= Math.round(FAT_G_PER_LB_MAX * 200) + 1);
+  }
+});
+
+// ---- N12: moving the intake when the scale stalls or tapers ---------------
+
+const N12_TODAY = new Date("2026-03-01T00:00:00Z");
+
+test("N12: two weeks flat pulls 150 when the goal is to lose", () => {
+  const flat = series(200, 0, 12, 2);
+  const a = intakeAdjustment({ goal: "lose", weighIns: flat, today: N12_TODAY })!;
+  assert.ok(a, "a flat fortnight should trigger");
+  assert.equal(a.kind, "stall");
+  assert.equal(a.deltaKcal, -STALL_ADJUST_KCAL);
+});
+
+test("N12: the same stall adds 150 when the goal is to gain", () => {
+  const flat = series(200, 0, 12, 2);
+  const a = intakeAdjustment({ goal: "gain", weighIns: flat, today: N12_TODAY })!;
+  assert.equal(a.kind, "stall");
+  assert.equal(a.deltaKcal, STALL_ADJUST_KCAL);
+});
+
+test("N12: nothing fires before there are two weeks to judge", () => {
+  // Four points over nine days -- enough for a rate, not enough to call a stall.
+  const short = series(200, 0, 4, 3);
+  assert.equal(intakeAdjustment({ goal: "lose", weighIns: short, today: N12_TODAY }), null);
+});
+
+test("N12: losing at the intended rate is left alone", () => {
+  const losing = series(200, -1, 12, 2);
+  assert.equal(intakeAdjustment({ goal: "lose", weighIns: losing, today: N12_TODAY }), null);
+});
+
+test("N12: progress that tapers off pulls 75, not 150", () => {
+  const tapering = [
+    { date: "2026-02-02", weight: 210.0 },
+    { date: "2026-02-05", weight: 209.6 },
+    { date: "2026-02-08", weight: 209.1 },
+    { date: "2026-02-11", weight: 208.7 },
+    { date: "2026-02-14", weight: 208.3 },
+    { date: "2026-02-17", weight: 208.2 },
+    { date: "2026-02-20", weight: 208.15 },
+    { date: "2026-02-23", weight: 208.1 },
+    { date: "2026-02-26", weight: 208.05 },
+    { date: "2026-02-28", weight: 208.0 },
+  ];
+  const a = intakeAdjustment({ goal: "lose", weighIns: tapering, today: N12_TODAY })!;
+  assert.ok(a, "a tapering trend should trigger");
+  assert.equal(a.kind, "taper");
+  assert.equal(a.deltaKcal, -TAPER_ADJUST_KCAL);
+});
+
+test("N12: gaining when the goal is to lose is not an automatic nudge", () => {
+  const wrongWay = series(200, 1, 12, 2);
+  assert.equal(intakeAdjustment({ goal: "lose", weighIns: wrongWay, today: N12_TODAY }), null);
+});
+
+test("N12: an adjustment never takes it out of protein", () => {
+  const before = macrosFor(2600, 200, -0.5, 30);
+  const after = applyAdjustment(before, -150, 200);
+  assert.equal(after.protein, before.protein);
+  assert.equal(after.kcal, kcalFromMacros(after));
+  assert.ok(after.kcal < before.kcal);
+});
+
+test("N12: fat gives first, and never past its floor or ceiling", () => {
+  const bw = 200;
+  const floor = Math.round(FAT_G_PER_LB_MIN * bw);
+  const ceil = Math.round(FAT_G_PER_LB_MAX * bw);
+  const start = macrosFor(2600, bw, 0, 50);
+  assert.ok(applyAdjustment(start, -150, bw).fat < start.fat, "fat is what moves first");
+  // Repeated pulls cannot drive fat below the floor, or additions above the ceiling.
+  let m = start;
+  for (let i = 0; i < 12; i++) m = applyAdjustment(m, -150, bw);
+  assert.ok(m.fat >= floor, `${m.fat} below the floor`);
+  let up = start;
+  for (let i = 0; i < 12; i++) up = applyAdjustment(up, 150, bw);
+  assert.ok(up.fat <= ceil, `${up.fat} above the ceiling`);
 });

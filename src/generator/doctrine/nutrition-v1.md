@@ -170,13 +170,91 @@ assume either way.
 **Rule — the top bulk tier is +0.5%, not the +2% the stepper allows.** Gaining still has no cap in the code
 (see below), but the offered ceiling is now named.
 
+**N10 — Maintenance is Mifflin-St Jeor, which is why the app now stores sex.**
+
+> *"Let's take this as the equation for our maintenance calories calculator… and for all other calculators.
+> Convert pounds the person inputs to kg for the formula and height in feet/inches to cm, then finish the BMR
+> equation. Then ask about the physical activity question."*
+
+```
+men:   BMR = 10 × weight(kg) + 6.25 × height(cm) − 5 × age + 5
+women: BMR = 10 × weight(kg) + 6.25 × height(cm) − 5 × age − 161
+```
+
+**Rule — maintenance is BMR × PAL**, the activity level they pick: 1.2 sedentary, 1.375 light, 1.55
+moderate, 1.725 very active, 1.9 extra active.
+
+**This overturns the app's founding nutrition constraint.** Every earlier rule was shaped by the fact that
+**no sex was stored anywhere** — it is what forced Katch-McArdle, and what forced N5's single body-fat
+threshold instead of the honest sex-split. The two Mifflin-St Jeor forms differ by a flat 166 kcal, so the
+formula simply cannot be evaluated without it. Sex is now a stored field, asked for this reason and used
+only here.
+
+**Rule — the older formulas stay as fallbacks, they are not deleted.** `HYDRATE` replaces `profile`
+wholesale, so every account saved before these fields existed arrives without them. The order is
+Mifflin-St Jeor when sex, age and height are all present; Katch-McArdle when body fat is known; calories per
+pound when there is nothing but a scale weight.
+
+**Rule — height is stored in centimetres, separately from the `heightLabel` the app already had.** That
+field is unvalidated free text typed by hand on two different screens and really does contain `5' 11"`,
+`5'11`, `71`, `180cm` and `""`. A formula cannot depend on parsing prose, so the parser exists to *migrate*
+that value, not to be the source of truth.
+
+**N11 — Fat is a band in grams per pound, and carbs are the priority for the under-40s.**
+
+> *"For younger folks as in aged 40 and less, prioritize carbohydrates over fats, but keep fats no less than
+> 0.25g/lb and no more than .6g/lb. Ideally keep it somewhere in the middle. If the person gets less than
+> 200g carbs a day keep it closer to the lower limit for fats so more carbs can be stored."*
+
+| | g of fat per lb of bodyweight |
+|---|---|
+| Floor | **0.25** |
+| Aged 40 and under, starting point | **0.35** (MY CALL) |
+| The middle | **0.425** |
+| Ceiling | **0.6** |
+
+**Rule — fat is set per pound of bodyweight, not as a share of calories.** This replaces the old flat "25%
+of the budget", which moved fat around whenever the calorie target moved and had no floor at all.
+
+**Rule — under 200 g of carbs, fat drops to the floor to buy them back.** The carb rule is evaluated after
+the fat starting point, because it is a response to what that starting point leaves.
+
+**Rule — protein is untouched by all of this.** N7 sets it from bodyweight; fat moves inside its band and
+carbs take the remainder.
+
+**N12 — The intake is corrected from what the scale actually did.**
+
+> *"If there is no weight gain or loss after the second week, if the goal is to lose weight, pull 150
+> calories starting from fats and/or carbs. Same thing goes if trying to gain except increase 150… Once they
+> are either gaining or losing, if they taper down on progress 1 week, add 75 calories if gaining or pull 75
+> calories if losing."*
+
+**Rule — a stall, called no earlier than two weeks in, moves the intake by 150 kcal** in whichever direction
+serves the goal.
+
+**Rule — a taper, once they are already moving, moves it by 75 kcal.** Half the correction, because the plan
+is working and only slowing.
+
+**Rule — it comes out of fat first, then carbs, and never out of protein.** "Starting from fats and/or
+carbs" — and fat still cannot leave the N11 band.
+
+**Rule — moving the wrong way is not a nudge.** Someone gaining while trying to cut has a problem larger
+than 150 calories, and that belongs in front of a person rather than in an automatic adjustment.
+
+Two thresholds here are **MY CALL**: what counts as "no gain or loss" (a rate inside ±0.1%/week, since daily
+water swings are bigger than a week of real change) and what counts as "tapering" (the recent trend fallen
+below half the fuller one). This is the first rule in the file that changes what somebody eats without being
+asked, which is why it runs only when auto nutrition is switched on.
+
 ---
 
 ## Still to rule on
 
 1. **The N5 threshold and raised cap** — 30% body fat and 1%/week are both mine.
-2. **No sex is stored**, which forces both the single N5 threshold and the choice of maintenance formula
-   (Katch-McArdle from lean mass, since Mifflin-St Jeor needs sex).
+2. **N5's threshold can now be sex-split, and isn't yet.** Sex was unavailable when N5 was written, which is
+   why it uses one 30% body-fat figure for everybody; the honest version is roughly 25% for men and 32% for
+   women. N10 stores sex, so the thing that blocked this is gone — it is now a decision rather than a
+   limitation.
 3. **Gaining has no cap.** Jack specified the arithmetic for a surplus but no ceiling on it, so nothing
    currently stops a bulk being set at +2%/week. N9 now names +0.5% as the top *offered* tier, which is a
    strong hint but not a stated ceiling — the stepper still goes past it. A lean-gain cap is the obvious

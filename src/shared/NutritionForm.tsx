@@ -8,11 +8,14 @@ import {
   proteinPerLb,
   kcalFromMacros,
   carbsToHitKcal,
-  FAT_SHARE_OF_KCAL,
-  KCAL_PER_G_PROTEIN,
-  KCAL_PER_G_CARB,
-  KCAL_PER_G_FAT,
+  fatPerLbFor,
+  parseHeightToCm,
+  feetInchesToCm,
+  ACTIVITY_LABELS,
+  type Sex,
+  type ActivityLevel,
 } from "./nutritionPlan";
+import { useStore } from "../state/store";
 import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../data/types";
 
 type Cadence = "off" | "3x" | "5x";
@@ -64,6 +67,12 @@ export interface NutritionProtocolPatch {
   maintenanceKcal: number;
   rateTargetPct: number;
   autoNutrition: boolean;
+  /** N10's inputs. Saved with the rest of the protocol, or the calculator would ask for them again on every
+   * visit and the stored maintenance figure could never be re-derived. */
+  sex?: "male" | "female";
+  ageYears: number;
+  heightCm: number;
+  activityLevel: "sedentary" | "light" | "moderate" | "very" | "extra";
 }
 
 /** The full nutrition-targets form -- used both when a coach sets a real client's protocol
@@ -92,6 +101,23 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   const [calcBf, setCalcBf] = useState(profile.bodyFatPct ?? 20);
   const [ratePct, setRatePct] = useState(profile.rateTargetPct ?? -0.5);
   const [auto, setAuto] = useState(profile.autoNutrition ?? false);
+
+  /* N10's inputs. Both of this form's call sites render inside the SUBJECT's own StoreProvider — the coach
+   * screen wraps one keyed to the client's account id — so the intake read here is the right person's, not
+   * the coach's, and age does not have to be asked twice when they have already answered it. */
+  const { state: subjectState } = useStore();
+  const [sex, setSex] = useState<Sex | undefined>(profile.sex);
+  const [activity, setActivity] = useState<ActivityLevel>(profile.activityLevel ?? "moderate");
+  const [ageYears, setAgeYears] = useState<number>(profile.ageYears ?? subjectState.intake?.age ?? 30);
+  // Seeded from the stored centimetres, then from whatever can be parsed out of the old free-text height,
+  // and only then from a default — so someone who typed 6'1" years ago does not have to type it again.
+  const [heightCm, setHeightCm] = useState<number>(
+    profile.heightCm ?? parseHeightToCm(profile.heightLabel) ?? feetInchesToCm(5, 10),
+  );
+  const heightTotalIn = Math.round(heightCm / 2.54);
+  const heightFt = Math.floor(heightTotalIn / 12);
+  const heightIn = heightTotalIn % 12;
+  const setHeightParts = (ft: number, inch: number) => setHeightCm(feetInchesToCm(Math.max(0, ft), Math.max(0, inch)));
   const [maintenance, setMaintenance] = useState(
     profile.maintenanceKcal ?? estimateMaintenance({ bodyweightLb: profile.bodyweight || 200, bodyFatPct: profile.bodyFatPct ?? 20 }).kcal,
   );
@@ -108,10 +134,13 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   // was typed -- the number on screen is always what the grams come to.
   const setKcalViaCarbs = (v: number) => setCarbs(carbsToHitKcal(v, protein, fat));
 
-  /** Re-split the same calorie budget: N7's protein, fat at its share, carbs taking the rest. */
+  /** Re-split the same calorie budget: N7's protein, N11's fat band, carbs taking the rest.
+   *
+   * Fat comes from `fatPerLbFor` rather than the old flat 25%-of-calories share, so it obeys the floor, the
+   * ceiling and the under-200g carb rule the same way the generated plan does. The two used to disagree. */
   function applySuggestion() {
     const p = suggestedProtein;
-    const fatG = Math.round((kcal * FAT_SHARE_OF_KCAL) / KCAL_PER_G_FAT);
+    const fatG = Math.round(fatPerLbFor(kcal, calcBw, p, ageYears) * calcBw);
     setProtein(p);
     setFat(fatG);
     setCarbs(carbsToHitKcal(kcal, p, fatG));
@@ -124,11 +153,20 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
     bodyFatPct: calcBf > 0 ? calcBf : undefined,
     ratePctPerWeek: ratePct,
     maintenanceKcal: maintenance,
+    // N11: the fat band starts lower for the under-40s, so age has to reach the macro split.
+    ageYears,
   });
   const lbPerWeek = plan.lbPerWeek;
   const dailyKcalDelta = plan.dailyDelta;
   const targetKcal = plan.targetKcal;
-  const estimated = estimateMaintenance({ bodyweightLb: calcBw, bodyFatPct: calcBf > 0 ? calcBf : undefined });
+  const estimated = estimateMaintenance({
+    bodyweightLb: calcBw,
+    bodyFatPct: calcBf > 0 ? calcBf : undefined,
+    sex,
+    ageYears,
+    heightCm,
+    activity,
+  });
   const capPct = cutCapPct(calcBf > 0 ? calcBf : undefined);
   // Protein is per pound of BODYWEIGHT and follows the phase. Read off the CAPPED rate, so a "fast cut" that
   // N3 held back does not prescribe protein for a deficit they are not actually running.
@@ -183,6 +221,10 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
       // Never store a rate the doctrine forbids, whatever the stepper was left on.
       rateTargetPct: plan.rate.pct,
       autoNutrition: auto,
+      sex,
+      ageYears,
+      heightCm,
+      activityLevel: activity,
     });
   }
 
@@ -279,12 +321,6 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
               <div className="row">
-                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>
-                  {plan.direction === "gain" ? "Bulking" : plan.direction === "cut" ? "Cutting" : "Holding"} — per lb
-                </span>
-                <span className="num" style={{ fontWeight: 700 }}>{proteinPerLbNow.toFixed(2)} g</span>
-              </div>
-              <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Suggested protein</span>
                 <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{suggestedProtein} g</span>
               </div>
@@ -301,18 +337,54 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Maintenance calculator</span>
             </div>
             <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
-              What {who} burn{subjectFirstName ? "s" : ""} in a day, holding weight. Everything below is an offset from it, so a wrong number here makes every target wrong the same way. Worked out from lean mass, which needs no age or sex.
+              What {who} burn{subjectFirstName ? "s" : ""} in a day, holding weight. Everything below is an offset from it, so a wrong number here makes every target wrong the same way.
             </div>
+
+            {/* Sex is asked for one reason and used for one thing: Mifflin-St Jeor's two forms differ by a
+                flat 166 kcal and the formula cannot be evaluated without it (N10). */}
+            <div className="scr" style={{ marginBottom: 5 }}>Sex</div>
+            <div className="row" style={{ gap: 5, marginBottom: 10 }}>
+              {(["male", "female"] as Sex[]).map((s) => (
+                <button key={s} type="button" className={`chip${sex === s ? " on" : ""}`} onClick={() => setSex(s)}>
+                  {s === "male" ? "Male" : "Female"}
+                </button>
+              ))}
+            </div>
+
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={1} />
+              <CalcRow label="Age" value={ageYears} onChange={setAgeYears} step={1} min={13} max={100} />
+              <CalcRow label="Height" unit="ft" value={heightFt} onChange={(v) => setHeightParts(v, heightIn)} step={1} min={3} max={8} />
+              <CalcRow label="Height" unit="in" value={heightIn} onChange={(v) => setHeightParts(heightFt, v)} step={1} min={0} max={11} />
               <CalcRow label="Body fat" unit="%" value={calcBf} onChange={setCalcBf} step={1} max={75} />
+            </div>
+
+            <div className="scr" style={{ marginTop: 11, marginBottom: 5 }}>Activity</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+              {(Object.keys(ACTIVITY_LABELS) as ActivityLevel[]).map((lvl) => (
+                <button
+                  key={lvl}
+                  type="button"
+                  className={`chip${activity === lvl ? " on" : ""}`}
+                  style={{ textAlign: "left" }}
+                  onClick={() => setActivity(lvl)}
+                >
+                  {ACTIVITY_LABELS[lvl]}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 11 }}>
               <CalcRow label="Maintenance" unit="kcal" value={maintenance} onChange={setMaintenance} step={50} />
             </div>
             <div className="row" style={{ marginTop: 9, fontSize: 12.5 }}>
               <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Estimate</span>
               <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{estimated.kcal} kcal</span>
             </div>
-            <div className="mu" style={{ marginTop: 4, lineHeight: 1.5 }}>{estimated.how}. It is a starting point — once there are a few weeks of weigh-ins, the scale corrects it.</div>
+            {/* The formula, the multiplier and the lean-mass figure used to be printed here. Deliberately
+                gone -- Jack: "remove the numbers so people can't view how its calculated for any parameter."
+                The inputs and the answer are the person's business; the derivation is not. */}
+            <div className="mu" style={{ marginTop: 4, lineHeight: 1.5 }}>A starting point — once there are a few weeks of weigh-ins, the scale corrects it.</div>
             <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applyMaintenance}>
               Use the estimate
             </button>
@@ -340,7 +412,9 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               ))}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <CalcRow label="Rate" unit="% BW / wk" value={ratePct} onChange={setRatePct} step={0.1} min={-2} max={2} />
+              {/* No unit shown: Jack asked for "(rate %/wk)" to be invisible. The presets above are how this
+                  is meant to be set; the stepper is the fine adjustment. */}
+              <CalcRow label="Rate" value={ratePct} onChange={setRatePct} step={0.1} min={-2} max={2} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
               <div className="row">
@@ -352,10 +426,6 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
                 <span className="num" style={{ fontWeight: 700 }}>
                   {dailyKcalDelta >= 0 ? "+" : ""}{dailyKcalDelta} → <b style={{ color: "var(--color-accent-300)" }}>{targetKcal} kcal</b>
                 </span>
-              </div>
-              <div className="row">
-                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Fastest cut allowed</span>
-                <span className="num" style={{ fontWeight: 700 }}>{capPct}% / wk</span>
               </div>
             </div>
             {plan.cappedNote && (
@@ -382,12 +452,9 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             <CalcRow label="Protein" unit="g" value={protein} onChange={setProtein} step={1} />
             <CalcRow label="Carbs" unit="g" value={carbs} onChange={setCarbs} step={1} />
             <CalcRow label="Fat" unit="g" value={fat} onChange={setFat} step={1} />
-            <div className="mu" style={{ marginTop: 7, lineHeight: 1.5 }}>
-              <span className="num">{protein * KCAL_PER_G_PROTEIN}</span> from protein ·{" "}
-              <span className="num">{carbs * KCAL_PER_G_CARB}</span> from carbs ·{" "}
-              <span className="num">{fat * KCAL_PER_G_FAT}</span> from fat. Change a macro and the calories
-              follow it; change the calories and carbs move to meet them.
-            </div>
+            {/* The per-macro calorie breakdown that used to sit here is gone for the same reason as the
+                maintenance derivation. The behaviour it described is unchanged: the calorie line is still
+                the sum of the grams, so touching a macro still moves it. */}
             {carbs === 0 && (
               <div className="mu" style={{ marginTop: 6, lineHeight: 1.5, color: "var(--color-accent-200)" }}>
                 <i className="ph ph-info" style={{ fontSize: 13, marginRight: 5 }} />
