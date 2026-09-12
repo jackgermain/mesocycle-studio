@@ -40,6 +40,9 @@ EX = {
   "Dumbbell Reverse Curl":         ("Forearms", 2),
   "Lat Pulldown":                  ("Back", 1),
   "Chest Supported Row":           ("Back", 1),
+  # Cost 2, not 1: G98 wants this light and high-rep, and at cost 1 it is a top-priority free weight, so G79
+  # would hand it the opening slot of the day ahead of the cable row and the pulldown.
+  "Single-Arm Dumbbell Row":       ("Back", 2),
   "Seated Cable Row":              ("Back", 1),
   "Weighted / Assisted Pull-Up":   ("Back", 0),
   "Assisted Pull-Up":              ("Back", 1),
@@ -54,6 +57,7 @@ EX = {
   # The erectors get their own muscle rather than being folded into hamstrings: for a client training around
   # low back pain, "how many sets did the lower back get" is the number that has to be visible.
   "45° Back Extension":            ("Lower back", 2),
+  "Reverse Hyperextension":        ("Lower back", 2),
   "Seated Leg Curl":               ("Hamstrings", 2),
   "Barbell Hip Thrust":            ("Glutes", 1),
   "Smith Machine Hip Thrust":      ("Glutes", 1),

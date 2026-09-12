@@ -23,7 +23,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 import build4
 from build4 import (order_day, leg_compounds, cap_families, size_to_gaps, opening_efforts,
-                    WEEKDAY, CSS, CLS, gain_txt, plural, short, muscle)
+                    WEEKDAY, CSS, CLS, HOWTO, gain_txt, plural, short, muscle)
 from progress4 import simulate, parse_reps, targets, aim_label, fmt_w, track
 
 HERE = pathlib.Path(__file__).parent
@@ -44,10 +44,14 @@ PERSON = dict(
     changed="The two lifts that reliably hurt come out: the loaded hinge and the bar on the back. What "
             "replaces them trains the same muscles with the spine either supported or unloaded — a leg press "
             "for the squat, a bodyweight 45° extension for the RDL. Loaded spinal flexion and loaded rotation "
-            "come out of the core work and anti-extension goes in. Everything that is left for upper back is "
-            "chest-supported or seated by coincidence rather than design, which is why a back-and-shoulder "
-            "priority suits him so well.",
-    guard=["Barbell Hip Thrust", "Plate-Loaded Leg Press"],
+            "come out of the core work, and anti-extension goes in. G98 then sets the shape of the back work "
+            "itself: the erectors get trained, they just never get loaded heavily. A 45° extension on Day 2 "
+            "and a reverse hyper on Day 5 are the main stimulus, and every row climbs the rep range instead of "
+            "the weight. A row does not have to be chest-supported to be safe — the cap is on load, not on the "
+            "pad — so a light single-arm dumbbell row is in.",
+    # G98: the rows and the erector work carry a rep floor so they cannot drift into heavy territory.
+    guard=["Barbell Hip Thrust", "Plate-Loaded Leg Press", "Chest-Supported Machine Row",
+           "Seated Cable Row", "Single-Arm Dumbbell Row", "Reverse Hyperextension"],
     flag=None,
 )
 
@@ -62,7 +66,7 @@ PRI = {"Back": 1, "Side delts": 1, "Rear delts": 1, "Front delts": 2,
 DAYS = [
     ["Day 1 · back, vertical pull", [
         ["Weighted / Assisted Pull-Up", 4, "6–8"],
-        ["Chest-Supported Machine Row", 4, "10"],
+        ["Chest-Supported Machine Row", 4, "10–12"],
         ["Straight-Arm Pulldown", 3, "15"],
         ["Reverse Pec Deck", 3, "15"],
         ["Dumbbell Lateral Raise", 4, "15"],
@@ -85,11 +89,11 @@ DAYS = [
         ["Rope Pushdown", 3, "15"],
     ]],
     ["Day 4 · back, horizontal pull", [
-        ["Seated Cable Row", 4, "10"],
+        ["Seated Cable Row", 4, "10–12"],
         ["Lat Pulldown", 4, "10"],
         ["Reverse Pec Deck", 3, "15"],
         ["Dumbbell Lateral Raise", 3, "15"],
-        ["Hammer Curl", 3, "12"],
+        ["Single-Arm Dumbbell Row", 3, "12–15"],
         ["Plank Alternating Limb Touch", 3, "12"],
     ]],
     ["Day 5 · hips, arms and lower back", [
@@ -106,7 +110,7 @@ SUBS = {
     "Smith Machine Squat": ("Plate-Loaded Leg Press", "12"),
     "Barbell RDL": ("45° Back Extension", "12"),
     "Cable Rotation": ("Dead Bug", "10"),
-    "Cable Pull-Through": ("Barbell Glute Bridge", "12"),
+    "Cable Pull-Through": ("Reverse Hyperextension", "15"),
 }
 REASON = {
     "Smith Machine Squat": "the bar comes off the spine — a leg press loads the quads without stacking "
@@ -115,7 +119,8 @@ REASON = {
                    "trains the same muscles under control, and load waits for the next block",
     "Cable Rotation": "loaded rotation out, anti-extension in — a dead bug trains the trunk to resist "
                       "movement rather than produce it",
-    "Cable Pull-Through": "hip extension without a long-lever hinge; the bridge keeps the spine on the floor",
+    "Cable Pull-Through": "G98: a reverse hyper is one of the two movements that should carry the erector "
+                          "work, and it extends the hips without a long-lever loaded hinge",
 }
 
 
@@ -140,8 +145,12 @@ def build():
 
     notes.append(("G90", "physician and physiotherapist clearance is on record, which is the only reason this "
                   "intake is taken on at all — without it the answer is a referral, not a program"))
-    notes.append(("back", "back-safe filter: the loaded hinge, the bar on the back, loaded spinal flexion and "
-                  "loaded rotation all come out. This is my proposal, not a rule you have ruled on"))
+    notes.append(("G98", "the erectors get trained but never heavily — a 45° extension and a reverse hyper are "
+                  "the main stimulus, every row carries a ten-rep floor so it cannot drift into heavy "
+                  "territory, and a light row does not have to be chest-supported"))
+    notes.append(("back", "the rest of the filter is still my proposal rather than something you have ruled "
+                  "on: the loaded hinge, the bar on the back, loaded spinal flexion and loaded rotation all "
+                  "come out"))
 
     # Upper back and shoulders lead, and rear delts stop being tail-sorted because here they are the point.
     build4.PRI_OVERRIDE = PRI
@@ -224,6 +233,7 @@ def render():
       'hurts after a loaded hinge. Every week after the first is a decision you would approve: the move, the '
       'rep scheme it produces, why, and what he logged. The back-safety rules are a proposal — you have not '
       'ruled on any of them, and they are listed separately at the bottom.</p></header>')
+    A(f'<section class="sec">{HOWTO}</section>')
 
     A(f'<section class="sec"><div class="person"><div class="p-hd">'
       f'<span class="p-freq">5×</span><span class="p-name">{E(p["name"])}</span>'
@@ -282,17 +292,14 @@ def render():
     A('</div></div></section>')
 
     A('<section class="sec"><div class="eyebrow">Still my call</div>'
-      '<h2>Seven decisions you have not ruled on</h2><ol class="ask">'
-      '<li><b>What "back-safe" means.</b> Out: the loaded hinge, the bar on the back, loaded spinal flexion '
-      '(v-ups, crunches) and loaded rotation. In: supported and seated pulling, a leg press instead of a '
-      'squat, and anti-extension core. Everything else in the library stayed.</li>'
+      '<h2>Six decisions you have not ruled on</h2><ol class="ask">'
+      '<li><b>What "back-safe" means beyond G98.</b> You have now ruled on the erector work and the rows. The '
+      'rest is still mine: out go the loaded hinge, the bar on the back, loaded spinal flexion (v-ups, '
+      'crunches) and loaded rotation; in come a leg press instead of a squat, and anti-extension core. '
+      'Everything else in the library stayed.</li>'
       '<li><b>The 45° extension is bodyweight for the whole block.</b> He is meant to be strengthening the '
       'back, so the case for loading it is real — but block one on a two-year-old pain seemed like the wrong '
       'place to add a plate. Reps and tempo only, load next block. Say the word and it holds a dumbbell.</li>'
-      '<li><b>The lower back gets three sets a week.</b> One exercise, on one day — and it is the thing the '
-      'whole program is supposedly built to fix. I kept it low because the pain is two years old and that '
-      'extension is the only movement loading it directly. If the goal is genuinely to strengthen the back, '
-      'three is probably not enough, and the second slot goes on Day 5.</li>'
       '<li><b>G95 suspended.</b> You said rear delts go after the arms because curls matter more cosmetically. '
       'Here the rear delts are the priority, so I stopped tail-sorting them. That may be wrong — the cosmetic '
       'argument might hold regardless of what the client asked for.</li>'

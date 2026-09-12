@@ -2408,6 +2408,24 @@ input that decides them.
 An exercise name that does not say what it is loaded with cannot be progressed correctly -- the increment, the
 percentage and the rep range all follow from the implement.
 
+**G98 — Around low back pain, the erectors get trained — just never heavily.**
+
+> *"With back problems try to limit super heavy extension or rows. For erector use, use back extensions and
+> reverse hypers as main non heavy erector stimulus. Light non chest supported rows are fine also."*
+
+The instinct to delete everything that loads the lower back is wrong: the erectors still need stimulus, and
+that is the point of training this person. What changes is the **load**, not the existence of the work.
+
+**Rule — back extensions and reverse hypers are the erector work.** Two movements, not one, and both of them
+kept light. They are the main stimulus, not an afterthought at the end of a leg day.
+
+**Rule — no heavy extensions and no heavy rows.** The cap is on load, so rows move up the rep range rather
+than down it, and the extension work never chases a plate.
+
+**Rule — a row does not have to be chest-supported.** Light free rows are fine. The mistake is heavy free
+rows, not unsupported ones — so the filter is on how much is on the bar, not on whether a pad is behind the
+chest. See [[G90]] for the clearance that has to exist before any of this is programmed at all.
+
 **G49 — A muscle has a per-session volume ceiling, not just a weekly one.**
 
 > *"For the straight-arm pulldown I would remove this, or make it two sets — just because this is a lot of

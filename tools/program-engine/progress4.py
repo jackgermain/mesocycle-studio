@@ -66,6 +66,8 @@ REP_FIRST = {
   "Dumbbell Reverse Lunge", "Captain's Chair Leg Raise", "Hanging Leg Raise", "V-Up", "Starfish Crunch",
   "Cable Rotation", "Plank Alternating Limb Touch", "Landmine Press", "Cable Pull-Through",
   "45° Back Extension", "Dead Bug",
+  # G98: the erector work and the rows climb the rep range rather than chase a plate.
+  "Reverse Hyperextension", "Single-Arm Dumbbell Row",
 }
 
 # What the weight is made of decides what one step looks like: (full jump, smallest jump) in lb.
@@ -80,7 +82,8 @@ for _n in ("Smith Machine Squat", "Barbell RDL", "Incline Smith Press", "Barbell
 KIND["Leg Press"] = "plate"
 for _n in ("Chest Press Machine", "Chest Supported Row", "Lat Pulldown", "Seated Cable Row", "Seated Leg Curl",
            "Leg Extension", "Hip Abduction Machine", "Standing Calf Raise", "Seated Calf Raise",
-           "Reverse Pec Deck", "Cybex Lateral Raise Machine", "Seated Shoulder Press Machine"):
+           "Reverse Pec Deck", "Cybex Lateral Raise Machine", "Seated Shoulder Press Machine",
+           "Reverse Hyperextension"):
     KIND[_n] = "stack"
 for _n in ("Cable Curl", "Rope Pushdown", "Overhead Cable Triceps Ext.", "Cable Fly — Mid", "Front Raise — Cable",
            "Straight-Arm Pulldown", "Cable Pull-Through", "Cable Glute Kickback", "Cable Rotation",
@@ -89,7 +92,7 @@ for _n in ("Cable Curl", "Rope Pushdown", "Overhead Cable Triceps Ext.", "Cable 
 KIND["Assisted Pull-Up"] = "assist"
 for _n in ("Dumbbell Lateral Raise", "Dumbbell Curl", "Hammer Curl", "Incline Dumbbell Curl", "Spider Curl",
            "Dumbbell Fly", "Dumbbell Skullcrusher", "Dumbbell Reverse Curl", "Incline Dumbbell Press",
-           "Dumbbell Reverse Lunge", "Bulgarian Split Squat"):
+           "Dumbbell Reverse Lunge", "Bulgarian Split Squat", "Single-Arm Dumbbell Row"):
     KIND[_n] = "db"
 for _n in ("Captain's Chair Leg Raise", "Hanging Leg Raise", "V-Up", "Starfish Crunch",
            "Plank Alternating Limb Touch", "45° Back Extension", "Dead Bug"):
@@ -105,6 +108,7 @@ START = {
   "Seated Cable Row": (130, 80), "Seated Leg Curl": (90, 60), "Leg Extension": (100, 60),
   "Hip Abduction Machine": (130, 100), "Standing Calf Raise": (150, 100), "Reverse Pec Deck": (70, 40),
   "Seated Shoulder Press Machine": (110, 55), "Seated Calf Raise": (90, 55), "Landmine Press": (50, 25),
+  "Reverse Hyperextension": (90, 50), "Single-Arm Dumbbell Row": (70, 35),
   "Cybex Lateral Raise Machine": (40, 25), "Cable Curl": (50, 30), "Rope Pushdown": (50, 30),
   "Overhead Cable Triceps Ext.": (40, 25), "Cable Fly — Mid": (30, 15), "Front Raise — Cable": (20, 12.5),
   "Straight-Arm Pulldown": (50, 30), "Cable Pull-Through": (60, 40), "Cable Glute Kickback": (25, 15),
@@ -281,15 +285,32 @@ def load_txt(kind, loads, name):
     return f"{body} lb"
 
 
-def reps_txt(reps, ea=""):
-    """G92's staggered reps, written the way Jack says them: "one set of sixteen and three sets of fifteen"."""
-    runs = []
-    for r in reps:
-        if runs and runs[-1][1] == r:
-            runs[-1][0] += 1
+def set_txt(reps, loads, kind, name, ea=""):
+    """One line saying exactly which sets get which reps at which weight.
+
+    Two goes at this failed. "2 × 11 + 2 × 10 @ 100 lb" reads as arithmetic -- Jack: "no clue what this means".
+    "2 sets of 11 + 2 sets of 10" fixed the arithmetic but still did not say WHICH sets -- Jack: "need a more
+    clear way to read rep jumps on certain sets". So the sets are named outright, and a group carries its own
+    weight whenever the weights differ. Identical sets keep the notation everyone reads at a glance.
+    """
+    groups = []
+    for i, (r, w) in enumerate(zip(reps, loads)):
+        if groups and groups[-1][2] == r and groups[-1][3] == w:
+            groups[-1][1] = i
         else:
-            runs.append([1, r])
-    return " + ".join(f"{n} × {r}{ea}" for n, r in runs)
+            groups.append([i, i, r, w])
+    if len(groups) == 1:
+        return f"{len(reps)} × {reps[0]}{ea} @ {load_txt(kind, loads, name)}"
+    one_load = len(set(loads)) == 1
+    out = []
+    for a, b, r, w in groups:
+        where = f"set {a + 1}" if a == b else f"sets {a + 1}–{b + 1}"
+        piece = f"{where}: {r} rep{'s' if r != 1 else ''}{ea}"
+        if not one_load:
+            piece += f" @ {load_txt(kind, [w], name)}"
+        out.append(piece)
+    line = " · ".join(out)
+    return line + (f" @ {load_txt(kind, loads, name)}" if one_load else "")
 
 
 def fresh(name, sex, sets, lo, hi, beginner, guard):
@@ -356,21 +377,25 @@ def describe(st, code, var, lo, hi, done):
             nxt = f"{fmt_w(next_db(max(L)))}s" if k == "db" else f"{sign}{fmt_w(STEP[k][0])}{unit}"
             return f"clean block — 8 reps, {nxt}"
         if var == "top1":
-            return f"{sign}{fmt_w(STEP[k][1])}{unit}, top set only"
+            return f"{sign}{fmt_w(STEP[k][1])}{unit} on set 1"
         if var == "small":
             # G87's little load progression: the small plate on every set, not the full step.
-            return f"{sign}{fmt_w(STEP[k][1])}{unit}, every set"
+            return f"{sign}{fmt_w(STEP[k][1])}{unit} on every set"
         amt = fmt_w(earned_step(st))
-        return f"{sign}{amt}{unit}, every set" if (var == "all" or len(L) <= 2) else f"{sign}{amt}{unit}, top 2 sets"
+        return (f"{sign}{amt}{unit} on every set" if (var == "all" or len(L) <= 2)
+                else f"{sign}{amt}{unit} on sets 1–2")
     if code == "combo":
-        return f"{sign}{fmt_w(STEP[k][1])}{unit} and +1 rep"
+        return f"{sign}{fmt_w(STEP[k][1])}{unit} and +1 rep on every set"
     if code == "level":
         return f"level up — every set to {fmt_w(min(L) if k == 'assist' else max(L))}"
     if code == "rep":
-        return f"+{var} rep{'s' if var > 1 else ''}, every set"
+        return f"+{var} rep{'s' if var > 1 else ''} on every set"
     if code == "half":
-        n = len(half_targets(st["reps"], 99))
-        return f"+1 rep on {n} of {st['sets']} sets"
+        # Name the sets the half step lands on. They are contiguous: the reps are held in descending order, so
+        # the sets still on the lower number sit together at the end.
+        idx = half_targets(st["reps"], 99)
+        where = f"set {idx[0] + 1}" if len(idx) == 1 else f"sets {idx[0] + 1}–{idx[-1] + 1}"
+        return f"+1 rep on {where}"
     if code == "hold":
         return "hold — overshot the aim"
     if code == "db":
@@ -476,8 +501,7 @@ def simulate(ex):
     def presc(sets=None):
         n = sets or st["sets"]
         harder = " · harder version" if st["harder"] else ""
-        return (f"{reps_txt(st['reps'][:n], ea)} @ "
-                f"{load_txt(st['kind'], st['loads'][:n], st['name'])}{harder}")
+        return set_txt(st["reps"][:n], st["loads"][:n], st["kind"], st["name"], ea) + harder
 
     def log_reps(target, e):
         if e <= 2:
@@ -545,7 +569,8 @@ def simulate(ex):
             """G91: "You have to add stress every week... you wanna have progression every week no matter
             what." The smallest honest step available, which is what replaces holding."""
             if min(R) < room:
-                return "half", None, f"G92: {why_tail} — a rep on half the sets is half a progression"
+                return "half", None, (f"G92: {why_tail} — so the smallest real step there is: one rep on half "
+                                      f"the sets, which is half a progression")
             if staggered:
                 return "level", None, f"G91: {why_tail} — the lagging sets catch the top weight"
             if st["kind"] == "bw":
@@ -628,7 +653,8 @@ def simulate(ex):
                            else f"G64: logged {e_prev}, aiming at {aim_label(target)} — "
                                 + ("a full point under, so two reps" if var == 2 else "climb the range"))
                 else:
-                    code, var, why = least_move(f"logged {e_prev}, already at {aim_label(target)}")
+                    code, var, why = least_move(f"rated it {e_prev} last week, and this week aims at "
+                                                f"{aim_label(target)} — already there")
             else:
                 rep_pct = pct_of_set(max(R))
                 small_pct = pct_of_load(st, STEP[st["kind"]][1])
@@ -670,7 +696,8 @@ def simulate(ex):
                 elif req >= 0.25 and max(R) < room:
                     code, var, why = "rep", 1, f"G64: logged {e_prev}, aiming at {aim_label(target)} — nearly there"
                 else:
-                    code, var, why = least_move(f"logged {e_prev}, already at or past {aim_label(target)}")
+                    code, var, why = least_move(f"rated it {e_prev} last week, and this week aims at "
+                                                f"{aim_label(target)} — already there or past it")
 
             # G80, after whichever branch chose the move: a full jump that is a big share of the load is only
             # taken once the reps are past fifteen. The smallest-increment moves (G61's top set, G63's combo)

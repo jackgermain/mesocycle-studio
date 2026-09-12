@@ -505,6 +505,22 @@ td.carry .presc{color:var(--violet)}
 CLS = {"load": "load", "combo": "load", "level": "level", "rep": "rep", "half": "half", "hold": "hold",
        "db": "jump", "pin": "jump", "reset": "reset", "deload": "deload", "swap": "swap"}
 
+# Every cell is four stacked lines and nothing on the page said so, which is how a staggered prescription
+# ended up unreadable. Shared by both pages.
+_P = 'class="presc" style="display:inline"'
+HOWTO = (
+    '<div class="applied" style="margin-top:18px"><div class="h">How to read a cell</div>'
+    '<div><b>Line 1 — the move.</b> What changes this week, and nothing else changes.</div>'
+    f'<div><b>Line 2 — the prescription.</b> <span {_P}>4 × 10 @ 100 lb</span> is four sets of ten reps at a '
+    f'hundred pounds. When the sets are not all the same, each group is named: '
+    f'<span {_P}>sets 1–2: 11 reps · sets 3–4: 10 reps @ 100 lb</span> means the first two sets get eleven '
+    f'reps and the last two get ten, all at a hundred pounds. If the weight differs too, each group carries '
+    f'its own: <span {_P}>set 1: 11 reps @ 95 lb · sets 2–3: 11 reps @ 90 lb</span>. Set 1 is always the '
+    f'heaviest.</div>'
+    '<div><b>Line 3 — why,</b> and the rule it came from.</div>'
+    '<div><b>Line 4 — what they logged:</b> reps on the last set, and how hard that set was out of 5.</div>'
+    '</div>')
+
 
 def gain_txt(sim):
     g = sim["gain"]
@@ -562,7 +578,7 @@ def render():
       '<span class="m-hold"><b class="mv" style="display:inline">hold</b> only after a logged 5</span>'
       '<span class="m-swap"><b class="mv" style="display:inline">swap</b> joint flagged</span>'
       '<span class="m-deload"><b class="mv" style="display:inline">deload</b> last week, 5–6 days</span>'
-      '</div></section>')
+      '</div>' + HOWTO + '</section>')
 
     A('<section class="sec" id="ask"><div class="eyebrow">Still my call</div>'
       '<h2>Five calls I made putting your review into practice</h2><ol class="ask">'
