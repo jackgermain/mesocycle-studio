@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Seg, Stepper } from "../components/UI";
+import { Seg, Stepper, TickButton } from "../components/UI";
 import { defaultPortionTargets } from "../data/mockData";
 import { buildPlan, estimateMaintenance, cutCapPct } from "./nutritionPlan";
 import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../data/types";
@@ -463,16 +463,7 @@ function CheckRow({ checked, onChange, label, hint }: { checked: boolean; onChan
       className="cell row"
       style={{ width: "100%", textAlign: "left", cursor: "pointer", alignItems: "flex-start", gap: 10, border: `1px solid ${checked ? "var(--color-accent)" : "var(--color-divider)"}`, background: checked ? "var(--color-accent-900)" : undefined }}
     >
-      <span
-        style={{
-          width: 22, height: 22, flex: "none", borderRadius: 7, marginTop: 1,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          background: checked ? "var(--color-accent)" : "none",
-          border: checked ? "none" : "1.5px solid var(--color-accent)",
-        }}
-      >
-        {checked && <i className="ph-bold ph-check" style={{ fontSize: 12, color: "var(--color-bg)" }} />}
-      </span>
+      <TickButton checked={checked} size={22} style={{ marginTop: 1 }} />
       <span style={{ flex: 1 }}>
         <span style={{ display: "block", fontSize: 12.5, color: checked ? "var(--color-accent-200)" : "var(--color-neutral-200)" }}>{label}</span>
         <span className="mu" style={{ display: "block", marginTop: 3, lineHeight: 1.5 }}>{hint}</span>

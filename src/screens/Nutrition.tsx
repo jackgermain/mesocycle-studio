@@ -7,7 +7,7 @@ import { isNutritionAlerting, KCAL_TOLERANCE } from "../shared/signalScales";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { isoToday } from "../shared/dayStatus";
 import { TabBar } from "../components/TabBar";
-import { InfoBanner, Meter, HeroHeader, BackHeader } from "../components/UI";
+import { InfoBanner, Meter, HeroHeader, BackHeader, TickButton } from "../components/UI";
 import { NutritionForm } from "../shared/NutritionForm";
 import FoodSearchSheet from "./FoodSearchSheet";
 import type { FoodItem } from "../data/foodDatabase";
@@ -247,21 +247,14 @@ export default function Nutrition() {
                   const ticked = item.eaten !== false;
                   return (
                   <div key={item.id} className="cell row" style={{ background: ticked ? "var(--color-accent-tint)" : undefined }}>
-                    {/* Same gesture as checking off a set, and the same shape, so it reads as the same
+                    {/* Same gesture as checking off a set, and the same control, so it reads as the same
                         act rather than a new one to learn. */}
-                    <button
+                    <TickButton
+                      checked={ticked}
+                      size={22}
                       onClick={() => dispatch({ type: "TOGGLE_FOOD_EATEN", mealId: meal.id, itemId: item.id })}
-                      aria-label={ticked ? `Mark ${item.name} as not eaten` : `Mark ${item.name} as eaten`}
-                      aria-pressed={ticked}
-                      style={{
-                        width: 22, height: 22, flex: "none", borderRadius: 7, cursor: "pointer", padding: 0,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        background: ticked ? "var(--color-accent)" : "none",
-                        border: ticked ? "none" : "1.5px solid var(--color-accent)",
-                      }}
-                    >
-                      {ticked && <i className="ph-bold ph-check" style={{ fontSize: 12, color: "var(--color-bg)" }} />}
-                    </button>
+                      label={ticked ? `Mark ${item.name} as not eaten` : `Mark ${item.name} as eaten`}
+                    />
                     <div style={{ flex: 1, minWidth: 0, opacity: ticked ? 1 : 0.62 }}>
                       <div className="trunc" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>{item.name}</div>
                       <div className="mu trunc" style={{ marginTop: 2 }}>
@@ -505,19 +498,9 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
                           textAlign: "left",
                         }}
                       >
-                        {/* The same 22px square as a food item and a set, on the left, rather than a
-                            trailing circle icon. Portions mode was the one screen still using its own
-                            shape for the identical act. */}
-                        <span
-                          style={{
-                            width: 22, height: 22, flex: "none", borderRadius: 7, marginRight: 10,
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            background: on ? "var(--color-accent)" : "none",
-                            border: on ? "none" : "1.5px solid var(--color-accent)",
-                          }}
-                        >
-                          {on && <i className="ph-bold ph-check" style={{ fontSize: 12, color: "var(--color-bg)" }} />}
-                        </span>
+                        {/* Non-interactive on purpose: the whole row is the button, and nesting one button
+                            inside another is invalid HTML. */}
+                        <TickButton checked={on} size={22} style={{ marginRight: 10 }} />
                         <i className={`ph ${PORTION_ICON[t.category]}`} style={{ fontSize: 16, color: on ? "var(--color-accent-300)" : "var(--color-neutral-500)", marginRight: 10 }} />
                         <div style={{ flex: 1, opacity: on ? 1 : 0.62 }}>
                           <div style={{ fontSize: 12.5, color: on ? "var(--color-accent-200)" : "var(--color-neutral-200)" }}>{t.category}</div>

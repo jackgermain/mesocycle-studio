@@ -7,6 +7,7 @@ import { effortOwedSet } from "../shared/effortOwed";
 import type { WorkExercise, WorkSet } from "../data/types";
 import type { LoadMode } from "../coach/types";
 import { isSpecialSet, specialSummary, stepLoad, typeLabel } from "./exerciseHelpers";
+import { TickButton } from "../components/UI";
 
 /** A set's weight/reps value, editable by tapping the +/- buttons OR tapping the number itself and typing
  * a value directly -- the +/- alone made sense on a phone, but not once this app also needs to work with a
@@ -263,13 +264,9 @@ export function ExerciseSection({
                 </span>
                 <span style={{ fontSize: 12.5, color: "var(--color-accent)" }}>{s.checked ? "Edit" : "Start"}</span>
               </button>
-              {s.checked ? (
-                <div style={{ width: 26, height: 26, borderRadius: 7, background: "var(--color-accent)", display: "flex", alignItems: "center", justifyContent: "center", justifySelf: "center" }}>
-                  <i className="ph-fill ph-check" style={{ fontSize: 14, color: "#123726" }} />
-                </div>
-              ) : (
-                <div style={{ width: 26, height: 26, borderRadius: 7, border: "1.5px solid var(--color-neutral-700)", justifySelf: "center" }} />
-              )}
+              {/* Not interactive: the row itself opens the live-set screen, which is where a dropset or
+                  cluster actually gets ticked. Same control as everywhere else so the state reads the same. */}
+              <TickButton checked={s.checked} tone={s.checked ? "accent" : "neutral"} style={{ justifySelf: "center" }} />
             </div>
           );
         }
@@ -278,8 +275,6 @@ export function ExerciseSection({
         const numColor = s.checked ? (s.isWarmup ? "var(--color-neutral-300)" : "var(--color-accent-300)") : warmupTint ? "var(--color-neutral-400)" : "var(--color-neutral-500)";
         const valueColor = s.checked ? (s.isWarmup ? "var(--color-neutral-100)" : "var(--color-neutral-300)") : "var(--color-text)";
         const controlColor = s.checked ? (s.isWarmup ? "var(--color-neutral-400)" : "var(--color-accent-400)") : "var(--color-neutral-500)";
-        const checkboxBorder = s.checked ? "none" : warmupTint ? "1.5px solid var(--color-neutral-500)" : "1.5px solid var(--color-accent)";
-        const checkboxBg = s.checked ? (s.isWarmup ? "var(--color-neutral-600)" : "var(--color-accent)") : "none";
 
         return (
           <div key={s.id} className="setrow" style={{ gridTemplateColumns: COLS_ROW, background: rowBg, borderRadius: s.checked ? 8 : 0, padding: s.checked ? "0 6px" : 0, margin: s.checked ? "2px -6px" : 0 }}>
@@ -336,26 +331,14 @@ export function ExerciseSection({
                 {s.prescribed.effort?.value ?? "—"}
               </span>
             )}
-            <button
-              onClick={readOnly ? undefined : () => toggle(s)}
+            <TickButton
+              checked={s.checked}
+              onClick={() => toggle(s)}
               disabled={!!readOnly}
-              style={{
-                width: 26,
-                height: 26,
-                borderRadius: 7,
-                border: checkboxBorder,
-                background: checkboxBg,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                justifySelf: "center",
-                cursor: readOnly ? "default" : "pointer",
-                opacity: readOnly ? 0.5 : 1,
-              }}
-              aria-label={`Tick set ${label}`}
-            >
-              {s.checked && <i className="ph-fill ph-check" style={{ fontSize: 14, color: s.isWarmup ? "var(--color-neutral-100)" : "#123726" }} />}
-            </button>
+              tone={s.isWarmup ? "neutral" : "accent"}
+              label={`Tick set ${label}`}
+              style={{ justifySelf: "center" }}
+            />
           </div>
         );
       })}

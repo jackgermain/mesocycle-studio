@@ -501,6 +501,62 @@ export function HeroStat({
   );
 }
 
+/** The one control for "this is done" — ticking off a set, a food, a portion, a setting.
+ *
+ * It was hand-rolled in five places with copy-pasted inline styles, which is exactly why they had drifted
+ * apart. Solid accent fill when done, a plain outline when not, and NO tick glyph inside: the fill carries
+ * the state, so it reads as a button you press rather than a form checkbox you fill in.
+ *
+ * Renders a <span> when given no onClick, because two of its homes sit INSIDE another button (a portion
+ * row, a settings row) and a <button> nested in a <button> is invalid HTML — which is why those call sites
+ * were already using a span of their own. */
+export function TickButton({
+  checked,
+  onClick,
+  label,
+  size = 26,
+  tone = "accent",
+  disabled,
+  style,
+}: {
+  checked: boolean;
+  onClick?: () => void;
+  label?: string;
+  size?: number;
+  tone?: "accent" | "neutral";
+  disabled?: boolean;
+  style?: React.CSSProperties;
+}) {
+  const fill = tone === "neutral" ? "var(--color-neutral-600)" : "var(--color-accent)";
+  const edge = tone === "neutral" ? "var(--color-neutral-500)" : "var(--color-accent)";
+  const base: React.CSSProperties = {
+    width: size,
+    height: size,
+    flex: "none",
+    // Tracks .btn's 10px radius and scales with the control, so this belongs to the same family of object
+    // as every other button instead of looking like a checkbox.
+    borderRadius: Math.max(7, Math.round(size * 0.38)),
+    padding: 0,
+    boxSizing: "border-box",
+    background: checked ? fill : "transparent",
+    border: checked ? "none" : `1.5px solid ${edge}`,
+    transition: "background 0.12s ease, transform 0.08s ease",
+    ...style,
+  };
+  // The parent button already carries the label in the non-interactive case, so this is decoration.
+  if (!onClick) return <span aria-hidden style={{ display: "block", ...base }} />;
+  return (
+    <button
+      type="button"
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      aria-pressed={checked}
+      aria-label={label}
+      style={{ ...base, display: "block", cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.5 : 1 }}
+    />
+  );
+}
+
 export function StatCell({ label, value, valueColor }: { label: string; value: React.ReactNode; valueColor?: string }) {
   return (
     <div style={{ flex: 1 }}>
