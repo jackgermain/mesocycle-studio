@@ -45,7 +45,7 @@ export interface AppState {
 
 /** A brand-new account's starting state — nothing prescribed yet, waiting on either the coach to build a
  * program or (for a friend/family account) the person to build/clone their own from /build. */
-function buildBlankState(ownerName: string, coachName: string): AppState {
+export function buildBlankState(ownerName: string, coachName: string): AppState {
   return {
     onboarded: false,
     profile: buildSelfProfile(ownerName),

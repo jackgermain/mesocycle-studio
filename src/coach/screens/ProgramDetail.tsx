@@ -13,6 +13,9 @@ import { resizeDows } from "../../shared/trainingDays";
 import { CARDIO_DEFAULT, REST_STEP, formatDuration, workStep } from "../cardio";
 import { defaultRestSec } from "../rest";
 import { isPendingProgram } from "../programOps";
+import { useAuth } from "../../lib/auth";
+import { expandCoachProgramToProgram } from "../../shared/programConvert";
+import { writeProgramToSelf } from "../assignProgram";
 import type { BuilderExercise, BuilderSet, CoachProgram, LibraryExercise, LoadMode } from "../types";
 
 /** Weekly volume landmarks (RP-style MEV/MRV) for the muscle groups coaches actually program direct volume for. */
@@ -46,6 +49,10 @@ export default function ProgramDetail() {
   const assignToClient = assignToId ? state.clients.find((c) => c.id === assignToId) : null;
   const [week, setWeek] = useState(1);
   const [showAiEdit, setShowAiEdit] = useState(false);
+  // Above the `if (!program) return` below on purpose: a hook under that early return runs on the second
+  // render and not the first, which is React #310.
+  const { account, enterClientPreview } = useAuth();
+  const [selfBusy, setSelfBusy] = useState(false);
 
   // Lets the always-on button act on this template from anywhere on the screen, with the same behaviour
   // as the header button beside the title.
@@ -113,6 +120,26 @@ export default function ProgramDetail() {
   // Was `program.weeks` unconditionally: every program's last week was labelled a deload whether or not
   // it was one, and an open-ended block has no last week to label at all.
   const deloadWeek = program.openEnded || program.hasDeload === false ? null : program.weeks;
+
+  /** Put this program on your own training rather than a client's, and drop straight into it.
+   *
+   * Same expand-then-write as assigning to a client, minus the ASSIGN_PROGRAM bookkeeping -- that records
+   * the assignment against a row in the roster, and the coach is not on their own roster. */
+  async function startOnMyself() {
+    if (!program || !account) return;
+    const name = account.display_name || "Coach";
+    if (!window.confirm(`Start "${program.name}" on your own training? This replaces whatever you're currently training as yourself.`)) return;
+    setSelfBusy(true);
+    try {
+      await writeProgramToSelf(account.id, expandCoachProgramToProgram(program, name), name, name);
+      enterClientPreview();
+      nav("/block");
+    } catch (e) {
+      dispatch({ type: "SHOW_TOAST", message: e instanceof Error ? e.message : "Couldn't start this — try again." });
+      setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3500);
+      setSelfBusy(false);
+    }
+  }
 
   return (
     <div className="screen">
@@ -317,6 +344,21 @@ export default function ProgramDetail() {
           <button className="btn btn-solid btn-block" style={{ height: 48 }} onClick={() => nav(`/coach/programs/${program.id}/assign`)}>
             <i className="ph ph-user-plus" style={{ fontSize: 14 }} />
             Assign to a client
+          </button>
+        )}
+
+        {/* Coach accounts only. The /coach route already gates this screen to coaches, so this is belt and
+            braces rather than the boundary -- but it is the thing that makes "assign to myself" a coach
+            capability rather than something that would follow the screen if it ever moved. */}
+        {account?.role === "coach" && (
+          <button
+            className="btn btn-secondary btn-block"
+            style={{ height: 44, opacity: selfBusy ? 0.6 : 1 }}
+            disabled={selfBusy}
+            onClick={startOnMyself}
+          >
+            <i className="ph ph-barbell" style={{ fontSize: 14 }} />
+            {selfBusy ? "Starting…" : "Start this on myself"}
           </button>
         )}
 

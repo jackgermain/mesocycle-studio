@@ -2,6 +2,7 @@ import { supabase } from "../lib/supabase";
 import type { Program } from "../data/types";
 import type { CoachProgram } from "./types";
 import { blankState } from "./store";
+import { buildBlankState, type AppState } from "../state/store";
 
 /** Writes a real Program straight into a client's own client_state row -- the same place their live
  * training data already lives, so it shows up exactly like anything the client built themselves. RLS
@@ -16,6 +17,28 @@ export async function writeProgramToClient(clientAccountId: string, program: Pro
   // program that's now being replaced, so it no longer makes sense to auto-start it later.
   const next = { ...existing, program, nextProgram: null };
   const { error } = await supabase.from("client_state").upsert({ account_id: clientAccountId, data: next, updated_at: new Date().toISOString() });
+  if (error) throw error;
+}
+
+/** Puts a program on the COACH'S OWN training, the thing "Train as myself" opens.
+ *
+ * Deliberately not writeProgramToClient(account.id, ...), even though the RLS policies allow it. A coach's
+ * client_state row is seeded as '{}' when they sign up (0020_coach_invites.sql) and a coach never goes
+ * through client onboarding, so that row has no `profile`. StoreProvider only hydrates when BOTH `profile`
+ * and `program` are present -- writing just the program would leave the coach on a blank block with no sign
+ * anything had happened, and nothing to point at. Merging onto buildBlankState() gives the row the profile
+ * it never had, and keeps whatever is already there (weigh-ins, meals, past logs) untouched. */
+export async function writeProgramToSelf(
+  coachAccountId: string,
+  program: Program,
+  ownerName: string,
+  coachName: string,
+): Promise<void> {
+  const { data, error: readError } = await supabase.from("client_state").select("data").eq("account_id", coachAccountId).maybeSingle();
+  if (readError) throw readError;
+  const existing = (data?.data ?? {}) as Partial<AppState>;
+  const next = { ...buildBlankState(ownerName, coachName), ...existing, program, nextProgram: null };
+  const { error } = await supabase.from("client_state").upsert({ account_id: coachAccountId, data: next, updated_at: new Date().toISOString() });
   if (error) throw error;
 }
 
