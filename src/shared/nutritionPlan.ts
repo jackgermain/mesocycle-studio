@@ -52,6 +52,36 @@ export function proteinPerLb(ratePctPerWeek?: number): number {
 /** Fat as a share of total calories, with carbs taking whatever is left. */
 export const FAT_SHARE_OF_KCAL = 0.25;
 
+/** Atwater factors: what a gram of each macro is worth in calories. These are physiology, not doctrine —
+ * every food label, and both food databases this app reads, are built on them. Which is exactly why the
+ * targets have to obey them too: a target of 2,500 kcal made of grams that come to 2,350 is a target the
+ * meal log can never hit, because the log adds its food up at 4/4/9 and always will. */
+export const KCAL_PER_G_PROTEIN = 4;
+export const KCAL_PER_G_CARB = 4;
+export const KCAL_PER_G_FAT = 9;
+
+/** The calories a set of macros actually is. There is no second opinion about this number: calories are not
+ * a fifth thing to be set alongside the grams, they are what the grams come to. */
+export function kcalFromMacros(m: { protein: number; carbs: number; fat: number }): number {
+  return Math.round(m.protein * KCAL_PER_G_PROTEIN + m.carbs * KCAL_PER_G_CARB + m.fat * KCAL_PER_G_FAT);
+}
+
+/** Carbs that make protein + carbs + fat come to `kcal`.
+ *
+ * Carbs are the give: protein is prescribed from bodyweight (N7) and fat is a share of the budget, so when a
+ * calorie figure is what moved, carbs are what absorbs it — the same order macrosFor already fills them in.
+ *
+ * Floored at zero, which means a calorie figure below protein + fat alone is not reachable. The caller must
+ * show the real total in that case rather than the one that was asked for; see NutritionForm.
+ *
+ * Whole grams are also granular: a carb gram is 4 kcal, so only totals 4 apart are reachable and a request
+ * that falls between two of them lands up to 2 kcal away. That difference is visible -- ask for 1,800 and the
+ * calorie line reads 1,802 -- and it is meant to be. The line always shows what the grams come to; showing
+ * the figure that was typed while the grams said otherwise is the bug this whole file exists to prevent. */
+export function carbsToHitKcal(kcal: number, protein: number, fat: number): number {
+  return Math.max(0, Math.round((kcal - protein * KCAL_PER_G_PROTEIN - fat * KCAL_PER_G_FAT) / KCAL_PER_G_CARB));
+}
+
 /** N6. A correction needs a window long enough that real change outruns daily water swings. */
 export const RATE_WINDOW_DAYS = 28;
 export const MIN_RATE_SPAN_DAYS = 10;
@@ -189,8 +219,12 @@ export interface Macros {
 export function macrosFor(kcal: number, bodyweightLb: number, ratePctPerWeek?: number): Macros {
   const protein = Math.round(bodyweightLb * proteinPerLb(ratePctPerWeek));
   const fat = Math.round((kcal * FAT_SHARE_OF_KCAL) / 9);
-  const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
-  return { kcal, protein, carbs, fat };
+  const carbs = carbsToHitKcal(kcal, protein, fat);
+  // The true sum of the grams above, not the `kcal` that was asked for. Rounding each macro to a whole gram
+  // moves the total by a few calories, and floored carbs can move it a lot; reporting the requested figure
+  // here would ship a Macros object whose own four numbers disagree. `targetKcal` on the Plan is still what
+  // was aimed at -- this is what was actually prescribed.
+  return { kcal: kcalFromMacros({ protein, carbs, fat }), protein, carbs, fat };
 }
 
 export interface PlanInput extends BodyInputs {

@@ -13,6 +13,11 @@ import {
   weeklyChangeLb,
   dailyDeltaKcal,
   macrosFor,
+  kcalFromMacros,
+  carbsToHitKcal,
+  KCAL_PER_G_PROTEIN,
+  KCAL_PER_G_CARB,
+  KCAL_PER_G_FAT,
   proteinPerLb,
   PROTEIN_G_PER_LB,
   PROTEIN_G_PER_LB_CUT_LO,
@@ -283,4 +288,75 @@ test("N4: losing past the cap is flagged, not congratulated", () => {
   // Deliberately not a borderline rate: the raised cap has to clearly admit something the strict cap refuses.
   assert.equal(isCuttingTooFast(mid, 35), false, "the raised cap applies to the check too");
   assert.equal(isCuttingTooFast(fast, 35), true, "even the raised cap is still a cap");
+});
+
+// ---- Calories are what the grams come to, not a fifth number to set --------
+
+test("a gram of each macro is worth what every food label says", () => {
+  assert.equal(KCAL_PER_G_PROTEIN, 4);
+  assert.equal(KCAL_PER_G_CARB, 4);
+  assert.equal(KCAL_PER_G_FAT, 9);
+});
+
+test("kcalFromMacros adds the grams up at 4/4/9", () => {
+  assert.equal(kcalFromMacros({ protein: 180, carbs: 250, fat: 70 }), 2350);
+  assert.equal(kcalFromMacros({ protein: 0, carbs: 0, fat: 0 }), 0);
+});
+
+test("bumping protein by 10 g moves the calorie line by 40, not by nothing", () => {
+  const before = kcalFromMacros({ protein: 180, carbs: 250, fat: 70 });
+  const after = kcalFromMacros({ protein: 190, carbs: 250, fat: 70 });
+  assert.equal(after - before, 10 * KCAL_PER_G_PROTEIN);
+  assert.equal(after - before, 40);
+});
+
+test("each macro moves the calorie line by its own factor", () => {
+  const base = { protein: 180, carbs: 250, fat: 70 };
+  assert.equal(kcalFromMacros({ ...base, carbs: base.carbs + 10 }) - kcalFromMacros(base), 40);
+  assert.equal(kcalFromMacros({ ...base, fat: base.fat + 10 }) - kcalFromMacros(base), 90);
+});
+
+test("carbsToHitKcal lands exactly on a figure that whole grams can reach", () => {
+  // 180 g protein and 70 g fat are 1,350 kcal, and every carb gram adds 4 — so the reachable totals are
+  // 1,350 + 4n and nothing between them.
+  for (const target of [1750, 2350, 2750, 3350]) {
+    const carbs = carbsToHitKcal(target, 180, 70);
+    assert.equal(kcalFromMacros({ protein: 180, carbs, fat: 70 }), target);
+  }
+});
+
+test("carbsToHitKcal gets within one carb gram of a figure that whole grams cannot reach", () => {
+  // 1,800 sits between 1,798 and 1,802 and is neither. The calorie line then shows the total the grams
+  // really come to, which is the whole point -- showing the 1,800 that was asked for would be the old bug.
+  for (const target of [1800, 2000, 2500, 3000]) {
+    const carbs = carbsToHitKcal(target, 180, 70);
+    const actual = kcalFromMacros({ protein: 180, carbs, fat: 70 });
+    assert.ok(Math.abs(actual - target) <= 2, `asked ${target}, landed ${actual}`);
+  }
+});
+
+test("carbs floor at zero, and the real total is then higher than the figure asked for", () => {
+  // 180 g protein and 70 g fat are 1,350 kcal on their own; 1,000 is not reachable without cutting one.
+  const carbs = carbsToHitKcal(1000, 180, 70);
+  assert.equal(carbs, 0);
+  assert.equal(kcalFromMacros({ protein: 180, carbs, fat: 70 }), 1350);
+});
+
+test("macrosFor returns four numbers that agree with each other", () => {
+  for (const kcal of [1600, 2000, 2500, 3200]) {
+    for (const bw of [140, 190, 250]) {
+      for (const rate of [-0.5, 0, 0.25]) {
+        const m = macrosFor(kcal, bw, rate);
+        assert.equal(m.kcal, kcalFromMacros(m), `macrosFor(${kcal}, ${bw}, ${rate}) disagrees with itself`);
+      }
+    }
+  }
+});
+
+test("a whole plan's macros agree with their own calorie figure", () => {
+  const plan = buildPlan({ bodyweightLb: 200, bodyFatPct: 18, ratePctPerWeek: -0.5 });
+  assert.equal(plan.macros.kcal, kcalFromMacros(plan.macros));
+  // The target is what was aimed at; whole-gram rounding puts a few calories between the two, which is
+  // exactly why the stored figure is the macros' own and not the target.
+  assert.ok(Math.abs(plan.macros.kcal - plan.targetKcal) <= 4);
 });

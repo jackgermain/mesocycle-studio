@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Seg, Stepper, TickButton } from "../components/UI";
 import { defaultPortionTargets } from "../data/mockData";
-import { buildPlan, estimateMaintenance, cutCapPct, proteinPerLb } from "./nutritionPlan";
+import {
+  buildPlan,
+  estimateMaintenance,
+  cutCapPct,
+  proteinPerLb,
+  kcalFromMacros,
+  carbsToHitKcal,
+  FAT_SHARE_OF_KCAL,
+  KCAL_PER_G_PROTEIN,
+  KCAL_PER_G_CARB,
+  KCAL_PER_G_FAT,
+} from "./nutritionPlan";
 import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../data/types";
 
 type Cadence = "off" | "3x" | "5x";
@@ -66,7 +77,6 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   const [mode, setMode] = useState<NutritionMode>(profile.nutritionMode);
   const [cadence, setCadence] = useState<Cadence>(profile.weighInsPerWeek === 0 ? "off" : profile.weighInsPerWeek === 3 ? "3x" : "5x");
   const [days, setDays] = useState<boolean[]>(() => DAY_KEYS.map((k) => profile.weighInDays.includes(k)));
-  const [kcal, setKcal] = useState(profile.macroTargets.kcal);
   const [protein, setProtein] = useState(profile.macroTargets.protein);
   const [carbs, setCarbs] = useState(profile.macroTargets.carbs);
   const [fat, setFat] = useState(profile.macroTargets.fat);
@@ -82,14 +92,25 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
     profile.maintenanceKcal ?? estimateMaintenance({ bodyweightLb: profile.bodyweight || 200, bodyFatPct: profile.bodyFatPct ?? 20 }).kcal,
   );
 
+  // Calories are derived from the grams, never stored beside them. A 2,500 kcal target made of grams that
+  // come to 2,350 is a target the meal log can never hit, because the log adds food up at 4/4/9 and always
+  // will. These were four independent useState values before, free to drift apart the moment anyone touched
+  // a stepper -- and the shipped defaults were already 130 kcal out of step with their own grams.
+  const kcal = kcalFromMacros({ protein, carbs, fat });
+
+  // Editing the calorie line moves carbs, because carbs are the give: protein is prescribed from bodyweight
+  // (N7) and fat is a share of the budget, which is the same order macrosFor fills them in. Below protein and
+  // fat alone carbs floor at zero and the calorie line settles at the real total rather than the figure that
+  // was typed -- the number on screen is always what the grams come to.
+  const setKcalViaCarbs = (v: number) => setCarbs(carbsToHitKcal(v, protein, fat));
+
+  /** Re-split the same calorie budget: N7's protein, fat at its share, carbs taking the rest. */
   function applySuggestion() {
     const p = suggestedProtein;
-    const fatG = Math.round((kcal * 0.25) / 9);
-    const remaining = Math.max(0, kcal - p * 4 - fatG * 9);
-    const carbsG = Math.round(remaining / 4);
+    const fatG = Math.round((kcal * FAT_SHARE_OF_KCAL) / KCAL_PER_G_FAT);
     setProtein(p);
     setFat(fatG);
-    setCarbs(carbsG);
+    setCarbs(carbsToHitKcal(kcal, p, fatG));
   }
 
   // N1/N2/N3 all live in shared/nutritionPlan.ts so the cap is enforced in one tested place rather than
@@ -111,7 +132,11 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   const suggestedProtein = Math.round(calcBw * proteinPerLbNow);
 
   function applyRate() {
-    setKcal(targetKcal);
+    // Sets the three macros, and the calorie line follows them -- there is no separate calorie number to set.
+    // plan.macros already carries the protein N7 asks for at this rate, so this lands the whole set at once.
+    setProtein(plan.macros.protein);
+    setFat(plan.macros.fat);
+    setCarbs(plan.macros.carbs);
     // N3 binds on the request, not just on the advice: if they asked for more than the cap allows, the
     // stored target comes back to the cap too, rather than leaving the form showing one thing and the
     // saved number meaning another.
@@ -140,7 +165,10 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
       // rather than whatever the hand-edit fields were last left on. Off, nothing is computed behind their
       // back and the typed values stand.
       macroTargets: derived
-        ? { kcal: plan.targetKcal, protein: plan.macros.protein, carbs: plan.macros.carbs, fat: plan.macros.fat, trainingDayCarbBonus: carbBonus }
+        // plan.macros.kcal, not plan.targetKcal: the target is what was aimed at, the macros are what was
+        // actually prescribed, and whole-gram rounding puts a few calories between them. The stored figure
+        // has to be the one the grams come to.
+        ? { kcal: plan.macros.kcal, protein: plan.macros.protein, carbs: plan.macros.carbs, fat: plan.macros.fat, trainingDayCarbBonus: carbBonus }
         : { kcal, protein, carbs, fat, trainingDayCarbBonus: carbBonus },
       portionTargets: portions,
       // Always the plan's own label, so it can never drift from the rate actually stored beside it. It used
@@ -337,15 +365,29 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               {calcBf >= 30 && " Body fat is high enough here that the cap is raised."}
             </div>
             <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applyRate}>
-              Apply — sets kcal target and rate label below
+              Apply — sets the macro targets and rate label below
             </button>
           </div>
 
+          {/* Four numbers, one object. Bump protein by 10 g and the calorie line goes up 40 on its own. */}
           <div className="cell">
-            <CalcRow label="Calories" unit="kcal" value={kcal} onChange={setKcal} step={50} />
+            <CalcRow label="Calories" unit="kcal" value={kcal} onChange={setKcalViaCarbs} step={50} />
             <CalcRow label="Protein" unit="g" value={protein} onChange={setProtein} step={5} />
             <CalcRow label="Carbs" unit="g" value={carbs} onChange={setCarbs} step={10} />
             <CalcRow label="Fat" unit="g" value={fat} onChange={setFat} step={5} />
+            <div className="mu" style={{ marginTop: 7, lineHeight: 1.5 }}>
+              <span className="num">{protein * KCAL_PER_G_PROTEIN}</span> from protein ·{" "}
+              <span className="num">{carbs * KCAL_PER_G_CARB}</span> from carbs ·{" "}
+              <span className="num">{fat * KCAL_PER_G_FAT}</span> from fat. Change a macro and the calories
+              follow it; change the calories and carbs move to meet them.
+            </div>
+            {carbs === 0 && (
+              <div className="mu" style={{ marginTop: 6, lineHeight: 1.5, color: "var(--color-accent-200)" }}>
+                <i className="ph ph-info" style={{ fontSize: 13, marginRight: 5 }} />
+                Protein and fat alone come to {kcal} kcal, so nothing lower is reachable without lowering one
+                of them.
+              </div>
+            )}
           </div>
           <div className="cell" style={{ marginTop: 8 }}>
             <CalcRow label="Training day bonus" unit="g carbs" value={carbBonus} onChange={setCarbBonus} step={10} />

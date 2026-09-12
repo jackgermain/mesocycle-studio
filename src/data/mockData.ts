@@ -18,7 +18,9 @@ export const clientProfile: ClientProfile = {
   weighInsPerWeek: 3,
   weighInDays: ["Mon", "Wed", "Fri"],
   nutritionMode: "macros",
-  macroTargets: { kcal: 2500, protein: 200, carbs: 300, fat: 70, trainingDayCarbBonus: 40 },
+  // 2,630 is what these grams come to at 4/4/9, not a rounder number typed beside them: calories are the sum
+  // of the macros, and a seed profile that breaks that ships the disagreement to every new account.
+  macroTargets: { kcal: 2630, protein: 200, carbs: 300, fat: 70, trainingDayCarbBonus: 40 },
   portionTargets: defaultPortionTargets,
   rateTargetLabel: "Maintenance",
   bodyFatPct: 20,
@@ -40,7 +42,9 @@ export function buildSelfProfile(name: string): ClientProfile {
     weighInsPerWeek: 0,
     weighInDays: [],
     nutritionMode: "off",
-    macroTargets: { kcal: 2500, protein: 180, carbs: 250, fat: 70, trainingDayCarbBonus: 0 },
+    // Likewise 2,350, which is what 180/250/70 actually is. It read 2,500 before, so a brand-new account's
+    // first look at its own targets was 150 kcal out of step with its own grams.
+    macroTargets: { kcal: 2350, protein: 180, carbs: 250, fat: 70, trainingDayCarbBonus: 0 },
     portionTargets: defaultPortionTargets,
     rateTargetLabel: "Maintenance",
     // No body-fat guess for someone we know nothing about: absent is a usable state that downgrades the

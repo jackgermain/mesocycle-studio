@@ -114,6 +114,36 @@ the most.** Any implementation where a bulk demands more protein than a cut has 
 **Rule — read protein off the *capped* rate,** not the requested one. A "fast cut" that N3 held back to 0.5%
 is not actually running a steep deficit, and should not be fed as though it were.
 
+**N8 — Calories are not a number you set. They are what the grams come to.**
+
+> *"When setting up nutrition macros, for every gram, have the current inputted grams of protein, fat and
+> carbs total the correct calorie count. If someone bumps their protein by 10 g, make sure that reflects a
+> [40] cal increase in the setup."*
+
+**The figure in that sentence was 50; it is 40.** A gram of protein is 4 calories, so ten of them are forty.
+Carbs are 4 as well and fat is 9 — the Atwater factors, which is what every food label and both food
+databases this app reads are built on. Building 5 kcal per gram of protein because the sentence said 50
+would have put every target permanently out of step with the meal log that has to fill it. The instruction
+is right and the arithmetic in the example is a slip; the instruction is what was built.
+
+**Rule — calories = 4×protein + 4×carbs + 9×fat, with no exceptions and no second opinion.** A target of
+2,500 kcal made of grams that come to 2,350 is a target nobody can hit, because the log adds food up at
+4/4/9 and always will. Before this rule the setup screen held four independent numbers and the shipped
+defaults were already 130 and 150 kcal out of step with their own grams.
+
+**Rule — touch a macro and the calorie line follows it.** That is the direction the rule is stated in and
+the one that matters: a person adds protein and sees what it costs.
+
+**Rule — touch the calorie line and carbs give.** Protein is prescribed from bodyweight (N7) and fat is a
+share of the budget, so carbs are the remainder — the same order the targets are built in to begin with.
+Protein is never silently moved to make a calorie figure work.
+
+**Rule — when the grams cannot reach the figure, the grams win and the screen says what they come to.**
+Carbs are whole grams worth 4 kcal each, so only totals 4 apart exist: ask for 1,800 on top of 180 g protein
+and 70 g fat and it lands on 1,802. Showing the 1,800 that was typed while the grams said 1,802 is precisely
+the thing this rule forbids. The same holds at the floor — below protein and fat alone, carbs stop at zero
+and the calorie line reads the real total, which is higher than what was asked for.
+
 ---
 
 ## Still to rule on
@@ -126,3 +156,7 @@ is not actually running a steep deficit, and should not be fed as though it were
 4. **Whether the cut band should widen.** N7 settles the numbers, but 1.1–1.2 is a narrow band and the top
    of it is reached at the ordinary 0.5%/week cap — so an aggressive cut and a standard one are prescribed
    the same protein. Whether a genuinely hard cut deserves more than 1.2 is open.
+5. **The training-day carb bonus is outside N8.** It adds grams — 40 g of carbs is 160 kcal — on training
+   days only, and nothing on screen says what that does to the day's calories. N8 makes the four target
+   numbers agree with each other; it does not yet say whether a training day's calorie target is supposed to
+   rise by the bonus, or whether the bonus is meant to be swapped in against something else.
