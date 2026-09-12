@@ -271,7 +271,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               is where it goes up. Fat and carbs fill in around it, and you can hand-edit anything below.
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={5} />
+              <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={1} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
               <div className="row">
@@ -300,7 +300,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               What {who} burn{subjectFirstName ? "s" : ""} in a day, holding weight. Everything below is an offset from it, so a wrong number here makes every target wrong the same way. Worked out from lean mass, which needs no age or sex.
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={5} />
+              <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={1} />
               <CalcRow label="Body fat" unit="%" value={calcBf} onChange={setCalcBf} step={1} max={75} />
               <CalcRow label="Maintenance" unit="kcal" value={maintenance} onChange={setMaintenance} step={50} />
             </div>
@@ -369,12 +369,15 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             </button>
           </div>
 
-          {/* Four numbers, one object. Bump protein by 10 g and the calorie line goes up 40 on its own. */}
+          {/* Four numbers, one object. Bump protein by 10 g and the calorie line goes up 40 on its own.
+              The macros step by a single gram, which is the unit they are prescribed and logged in -- a
+              5- or 10-gram step cannot land on every number a person can actually eat. Big moves are typed
+              into the field rather than tapped; the step is for the last gram or two. */}
           <div className="cell">
             <CalcRow label="Calories" unit="kcal" value={kcal} onChange={setKcalViaCarbs} step={50} />
-            <CalcRow label="Protein" unit="g" value={protein} onChange={setProtein} step={5} />
-            <CalcRow label="Carbs" unit="g" value={carbs} onChange={setCarbs} step={10} />
-            <CalcRow label="Fat" unit="g" value={fat} onChange={setFat} step={5} />
+            <CalcRow label="Protein" unit="g" value={protein} onChange={setProtein} step={1} />
+            <CalcRow label="Carbs" unit="g" value={carbs} onChange={setCarbs} step={1} />
+            <CalcRow label="Fat" unit="g" value={fat} onChange={setFat} step={1} />
             <div className="mu" style={{ marginTop: 7, lineHeight: 1.5 }}>
               <span className="num">{protein * KCAL_PER_G_PROTEIN}</span> from protein ·{" "}
               <span className="num">{carbs * KCAL_PER_G_CARB}</span> from carbs ·{" "}
