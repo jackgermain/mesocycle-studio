@@ -67,6 +67,15 @@ One row per person in `accounts`, 1:1 with Supabase `auth.users`. Sign-in is **p
 | `client` | Fully prescribed — sees only what their coach builds for them. |
 | `friend` | Self-directed. **Shown in the app as "General"** (renamed from "friend/family"); the stored role value is still `friend`, so the rename needed no migration and every RLS policy and RPC that checks `role = 'friend'` is untouched. Builds/clones their own programs, sets their own nutrition targets. Still attached to a coach who can view and edit their stuff. |
 
+**Who controls what, and it is not symmetric.** Training progressions belong to the coach in every case:
+the app proposes next week's loads after a session and *the coach* reviews them. A General account does
+**not** approve its own loads and gets no switch for it — the only account that does is a coach training
+themselves, because there the athlete and the reviewer are the same person. Nutrition is the other way
+round: a General account owns its own targets and can turn auto nutrition programming on and off from its
+own Nutrition tab. Both switches live in `src/shared/AutomationToggles.tsx` and each carries its own gate,
+so a call site cannot get the gate wrong — which it did once, handing a General account a switch over its
+coach's mechanism.
+
 Two flags sit on top of the roles:
 
 - **`active`** — set false to revoke access. `src/lib/auth.tsx` checks it on every session load and

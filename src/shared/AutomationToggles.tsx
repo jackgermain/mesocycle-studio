@@ -35,14 +35,21 @@ function ToggleRow({ on, title, hint, onToggle }: { on: boolean; title: string; 
 
 /** Whether finishing a session works next week's numbers out for review.
  *
- * Self-directed only: a coached client's progressions are their coach's mechanism and are not theirs to
- * switch off. That covers a General account and a coach training as themselves — which is every account
- * that can reach the Train tab without a coach behind it. */
+ * A coach training themselves, and nobody else. Training progressions belong to the coach in every case:
+ * the app proposes next week's loads and the COACH reviews them. A General account is an athlete whose
+ * loads are reviewed by their coach, not by them, so it gets no switch — Jack: "for general accounts they
+ * do not approve the loads I do... the app makes the progressions for training and I will review them as
+ * only I do review."
+ *
+ * A coach training themselves is the one case where the athlete and the reviewer are the same person,
+ * which is why the switch is theirs. This was briefly gated on "self-directed", which wrongly handed a
+ * General account a switch over their own coach's mechanism. Nutrition is deliberately the opposite —
+ * see AutoNutritionToggle. */
 export function ProgressionToggle() {
   const { state, dispatch } = useStore();
   const { account, previewingAsClient } = useAuth();
-  const selfDirected = account?.role === "friend" || previewingAsClient;
-  if (!selfDirected) return null;
+  const coachTrainingThemselves = account?.role === "coach" && previewingAsClient;
+  if (!coachTrainingThemselves) return null;
 
   // Absent means on — see ClientProfile.autoProgressions for why this is never a falsy check.
   const on = state.profile.autoProgressions !== false;
@@ -69,7 +76,10 @@ export function ProgressionToggle() {
   );
 }
 
-/** Whether calories and macros are worked out from maintenance and a rate, or typed by hand. */
+/** Whether calories and macros are worked out from maintenance and a rate, or typed by hand.
+ *
+ * Unlike progressions, this one IS a General account's to switch: they own their own nutrition targets.
+ * Jack: "they can enable nutrition coaching though." */
 export function AutoNutritionToggle() {
   const { state, dispatch } = useStore();
   const { account, previewingAsClient } = useAuth();
