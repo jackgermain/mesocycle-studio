@@ -22,6 +22,7 @@ EX = {
   "Cable Fly — Mid":               ("Chest", 2),
   "Dumbbell Fly":                  ("Chest", 2),
   "Landmine Press":                ("Front delts", 1),
+  "Seated Shoulder Press Machine": ("Front delts", 1),
   "Dumbbell Lateral Raise":        ("Side delts", 2),
   "Cybex Lateral Raise Machine":   ("Side delts", 2),
   "Freemotion Y Raise":            ("Side delts", 2),
@@ -50,6 +51,9 @@ EX = {
   "Bulgarian Split Squat":         ("Glutes", 0),
   "Smith Machine Split Lunge":      ("Glutes", 0),
   "Barbell RDL":                   ("Hamstrings", 0),
+  # The erectors get their own muscle rather than being folded into hamstrings: for a client training around
+  # low back pain, "how many sets did the lower back get" is the number that has to be visible.
+  "45° Back Extension":            ("Lower back", 2),
   "Seated Leg Curl":               ("Hamstrings", 2),
   "Barbell Hip Thrust":            ("Glutes", 1),
   "Smith Machine Hip Thrust":      ("Glutes", 1),
@@ -65,6 +69,7 @@ EX = {
   "Starfish Crunch":               ("Core", 3),
   "Cable Rotation":                ("Core", 3),
   "Plank Alternating Limb Touch":  ("Core", 3),
+  "Dead Bug":                      ("Core", 3),
 }
 
 LOWER = {"Quads", "Hamstrings", "Glutes", "Calves"}
@@ -83,9 +88,11 @@ LEG_COMPOUNDS = {
 #   Women: glutes, quads, hamstrings; then back; then shoulders with core in the middle; then arms.
 PRIORITY = {
   "M": {"Chest": 1, "Side delts": 1, "Back": 2, "Biceps": 2, "Triceps": 2, "Forearms": 2,
-        "Front delts": 2, "Rear delts": 2, "Core": 3, "Quads": 3, "Hamstrings": 3, "Glutes": 3, "Calves": 3},
+        "Front delts": 2, "Rear delts": 2, "Core": 3, "Quads": 3, "Hamstrings": 3, "Glutes": 3, "Calves": 3,
+        "Lower back": 3},
   "F": {"Glutes": 1, "Quads": 1, "Hamstrings": 1, "Back": 2, "Side delts": 3, "Front delts": 3,
-        "Rear delts": 3, "Core": 3, "Biceps": 4, "Triceps": 4, "Forearms": 4, "Calves": 4},
+        "Rear delts": 3, "Core": 3, "Biceps": 4, "Triceps": 4, "Forearms": 4, "Calves": 4,
+        "Lower back": 3},
 }
 
 def muscle(name): return EX[name][0]

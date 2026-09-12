@@ -35,8 +35,18 @@ E = html.escape
 muscle = lambda n: meta.muscle(orig(n))
 cost = lambda n: meta.cost(orig(n))
 region = lambda n: meta.region(orig(n))
-rank = lambda s, n: meta.rank(s, orig(n))
-top_tier = lambda s, n: meta.top_tier(s, orig(n))
+# A client whose priorities are not the sex default sets PRI_OVERRIDE (muscle -> rank) before ordering: the
+# back-and-shoulders program keys off this rather than forking order_day.
+PRI_OVERRIDE = {}
+
+
+def rank(s, n):
+    m = meta.muscle(orig(n))
+    return PRI_OVERRIDE.get(m, meta.PRIORITY[s].get(m, 4))
+
+
+def top_tier(s, n):
+    return rank(s, n) == 1
 LEG_COMPOUNDS = {ren(n) for n in meta.LEG_COMPOUNDS}
 
 # G77: there is no back-to-back assumption; the week is spread so each muscle gets its recovery. These are the

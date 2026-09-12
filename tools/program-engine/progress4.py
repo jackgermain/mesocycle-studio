@@ -65,6 +65,7 @@ REP_FIRST = {
   "Cable Glute Kickback", "Glute Bridge", "Bulgarian Split Squat", "Smith Machine Split Lunge",
   "Dumbbell Reverse Lunge", "Captain's Chair Leg Raise", "Hanging Leg Raise", "V-Up", "Starfish Crunch",
   "Cable Rotation", "Plank Alternating Limb Touch", "Landmine Press", "Cable Pull-Through",
+  "45° Back Extension", "Dead Bug",
 }
 
 # What the weight is made of decides what one step looks like: (full jump, smallest jump) in lb.
@@ -79,7 +80,7 @@ for _n in ("Smith Machine Squat", "Barbell RDL", "Incline Smith Press", "Barbell
 KIND["Leg Press"] = "plate"
 for _n in ("Chest Press Machine", "Chest Supported Row", "Lat Pulldown", "Seated Cable Row", "Seated Leg Curl",
            "Leg Extension", "Hip Abduction Machine", "Standing Calf Raise", "Seated Calf Raise",
-           "Reverse Pec Deck", "Cybex Lateral Raise Machine"):
+           "Reverse Pec Deck", "Cybex Lateral Raise Machine", "Seated Shoulder Press Machine"):
     KIND[_n] = "stack"
 for _n in ("Cable Curl", "Rope Pushdown", "Overhead Cable Triceps Ext.", "Cable Fly — Mid", "Front Raise — Cable",
            "Straight-Arm Pulldown", "Cable Pull-Through", "Cable Glute Kickback", "Cable Rotation",
@@ -91,7 +92,7 @@ for _n in ("Dumbbell Lateral Raise", "Dumbbell Curl", "Hammer Curl", "Incline Du
            "Dumbbell Reverse Lunge", "Bulgarian Split Squat"):
     KIND[_n] = "db"
 for _n in ("Captain's Chair Leg Raise", "Hanging Leg Raise", "V-Up", "Starfish Crunch",
-           "Plank Alternating Limb Touch"):
+           "Plank Alternating Limb Touch", "45° Back Extension", "Dead Bug"):
     KIND[_n] = "bw"
 
 # What a simulated client picks in week one, (men, women). Illustrative only -- in the app the client
@@ -103,6 +104,7 @@ START = {
   "Chest Press Machine": (120, 60), "Chest Supported Row": (90, 50), "Lat Pulldown": (130, 80),
   "Seated Cable Row": (130, 80), "Seated Leg Curl": (90, 60), "Leg Extension": (100, 60),
   "Hip Abduction Machine": (130, 100), "Standing Calf Raise": (150, 100), "Reverse Pec Deck": (70, 40),
+  "Seated Shoulder Press Machine": (110, 55), "Seated Calf Raise": (90, 55), "Landmine Press": (50, 25),
   "Cybex Lateral Raise Machine": (40, 25), "Cable Curl": (50, 30), "Rope Pushdown": (50, 30),
   "Overhead Cable Triceps Ext.": (40, 25), "Cable Fly — Mid": (30, 15), "Front Raise — Cable": (20, 12.5),
   "Straight-Arm Pulldown": (50, 30), "Cable Pull-Through": (60, 40), "Cable Glute Kickback": (25, 15),
@@ -661,8 +663,10 @@ def simulate(ex):
                 # ten percent increase. Don't be afraid of little load progressions like that too."
                 elif req >= 0.25 and 0 < small_pct < rep_pct and not st["small_steps"]:
                     code, var = "load", "small"
-                    why = (f"G87: {fmt_w(STEP[st['kind']][1])} lb on {fmt_w(max(L))} is {small_pct}%, where a rep "
-                           f"at {max(R)} is {rep_pct}% — the plate is the smaller step")
+                    # The percentage is of the WHOLE load, so the number quoted has to be the whole load too --
+                    # on a weighted pull-up that is bodyweight plus the plate, not the plate on its own.
+                    why = (f"G87: {fmt_w(STEP[st['kind']][1])} lb on {fmt_w(max(L) + st['bw_add'])} is "
+                           f"{small_pct}%, where a rep at {max(R)} is {rep_pct}% — the plate is the smaller step")
                 elif req >= 0.25 and max(R) < room:
                     code, var, why = "rep", 1, f"G64: logged {e_prev}, aiming at {aim_label(target)} — nearly there"
                 else:
@@ -675,7 +679,10 @@ def simulate(ex):
             if (code in ("load", "db", "pin") and var not in ("top1", "drop8", "small") and big
                     and d_prev <= PAST_REPS and not ceiling_hit):
                 if max(R) < room:
-                    code, var = "rep", 1
+                    # G86: the climb to G80's gate is still a progression, so it is sized to the gap like any
+                    # other rep move. Hardcoding one rep here left a lateral raise logging 3 against a rising
+                    # aim for the back half of a block -- the same "not hard enough by the end" Jack flagged.
+                    code, var = "rep", min(2 if req >= 1.0 else 1, room - max(R))
                     why = f"G80: the next weight is a {pct}% jump — reps climb past {PAST_REPS} first"
                 else:
                     code, var, why = least_move(f"a {pct}% jump still waits for reps past {PAST_REPS}")
