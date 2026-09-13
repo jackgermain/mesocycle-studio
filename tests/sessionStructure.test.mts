@@ -17,8 +17,14 @@ import { REGION_OF } from "../src/generator/patterns";
 const LEG_MUSCLES = new Set(["Quads", "Hamstrings", "Glutes", "Calves", "Adductors"]);
 const SMALL_MUSCLES = new Set(["Abs", "Obliques", "Calves", "Forearms"]);
 
-function plan(days: number, profile: "glute-priority" | "upper-priority"): WeekPlan {
-  const w = planWeek(days, { profile });
+/** Abs and calves are `optional: true` in WEEKLY_TARGETS and only enter the coverage plan when the client
+ * asks for them by name. An earlier version of this file called planWeek with no `wants` at all, which left
+ * the finisher pool empty and sent fillAccessories down its fallback -- and I nearly "fixed" a working
+ * function to satisfy my own bad setup. Pass what a real client would ask for. */
+const WANTS_SMALL = ["Abs", "Calves"];
+
+function plan(days: number, profile: "glute-priority" | "upper-priority", wants = WANTS_SMALL): WeekPlan {
+  const w = planWeek(days, { profile, wants });
   assert.ok(w, `planWeek(${days}, ${profile}) returned nothing`);
   return w;
 }
@@ -65,7 +71,7 @@ test("G107: a 3-day glute-priority week leads with legs on at least 2 days", () 
 
 // ---- Observed across all 72: no training day is empty of leg work ---------
 
-test("no glute-priority day is empty of leg work", { todo: "planWeek(5) produces a day with none; that happens in none of his 72" }, () => {
+test("no glute-priority day is empty of leg work", () => {
   for (const days of [2, 3, 4, 5, 6]) {
     plan(days, "glute-priority").forEach((day, i) => {
       assert.ok(dayHasLegs(day), `${days}-day week: day ${i + 1} has no leg work`);
@@ -75,7 +81,7 @@ test("no glute-priority day is empty of leg work", { todo: "planWeek(5) produces
 
 // ---- Observed across all 72: abs or calves appear somewhere in the week ----
 
-test("a week schedules abs or calves somewhere", { todo: "finisher slots take whatever the budget has left, so small muscles are never scheduled" }, () => {
+test("a week schedules abs or calves somewhere", () => {
   for (const days of [2, 3, 4, 5, 6]) {
     for (const profile of ["glute-priority", "upper-priority"] as const) {
       const found = plan(days, profile).flatMap(musclesIn).some((m) => SMALL_MUSCLES.has(m));
@@ -86,7 +92,7 @@ test("a week schedules abs or calves somewhere", { todo: "finisher slots take wh
 
 // ---- G104/G109: the emphasised muscle leads, it does not finish -----------
 
-test("G104: glutes never occupy a finisher slot in a glute-priority week", { todo: "they do, on days 1 and 4 of the 5-day week" }, () => {
+test("G104: glutes never occupy a finisher slot in a glute-priority week", () => {
   for (const days of [2, 3, 4, 5, 6]) {
     plan(days, "glute-priority").forEach((day, i) => {
       const finisherMuscles = day.filter((s) => s.role === "finisher").map((s) => s.muscle);
@@ -98,16 +104,36 @@ test("G104: glutes never occupy a finisher slot in a glute-priority week", { tod
   }
 });
 
-test("a big muscle never occupies a finisher slot", { todo: "Quads and Hamstrings land there too" }, () => {
-  const big = new Set(["Quads", "Hamstrings", "Glutes", "Chest", "Back"]);
+const BIG_MUSCLES = new Set(["Quads", "Hamstrings", "Glutes", "Chest", "Back"]);
+
+test("a big muscle never occupies a finisher slot", () => {
   for (const days of [2, 3, 4, 5, 6]) {
     for (const profile of ["glute-priority", "upper-priority"] as const) {
       plan(days, profile).forEach((day, i) => {
         for (const s of day.filter((x) => x.role === "finisher")) {
-          assert.ok(!big.has(s.muscle ?? ""), `${days}-day ${profile}, day ${i + 1}: ${s.muscle} is a finisher`);
+          assert.ok(!BIG_MUSCLES.has(s.muscle ?? ""), `${days}-day ${profile}, day ${i + 1}: ${s.muscle} is a finisher`);
         }
       });
     }
+  }
+});
+
+/** The fallback on the last line of fillAccessories: with no small muscle in the plan, finisher slots are
+ * filled from the ACCESSORY pool instead. FINISHER_MUSCLES is documented as "small enough to close a session
+ * with -- nothing that competes with a compound for energy", and this puts Glutes and Quads there.
+ *
+ * Open for Jack, because the fix depends on a question I cannot answer: abs and calves are `optional` on his
+ * own words -- "they don't have to unless they really want to" -- but all seventy-two of his templates carry
+ * one, and G102/G110/G115 treat that small muscle as STRUCTURAL, the divider at the end of the leg block.
+ * Either they stop being optional, or a client who declines them should get no finisher slot at all. What
+ * should not happen is a big muscle quietly taking the slot. */
+test("a client who asks for no small muscles is not given a big one as a finisher", { todo: "fillAccessories falls back to the accessory pool; Jack to rule on whether abs/calves stay optional" }, () => {
+  for (const days of [2, 3, 4, 5, 6]) {
+    plan(days, "glute-priority", []).forEach((day, i) => {
+      for (const s of day.filter((x) => x.role === "finisher")) {
+        assert.ok(!BIG_MUSCLES.has(s.muscle ?? ""), `${days}-day week, day ${i + 1}: ${s.muscle} fills a small-muscle slot`);
+      }
+    });
   }
 });
 
