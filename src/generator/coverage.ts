@@ -61,13 +61,20 @@
 
 import { spendOrderFor, PRIORITY_TIERS, WEEKLY_SETS, type GoalPriority } from "./weeklyVolume";
 
-/** **Too coarse — see G108.** Jack's own templates carry their emphasis as a label in the app UI, and there
- * are at least five: Upper Body, Lower Body, Chest & Back, Arms & Shoulders, and the glute case. Two of those
- * are not expressible as "upper" at all, since Chest & Back and Arms & Shoulders differ from each other in
- * which upper muscle leads and in which region is cut to a single slot.
+/** **Too coarse, and not merely too small — see G112.** Jack's templates carry their emphasis as a label in
+ * the app UI, and there are at least seven: Upper Body, Lower Body, Chest & Back, Chest & Triceps, Back &
+ * Biceps, Arms & Shoulders, and the glute case -- the last being the only one never labelled, inferred from
+ * the female set.
  *
- * Extending this is not a type change on its own: LEAD_ROTATION in sessionStructure.ts is keyed by it, and
- * that table is already wrong at two frequencies (see the note there). */
+ * **The axis is muscle PAIRINGS, not regions.** "Chest & Triceps" and "Back & Biceps" are agonist pairings
+ * and "Chest & Back" is a push/pull one. None of them is a region, so widening this into a longer list of
+ * regions still could not express them. An earlier version of this note said the problem was that two labels
+ * were "not expressible as upper"; that understated it and is corrected here.
+ *
+ * Two more things anyone extending this needs. LEAD_ROTATION in sessionStructure.ts is keyed by this type and
+ * is already wrong at three frequencies -- see the note there. And G113: the implement is a SEPARATE axis
+ * from the emphasis, since the same muscle-order skeleton is instantiated once with dumbbells and once with
+ * barbells in two templates that are otherwise identical. */
 export type EmphasisProfile = "upper-priority" | "glute-priority";
 
 export function defaultProfile(sex: "male" | "female" | undefined): EmphasisProfile {

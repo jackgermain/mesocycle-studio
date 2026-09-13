@@ -6411,6 +6411,77 @@ while "two session types run twice" holds in all ten.
 **The seam rule holds here too.** Two of the templates run Quads, Quads, **Calves**, Chest, Back on both of
 their leg days — G102 and G110 in the shape they predict.
 
+**G112 — The emphasis taxonomy is muscle *pairs*, and there are at least seven.**
+
+Twelve male three-day templates, most carrying a label in the app UI. Sixty-three templates now. Two labels
+are new and they change the shape of G108:
+
+| Emphasis label seen | |
+|---|---|
+| Upper Body | recorded in G108 |
+| Lower Body | recorded in G108 |
+| Chest & Back | recorded in G108 |
+| Arms & Shoulders | recorded in G108 |
+| **Back & Biceps** | **new** |
+| **Chest & Triceps** | **new** |
+| *(female set)* glute-priority | inferred, never labelled |
+
+**Rule — emphases are named as muscle pairings, not as regions.** Chest & Triceps and Back & Biceps are the
+classic agonist pairings; Chest & Back is a push/pull pairing. G108 said the type was too coarse at two
+values; it is worse than that, because the axis is not "which region" at all. A widened enum of regions still
+could not express "Chest & Triceps".
+
+**G113 — A template is a muscle-order skeleton; the implement is a separate axis.**
+
+> *"20 Minute Full Body Dumbbell Workout"* … *"20 Minute Full Body Barbell Workout"*
+
+The two run the **identical skeleton** — Chest, Back, Shoulders, Quads, Abs, Hamstrings — with only the
+implement swapped:
+
+| | Dumbbell | Barbell |
+|---|---|---|
+| Chest | Dumbbell Press (High Incline) | Bench Press (Incline, Narrow Grip) |
+| Back | Dumbbell Row (2-Arm) | Barbell Bent Over Row |
+| Shoulders | Dumbbell Upright Row | Barbell Upright Row |
+| Quads | Dumbbell Front Squat | Barbell Squat (High Bar) |
+| Abs | Modified Candlestick | Reaching Sit-Up |
+| Hamstrings | Dumbbell Stiff Legged Deadlift | Stiff-Legged Deadlift |
+
+**Rule — pick the shape first, then fill it from the equipment available.** This is how the generator should
+be built and is not how it is built: `planWeek` chooses patterns, and the exercise choice is a later
+independent step rather than an instantiation of a fixed skeleton.
+
+**Rule — a named preset can carry a time budget and an equipment constraint.** "20 Minute" is a session
+length; "Dumbbell" is a gym-access constraint. `Intake` already collects `sessionLength` and `gymAccess`, and
+neither is connected to template selection.
+
+**Rule — a three-day full-body template is one skeleton run three times.** All three days of both 20-minute
+templates run the same muscle order with different exercises in it.
+
+**This completes a pattern across the frequencies.** A week is N session types repeated to fill the days:
+
+| Days | Structure |
+|---|---|
+| 3 | one type × 3 |
+| 4 | two types × 2 (G111) |
+| 6 | three types × 2 |
+| **5** | **does not divide** — 3 + 2 |
+
+Five is the only frequency with no clean repeat, which may be exactly why `LEAD_ROTATION`'s five-day row is
+the worst in the table.
+
+**G114 — Session order rotates across days, not just compound order.**
+
+The template labelled **Whole Body Daily** runs every muscle on all three days and reverses the order between
+them: Monday opens chest and finishes on calves; Wednesday opens on quads; Friday opens on shoulders and
+arms and finishes on quads.
+
+**Rule — what is trained last one day is trained early another.** This is **G5 rule 4** — *"you also have to
+take into consideration what they did last time… because you wanna make sure that everything gets a lot of
+stimulus"* — applied to the **whole session** rather than only to the choice between two compounds. Whatever
+always goes last is always trained tired, and on a full-body template that is a weekly problem rather than a
+per-session one.
+
 ---
 
 ## Deferred — raised, not yet answered
