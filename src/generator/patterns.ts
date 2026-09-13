@@ -78,10 +78,18 @@ export function patternOf(name: string): PatternInfo | undefined {
   return undefined;
 }
 
-/** Muscles ordered biggest to smallest, which is the order a session runs in.
+/** Muscles ordered biggest to smallest.
  *
  * *"At the end of the session, you're usually finishing with really small body parts, like abs or
- * forearms or calves."* The three tiers are what the accessory slots draw from, in order. */
+ * forearms or calves."* The three tiers are what the accessory slots draw from, in order.
+ *
+ * **This is NOT a session order, and must not be turned into one — see G102.** It used to say it was. Four
+ * female templates Jack approved put abs or calves in SLOT TWO, directly after the opening leg compound, in
+ * nine sessions across three of the four programs; only the fourth finishes with them. A hard smallest-last
+ * sort cannot produce programs he has already signed off on.
+ *
+ * Nothing imports this today, which is the only reason the contradiction never shipped. Anyone wiring it up
+ * to order a session needs to read G101-G104 first. */
 export const MUSCLE_SIZE: Record<string, 0 | 1 | 2> = {
   Chest: 0, Back: 0, Quads: 0, Hamstrings: 0, Glutes: 0, "Full body": 0,
   Traps: 1, "Front delts": 1, "Side delts": 1, "Rear delts": 1,

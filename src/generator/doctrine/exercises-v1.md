@@ -6161,6 +6161,74 @@ This is the last uncovered area of the library, and it is deferred rather than m
 Jack prescribes the ball squat jump toss 43 times in his own programs, so it is a real part of his practice
 that the doctrine does not yet hold.
 
+**G101 — The female six-day shape: legs most days, split three and three.**
+
+> *"Here are some female 6x a week templates… These look good. Pay attention to exercise order selection."*
+
+Four approved templates, given as finished programs rather than described. (Five were sent; two are the same
+program, so there are four distinct ones.)
+
+| Template | Odd days | Even days |
+|---|---|---|
+| 1 | Legs — glutes, quads, hamstrings | Back + shoulders, then abs and calves |
+| 2 | Glutes ×2 + hamstrings + chest + back | Quads + abs + shoulders + arms |
+| 3 / 4 | Legs + **pull** — back, back, biceps | Legs + **push** — shoulders, chest, triceps |
+| 5 | Quads/glutes + chest + back | Hamstrings + calves + shoulders + arms |
+
+**Rule — a six-day female program carries leg work on nearly every day.** Three of the four put legs in all
+six sessions; the fourth alternates leg days with upper days. This is the counterpart to **G58**, which
+consolidates legs into one session *"at least for guys especially"* — that hedge is load-bearing, and this is
+what the other side of it looks like. G58 is not contradicted; it is revealed to be sex-specific.
+
+**Rule — never two consecutive days of the same emphasis.** True in all four, no exception.
+
+**G102 — A small muscle may sit in slot two, directly after the opening leg compound.**
+
+This one **contradicts what was already written down**, which is why it is recorded rather than quietly
+applied. `patterns.ts` sorts a session biggest muscle to smallest and pins abs, calves and forearms to the
+last tier, on this quote: *"At the end of the session, you're usually finishing with really small body parts,
+like abs or forearms or calves."*
+
+Three of the four templates do the opposite, in every one of their quad/hamstring sessions:
+
+- **Template 2** — Quads → **Abs** → Shoulders → arms (Tue, Thu, Sat)
+- **Template 3/4** — Quads → **Calves** → Shoulders → Chest → Triceps (Tue, Thu, Sat)
+- **Template 5** — Hamstrings ×2 → **Calves** → Shoulders → arms (Tue, Thu, Sat)
+
+Template 1 does finish with abs and calves, as the older quote says.
+
+**Rule — both placements are legitimate, so a hard "smallest last" sort is wrong.** It cannot produce three
+of these four programs. The slot-two placement is consistent enough — nine sessions across three templates,
+never varying — to be deliberate rather than incidental.
+
+**(inferred, worth confirming)** The reason is not stated. The obvious reading is that a small muscle needing
+no systemic recovery makes a useful spacer between the heaviest leg movement and upper-body pressing, so the
+pressing is not done straight off a squat. That is mine, not his.
+
+**G103 — On a mixed day, legs open and the upper body follows.**
+
+Universal across every mixed session in templates 2, 3/4 and 5, with no exception: the day opens on a glute,
+quad or hamstring compound, and chest, back and shoulder work comes after it. Consistent with **G5**'s
+"hardest first" and with the CSCS agreement recorded in `v1.md` (power, then multi-joint/large, then
+single-joint/small).
+
+**G104 — Glutes lead a female program, and hip thrusts belong in one.**
+
+Glutes open most days, frequently take two exercises in a session, and the opening movement is usually a
+deadlift variant with the stance or range varied — sumo, deficit, sumo-plus-deficit, plain. Hip thrusts
+appear in templates 1, 2 and 3.
+
+**Rule — the glute priority in `coverage.ts` (`defaultProfile("female") === "glute-priority"`) is confirmed by
+these templates.**
+
+**Rule — G99's "no hip thrusts for men" is sex-specific, not a general denylisting.** These programs use
+them, which is the positive half of that rule and was never stated outright.
+
+**Arm placement, already covered.** Biceps and triceps close the session in almost every day here, which sits
+inside **G7** (arms in the final 2/3 to 3/4) rather than changing it. One exception is worth noting so it is
+not mistaken for a rule: template 1's Thursday runs Back, Back, Triceps, Shoulders, Biceps — shoulders after
+triceps.
+
 ---
 
 ## Deferred — raised, not yet answered
