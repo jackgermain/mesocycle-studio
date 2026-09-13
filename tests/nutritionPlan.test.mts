@@ -28,6 +28,8 @@ import {
   applyAdjustment,
   STALL_ADJUST_KCAL,
   TAPER_ADJUST_KCAL,
+  FOLLOWUP_ADJUST_KCAL,
+  GAIN_CAP_PCT,
   kcalFromMacros,
   carbsToHitKcal,
   KCAL_PER_G_PROTEIN,
@@ -67,7 +69,7 @@ test("N2: a 500/day deficit off maintenance is a pound a week, whatever maintena
 
 // ---- N3: the cap ----------------------------------------------------------
 
-test("N3: a cut is held at 0.5% of bodyweight a week", () => {
+test("N3: a cut is held at 0.75% of bodyweight a week", () => {
   const r = applyRateCap(-1.5);
   assert.equal(r.pct, -CUT_CAP_PCT);
   assert.equal(r.capped, true);
@@ -81,21 +83,39 @@ test("N3: a rate already inside the cap is untouched", () => {
 });
 
 test("N3: the cap is a percentage, so it is a different pound number at different weights", () => {
-  assert.equal(weeklyChangeLb(140, -CUT_CAP_PCT), -0.7);
-  assert.equal(weeklyChangeLb(250, -CUT_CAP_PCT), -1.25);
+  assert.equal(weeklyChangeLb(140, -CUT_CAP_PCT), -1.05);
+  // -1.875 rounds to -1.87, not -1.88: `round` is Math.round, which sends a half toward +Infinity, so a
+  // negative half lands on the smaller magnitude. Two hundredths of a pound, and not worth special-casing.
+  assert.equal(weeklyChangeLb(250, -CUT_CAP_PCT), -1.87);
 });
 
 test("N3: the cap binds through buildPlan, and says so", () => {
   const plan = buildPlan({ bodyweightLb: 200, bodyFatPct: 18, sessionsPerWeek: 4, ratePctPerWeek: -2 });
-  assert.equal(plan.rate.pct, -0.5);
-  assert.equal(plan.lbPerWeek, -1);
+  assert.equal(plan.rate.pct, -0.75);
+  assert.equal(plan.lbPerWeek, -1.5);
   assert.ok(plan.cappedNote?.includes("protect muscle"));
 });
 
-test("N3: gaining is not capped — Jack gave the surplus arithmetic but no ceiling", () => {
+test("N9: gaining is capped at +0.5%, the top tier N9 names", () => {
   const r = applyRateCap(1.5);
-  assert.equal(r.pct, 1.5);
-  assert.equal(r.capped, false);
+  assert.equal(r.pct, GAIN_CAP_PCT);
+  assert.equal(r.capped, true);
+  assert.equal(r.cap, GAIN_CAP_PCT);
+});
+
+test("N9: a bulk inside the cap is untouched, and the cap does not move with body fat", () => {
+  assert.equal(applyRateCap(0.25).capped, false);
+  assert.equal(applyRateCap(0.5).capped, false);
+  // Body fat raises the CUT cap only -- a leaner person has more room to gain, not less.
+  assert.equal(applyRateCap(1.5, 35).pct, GAIN_CAP_PCT);
+  assert.equal(applyRateCap(1.5, 10).pct, GAIN_CAP_PCT);
+});
+
+test("N9: a capped bulk is explained by fat gain, not by muscle loss", () => {
+  const plan = buildPlan({ bodyweightLb: 200, bodyFatPct: 18, ratePctPerWeek: 2 });
+  assert.equal(plan.rate.pct, GAIN_CAP_PCT);
+  assert.ok(plan.cappedNote?.includes("fat"), plan.cappedNote);
+  assert.ok(!plan.cappedNote?.includes("protect muscle"), "that is the reason a CUT is capped");
 });
 
 // ---- N5: the raised cap ---------------------------------------------------
@@ -172,7 +192,11 @@ test("1.2 is the top of the band — nothing goes past it", () => {
 
 test("a steep deficit takes carbs to zero rather than cutting protein", () => {
   const m = macrosFor(1000, 250, -0.5);
-  assert.equal(m.protein, Math.round(250 * PROTEIN_G_PER_LB_CUT_HI));
+  // Read off proteinPerLb rather than a hardcoded figure: -0.5 is the REGULAR cut and, since the cap moved
+  // to 0.75, is no longer the steepest allowed — so it sits partway up the 1.1–1.2 band, not at the top.
+  assert.equal(m.protein, Math.round(250 * proteinPerLb(-0.5)));
+  assert.ok(m.protein > Math.round(250 * PROTEIN_G_PER_LB_CUT_LO));
+  assert.ok(m.protein < Math.round(250 * PROTEIN_G_PER_LB_CUT_HI));
   assert.ok(m.carbs >= 0);
 });
 
@@ -268,7 +292,9 @@ test("cap usage is null until there is enough scale data to be honest", () => {
 
 test("cap usage reads as a fraction of the cap, and passes 1 when too fast", () => {
   const today = new Date("2026-03-01T00:00:00Z");
-  const onPlan = phaseStatus(-0.5, 20, series(200, -1, 10, 3), today);
+  // 1.5 lb a week at 200 lb is ~0.75%, which is the cap now. This used to be 1 lb/wk, back when the cap was
+  // 0.5% and that was the rate sitting against it -- the scenario had to move with the cap, not the bounds.
+  const onPlan = phaseStatus(-0.5, 20, series(200, -1.5, 10, 3), today);
   assert.ok(onPlan.capUsed !== null && onPlan.capUsed > 0.8 && onPlan.capUsed <= 1.05, `${onPlan.capUsed}`);
   assert.equal(onPlan.tooFast, false);
 
@@ -277,7 +303,9 @@ test("cap usage reads as a fraction of the cap, and passes 1 when too fast", () 
   assert.equal(fast.tooFast, true);
 });
 
-test("gaining never reports cap usage — there is no cap on a surplus", () => {
+// N9 does cap a surplus now. The cap METER is still a cutting instrument -- phaseStatus reports capUsed only
+// while losing -- which is what this pins; it is not a claim that a bulk is unlimited.
+test("the cap meter is a cutting instrument — a gain reports no cap usage", () => {
   const today = new Date("2026-03-01T00:00:00Z");
   const s = phaseStatus(0.5, 20, series(200, 1, 10, 3), today);
   assert.equal(s.capUsed, null);
@@ -295,9 +323,11 @@ test("the raised cap moves the usage fraction, not just the verdict", () => {
 
 test("N4: losing past the cap is flagged, not congratulated", () => {
   const today = new Date("2026-03-01T00:00:00Z");
-  const fast = observedRate(series(200, -2.4, 10, 3), 28, today)!; // ≈ -1.2 %/wk
-  const mid = observedRate(series(200, -1.2, 10, 3), 28, today)!; // ≈ -0.6 %/wk
-  const fine = observedRate(series(200, -0.8, 10, 3), 28, today)!; // ≈ -0.4 %/wk
+  const fast = observedRate(series(200, -2.4, 10, 3), 28, today)!; // ≈ -1.2 %/wk, past even the raised cap
+  // Between the two caps: refused at 0.75%, allowed at 1%. It was -1.2 lb/wk when the strict cap was 0.5%;
+  // at a 0.75% cap that rate is simply legal, so the test would have been asserting the opposite of the rule.
+  const mid = observedRate(series(200, -1.7, 10, 3), 28, today)!; // ≈ -0.85 %/wk
+  const fine = observedRate(series(200, -0.8, 10, 3), 28, today)!; // ≈ -0.4 %/wk, comfortably inside
   assert.equal(isCuttingTooFast(fast, 18), true);
   assert.equal(isCuttingTooFast(mid, 18), true);
   assert.equal(isCuttingTooFast(fine, 18), false);
@@ -592,4 +622,72 @@ test("N11: 200 g is exactly where the fat drop kicks in", () => {
   assert.equal(fatPerLbFor(landsOnFloor, bw, protein, age), FAT_G_PER_LB_YOUNG, "200 g is not under 200 g");
   // One carb gram less, and fat gives way to buy carbs back.
   assert.equal(fatPerLbFor(landsOnFloor - KCAL_PER_G_CARB, bw, protein, age), FAT_G_PER_LB_MIN, "199 g is");
+});
+
+// ---- N12: the follow-up, and not stacking corrections ---------------------
+
+test("N12: 75 that has not worked a week later pulls another 50", () => {
+  const tapering = [
+    { date: "2026-02-02", weight: 210.0 },
+    { date: "2026-02-05", weight: 209.6 },
+    { date: "2026-02-08", weight: 209.1 },
+    { date: "2026-02-11", weight: 208.7 },
+    { date: "2026-02-14", weight: 208.3 },
+    { date: "2026-02-17", weight: 208.2 },
+    { date: "2026-02-20", weight: 208.15 },
+    { date: "2026-02-23", weight: 208.1 },
+    { date: "2026-02-26", weight: 208.05 },
+    { date: "2026-02-28", weight: 208.0 },
+  ];
+  const a = intakeAdjustment({
+    goal: "lose",
+    weighIns: tapering,
+    today: N12_TODAY,
+    lastAdjustment: { date: "2026-02-21", kind: "taper" },
+  })!;
+  assert.ok(a, "a week after a taper adjustment that did not work");
+  assert.equal(a.kind, "followup");
+  assert.equal(a.deltaKcal, -FOLLOWUP_ADJUST_KCAL);
+});
+
+test("N12: corrections do not stack inside the week", () => {
+  const flat = series(200, 0, 12, 2);
+  // Yesterday's change has had no scale under it yet -- nothing should fire.
+  assert.equal(
+    intakeAdjustment({ goal: "lose", weighIns: flat, today: N12_TODAY, lastAdjustment: { date: "2026-02-28", kind: "taper" } }),
+    null,
+  );
+});
+
+test("N12: a stall that is still a stall takes the full 150 again, not the follow-up 50", () => {
+  const flat = series(200, 0, 12, 2);
+  const a = intakeAdjustment({
+    goal: "lose",
+    weighIns: flat,
+    today: N12_TODAY,
+    lastAdjustment: { date: "2026-02-15", kind: "stall" },
+  })!;
+  assert.equal(a.kind, "stall");
+  assert.equal(a.deltaKcal, -STALL_ADJUST_KCAL);
+});
+
+test("N12: a follow-up that worked stops the chain", () => {
+  // Losing steadily at the intended rate after the last nudge -- leave it alone.
+  const losing = series(200, -1, 12, 2);
+  assert.equal(
+    intakeAdjustment({ goal: "lose", weighIns: losing, today: N12_TODAY, lastAdjustment: { date: "2026-02-15", kind: "taper" } }),
+    null,
+  );
+});
+
+test("N12: the follow-up adds rather than pulls when the goal is to gain", () => {
+  const flat = series(200, 0, 12, 2);
+  const a = intakeAdjustment({
+    goal: "gain",
+    weighIns: flat,
+    today: N12_TODAY,
+    lastAdjustment: { date: "2026-02-15", kind: "followup" },
+  })!;
+  assert.equal(a.kind, "followup");
+  assert.equal(a.deltaKcal, FOLLOWUP_ADJUST_KCAL);
 });

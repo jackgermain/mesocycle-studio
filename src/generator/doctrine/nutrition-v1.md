@@ -32,14 +32,24 @@ and gaining obey different maths.
 **Rule — the unit that matters is the *daily* delta,** because that is the number a person acts on. The
 weekly pound is the consequence, not the instruction.
 
-**N3 — A cut runs at no more than 0.5% of bodyweight per week.**
+**N3 — A cut runs at no more than 0.75% of bodyweight per week.**
 
 > *"Anytime someone is losing weight and is not very overweight, to lose no more than 0.5% total bodyweight
-> per week."*
+> per week."* … later: *"Yes, make 0.75 the cap for the fast cut."*
 
-**Rule — cap the loss rate at 0.5% of bodyweight per week.** Not a fixed pound-per-week number: half a percent
-is 0.7 lb at 140 lb and 1.25 lb at 250 lb, and a flat "1 lb a week" is a gentle cut for one person and an
+**The cap is 0.75%; 0.5% is the regular cut.** It started at 0.5% — the first quote — and that made N9's
+0.75% "fast cut" unreachable for anyone lean, so the Fast cut and Cut presets prescribed identical numbers.
+Jack raised the ceiling rather than drop the tier. The rate a normal cut *runs* at is still 0.5%; this is
+what is *allowed*.
+
+**Rule — cap the loss rate at 0.75% of bodyweight per week.** Not a fixed pound-per-week number: 0.75% is
+1.05 lb at 140 lb and 1.87 lb at 250 lb, and a flat "1 lb a week" is a gentle cut for one person and an
 aggressive one for the other.
+
+**Consequence — this moved protein.** N7 scales the 1.1–1.2 cut band against the cap, so a regular 0.5% cut
+is no longer the steepest allowed and reads about 1.17 g/lb rather than 1.2. That falls out of N7's own
+wording (steeper means more, 1.2 at the cap) rather than being a separate ruling, but it changed every
+regular cut's protein by a few grams.
 
 **Rule — the cap binds on the *request*, not just on the advice.** A rate set past the cap is brought back to
 it and the person is told it was, rather than being allowed to prescribe something the doctrine forbids.
@@ -167,8 +177,16 @@ someone at 30%+ body fat — whose cap is 1% — actually gets 0.75%. Whether 0.
 cap for everyone is the open question below; N3's own words are "no more than 0.5%", so it is not mine to
 assume either way.
 
-**Rule — the top bulk tier is +0.5%, not the +2% the stepper allows.** Gaining still has no cap in the code
-(see below), but the offered ceiling is now named.
+**Rule — +0.5% is the gain cap, not merely the top tier offered.** Gaining went uncapped for a long time,
+because Jack had given the surplus arithmetic but never a ceiling, so nothing stopped a bulk being set at
++2%. He closed it by pointing back here — *"the gaining caps are already said"* — and Bulk's +0.5% is that
+ceiling.
+
+**Rule — the gain cap does not move with body fat.** N5 raises the *cut* cap for someone carrying a lot of
+fat, because there is more fat available to spend. Nothing equivalent applies to gaining: a leaner person
+has more room to gain, not less, and the reason for the cap — past this rate more of the gain is fat than
+muscle — is the same at any body fat. A capped bulk must say *that*, not "to protect muscle", which is why
+a cut is capped.
 
 **N10 — Maintenance is Mifflin-St Jeor, which is why the app now stores sex.**
 
@@ -233,7 +251,22 @@ carbs take the remainder.
 serves the goal.
 
 **Rule — a taper, once they are already moving, moves it by 75 kcal.** Half the correction, because the plan
-is working and only slowing.
+is working and only slowing. Jack: *"75 should be good if they are starting to stall, anything after week 2."*
+
+**Rule — if the 75 has not worked a week later, move another 50.**
+
+> *"If 75 isn't enough by the end of the next week, pull another 50."*
+
+This is the first rule in the file that needs **memory** rather than just the scale: whether to follow up
+depends on what was already tried and when, not on the weigh-ins alone. `ClientProfile.lastNutritionAdjustment`
+records it.
+
+**Rule — one change at a time, and a week before it is judged.** A correction with no scale under it yet
+cannot be evaluated, and firing again inside that week stacks corrections on top of an unread one. This is
+also what stops an adjustment being offered every time the screen is opened.
+
+**Rule — the follow-up is for a 75 that fell short, not for a stall.** A stall that is still a stall a week
+later takes the full 150 again; Jack tied the 50 specifically to the 75.
 
 **Rule — it comes out of fat first, then carbs, and never out of protein.** "Starting from fats and/or
 carbs" — and fat still cannot leave the N11 band.
@@ -255,19 +288,18 @@ asked, which is why it runs only when auto nutrition is switched on.
    why it uses one 30% body-fat figure for everybody; the honest version is roughly 25% for men and 32% for
    women. N10 stores sex, so the thing that blocked this is gone — it is now a decision rather than a
    limitation.
-3. **Gaining has no cap.** Jack specified the arithmetic for a surplus but no ceiling on it, so nothing
-   currently stops a bulk being set at +2%/week. N9 now names +0.5% as the top *offered* tier, which is a
-   strong hint but not a stated ceiling — the stepper still goes past it. A lean-gain cap is the obvious
-   counterpart to N3.
-6. **Does N9's fast cut raise N3's cap?** N9 names 0.75%/week as a fast cut; N3 says a cut runs at "no more
-   than 0.5%" unless body fat is high. Both cannot be fully true for a lean person. Either the cap becomes
-   0.75% and the fast cut is genuinely available, or the cap stays at 0.5% and the Fast cut button is
-   identical to Cut for everyone under 30% body fat. The code currently does the latter, because that is
-   what the older explicit rule says.
-4. **Whether the cut band should widen.** N7 settles the numbers, but 1.1–1.2 is a narrow band and the top
-   of it is reached at the ordinary 0.5%/week cap — so an aggressive cut and a standard one are prescribed
-   the same protein. Whether a genuinely hard cut deserves more than 1.2 is open.
-5. **The training-day carb bonus is outside N8.** It adds grams — 40 g of carbs is 160 kcal — on training
+3. **Whether the cut band should widen past 1.2.** This used to be a sharper complaint: at a 0.5% cap the top
+   of the 1.1–1.2 band was reached by every ordinary cut, so an aggressive one and a standard one were
+   prescribed identical protein. N3's move to 0.75% is what fixed it — a regular cut now reads about 1.17 and
+   only a fast cut reaches 1.2, so the band finally discriminates. What is left is narrower: whether a
+   genuinely hard cut deserves more than 1.2 at all.
+4. **The training-day carb bonus is outside N8.** It adds grams — 40 g of carbs is 160 kcal — on training
    days only, and nothing on screen says what that does to the day's calories. N8 makes the four target
    numbers agree with each other; it does not yet say whether a training day's calorie target is supposed to
    rise by the bonus, or whether the bonus is meant to be swapped in against something else.
+5. **N12 is written but wired to nothing.** The stall/taper/follow-up arithmetic is built and tested; what is
+   undecided is *when* it runs — on a weigh-in, on opening the tab, once a day — and whether it applies
+   itself or is offered for approval. It moves what somebody eats, so it stays inert until that is settled.
+
+Answered since this list was written, and now doctrine above: the gain cap (N9, +0.5%), whether 0.75% becomes
+the cut cap (N3, yes), and whether the app may store sex (N10, it does).

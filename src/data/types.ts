@@ -188,6 +188,12 @@ export interface ClientProfile {
   heightCm?: number;
   /** Which physical-activity level they picked, as a PAL multiplier key. */
   activityLevel?: "sedentary" | "light" | "moderate" | "very" | "extra";
+  /** The last automatic intake change N12 made, and when.
+   *
+   * N12 needs memory, not just weigh-ins: "if 75 isn't enough by the end of the next week, pull another 50"
+   * cannot be answered by looking at the scale alone — it depends on what was already tried and how long ago.
+   * It is also what stops a correction firing every time the screen is opened. */
+  lastNutritionAdjustment?: { date: string; kind: "stall" | "taper" | "followup"; deltaKcal: number };
   /** The maintenance figure targets are an offset from (N1). Estimated to begin with, then corrected from
    * their own weigh-ins by N6 — the scale beats the formula. */
   maintenanceKcal?: number;

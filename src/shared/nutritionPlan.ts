@@ -15,14 +15,35 @@
 /** N2. One pound of tissue -- fat or muscle, the body picks, which is what N4 is about. */
 export const KCAL_PER_LB = 3500;
 
-/** N3. The cut cap for anyone who is not very overweight, as a percent of bodyweight per week. */
-export const CUT_CAP_PCT = 0.5;
+/** N3. The cut cap for anyone who is not very overweight, as a percent of bodyweight per week.
+ *
+ * 0.75, not the 0.5 this started at. The original rule was "no more than 0.5%", and N9 then named 0.75% as a
+ * fast cut — which left Fast cut and Cut prescribing identical numbers for a lean person, because the cap
+ * held the first one back to the second. Jack settled it: "yes make 0.75 the cap for the fast cut."
+ *
+ * 0.5% is still the REGULAR cut and still what the Cut preset asks for. This is the ceiling, not the advice.
+ *
+ * Knock-on worth knowing: proteinPerLb scales N7's 1.1–1.2 cut band against this number, so raising it means
+ * a regular 0.5% cut is no longer "at the cap" and reads about 1.17 g/lb instead of 1.2 — a few grams on a
+ * 200 lb person. That follows from N7's own wording (steeper means more, 1.2 at the cap) rather than being a
+ * separate decision, but it did move every regular cut's protein. */
+export const CUT_CAP_PCT = 0.75;
 
 /** N5. MY CALL, not Jack's: the raised cap and the body-fat percentage that unlocks it. Body fat rather
  * than BMI because BMI calls a muscular lifter obese and would hand exactly the wrong person a faster cut.
  * One threshold rather than the honest sex-split (~25% men / ~32% women) because the app stores no sex. */
 export const HIGH_BF_CUT_CAP_PCT = 1.0;
 export const VERY_OVERWEIGHT_BF_PCT = 30;
+
+/** N9. The gain cap, as a percent of bodyweight per week.
+ *
+ * Gaining went uncapped for a long time because Jack had given the surplus arithmetic but no ceiling, so
+ * nothing stopped a bulk being set at +2%. He closed it by pointing at N9 — "the gaining caps are already
+ * said" — where +0.5% is named as Bulk and is the top tier offered. That is the ceiling.
+ *
+ * Unlike the cut cap this does not move with body fat: a leaner person has more room to gain, not less, and
+ * the reason for the cap is the same at any body fat — past this rate more of the gain is fat than muscle. */
+export const GAIN_CAP_PCT = 0.5;
 
 /** Protein, per pound of BODYWEIGHT, moving with the phase. Jack: "make it 1 g per pound, and if they're
  * in a cutting phase suggest about 1.1-1.2 g protein/lb bodyweight for cutting" and "0.85 minimum for
@@ -325,13 +346,17 @@ export interface CappedRate {
   cap: number;
 }
 
-/** N3. Bring a requested rate back inside the cap.
+/** N3/N9. Bring a requested rate back inside the cap, whichever direction it is going.
  *
- * Only losing is capped: Jack specified the arithmetic for a surplus but never a ceiling on one, so nothing
- * here limits a bulk. That gap is listed in the doctrine's "still to rule on". */
+ * Both directions are capped now. Losing is held at 0.75% — or 1% for someone carrying enough fat that
+ * spending it faster is normal (N5) — and gaining at N9's +0.5%. Gaining was uncapped until Jack pointed at
+ * N9 for the ceiling; before that a bulk could be set at +2% and nothing said a word. */
 export function applyRateCap(requestedPct: number, bodyFatPct?: number): CappedRate {
+  if (requestedPct >= 0) {
+    const pct = Math.min(requestedPct, GAIN_CAP_PCT);
+    return { pct, requested: requestedPct, capped: pct !== requestedPct, cap: GAIN_CAP_PCT };
+  }
   const cap = cutCapPct(bodyFatPct);
-  if (requestedPct >= 0) return { pct: requestedPct, requested: requestedPct, capped: false, cap };
   const pct = Math.max(requestedPct, -cap);
   return { pct, requested: requestedPct, capped: pct !== requestedPct, cap };
 }
@@ -430,10 +455,15 @@ export function buildPlan(input: PlanInput): Plan {
     macros: macrosFor(targetKcal, input.bodyweightLb, rate.pct, input.ageYears),
     direction: rate.pct < 0 ? "cut" : rate.pct > 0 ? "gain" : "maintain",
     label: rateLabel(rate.pct),
-    cappedNote: rate.capped
-      ? `Asked for ${round(rate.requested, 2)}% a week — held at ${rate.cap}% to protect muscle` +
-        (rate.cap === CUT_CAP_PCT ? "." : " (raised, since body fat is high enough to spend faster).")
-      : undefined,
+    // The reason differs by direction and the sentence has to say the right one: a cut is capped to keep
+    // muscle, a bulk is capped to keep the gain from being mostly fat. One note for both said "to protect
+    // muscle" over a bulk, which is not why that cap exists.
+    cappedNote: !rate.capped
+      ? undefined
+      : rate.requested > 0
+        ? `Asked for +${round(rate.requested, 2)}% a week — held at +${rate.cap}%, past which more of the gain is fat than muscle.`
+        : `Asked for ${round(rate.requested, 2)}% a week — held at ${rate.cap}% to protect muscle` +
+          (rate.cap === CUT_CAP_PCT ? "." : " (raised, since body fat is high enough to spend faster)."),
   };
 }
 
@@ -600,6 +630,11 @@ export function phaseStatus(
  * `autoNutrition` at the call site and why every threshold it needs is named and overturnable here. */
 export const STALL_ADJUST_KCAL = 150;
 export const TAPER_ADJUST_KCAL = 75;
+/** "If 75 isn't enough by the end of the next week, pull another 50." */
+export const FOLLOWUP_ADJUST_KCAL = 50;
+/** A change needs a week of scale before it can be judged, which is also what stops a correction firing
+ * every time the screen is opened. */
+export const ADJUST_COOLDOWN_DAYS = 7;
 /** "After the second week" — a stall cannot be called before there are two weeks of scale to call it on. */
 export const STALL_MIN_SPAN_DAYS = 14;
 /** MY CALL: what counts as "no weight gain or loss". Daily bodyweight swings on water and food volume are
@@ -610,7 +645,7 @@ export const TAPER_FRACTION = 0.5;
 /** The shorter window the recent trend is read over, against RATE_WINDOW_DAYS for the fuller one. */
 export const TAPER_WINDOW_DAYS = 14;
 
-export type AdjustmentKind = "stall" | "taper";
+export type AdjustmentKind = "stall" | "taper" | "followup";
 
 export interface IntakeAdjustment {
   kind: AdjustmentKind;
@@ -625,35 +660,65 @@ export function intakeAdjustment(args: {
   goal: "lose" | "gain";
   weighIns: { date: string; weight: number }[];
   today?: Date;
+  /** What N12 last did and when, from `ClientProfile.lastNutritionAdjustment`. Without it the follow-up rule
+   * cannot exist and nothing stops the same correction being offered over and over. */
+  lastAdjustment?: { date: string; kind: AdjustmentKind };
 }): IntakeAdjustment | null {
   const today = args.today ?? new Date();
   const losing = args.goal === "lose";
+  const word = losing ? "pull" : "add";
+  const signed = (n: number) => (losing ? -n : n);
+
   const overall = observedRate(args.weighIns, RATE_WINDOW_DAYS, today);
   if (!overall || overall.spanDays < STALL_MIN_SPAN_DAYS) return null;
 
+  const stalled = Math.abs(overall.pctPerWeek) < STALL_PCT_PER_WEEK;
+  const movingRightWay = losing ? overall.pctPerWeek < 0 : overall.pctPerWeek > 0;
+  const recent = observedRate(args.weighIns, TAPER_WINDOW_DAYS, today);
+  const tapering =
+    !stalled && movingRightWay && recent != null &&
+    Math.abs(recent.pctPerWeek) < Math.abs(overall.pctPerWeek) * TAPER_FRACTION;
+
+  if (args.lastAdjustment) {
+    const since = daysBetween(args.lastAdjustment.date, today.toISOString().slice(0, 10));
+    // One change at a time. A correction that has not had a week of scale under it cannot be judged, and
+    // firing again inside that week would stack corrections on top of an unread one.
+    if (since < ADJUST_COOLDOWN_DAYS) return null;
+    // "If 75 isn't enough by the end of the next week, pull another 50." Only after a 75 or a previous 50 --
+    // a stall that is still a stall falls through and takes the full 150 again.
+    if (args.lastAdjustment.kind === "taper" || args.lastAdjustment.kind === "followup") {
+      if (stalled || tapering) {
+        return {
+          kind: "followup",
+          deltaKcal: signed(FOLLOWUP_ADJUST_KCAL),
+          observed: recent ?? overall,
+          note: `The last change has not been enough, so ${word} another ${FOLLOWUP_ADJUST_KCAL} calories.`,
+        };
+      }
+      return null;
+    }
+  }
+
   // A stall: two weeks in and the scale has not moved either way.
-  if (Math.abs(overall.pctPerWeek) < STALL_PCT_PER_WEEK) {
+  if (stalled) {
     return {
       kind: "stall",
-      deltaKcal: losing ? -STALL_ADJUST_KCAL : STALL_ADJUST_KCAL,
+      deltaKcal: signed(STALL_ADJUST_KCAL),
       observed: overall,
-      note: `Two weeks with the scale flat, so ${losing ? "pull" : "add"} ${STALL_ADJUST_KCAL} calories.`,
+      note: `Two weeks with the scale flat, so ${word} ${STALL_ADJUST_KCAL} calories.`,
     };
   }
 
   // Moving the wrong way entirely is not a stall and not a taper -- it is a bigger problem than 150 calories
   // and belongs in front of a person, not in an automatic nudge.
-  const movingRightWay = losing ? overall.pctPerWeek < 0 : overall.pctPerWeek > 0;
   if (!movingRightWay) return null;
 
-  const recent = observedRate(args.weighIns, TAPER_WINDOW_DAYS, today);
-  if (!recent) return null;
-  if (Math.abs(recent.pctPerWeek) < Math.abs(overall.pctPerWeek) * TAPER_FRACTION) {
+  if (tapering) {
     return {
       kind: "taper",
-      deltaKcal: losing ? -TAPER_ADJUST_KCAL : TAPER_ADJUST_KCAL,
-      observed: recent,
-      note: `Progress has tapered off this week, so ${losing ? "pull" : "add"} ${TAPER_ADJUST_KCAL} calories.`,
+      deltaKcal: signed(TAPER_ADJUST_KCAL),
+      observed: recent!,
+      note: `Progress has started to stall, so ${word} ${TAPER_ADJUST_KCAL} calories.`,
     };
   }
   return null;
