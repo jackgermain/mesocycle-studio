@@ -6387,6 +6387,30 @@ what the earlier "both are legitimate" wording could not explain.
 over-fitted: one template here runs Hamstrings → **Calves** → Quads → Glutes, putting the divider inside the
 leg block; another opens a day Chest → **Abs** → Quads → Hamstrings, with abs before any leg work at all.
 
+**G111 — A four-day week is two session types run twice, on Mon/Tue/Thu/Fri.**
+
+Ten male four-day templates. Fifty-one templates now.
+
+**Rule — the days are Monday, Tuesday, Thursday, Friday.** All ten, without exception: two on, one off, two
+on, two off. This is the first *scheduling* fact in the set rather than an ordering one, and the app has no
+concept of it — `scheduleWeeks()` places week one on the upcoming Monday and runs days consecutively.
+
+**Rule — a four-day week is two session types, each run twice, not four different days.** One template runs
+quads-led on Monday *and* Thursday with glutes/hamstrings-led on Tuesday *and* Friday; another runs back-led
+twice and biceps-led twice; another chest-led twice and triceps-led twice. The exercises vary between the two
+runs; the muscle order does not.
+
+**This contradicts `LEAD_ROTATION[4]`,** which gives four distinct leads — `["legs", "pull", "legs", "push"]`
+for the glute profile and `["push", "pull", "legs", "push"]` for upper. The observed shape is A, B, A, B with
+the pair sharing its lead.
+
+**(inferred, worth confirming)** One of the ten breaks the pairing: its two upper days are chest-led and
+shoulder-led rather than matching. So "the pair shares its lead" is the strong tendency, not an invariant,
+while "two session types run twice" holds in all ten.
+
+**The seam rule holds here too.** Two of the templates run Quads, Quads, **Calves**, Chest, Back on both of
+their leg days — G102 and G110 in the shape they predict.
+
 ---
 
 ## Deferred — raised, not yet answered

@@ -52,9 +52,9 @@ export type WeekPlan = Slot[][];
 /** Which region leads each day. Three days is the case Jack described in full; the others are extended
  * from the same idea and are the least confident thing in this file.
  *
- * **Measured against twenty-two female templates Jack approved (G105-G107), two of these rows are wrong and
- * the rest sit at the low end of what he actually writes.** Leg leads per week, his templates against this
- * table:
+ * **Measured against the fifty-one templates Jack approved (G101-G111), two of these rows are wrong and the
+ * rest sit at the low end of what he actually writes.** Leg leads per week, from the twenty-two female
+ * templates, against this table:
  *
  *   | days | observed | here | verdict |
  *   |---|---|---|---|
@@ -67,6 +67,17 @@ export type WeekPlan = Slot[][];
  * The five-day row is the worst of it: `planWeek(5, {profile: "glute-priority"})` produces a Friday with no
  * leg work in it at all, which does not happen in any of his programs.
  *
+ * **The four-day row is wrong in shape rather than in count — see G111.** Both four-day rows here give four
+ * DISTINCT leads. All ten of his four-day templates are two session types run twice: quads-led on days one
+ * and three, glutes/hamstrings-led on two and four; or back-led twice and biceps-led twice. The exercises
+ * vary between the two runs, the muscle order does not. So this row needs an A,B,A,B structure, not four
+ * different regions, and counting leg leads alone would score it "close" while still producing the wrong
+ * week.
+ *
+ * One more thing nothing in the app models: all ten of those templates run **Monday, Tuesday, Thursday,
+ * Friday** -- two on, one off, two on, two off. `scheduleWeeks()` places week one on the upcoming Monday and
+ * runs days consecutively, so a four-day program comes out Mon-Thu.
+ *
  * Three further mismatches found in the same comparison, all of them live rather than theoretical:
  *
  *   1. FINISHERS pushes small muscles to the last two slots. His templates put abs or calves in slot 2-4 as
@@ -78,7 +89,7 @@ export type WeekPlan = Slot[][];
  *      consecutive exercises on the emphasised muscle (G106).
  *
  * None of this is fixed here: it changes every generated program and is Jack's call. Nothing in tests/ covers
- * planWeek, so there is no safety net if someone changes it casually -- read G101-G107 first. */
+ * planWeek, so there is no safety net if someone changes it casually -- read G101-G111 first. */
 const LEAD_ROTATION: Record<EmphasisProfile, Record<number, Region[]>> = {
   "upper-priority": {
     2: ["push", "pull"],
