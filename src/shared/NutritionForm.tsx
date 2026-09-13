@@ -4,7 +4,6 @@ import { defaultPortionTargets } from "../data/mockData";
 import {
   buildPlan,
   estimateMaintenance,
-  cutCapPct,
   proteinPerLb,
   kcalFromMacros,
   carbsToHitKcal,
@@ -167,26 +166,42 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
     heightCm,
     activity,
   });
-  const capPct = cutCapPct(calcBf > 0 ? calcBf : undefined);
   // Protein is per pound of BODYWEIGHT and follows the phase. Read off the CAPPED rate, so a "fast cut" that
   // N3 held back does not prescribe protein for a deficit they are not actually running.
   const proteinPerLbNow = proteinPerLb(plan.rate.pct);
   const suggestedProtein = Math.round(calcBw * proteinPerLbNow);
 
-  function applyRate() {
-    // Sets the three macros, and the calorie line follows them -- there is no separate calorie number to set.
-    // plan.macros already carries the protein N7 asks for at this rate, so this lands the whole set at once.
-    setProtein(plan.macros.protein);
-    setFat(plan.macros.fat);
-    setCarbs(plan.macros.carbs);
-    // N3 binds on the request, not just on the advice: if they asked for more than the cap allows, the
-    // stored target comes back to the cap too, rather than leaving the form showing one thing and the
-    // saved number meaning another.
-    if (plan.rate.capped) setRatePct(plan.rate.pct);
+  /** Push a freshly built plan's macros into the targets below.
+   *
+   * Takes the rate and maintenance as ARGUMENTS rather than reading them off state, and that is the whole
+   * point of the function: a setState in the same handler has not landed by the next line, so building the
+   * plan from state here would use the value being replaced. Picking "Bulk" would quietly prescribe the
+   * previous phase's macros -- no error, just numbers one click behind, which is the kind of bug nobody
+   * notices until the prescription is wrong.
+   *
+   * Only the three macros are set; the calorie line is their sum (N8) and follows on its own. */
+  function applyPlanMacros(ratePctPerWeek: number, maintenanceKcal: number) {
+    const fresh = buildPlan({
+      bodyweightLb: calcBw,
+      bodyFatPct: calcBf > 0 ? calcBf : undefined,
+      ratePctPerWeek,
+      maintenanceKcal,
+      ageYears,
+    });
+    setProtein(fresh.macros.protein);
+    setFat(fresh.macros.fat);
+    setCarbs(fresh.macros.carbs);
   }
 
+  /** Accept the estimate — and carry it through to the targets below.
+   *
+   * It used to set maintenance and stop, which left the button looking like it had done nothing: every
+   * target is an offset from maintenance (N1), so changing it and not moving them is the one thing that
+   * cannot be right. Jack: "make sure the apply button works so it updates macros below." */
   function applyMaintenance() {
-    setMaintenance(estimated.kcal);
+    const m = estimated.kcal;
+    setMaintenance(m);
+    applyPlanMacros(ratePct, m);
   }
 
   function toggleDay(i: number) {
@@ -254,11 +269,13 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
           checked={auto}
           onChange={setAuto}
           label="Work the numbers out automatically"
-          hint={
-            mode === "macros"
-              ? `Calories and macros come from maintenance and a rate instead of being typed in, the rate is held inside the ${capPct}%-a-week cap, and maintenance keeps getting corrected from ${whoPossessive} weigh-in trend.`
-              : "Only drives calorie and macro targets — switch tracking to Macros above for it to do anything."
-          }
+          /* Say what it does and stop. The paragraph that was here explained the cap, the maintenance
+             correction and where the numbers come from -- Jack: "get rid of all the words here other than
+             something like what the button is."
+
+             The one branch kept is not prose: in portions mode this switch genuinely does nothing, and a
+             control that silently has no effect is worse than a short line saying so. */
+          hint={mode === "macros" ? "It will program nutrition changes for you." : "Only affects macro targets."}
         />
       </div>
 
@@ -398,17 +415,21 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
                   key={preset.label}
                   type="button"
                   className={`chip${Math.abs(ratePct - preset.pct) < 0.001 ? " on" : ""}`}
-                  onClick={() => setRatePct(preset.pct)}
+                  // Picking the phase IS applying it -- there is no rate to type and no Apply to press.
+                  // preset.pct is passed through rather than read back off state, which has not updated yet.
+                  onClick={() => {
+                    setRatePct(preset.pct);
+                    applyPlanMacros(preset.pct, maintenance);
+                  }}
                 >
                   {preset.label}
                 </button>
               ))}
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {/* No unit shown: Jack asked for "(rate %/wk)" to be invisible. The presets above are how this
-                  is meant to be set; the stepper is the fine adjustment. */}
-              <CalcRow label="Rate" value={ratePct} onChange={setRatePct} step={0.1} min={-2} max={2} />
-            </div>
+            {/* The rate stepper is gone -- Jack: "for the rate of change get rid of rate, don't let them
+                choose or apply." The five presets above are the whole control now: no percentage to type,
+                and every preset sits inside both caps, so a chip can never produce a rate that gets held
+                back. What stays below is the consequence of the phase, not the arithmetic behind it. */}
             <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
               <div className="row">
                 <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Weekly change</span>
@@ -427,12 +448,8 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
                 {plan.cappedNote}
               </div>
             )}
-            {/* The standing explainer about why the cap exists is gone with the rest of the prose. The
-                conditional cappedNote above stays: it is not a summary, it is the app telling them their own
-                number was just changed and why. */}
-            <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applyRate}>
-              Apply — sets the macro targets and rate label below
-            </button>
+            {/* No Apply button: picking a phase above already moved the targets. The conditional cappedNote
+                stays -- it is not a summary, it is the app saying a number was changed and why. */}
           </div>
 
           {/* Four numbers, one object. Bump protein by 10 g and the calorie line goes up 40 on its own.
