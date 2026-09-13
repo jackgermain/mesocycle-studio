@@ -6518,6 +6518,37 @@ three or four exposures rather than two, is not something these templates settle
 Daily" of G114 rotates rather than mirrors, which suggests the principle generalises but the mechanism does
 not.
 
+**G116 — The split is fixed for the whole block. Week two is week one's structure again.**
+
+> *"All of these programs follow the same split each week for the entire block, period. That's why you don't
+> see week two or three, etcetera."*
+
+Given in answer to my asking for a template across four or five weeks — a malformed request, because there is
+nothing structurally new in week two to look at. **The seventy-two templates are not week-one snapshots of
+something that evolves; each one is the shape of its entire block.**
+
+**Rule — weeks 2…N repeat week 1's split exactly.** Same days, same muscle order, same slots. A generator
+produces *one* skeleton and holds it for the block; re-planning the structure each week would be wrong.
+
+**Rule — what varies week to week is load and reps, not structure.** That is the whole of the progression
+machinery, and it operates inside a frame that does not move.
+
+**Rule — what changes at a block seam is the exercise filling a slot, never the slot.** This is already in the
+code, from the interview data rather than from the templates: `SWAP_PRESERVES_PATTERN` in `trainingAge.ts`,
+with the note that a replacement is *"the same movement pattern in a different expression — incline for flat,
+dumbbell for barbell, pulldown for pull-up — not a different job in the session."*
+
+**Worth recording that these agree.** Reading the seventy-two templates produced the observation that
+variation happens *inside* a slot and never between slots — grip, stance, angle, implement change while the
+movement's job stays put. That was derived from screenshots, independently of the interview material that
+`trainingAge.ts` was built from, and the two land in the same place. Where an inference from the programs and
+a rule from his own words converge like that, the confidence in both goes up.
+
+**Consequence for G113's axes.** A template factors into four things that vary independently — the
+muscle-order skeleton, the equipment it is filled from, the number of days, and the variant in each slot —
+and G116 says the first three are **constant for the block** while only the fourth moves, and then only at a
+seam.
+
 ---
 
 ## Deferred — raised, not yet answered
