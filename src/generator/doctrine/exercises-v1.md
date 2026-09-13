@@ -6360,6 +6360,33 @@ legs all on the same day, at least for guys especially"* might be read to requir
 at six days a week there is no single leg day to consolidate into, and the Lower Body Emphasis template gives
 legs four of them. G58 is a rule about lower frequencies, and should not be applied at six days.
 
+**G110 — How an emphasis spends the non-emphasised region depends on the frequency.**
+
+Nine male five-day templates, one of them labelled **Lower Body Emphasis**. Forty-one templates now.
+
+**Rule — G109's "one exercise, placed last" is a six-day pattern, not a general one.** At six days the
+un-emphasised region is thinned to a single exercise on most days. At five days it is not thinned at all — it
+is **given a whole block on fewer days**. The upper-emphasis five-day templates put legs on two of the five
+days, as a block of three or four, at the end of those days. Same intent, opposite mechanism, and G109 as
+written would predict the wrong shape here.
+
+| Frequency | Emphasised | Non-emphasised |
+|---|---|---|
+| 6 days | leads every day, 2–3 consecutive | one exercise, last, on most days |
+| 5 days | leads 3 of 5 days, 2–3 consecutive | a full block on the other 2 days |
+
+**Rule — the five-day lower-body emphasis is three leg days and two upper days.** The labelled template runs
+legs Monday, Wednesday and Friday — each closing on calves — with two upper days between them.
+
+**Refines G102: on a pure leg day the small muscle finishes, and that is the same rule, not the exception.**
+The divider marks the **end of the leg block**. When upper work follows it, it lands mid-session; when nothing
+follows it, the end of the leg block *is* the end of the session. One rule produces both placements, which is
+what the earlier "both are legitimate" wording could not explain.
+
+**(inferred, worth confirming)** Dominant, not universal, and the exceptions are recorded so the rule is not
+over-fitted: one template here runs Hamstrings → **Calves** → Quads → Glutes, putting the divider inside the
+leg block; another opens a day Chest → **Abs** → Quads → Hamstrings, with abs before any leg work at all.
+
 ---
 
 ## Deferred — raised, not yet answered
