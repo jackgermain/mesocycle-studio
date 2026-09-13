@@ -6201,6 +6201,13 @@ Template 1 does finish with abs and calves, as the older quote says.
 of these four programs. The slot-two placement is consistent enough — nine sessions across three templates,
 never varying — to be deliberate rather than incidental.
 
+**Corroborated across every later batch.** Eighteen templates have now been given, at three, four, five and
+six days a week, and the placement appears in all of them: a 5-day program with Abs in slot 3 on all three
+glute days and Calves in slot 4 on both quad days; a 3-day program with Abs in slot 3 on all three days;
+another 3-day with **Calves in slot 2**, ahead of Glutes and Quads; a third with Calves in slot 5 of 7, before
+every upper-body exercise. This is not a variant placement any more — it is the normal one, and finishing with
+the small muscles is the alternative rather than the rule.
+
 **(inferred, worth confirming)** The reason is not stated. The obvious reading is that a small muscle needing
 no systemic recovery makes a useful spacer between the heaviest leg movement and upper-body pressing, so the
 pressing is not done straight off a squat. That is mine, not his.
@@ -6228,6 +6235,64 @@ them, which is the positive half of that rule and was never stated outright.
 inside **G7** (arms in the final 2/3 to 3/4) rather than changing it. One exception is worth noting so it is
 not mistaken for a rule: template 1's Thursday runs Back, Back, Triceps, Shoulders, Biceps — shoulders after
 triceps.
+
+**G105 — Emphasis is read off frequency *and* order, and order outranks muscle size.**
+
+> *"Here are some good female 5x a week splits. You can see the emphasis on each one based on frequency
+> order etc."*
+
+Given with seven 5-day female templates, then four 4-day ones. The emphasised muscle is identifiable two
+ways at once: it appears on the most days, and it **opens** them.
+
+**Rule — whatever is emphasised leads the session, even when it is a small muscle.** One 5-day template is
+upper-emphasis and inverts everything: Monday opens Chest, Chest, Triceps, Shoulders and puts Quads and
+Glutes last; Thursday opens on **Biceps**; Friday opens on **Triceps**. Legs never lead a day in it.
+
+This is **G5 rule 3** — *"it also comes down to what's more important to the person"* — operating as the
+primary ordering principle rather than a tiebreak. Big-to-small is the default only in the absence of an
+emphasis.
+
+**Rule — a 4-day template may specialise a whole day to one muscle.** One of them runs five consecutive quad
+exercises on Monday and four glute exercises on Tuesday. That is a muscle split, not a pattern split.
+
+**G106 — The emphasised muscle takes consecutive slots, not spread ones.**
+
+Across the 4-, 5- and 6-day female templates, a muscle given more than one exercise in a day almost always
+takes them **back to back**: Glutes ×3 opening a day, Quads ×2, Hamstrings ×2, Back ×2.
+
+**This contradicts a rule already implemented.** `sessionStructure.ts` picks the second compound as
+deliberately *not* the lead's muscle, quoting: *"the second exercise, since you're still early on in the
+session, would probably be something that's not the same body part."* The templates put the emphasised
+muscle in slot two constantly. The older quote is about a **full-body** day for a beginner; these are
+emphasis splits, and the two are not the same situation — but the generator applies the rule to both.
+
+**G107 — The female lead rotation is legs-dominant at every frequency.**
+
+Leg leads per week, counted off the templates:
+
+| Days | Templates seen | Days led by legs |
+|---|---|---|
+| 3 | 3 | 2–3 of 3 |
+| 4 | 4 | 2–3 of 4 |
+| 5 | 7 | 3–5 of 5 |
+| 6 | 4 | 3–6 of 6 |
+
+**The three-day case is close; the five-day case is not.** `LEAD_ROTATION["glute-priority"]` gives three days
+`["legs", "pull", "legs"]` — two leg leads, against the two-to-three observed, which is near enough. It gives
+five days `["legs", "pull", "legs", "push", "pull"]` — also two, against three to five observed, and it
+produces a fifth day with no leg work in it at all. The error is concentrated at the higher frequencies.
+
+**Rule — the three-day female template is full body every day.** All three carry legs, chest and back in
+every session, at seven to nine exercises. That matches `EXERCISES_PER_SESSION[3] = 8`. What it does not match
+is the quote that seeded the rotation — *"the first day you're starting with a chest exercise"* — because all
+three of these open on legs. That quote describes a beginner's full-body split, not an emphasis split.
+
+**Rule — a female program leads with legs on most days, not on two of them.** Every template carries leg
+work on every training day bar the dedicated upper days, and several carry it on all of them.
+
+**(inferred, worth confirming)** The upper-emphasis template is the exception that shows the rotation is
+driven by the client's emphasis rather than by sex. Recorded as inference: Jack labelled the whole batch
+"for girls" without singling that one out.
 
 ---
 

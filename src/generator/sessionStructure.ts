@@ -50,7 +50,25 @@ export interface Slot {
 export type WeekPlan = Slot[][];
 
 /** Which region leads each day. Three days is the case Jack described in full; the others are extended
- * from the same idea and are the least confident thing in this file. */
+ * from the same idea and are the least confident thing in this file.
+ *
+ * **Measured against fifteen female templates Jack approved (G105-G107), the 4/5/6-day glute-priority rows
+ * are wrong.** They give legs two leads out of five; his templates give three to five, and several carry leg
+ * work on every single day. `planWeek(5, {profile: "glute-priority"})` currently produces a Friday with no
+ * leg work in it at all.
+ *
+ * Three further mismatches found in the same comparison, all of them live rather than theoretical:
+ *
+ *   1. FINISHERS pushes small muscles to the last two slots. His templates put abs or calves in slot 2-4 as
+ *      often as at the end -- nine sessions in one batch, more in the next (G102).
+ *   2. The finisher slots are filled from whatever the coverage budget has left, so they hold **Glutes,
+ *      Quads and Hamstrings** while abs and calves are never scheduled at all. In a GLUTE-PRIORITY program
+ *      that puts glutes in the small-muscle slots.
+ *   3. secondFor() refuses the lead's own muscle. His emphasis splits do the opposite and stack two to five
+ *      consecutive exercises on the emphasised muscle (G106).
+ *
+ * None of this is fixed here: it changes every generated program and is Jack's call. Nothing in tests/ covers
+ * planWeek, so there is no safety net if someone changes it casually -- read G101-G107 first. */
 const LEAD_ROTATION: Record<EmphasisProfile, Record<number, Region[]>> = {
   "upper-priority": {
     2: ["push", "pull"],
