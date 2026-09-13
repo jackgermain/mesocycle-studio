@@ -61,6 +61,13 @@
 
 import { spendOrderFor, PRIORITY_TIERS, WEEKLY_SETS, type GoalPriority } from "./weeklyVolume";
 
+/** **Too coarse — see G108.** Jack's own templates carry their emphasis as a label in the app UI, and there
+ * are at least five: Upper Body, Lower Body, Chest & Back, Arms & Shoulders, and the glute case. Two of those
+ * are not expressible as "upper" at all, since Chest & Back and Arms & Shoulders differ from each other in
+ * which upper muscle leads and in which region is cut to a single slot.
+ *
+ * Extending this is not a type change on its own: LEAD_ROTATION in sessionStructure.ts is keyed by it, and
+ * that table is already wrong at two frequencies (see the note there). */
 export type EmphasisProfile = "upper-priority" | "glute-priority";
 
 export function defaultProfile(sex: "male" | "female" | undefined): EmphasisProfile {

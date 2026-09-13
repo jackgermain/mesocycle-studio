@@ -6221,6 +6221,14 @@ block rather than after all the legs.
 clearer than the slot-two framing did — a muscle that costs nothing systemically is what you do between the
 heaviest work and the pressing, rather than something saved for when there is time left.
 
+**Confirmed on a labelled male template.** The one marked **Lower Body Emphasis** puts calves at the leg/upper
+seam on all four of its leg days — Quads, Quads, **Calves**, Chest, Chest — which is the boundary rule in its
+purest form, on a program whose emphasis Jack stated rather than left to be deduced.
+
+**And the counter-case survives too.** "Jared Feather's Favorite" finishes with calves and abs, as female
+template 1 did. Both placements persist across thirty-two templates at five different frequencies, so
+neither is the rule and a generator must be able to produce both.
+
 **(inferred, worth confirming)** The reason is not stated. The obvious reading is that a small muscle needing
 no systemic recovery makes a useful spacer between the heaviest leg movement and upper-body pressing, so the
 pressing is not done straight off a squat. That is mine, not his.
@@ -6311,6 +6319,46 @@ work on every training day bar the dedicated upper days, and several carry it on
 **(inferred, worth confirming)** The upper-emphasis template is the exception that shows the rotation is
 driven by the client's emphasis rather than by sex. Recorded as inference: Jack labelled the whole batch
 "for girls" without singling that one out.
+
+**G108 — Emphasis is a named property of a template, and there are more than two of them.**
+
+Ten male six-day templates, several carrying their emphasis **as a label in the app's own UI**. This is the
+first time the emphasis has been stated rather than inferred, which makes it ground truth for G105:
+
+| Label on the template | What leads the day |
+|---|---|
+| **Upper Body Emphasis** | chest, back, arms, shoulders — legs get one exercise, placed last |
+| **Lower Body Emphasis** | quads, glutes, hamstrings lead four of six days |
+| **Chest & Back Emphasis** | alternating chest days and back days, two of that muscle leading each |
+| **Arms & Shoulders Emphasis** | triceps, biceps or delts lead with two to three consecutive |
+| *(female set)* glute-priority | glutes lead, often two or three consecutive |
+
+**Rule — `EmphasisProfile` is too coarse.** It is `"upper-priority" | "glute-priority"`. Jack's own labels
+name at least four distinct emphases on top of the glute case, and two of them — Chest & Back, Arms &
+Shoulders — are *not* expressible as "upper" at all, because they differ from each other in which upper
+muscle leads and in what gets only one slot. A generator built on the two-value type cannot produce four of
+these ten programs.
+
+**"Jared Feather's Favorite" is a named preset, not an emphasis.** It runs legs / push / pull twice over and
+is balanced. Recorded so the label is not mistaken for a fifth emphasis category.
+
+**G109 — Under an emphasis, the non-emphasised region gets one exercise, and it goes last.**
+
+**Rule — the emphasised muscle opens the day with two or three consecutive exercises.** True in every
+labelled template. This is G106 confirmed on data where the emphasis is stated rather than deduced.
+
+**Rule — the region that is not emphasised is not dropped; it is reduced to a single exercise at the end of
+the day.** The Upper Body Emphasis template closes four of its six days on one leg movement — Quads, then
+Hamstrings, then Quads, then Hamstrings. Nothing is skipped, and nothing gets a second slot.
+
+**Rule — under a lower-body emphasis, calves are the divider.** All four leg days run legs, then calves,
+then the upper work: Quads, Quads, **Calves**, Chest, Chest. That is G102's boundary rule on a labelled male
+program, in exactly the shape the female two-day templates showed.
+
+**On G58.** No six-day male template here consolidates legs into one day, which *"I usually like to try to do
+legs all on the same day, at least for guys especially"* might be read to require. It is not a contradiction:
+at six days a week there is no single leg day to consolidate into, and the Lower Body Emphasis template gives
+legs four of them. G58 is a rule about lower frequencies, and should not be applied at six days.
 
 ---
 
