@@ -6208,6 +6208,19 @@ another 3-day with **Calves in slot 2**, ahead of Glutes and Quads; a third with
 every upper-body exercise. This is not a variant placement any more — it is the normal one, and finishing with
 the small muscles is the alternative rather than the rule.
 
+**Sharpened by the two-day templates, which show the placement at its most regular.** All four run legs ×3–4,
+then calves or abs, then the whole upper body — on both days, without exception. So the rule is not "a small
+muscle goes early"; it is:
+
+**Rule — the small muscle sits at a boundary, after a block of leg work and before the upper-body work.** It
+is a divider, not a finisher. Where the emphasised muscle has its own block the divider can come earlier
+still: two templates run Glutes ×2 → **Abs** → the rest of the legs → upper, putting it after the emphasis
+block rather than after all the legs.
+
+**(inferred, worth confirming)** Still no stated reason. The boundary reading makes the obvious mechanism
+clearer than the slot-two framing did — a muscle that costs nothing systemically is what you do between the
+heaviest work and the pressing, rather than something saved for when there is time left.
+
 **(inferred, worth confirming)** The reason is not stated. The obvious reading is that a small muscle needing
 no systemic recovery makes a useful spacer between the heaviest leg movement and upper-body pressing, so the
 pressing is not done straight off a squat. That is mine, not his.
@@ -6270,12 +6283,17 @@ emphasis splits, and the two are not the same situation — but the generator ap
 
 Leg leads per week, counted off the templates:
 
-| Days | Templates seen | Days led by legs |
-|---|---|---|
-| 3 | 3 | 2–3 of 3 |
-| 4 | 4 | 2–3 of 4 |
-| 5 | 7 | 3–5 of 5 |
-| 6 | 4 | 3–6 of 6 |
+| Days | Templates seen | Leg leads observed | `LEAD_ROTATION` gives | Verdict |
+|---|---|---|---|---|
+| 2 | 4 | **2 of 2**, all four | 1 | wrong |
+| 3 | 3 | 2–3 of 3 | 2 | close |
+| 4 | 4 | 2–3 of 4 | 2 | close |
+| 5 | 7 | **3–5 of 5** | 2 | badly wrong |
+| 6 | 4 | 3–6 of 6 | 3 | low end of observed |
+
+**The two-day case is the clearest.** All four two-day templates lead legs on *both* days and run full body
+at eight to nine exercises, in a shape that barely varies: legs ×3–4, then a small muscle, then shoulders,
+back, chest, arms. The rotation gives those weeks one leg lead and a pull lead.
 
 **The three-day case is close; the five-day case is not.** `LEAD_ROTATION["glute-priority"]` gives three days
 `["legs", "pull", "legs"]` — two leg leads, against the two-to-three observed, which is near enough. It gives

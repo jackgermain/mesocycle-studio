@@ -52,10 +52,20 @@ export type WeekPlan = Slot[][];
 /** Which region leads each day. Three days is the case Jack described in full; the others are extended
  * from the same idea and are the least confident thing in this file.
  *
- * **Measured against fifteen female templates Jack approved (G105-G107), the 4/5/6-day glute-priority rows
- * are wrong.** They give legs two leads out of five; his templates give three to five, and several carry leg
- * work on every single day. `planWeek(5, {profile: "glute-priority"})` currently produces a Friday with no
- * leg work in it at all.
+ * **Measured against twenty-two female templates Jack approved (G105-G107), two of these rows are wrong and
+ * the rest sit at the low end of what he actually writes.** Leg leads per week, his templates against this
+ * table:
+ *
+ *   | days | observed | here | verdict |
+ *   |---|---|---|---|
+ *   | 2 | 2 of 2, all four templates | 1 | wrong |
+ *   | 3 | 2-3 of 3 | 2 | close |
+ *   | 4 | 2-3 of 4 | 2 | close |
+ *   | 5 | 3-5 of 5 | 2 | badly wrong |
+ *   | 6 | 3-6 of 6 | 3 | low end |
+ *
+ * The five-day row is the worst of it: `planWeek(5, {profile: "glute-priority"})` produces a Friday with no
+ * leg work in it at all, which does not happen in any of his programs.
  *
  * Three further mismatches found in the same comparison, all of them live rather than theoretical:
  *
