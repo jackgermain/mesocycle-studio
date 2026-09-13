@@ -306,38 +306,16 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
         <div>
           <div className="sh">Macro targets</div>
 
-          <div className="cell" style={{ marginBottom: 10 }}>
-            <div className="row" style={{ marginBottom: 4 }}>
-              <i className="ph ph-calculator" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
-              <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Protein-first calculator</span>
-            </div>
-            <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
-              Per pound of bodyweight, moving with the phase — a gram at maintenance, 1.1–1.2 cutting, and as
-              little as 0.85 bulking. A surplus spares protein; a deficit is where muscle is at risk, so that
-              is where it goes up. Fat and carbs fill in around it, and you can hand-edit anything below.
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={1} />
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
-              <div className="row">
-                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Suggested protein</span>
-                <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{suggestedProtein} g</span>
-              </div>
-            </div>
-            <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applySuggestion}>
-              Apply to targets below
-            </button>
-          </div>
+          {/* N1: every target is an offset from maintenance, so maintenance is the first number -- and now
+              literally the first card too. Jack: "make the maintenance calculator first."
 
-          {/* N1: every target is an offset from maintenance, so maintenance is the first number. */}
+              The explanatory paragraph that used to head each of these cards is gone, on the same instruction
+              that hid the derivations: "remove the summary of all the words... just have the calculator, no
+              summary of it." The headings name the thing; the rows do the work. */}
           <div className="cell" style={{ marginBottom: 10 }}>
-            <div className="row" style={{ marginBottom: 4 }}>
+            <div className="row" style={{ marginBottom: 9 }}>
               <i className="ph ph-flame" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
               <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Maintenance calculator</span>
-            </div>
-            <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
-              What {who} burn{subjectFirstName ? "s" : ""} in a day, holding weight. Everything below is an offset from it, so a wrong number here makes every target wrong the same way.
             </div>
 
             {/* Sex is asked for one reason and used for one thing: Mifflin-St Jeor's two forms differ by a
@@ -384,20 +362,35 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             {/* The formula, the multiplier and the lean-mass figure used to be printed here. Deliberately
                 gone -- Jack: "remove the numbers so people can't view how its calculated for any parameter."
                 The inputs and the answer are the person's business; the derivation is not. */}
-            <div className="mu" style={{ marginTop: 4, lineHeight: 1.5 }}>A starting point — once there are a few weeks of weigh-ins, the scale corrects it.</div>
             <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applyMaintenance}>
               Use the estimate
             </button>
           </div>
 
+          <div className="cell" style={{ marginBottom: 10 }}>
+            <div className="row" style={{ marginBottom: 9 }}>
+              <i className="ph ph-calculator" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
+              <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Protein-first calculator</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <CalcRow label="Bodyweight" unit="lb" value={calcBw} onChange={setCalcBw} step={1} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 9, fontSize: 12.5 }}>
+              <div className="row">
+                <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Suggested protein</span>
+                <span className="num" style={{ fontWeight: 700, color: "var(--color-accent-300)" }}>{suggestedProtein} g</span>
+              </div>
+            </div>
+            <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applySuggestion}>
+              Apply to targets below
+            </button>
+          </div>
+
           {/* N2 the arithmetic, N3/N5 the cap. Both come from shared/nutritionPlan.ts. */}
           <div className="cell" style={{ marginBottom: 10 }}>
-            <div className="row" style={{ marginBottom: 4 }}>
+            <div className="row" style={{ marginBottom: 9 }}>
               <i className="ph ph-scales" style={{ fontSize: 14, color: "var(--color-accent-300)", marginRight: 6 }} />
               <span style={{ fontSize: 12.5, fontFamily: "var(--font-heading)" }}>Rate of change</span>
-            </div>
-            <div className="mu" style={{ marginBottom: 9, lineHeight: 1.5 }}>
-              1 lb of tissue is 3,500 kcal, so 500 a day under maintenance is a pound a week off and 500 over is a pound on. Set it as a % of bodyweight — half a percent is a very different number of calories at 140 lb than at 250 lb.
             </div>
             <div className="row" style={{ gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
               {RATE_PRESETS.map((preset) => (
@@ -434,10 +427,9 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
                 {plan.cappedNote}
               </div>
             )}
-            <div className="mu" style={{ marginTop: 8, lineHeight: 1.5 }}>
-              Losing faster than the cap does not get {who} there sooner — past that rate, more of what comes off is muscle.
-              {calcBf >= 30 && " Body fat is high enough here that the cap is raised."}
-            </div>
+            {/* The standing explainer about why the cap exists is gone with the rest of the prose. The
+                conditional cappedNote above stays: it is not a summary, it is the app telling them their own
+                number was just changed and why. */}
             <button className="btn btn-block" style={{ marginTop: 9, height: 44, fontSize: 12.5 }} onClick={applyRate}>
               Apply — sets the macro targets and rate label below
             </button>

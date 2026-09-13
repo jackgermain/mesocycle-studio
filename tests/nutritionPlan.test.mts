@@ -691,3 +691,37 @@ test("N12: the follow-up adds rather than pulls when the goal is to gain", () =>
   assert.equal(a.kind, "followup");
   assert.equal(a.deltaKcal, FOLLOWUP_ADJUST_KCAL);
 });
+
+// ---- The chosen phase is what gets applied --------------------------------
+
+test("N9: each preset drives the direction the person picked", () => {
+  // The form cannot be tested here (no DOM, and these tests may only import pure modules), so this pins the
+  // guarantee underneath it: with auto nutrition on, save() writes plan.macros, and the plan is built from
+  // whichever preset they chose. If this holds, picking "Bulk" cannot produce a deficit.
+  const base = { bodyweightLb: 200, bodyFatPct: 18, maintenanceKcal: 2700 };
+  const cases: [number, string, "cut" | "gain" | "maintain"][] = [
+    [-0.75, "Fast cut", "cut"],
+    [-0.5, "Cut", "cut"],
+    [0, "Maintenance", "maintain"],
+    [0.25, "Lean bulk", "gain"],
+    [0.5, "Bulk", "gain"],
+  ];
+  for (const [pct, label, direction] of cases) {
+    const plan = buildPlan({ ...base, ratePctPerWeek: pct });
+    assert.equal(plan.rate.pct, pct, `${label} sits inside both caps and must not be held back`);
+    assert.equal(plan.label, label);
+    assert.equal(plan.direction, direction);
+    if (direction === "cut") assert.ok(plan.targetKcal < base.maintenanceKcal, `${label} must eat under maintenance`);
+    if (direction === "gain") assert.ok(plan.targetKcal > base.maintenanceKcal, `${label} must eat over maintenance`);
+    if (direction === "maintain") assert.equal(plan.targetKcal, base.maintenanceKcal);
+  }
+});
+
+test("N9: the macros saved under auto follow the phase, not the last hand-typed numbers", () => {
+  const base = { bodyweightLb: 200, bodyFatPct: 18, maintenanceKcal: 2700 };
+  const cut = buildPlan({ ...base, ratePctPerWeek: -0.5 });
+  const bulk = buildPlan({ ...base, ratePctPerWeek: 0.5 });
+  assert.ok(bulk.macros.kcal > cut.macros.kcal, "a bulk must be fed more than a cut");
+  // N7's ordering has to survive the round trip: a deficit is where muscle is spent, so it takes MORE protein.
+  assert.ok(cut.macros.protein > bulk.macros.protein, "cutting takes more protein than bulking");
+});
