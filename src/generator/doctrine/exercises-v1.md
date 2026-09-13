@@ -6458,6 +6458,11 @@ neither is connected to template selection.
 **Rule — a three-day full-body template is one skeleton run three times.** All three days of both 20-minute
 templates run the same muscle order with different exercises in it.
 
+**Rule — a named preset's skeleton does not vary with its frequency.** "20 Minute Full Body Dumbbell Workout"
+exists at two, three and four days a week, and the skeleton is the same six slots in the same order every
+time — Chest, Back, Shoulders, Quads, Abs, Hamstrings. Only the number of days changes. So a preset is a
+**skeleton plus a frequency**, and the two are independent of each other.
+
 **This completes a pattern across the frequencies.** A week is N session types repeated to fill the days:
 
 | Days | Structure |
@@ -6481,6 +6486,37 @@ take into consideration what they did last time… because you wanna make sure t
 stimulus"* — applied to the **whole session** rather than only to the choice between two compounds. Whatever
 always goes last is always trained tired, and on a full-body template that is a weekly problem rather than a
 per-session one.
+
+**G115 — At two days a week, the second day mirrors the first.**
+
+Nine male two-day templates. Seventy-two templates now. The mirroring is near-universal here, and it is the
+mechanism G114 was missing:
+
+| Template | Monday leads | Thursday leads |
+|---|---|---|
+| Chest & Triceps Emphasis | Chest | **Triceps** |
+| Back & Biceps Emphasis | Biceps | **Back** |
+| Arms & Shoulders Emphasis | Triceps | **Biceps** |
+| Chest & Back Emphasis | Chest | **Back** |
+| *(unlabelled, lower)* | Quads | **Hamstrings** |
+
+**Rule — the emphasised pair swaps which half of it opens the week's two sessions.** Neither member is
+always the one trained fresh.
+
+**Rule — the swap reaches past the emphasis.** The Chest & Back template also flips its two leg slots —
+Quads then Hamstrings on Monday, Hamstrings then Quads on Thursday — and one unlabelled template runs
+Thursday as Monday's order very nearly **reversed end to end**: Chest → … → Calves becomes Calves → … →
+Chest.
+
+**This is why G5 rule 4 exists, stated mechanically.** That rule says to consider *"what did they do first
+for legs last time… because you wanna make sure that everything gets a lot of stimulus"* but never says how.
+At two exposures a week the answer is exact: **every muscle gets one early slot and one late slot.** Whatever
+is always trained last is always trained tired, and with only two sessions there is no room to absorb that.
+
+**(inferred, worth confirming)** Whether the same mirroring governs three and four days, where a muscle has
+three or four exposures rather than two, is not something these templates settle. The three-day "Whole Body
+Daily" of G114 rotates rather than mirrors, which suggests the principle generalises but the mechanism does
+not.
 
 ---
 
