@@ -37,6 +37,73 @@ const WIDE_WITH_EMPTY_DAY: string[][] = [
   ["", "RDL", "3.0", "10", "135", "2", "", "", "", "", "", ""],
 ];
 
+/** Dated day headings, and a week label sitting in the day column below the block.
+ *
+ * Cut from "Blake_Moffitt_5DAY_2026.xlsx", a real upload that failed after the first fix shipped. Two
+ * distinct bugs live in this fixture: the heading carries a trailing date ("D1 (Monday) 2/2"), and the
+ * next week block is announced by a label in the same column the exercises are in. */
+const DATED_HEADINGS: string[][] = [
+  [],
+  ["", "Week 1  —  w/c Mon Feb 2, 2026"],
+  ["", "D1 (Monday) 2/2", "Sets", "Reps", "Weight", "RIR", "", "", "D2 (Tuesday) 2/3", "Sets", "Reps", "Weight", "RIR"],
+  ["", "Incline Barbell Bench", "3", "8,6,5", "50", "2", "", "", "Seated Row Machine", "3", "10,9,8", "60", "2"],
+  ["", "Lateral Raise", "3", "11,9,8", "40", "2", "", "", "Lat Pulldown", "3", "10,9,7", "60", "2"],
+  [],
+  [],
+  ["", "Week 2  —  w/c Mon Feb 9, 2026"],
+  ["", "D1 (Monday) 2/9", "Sets", "Reps", "Weight", "RIR", "", "", "D2 (Tuesday) 2/10", "Sets", "Reps", "Weight", "RIR"],
+  ["", "Incline Barbell Bench", "3", "7,6,4", "55", "2", "", "", "Seated Row Machine", "3", "11,9,7", "60", "2"],
+];
+
+test("a day heading that carries a date is still a day heading", () => {
+  // "D1 (Monday) 2/2". Anchoring straight after the weekday found no days at all, and because that path
+  // returns no error either, the user got a generic "couldn't read this sheet" for a perfectly good file.
+  const r = parseWeekBlockLayoutToDraftDays(DATED_HEADINGS);
+  assert.equal(r.days.length, 2);
+  assert.deepEqual(r.dows, [0, 1]);
+  assert.equal(r.days[0].name, "Monday");
+});
+
+test("the label announcing the next week is not read as an exercise", () => {
+  // "Week 2 — w/c Mon Feb 9, 2026" sits in the same column as Monday's exercises, below a blank row.
+  const r = parseWeekBlockLayoutToDraftDays(DATED_HEADINGS);
+  assert.equal(r.days[0].exercises.length, 2);
+  for (const day of r.days) {
+    for (const ex of day.exercises) {
+      assert.doesNotMatch(ex.name, /^Week\s/i, `"${ex.name}" is a week label, not an exercise`);
+    }
+  }
+});
+
+/** A day whose column goes quiet in the middle and then resumes. Colin's Wednesday does exactly this:
+ * three empty rows, then one more exercise. */
+const GAP_MID_COLUMN: string[][] = [
+  ["", "D1 (Monday)", "Sets", "Reps"],
+  ["", "Lat Pulldown", "2", "16,13"],
+  ["", "", "", ""],
+  ["", "", "", ""],
+  ["", "", "", ""],
+  ["", "Super ROM Lateral Raise", "2", "15,13"],
+];
+
+test("a gap in the middle of a day's column does not end the day", () => {
+  // Ending at the first blank row was tried as the way to stop week labels being read as exercises, and it
+  // silently dropped a real exercise here -- 28 became 27. The legitimate gap (3 rows) is LONGER than the
+  // one before a week label (2 rows), so counting blanks cannot tell them apart.
+  const r = parseWeekBlockLayoutToDraftDays(GAP_MID_COLUMN);
+  assert.equal(r.days.length, 1);
+  assert.equal(r.days[0].exercises.length, 2, "the exercise below the gap was dropped");
+  assert.equal(r.days[0].exercises[1].name, "Super Rom Lateral Raise");
+});
+
+test("the regression, end to end: a dated sheet resolves instead of erroring", () => {
+  const r = resolveDraftDays(DATED_HEADINGS);
+  assert.equal(r.days.length, 2);
+  assert.deepEqual(r.errors, []);
+  assert.equal(r.days[0].exercises[0].sets, 3);
+  assert.equal(r.days[0].exercises[0].reps, 8, '"8,6,5" should seed from the top set');
+});
+
 test("reads days laid out side by side, which is what every real sheet here does", () => {
   const r = parseWeekBlockLayoutToDraftDays(TWO_DAYS);
   assert.equal(r.days.length, 2);

@@ -245,8 +245,25 @@ const WEEKDAY_INDEX: Record<string, number> = {
   mon: 0, tue: 1, tues: 1, wed: 2, thu: 3, thur: 3, thurs: 3, fri: 4, sat: 5, sun: 6,
 };
 
-/** "D1 (Monday)", "D2", "Day 3 (Friday)" -- the day heading in Jack's own sheets and his clients'. */
-const DAY_HEADER = /^(?:D|DAY)\s*(\d+)\s*(?:\(\s*([A-Za-z]+)\s*\))?$/i;
+/** "D1 (Monday)", "D2", "Day 3 (Friday)", and "D1 (Monday) 2/2" -- the day heading in these sheets.
+ *
+ * **The trailing date is load-bearing and was missed the first time.** A real client program dates every
+ * day in its own heading ("D1 (Monday) 2/2", "D2 (Tuesday) 2/3"). Anchoring immediately after the weekday
+ * made that entire file unreadable: no day columns, so no days AND no error, so the user was handed the
+ * generic "couldn't read this sheet" message -- the same silent failure this parser was written to replace.
+ *
+ * Only a date-shaped token is allowed after the weekday, so a heading with arbitrary prose after it is
+ * still refused rather than half-read. */
+const DAY_HEADER = /^(?:D|DAY)\s*(\d+)\s*(?:\(\s*([A-Za-z]+)\s*\))?(?:\s+[\d/.-]+)?\s*$/i;
+
+/** The heading that announces the next week block -- "Week 2  —  w/c Mon Feb 9, 2026".
+ *
+ * It sits in the same column as that day's exercises, below a gap, so it has to be rejected by name. The
+ * structural alternative -- ending a day at its first blank row -- was tried and was wrong: a real client
+ * sheet leaves three empty rows mid-column and then resumes, and that rule silently dropped the exercise
+ * underneath. The legitimate gap is longer than the terminating one, so counting blanks cannot separate
+ * them. Matching the label is narrow and safe: no exercise is called "Week something". */
+const WEEK_LABEL = /^week\b/i;
 
 /** Column headings that mean "this column holds a number about the exercise to my left". */
 const FIELD_HEADS = new Set(["sets", "set", "reps", "rep", "weight", "load", "rir", "rpe", "time"]);
@@ -333,7 +350,9 @@ export function parseWeekBlockLayoutToDraftDays(rows: string[][]): CsvParseResul
     const exercises: DraftExercise[] = [];
     for (let r = headerRow + 1; r < endRow; r++) {
       const name = cell(r, day.col);
-      if (!name || DAY_HEADER.test(name)) continue;
+      // Blanks are skipped rather than ending the day -- see WEEK_LABEL for why the obvious alternative is
+      // wrong. What must not be read as an exercise is the next week block's label or another day heading.
+      if (!name || DAY_HEADER.test(name) || WEEK_LABEL.test(name)) continue;
       const sets = firstNumber(cell(r, fields.sets ?? fields.set ?? -1));
       const reps = firstNumber(cell(r, fields.reps ?? fields.rep ?? -1));
       const load = firstNumber(cell(r, fields.weight ?? fields.load ?? -1));
