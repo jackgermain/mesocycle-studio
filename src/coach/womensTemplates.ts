@@ -985,7 +985,7 @@ const FOUR_DAY: TemplateSpec[] = [
     ],
   },
   {
-    name: "Glute Specialisation — Four Day",
+    name: "Glute Specialization — Four Day",
     category: "lower-specialty",
     sex: "women",
     emphasis: "Glutes",

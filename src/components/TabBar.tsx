@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../state/store";
 import { useAuth } from "../lib/auth";
-import { canSelfBuildProgram } from "../shared/canBuild";
+import { canSelfBuildProgram, hasInbox } from "../shared/canBuild";
 import { useInboxUnreadCount } from "../shared/inboxUnread";
 import { useIsDesktop } from "../shared/useMediaQuery";
 import { TabBadge } from "./TabBadge";
@@ -20,19 +20,34 @@ import { SideNav, isTabActive, type NavTab } from "./SideNav";
 function useClientTabs(poll: boolean): NavTab[] {
   const { state } = useStore();
   const { account } = useAuth();
-  const selfDirected = canSelfBuildProgram(account?.role);
-  const unread = useInboxUnreadCount(state.inboxReadAt, poll && !selfDirected);
+  const role = account?.role;
+  const selfDirected = canSelfBuildProgram(role);
+  const messaging = hasInbox(role);
+
+  // Poll only for a client. get_my_thread answers a CLIENT's thread (migration 0028 gates it to that role),
+  // so polling it for anyone else is a request that can only ever come back null.
+  const unread = useInboxUnreadCount(state.inboxReadAt, poll && role === "client");
 
   const train: NavTab = { path: "/block", label: "Train", icon: "ph-calendar-blank", badge: 0 };
   const progress: NavTab = { path: "/progress", label: "Progress", icon: "ph-chart-line-up", badge: 0 };
   const nutrition: NavTab = { path: "/nutrition", label: "Nutrition", icon: "ph-fork-knife", badge: 0 };
+  // Train first, Programs beside it: "on the far left there's the train tab... and then on the tab next to
+  // that will be the program tab, and that's where you'll find anything related to the program design".
+  const programs: NavTab = { path: "/build", label: "Programs", icon: "ph-barbell", badge: 0 };
 
-  if (selfDirected) {
-    // Train first, Programs beside it: "on the far left there's the train tab... and then on the tab next to
-    // that will be the program tab, and that's where you'll find anything related to the program design".
-    return [train, { path: "/build", label: "Programs", icon: "ph-barbell", badge: 0 }, progress, nutrition];
-  }
-  return [train, progress, nutrition, { path: "/inbox", label: "Inbox", icon: "ph-chat-circle", badge: unread }];
+  // A coach's messages are their roster's threads, held in their own coach_state and served by the coach
+  // app's Messages screen. Pointing them at /inbox instead would open a client inbox that get_my_thread
+  // always answers null for, which is a tab that looks broken rather than empty.
+  const messages: NavTab =
+    role === "coach"
+      ? { path: "/coach/messages", label: "Messages", icon: "ph-chat-circle", badge: 0 }
+      : { path: "/inbox", label: "Messages", icon: "ph-chat-circle", badge: unread };
+
+  const tabs: NavTab[] = [train];
+  if (selfDirected) tabs.push(programs);
+  tabs.push(progress, nutrition);
+  if (messaging) tabs.push(messages);
+  return tabs;
 }
 
 /** Bottom tabs on a phone. On a computer the layout's side menu carries the same destinations, so this

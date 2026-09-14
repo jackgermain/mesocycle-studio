@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HashRouter, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { StoreProvider, useStore } from "./state/store";
 import { AuthProvider, useAuth } from "./lib/auth";
-import { canSelfBuildProgram } from "./shared/canBuild";
+import { hasInbox } from "./shared/canBuild";
 import { supabase } from "./lib/supabase";
 import { Toast } from "./components/UI";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -92,7 +92,9 @@ function RequireRole({ role, children }: { role: "coach" | "member"; children: R
 function RequireInbox({ children }: { children: React.ReactNode }) {
   const { loading, account } = useAuth();
   if (loading) return <LoadingShell />;
-  if (canSelfBuildProgram(account?.role)) return <Navigate to="/block" replace />;
+  // Gated on hasInbox, not canSelfBuildProgram. The latter is true for a coach as well as a General
+  // account, so guarding on it bounced coaches away from their own messages.
+  if (!hasInbox(account?.role)) return <Navigate to="/block" replace />;
   return <>{children}</>;
 }
 
