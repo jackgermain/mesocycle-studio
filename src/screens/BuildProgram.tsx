@@ -775,15 +775,39 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
     setSheetNames([]);
     setSelectedSheet(null);
     if (/\.(xlsx|xls)$/i.test(file.name)) {
-      listXlsxSheetNames(file).then((names) => {
-        setSheetNames(names);
-        setSelectedSheet(names[0]);
-        parseXlsxToDraftDays(file, names[0]).then(setParsed);
-      });
+      // Both of these can throw, and neither used to be caught.
+      //
+      // XLSX is a CDN global (see the script tag in index.html), so it is undefined if that request failed
+      // -- an installed PWA opened offline, a slow phone, a blocked CDN -- and XLSX.read throws on a file
+      // it cannot open. With no catch the rejection was unhandled and setParsed was never called, so the
+      // screen stayed exactly as it was: no program, and no error either, because the error banner is
+      // gated on `parsed &&` and parsed was still null. Nothing happened and nothing said why.
+      listXlsxSheetNames(file)
+        .then((names) => {
+          setSheetNames(names);
+          setSelectedSheet(names[0]);
+          return parseXlsxToDraftDays(file, names[0]).then(setParsed);
+        })
+        .catch((e) =>
+          setParsed({
+            days: [],
+            rowCount: 0,
+            errors: [
+              `Couldn't open this file: ${e instanceof Error ? e.message : String(e)}. If you're offline, the spreadsheet reader may not have loaded — reconnect and try again.`,
+            ],
+          }),
+        );
       return;
     }
     const reader = new FileReader();
-    reader.onload = () => setParsed(parseCsvToDraftDays(String(reader.result ?? "")));
+    reader.onload = () => {
+      try {
+        setParsed(parseCsvToDraftDays(String(reader.result ?? "")));
+      } catch (e) {
+        setParsed({ days: [], rowCount: 0, errors: [`Couldn't read this file: ${e instanceof Error ? e.message : String(e)}`] });
+      }
+    };
+    reader.onerror = () => setParsed({ days: [], rowCount: 0, errors: ["Couldn't read that file off the disk. Try picking it again."] });
     reader.readAsText(file);
   }
 
