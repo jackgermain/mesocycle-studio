@@ -1097,7 +1097,9 @@ const UPPER_SPECIALTY: TemplateSpec[] = [
     ],
   },
   {
-    name: "Chest & Triceps Specialty — Four Day (Men)",
+    // "Focus" rather than "Specialty": the systematic specialty set in specialtyTemplates.ts now owns that
+    // name at this pairing and frequency, and two templates sharing a name share an id.
+    name: "Chest & Triceps Focus — Four Day (Men)",
     category: "upper-specialty",
     sex: "men",
     emphasis: "Chest & Triceps",
@@ -1146,7 +1148,7 @@ const UPPER_SPECIALTY: TemplateSpec[] = [
     ],
   },
   {
-    name: "Back & Biceps Specialty — Five Day (Men)",
+    name: "Back & Biceps Focus — Five Day (Men)",
     category: "upper-specialty",
     sex: "men",
     emphasis: "Back & Biceps",

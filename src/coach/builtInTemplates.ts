@@ -8,6 +8,7 @@ import {
   type TemplateSpec,
 } from "./womensTemplates";
 import { MENS_TEMPLATE_SPECS } from "./mensTemplates";
+import { SPECIALTY_TEMPLATE_SPECS } from "./specialtyTemplates";
 import { deepenAll } from "./templateDensity";
 
 /** The templates that ship with the app, as opposed to the ones a coach saves.
@@ -51,7 +52,11 @@ export interface BuiltInTemplate {
  * `deepen` adds work INSIDE the muscle blocks a template already has rather than appending to the end of a
  * day -- see templateDensity.ts for why that distinction is the whole point. Forty-five of these sat one to
  * three exercises a day under Jack's own figures before it ran. */
-const ALL_SPECS: readonly TemplateSpec[] = deepenAll([...WOMENS_TEMPLATE_SPECS, ...MENS_TEMPLATE_SPECS]);
+const ALL_SPECS: readonly TemplateSpec[] = deepenAll([
+  ...WOMENS_TEMPLATE_SPECS,
+  ...MENS_TEMPLATE_SPECS,
+  ...SPECIALTY_TEMPLATE_SPECS,
+]);
 
 /** Every shipped template, expanded. Built once at module load: these are constants, and rebuilding 60
  * programs on each render of a browsing screen would be wasteful for no gain. */

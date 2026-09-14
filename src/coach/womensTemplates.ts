@@ -1423,7 +1423,7 @@ const GAP_FILL: TemplateSpec[] = [
     ],
   },
   {
-    name: "Back & Biceps Specialty — Three Day (Women)",
+    name: "Back & Biceps Focus — Three Day (Women)",
     category: "upper-specialty", sex: "women", emphasis: "Back & Biceps", dows: [0, 2, 4],
     days: [
       { name: "Back Width", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Dumbbell Curl", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
