@@ -6702,6 +6702,40 @@ So the exercise can change in **any** week, not only at a seam; what is stable f
 *slot*. G116's claim about structure is confirmed; its implication that exercises are fixed between seams is
 not.
 
+**G127 — The first approved *generated* template, and the shape it has.**
+
+> *"I love this one so much....."*
+
+Said of **Glute Focus — Six Day**, shown back to him rendered. Every approval before this was of a template
+he had written himself; this is the first of one the app produced, which makes it a different and more
+useful kind of ground truth — it says the rules were transcribed correctly, not merely stated correctly.
+
+The shape he approved, written out so it can be reproduced rather than admired:
+
+| | Day 1 | Day 2 | Day 3 | Day 4 | Day 5 | Day 6 |
+|---|---|---|---|---|---|---|
+| leads | Glutes | Back | Quads | Chest | Glutes | Back |
+| region | lower | upper | lower | upper | lower | upper |
+
+**Rule — strict alternation of lower and upper, never twice in a row.** G101's "never two consecutive days
+of the same emphasis" holds across all six, and here it produces a perfect lower/upper/lower/upper rhythm.
+
+**Rule — every day is exactly five exercises.** Not four on some and seven on others. The regularity is
+visible at a glance and is probably part of why it reads well.
+
+**Rule — every day pairs two or three of one muscle, then moves on.** Glutes ×2 then hamstrings ×2; back ×2
+then delts ×2; quads ×3 then glutes. G106 and G124 in their plainest form, and the thing that is legible
+in the rendering as a run of one colour.
+
+**Rule — every day closes on a small muscle.** Calves, calves, calves, abs, calves, abs. On the pure leg
+days that is the leg block ending; on the mixed days it is the session ending. G110's single rule producing
+both placements, which is the reading that survived.
+
+**Worth noting what it is NOT.** It carries leg work on three of six days, not all six — the shape G101
+records as his fourth six-day template, the one that alternates rather than putting legs everywhere. An
+earlier version of the checks asserted legs on four or more days and would have rejected this template as
+deficient. He liked the one the stricter rule would have thrown away.
+
 ---
 
 ## Deferred — raised, not yet answered
