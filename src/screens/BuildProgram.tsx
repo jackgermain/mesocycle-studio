@@ -25,6 +25,8 @@ import { planWeek } from "../generator/sessionStructure";
 import { selectForWeek } from "../generator/select";
 import { weekToDraftDays } from "../generator/toDraft";
 import { defaultProfile, type EmphasisProfile } from "../generator/coverage";
+import { groupedByCategory } from "../coach/builtInTemplates";
+import type { TemplateSex } from "../coach/womensTemplates";
 import type { GoalPriority } from "../generator/weeklyVolume";
 import type { Equipment } from "../data/types";
 import { blankIntake, TRAINING_AGE_LABELS, type TrainingAge } from "../shared/intake";
@@ -292,6 +294,10 @@ export default function BuildProgram() {
     return (
       <TemplatesStep
         coachName={state.program.coachName}
+        // The nutrition work (N10) is the only place sex is stored, as "male" | "female". Anyone who has not
+        // answered it gets the women's set, which is the only one written so far -- and TemplatesStep falls
+        // back across populations anyway, so nobody lands on an empty screen while the library is half built.
+        sex={state.profile.sex === "male" ? "men" : "women"}
         onBack={() => setMode("choose")}
         onUse={(cp) => {
           setScratchSeed({ ...coachProgramToDraft(cp), dows: cp.trainingDows });
@@ -349,7 +355,7 @@ export default function BuildProgram() {
   );
 }
 
-function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack: () => void; onUse: (t: Awaited<ReturnType<typeof listCoachTemplates>>[number]) => void }) {
+function TemplatesStep({ coachName, sex, onBack, onUse }: { coachName: string; sex: TemplateSex; onBack: () => void; onUse: (t: Awaited<ReturnType<typeof listCoachTemplates>>[number]) => void }) {
   const [templates, setTemplates] = useState<Awaited<ReturnType<typeof listCoachTemplates>> | null>(null);
 
   useEffect(() => {
@@ -360,10 +366,35 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
     };
   }, []);
 
+  // Built-in templates ship with the app and need no round trip. Until now the ONLY source was the coach's
+  // own coach_state, so a template written in code was unreachable however good it was -- Jack, on the
+  // six-day glute split: "that one needs to be an official one 100%... Put that one up on the app now."
+  //
+  // Falls back to the other population's set when this one has none yet, rather than showing an empty
+  // screen: a half-built library should still be usable, and the labels say what each template is for.
+  const own = groupedByCategory(sex);
+  const groups = own.length ? own : groupedByCategory(sex === "women" ? "men" : "women");
+
   return (
     <div className="screen">
-      <SubHeader title="Saved templates" onBack={onBack} />
+      <SubHeader title="Templates" onBack={onBack} />
       <div className="screen-scroll">
+        {groups.map((g) => (
+          <div key={g.category}>
+            <div className="sh" style={{ marginTop: 6, marginBottom: 4 }}>{g.label}</div>
+            {g.templates.map((t) => (
+              <div key={t.program.id} className="cell">
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{t.program.name}</div>
+                <div className="mu" style={{ marginTop: 2 }}>{t.frequency} days a week · {t.program.intendedFor}</div>
+                <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(t.program)}>
+                  Use this template
+                </button>
+              </div>
+            ))}
+          </div>
+        ))}
+
+        <div className="sh" style={{ marginTop: 14, marginBottom: 4 }}>Saved by {coachName}</div>
         {templates?.length === 0 && <InfoBanner icon="ph-tray">{coachName} hasn't saved any templates yet.</InfoBanner>}
         {(templates ?? []).map((t) => (
           <div key={t.id} className="cell">

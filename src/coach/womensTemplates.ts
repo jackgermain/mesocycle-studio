@@ -40,6 +40,31 @@ import { libraryExercises } from "./exerciseLibrary";
  * if these templates are to read the way his do.
  */
 
+/** Jack's six template kinds, and the two populations. The library is the product of these with the five
+ * training frequencies: 6 categories x 5 frequencies x 2 = 60 cells, which is the target he set.
+ *
+ * These are AUTHORING metadata, not program data, so they live on the spec and on BuiltInTemplate rather
+ * than on CoachProgram -- the app's program type has no business knowing which cell of a content grid a
+ * template came from, and adding fields to it would push this through every reader of a program. */
+export type TemplateCategory =
+  | "full-body"
+  | "lower-emphasis"
+  | "upper-emphasis"
+  | "lower-specialty"
+  | "upper-specialty"
+  | "dumbbell-home";
+
+export type TemplateSex = "women" | "men";
+
+export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
+  "full-body": "Full body",
+  "lower-emphasis": "Lower body emphasis",
+  "upper-emphasis": "Upper body emphasis",
+  "lower-specialty": "Lower body specialty",
+  "upper-specialty": "Upper body specialty",
+  "dumbbell-home": "Dumbbells only, at home",
+};
+
 /** One exercise in a template: the library's own name, then sets and reps. Muscle is looked up rather than
  * written, so a template can never disagree with the library about what it is training. */
 type Slot = readonly [name: string, sets: number, reps: number];
@@ -49,8 +74,12 @@ interface TemplateDay {
   readonly slots: readonly Slot[];
 }
 
-interface TemplateSpec {
+export interface TemplateSpec {
   readonly name: string;
+  /** Which of the six kinds this is. */
+  readonly category: TemplateCategory;
+  /** Who it is written for. Drives the leg-lead expectations -- G107's counts are the female ones. */
+  readonly sex: TemplateSex;
   /** The emphasis, in Jack's own vocabulary (G108, G112). Becomes `intendedFor`. */
   readonly emphasis: string;
   /** Weekdays as offsets from Monday, 0=Mon .. 6=Sun (G111 for the four-day shape). */
@@ -123,6 +152,8 @@ export function buildTemplate(spec: TemplateSpec): CoachProgram {
 const SIX_DAY: TemplateSpec[] = [
   {
     name: "Glute Focus — Six Day",
+    category: "lower-specialty",
+    sex: "women",
     emphasis: "Glutes",
     dows: [0, 1, 2, 3, 4, 5],
     days: [
@@ -190,6 +221,8 @@ const SIX_DAY: TemplateSpec[] = [
   },
   {
     name: "Lower Body Emphasis — Six Day",
+    category: "lower-emphasis",
+    sex: "women",
     emphasis: "Lower Body",
     dows: [0, 1, 2, 3, 4, 5],
     days: [
@@ -254,6 +287,8 @@ const SIX_DAY: TemplateSpec[] = [
   },
   {
     name: "Legs & Pull / Legs & Push — Six Day",
+    category: "full-body",
+    sex: "women",
     emphasis: "Lower Body",
     dows: [0, 1, 2, 3, 4, 5],
     days: [
@@ -327,6 +362,8 @@ const SIX_DAY: TemplateSpec[] = [
   },
   {
     name: "Quad & Glute Split — Six Day",
+    category: "lower-specialty",
+    sex: "women",
     emphasis: "Lower Body",
     dows: [0, 1, 2, 3, 4, 5],
     days: [
@@ -401,6 +438,8 @@ const SIX_DAY: TemplateSpec[] = [
 const FIVE_DAY: TemplateSpec[] = [
   {
     name: "Glute Focus — Five Day",
+    category: "lower-specialty",
+    sex: "women",
     emphasis: "Glutes",
     dows: [0, 1, 2, 3, 4],
     days: [
@@ -453,6 +492,8 @@ const FIVE_DAY: TemplateSpec[] = [
   },
   {
     name: "Glutes & Hamstrings — Five Day",
+    category: "lower-specialty",
+    sex: "women",
     emphasis: "Glutes",
     dows: [0, 1, 3, 4, 5],
     days: [
@@ -505,6 +546,8 @@ const FIVE_DAY: TemplateSpec[] = [
   },
   {
     name: "Lower Body Emphasis — Five Day",
+    category: "lower-emphasis",
+    sex: "women",
     emphasis: "Lower Body",
     dows: [0, 2, 4, 1, 3],
     days: [
@@ -557,6 +600,8 @@ const FIVE_DAY: TemplateSpec[] = [
   },
   {
     name: "Glutes & Back — Five Day",
+    category: "upper-specialty",
+    sex: "women",
     emphasis: "Back & Biceps",
     dows: [0, 1, 2, 4, 5],
     days: [
@@ -609,6 +654,8 @@ const FIVE_DAY: TemplateSpec[] = [
   },
   {
     name: "Upper Body Emphasis — Five Day",
+    category: "upper-emphasis",
+    sex: "women",
     emphasis: "Upper Body",
     dows: [0, 1, 3, 4, 5],
     days: [
@@ -665,6 +712,8 @@ const FIVE_DAY: TemplateSpec[] = [
   },
   {
     name: "Glutes & Shoulders — Five Day",
+    category: "upper-specialty",
+    sex: "women",
     emphasis: "Arms & Shoulders",
     dows: [0, 1, 2, 3, 5],
     days: [
@@ -718,6 +767,8 @@ const FIVE_DAY: TemplateSpec[] = [
   },
   {
     name: "Full Lower & Upper — Five Day",
+    category: "full-body",
+    sex: "women",
     emphasis: "Lower Body",
     dows: [0, 1, 2, 4, 5],
     days: [
@@ -779,6 +830,8 @@ const FOUR_DAY_DOWS = [0, 1, 3, 4];
 const FOUR_DAY: TemplateSpec[] = [
   {
     name: "Glutes & Upper — Four Day",
+    category: "lower-emphasis",
+    sex: "women",
     emphasis: "Glutes",
     dows: FOUR_DAY_DOWS,
     days: [
@@ -826,6 +879,8 @@ const FOUR_DAY: TemplateSpec[] = [
   },
   {
     name: "Quads & Glutes — Four Day",
+    category: "lower-specialty",
+    sex: "women",
     emphasis: "Lower Body",
     dows: FOUR_DAY_DOWS,
     days: [
@@ -873,6 +928,8 @@ const FOUR_DAY: TemplateSpec[] = [
   },
   {
     name: "Lower & Upper — Four Day",
+    category: "full-body",
+    sex: "women",
     emphasis: "Lower Body",
     dows: FOUR_DAY_DOWS,
     days: [
@@ -920,6 +977,8 @@ const FOUR_DAY: TemplateSpec[] = [
   },
   {
     name: "Glute Specialisation — Four Day",
+    category: "lower-specialty",
+    sex: "women",
     emphasis: "Glutes",
     dows: FOUR_DAY_DOWS,
     days: [
@@ -975,6 +1034,8 @@ const FOUR_DAY: TemplateSpec[] = [
 const THREE_DAY: TemplateSpec[] = [
   {
     name: "Full Body — Three Day A",
+    category: "full-body",
+    sex: "women",
     emphasis: "Glutes",
     dows: [0, 2, 4],
     days: [
@@ -1021,6 +1082,8 @@ const THREE_DAY: TemplateSpec[] = [
   },
   {
     name: "Full Body — Three Day B",
+    category: "full-body",
+    sex: "women",
     emphasis: "Lower Body",
     dows: [0, 2, 4],
     days: [
@@ -1064,6 +1127,8 @@ const THREE_DAY: TemplateSpec[] = [
   },
   {
     name: "Full Body — Three Day C",
+    category: "full-body",
+    sex: "women",
     emphasis: "Glutes",
     dows: [0, 2, 5],
     days: [
@@ -1119,6 +1184,8 @@ const THREE_DAY: TemplateSpec[] = [
 const TWO_DAY: TemplateSpec[] = [
   {
     name: "Full Body — Two Day A",
+    category: "full-body",
+    sex: "women",
     emphasis: "Glutes",
     dows: [0, 3],
     days: [
@@ -1152,6 +1219,8 @@ const TWO_DAY: TemplateSpec[] = [
   },
   {
     name: "Full Body — Two Day B",
+    category: "full-body",
+    sex: "women",
     emphasis: "Lower Body",
     dows: [0, 3],
     days: [
@@ -1185,6 +1254,8 @@ const TWO_DAY: TemplateSpec[] = [
   },
   {
     name: "Full Body — Two Day C",
+    category: "full-body",
+    sex: "women",
     emphasis: "Glutes",
     dows: [1, 4],
     days: [
@@ -1218,6 +1289,8 @@ const TWO_DAY: TemplateSpec[] = [
   },
   {
     name: "Full Body — Two Day D",
+    category: "full-body",
+    sex: "women",
     emphasis: "Lower Body",
     dows: [0, 4],
     days: [

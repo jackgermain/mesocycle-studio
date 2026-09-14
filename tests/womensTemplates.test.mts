@@ -168,6 +168,8 @@ test("an unknown exercise name fails loudly rather than becoming General", () =>
     () =>
       buildTemplate({
         name: "Bad",
+        category: "full-body",
+        sex: "women",
         emphasis: "Glutes",
         dows: [0],
         days: [{ name: "Day 1", slots: [["Not A Real Exercise", 3, 10]] }],
