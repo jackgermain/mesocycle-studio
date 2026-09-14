@@ -25,7 +25,7 @@ import { planWeek } from "../generator/sessionStructure";
 import { selectForWeek } from "../generator/select";
 import { weekToDraftDays } from "../generator/toDraft";
 import { defaultProfile, type EmphasisProfile } from "../generator/coverage";
-import { FREQUENCIES, groupedByCategory } from "../coach/builtInTemplates";
+import { BUILT_IN_TEMPLATES, FREQUENCIES, groupedByCategory } from "../coach/builtInTemplates";
 import {
   applyOverride,
   clearTemplateOverride,
@@ -414,6 +414,11 @@ function TemplatesStep({ coachName, sex, onBack, onUse, onEdit }: { coachName: s
   const [showRemoved, setShowRemoved] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  // Delete and Edit change the library on every account, so neither fires on the tap that asks for it.
+  // Jack lost a template to a single tap: "I clicked delete and it deleted whatever the first program was
+  // at the top of the list for all womens."
+  const [confirming, setConfirming] = useState<{ id: string; action: "delete" | "edit" } | null>(null);
+
   useEffect(() => {
     let active = true;
     fetchTemplateOverrides().then((o) => active && setOverrides(o));
@@ -489,7 +494,10 @@ function TemplatesStep({ coachName, sex, onBack, onUse, onEdit }: { coachName: s
     }))
     .filter((g) => g.templates.length > 0);
 
-  const removed = groups.flatMap((g) => g.templates).filter((t) => overrides[t.program.id]?.hidden);
+  // Every deleted template, not only those on whichever side of the men/women switch is showing. Scoped to
+  // `groups` this was a trap: a template deleted from the women's list was invisible from the men's tab, so
+  // the way back existed only if you already knew which tab to look on.
+  const removed = BUILT_IN_TEMPLATES.filter((t) => overrides[t.program.id]?.hidden);
   const savedVisible = (templates ?? []).filter((t) => matches(t.daysPerWeek));
 
   return (
@@ -528,27 +536,78 @@ function TemplatesStep({ coachName, sex, onBack, onUse, onEdit }: { coachName: s
 
         {err && <InfoBanner icon="ph-warning">{err}</InfoBanner>}
 
+        {/* Deleting hides rather than destroys -- a template is a code constant and cannot be removed from
+            the bundle, so there is always a way back. This sits ABOVE the list on purpose: below it, the way
+            back was under thirty-nine cards, which is no use to someone who has just deleted something by
+            accident and is looking for it. It only appears when something is actually deleted. */}
+        {canEditLibrary && removed.length > 0 && (
+          <>
+            <button className="btn btn-ghost" style={{ fontSize: 12.5, marginTop: 6 }} onClick={() => setShowRemoved((v) => !v)}>
+              {showRemoved ? "Hide" : "Show"} deleted ({removed.length})
+            </button>
+            {showRemoved &&
+              removed.map((t) => (
+                <div key={t.program.id} className="cell">
+                  <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>
+                    {overrides[t.program.id]?.name || t.program.name}
+                  </div>
+                  {/* Says which set it came from, because this list is no longer filtered by the men/women
+                      switch -- without it, a restored name gives no clue where it will reappear. */}
+                  <div className="mu" style={{ marginTop: 2 }}>
+                    {t.sex === "women" ? "Women's" : "Men's"} · {t.frequency} days a week
+                  </div>
+                  <button
+                    className="btn btn-primary btn-block"
+                    style={{ height: 44, marginTop: 7, fontSize: 12.5 }}
+                    onClick={() => void restoreToShipped(t.program.id)}
+                  >
+                    Put it back for everyone
+                  </button>
+                </div>
+              ))}
+          </>
+        )}
+
         {visible.map((g) => (
           <div key={g.category}>
             <div className="sh" style={{ marginTop: 6, marginBottom: 4 }}>{g.label}</div>
             {g.templates.map(({ t, program }) => (
               <div key={program.id} className="cell">
                 {renaming === program.id ? (
-                  <input
-                    className="input"
-                    style={{ height: 38, fontSize: 13 }}
-                    value={draftName}
-                    autoFocus
-                    onChange={(e) => setDraftName(e.target.value)}
-                    onBlur={() => {
-                      void patch(program.id, { name: draftName.trim() || null });
-                      setRenaming(null);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-                      if (e.key === "Escape") setRenaming(null);
-                    }}
-                  />
+                  <>
+                    <input
+                      className="input"
+                      style={{ height: 38, fontSize: 13 }}
+                      value={draftName}
+                      autoFocus
+                      onChange={(e) => setDraftName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          void patch(program.id, { name: draftName.trim() || null });
+                          setRenaming(null);
+                        }
+                        if (e.key === "Escape") setRenaming(null);
+                      }}
+                    />
+                    {/* The rename used to commit on blur, which made it a silent write to every account:
+                        tapping another card's Delete would save this rename on the way past, then delete
+                        that one. Nothing leaves this card now without the named button being pressed. */}
+                    <div className="row" style={{ gap: 6, marginTop: 7 }}>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ height: 36, flex: 1, fontSize: 12 }}
+                        onClick={() => {
+                          void patch(program.id, { name: draftName.trim() || null });
+                          setRenaming(null);
+                        }}
+                      >
+                        Save for everyone
+                      </button>
+                      <button className="btn btn-primary" style={{ height: 36, flex: 1, fontSize: 12 }} onClick={() => setRenaming(null)}>
+                        Cancel
+                      </button>
+                    </div>
+                  </>
                 ) : (
                   <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{program.name}</div>
                 )}
@@ -556,53 +615,71 @@ function TemplatesStep({ coachName, sex, onBack, onUse, onEdit }: { coachName: s
                 <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(program)}>
                   Use this template
                 </button>
-                {canEditLibrary && (
-                  <div className="row" style={{ gap: 6, marginTop: 7 }}>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ height: 36, flex: 1, fontSize: 12 }}
-                      onClick={() => {
-                        setDraftName(program.name);
-                        setRenaming(program.id);
-                      }}
-                    >
-                      Rename
-                    </button>
-                    <button className="btn btn-secondary" style={{ height: 36, flex: 1, fontSize: 12 }} onClick={() => onEdit(program)}>
-                      Edit
-                    </button>
-                    <button className="btn btn-secondary" style={{ height: 36, flex: 1, fontSize: 12 }} onClick={() => void patch(program.id, { hidden: true })}>
-                      Delete
-                    </button>
-                  </div>
+                {canEditLibrary && renaming !== program.id && (
+                  confirming?.id === program.id ? (
+                    <>
+                      <div style={{ marginTop: 7 }}>
+                        <InfoBanner icon="ph-warning">
+                          {confirming.action === "delete"
+                            ? `Delete "${program.name}" for everyone? It leaves every account's template list. You can put it back from "Show deleted" at the top of this screen.`
+                            : `Edit "${program.name}" for everyone? Whatever you save replaces this template on every account.`}
+                        </InfoBanner>
+                      </div>
+                      {/* Cancel sits where Delete just was, deliberately. This row appears under a finger
+                          that has already tapped the rightmost of three buttons, so putting the confirm
+                          there would re-create the exact accident that lost a template. The banner above
+                          also pushes the row down. A stray second tap cancels. */}
+                      <div className="row" style={{ gap: 6, marginTop: 7 }}>
+                        <button
+                          className="btn btn-secondary"
+                          style={{ height: 36, flex: 1, fontSize: 12 }}
+                          onClick={() => {
+                            const { action } = confirming;
+                            setConfirming(null);
+                            if (action === "delete") void patch(program.id, { hidden: true });
+                            else onEdit(program);
+                          }}
+                        >
+                          {confirming.action === "delete" ? "Delete for everyone" : "Edit for everyone"}
+                        </button>
+                        <button className="btn btn-primary" style={{ height: 36, flex: 1, fontSize: 12 }} onClick={() => setConfirming(null)}>
+                          Cancel
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="row" style={{ gap: 6, marginTop: 7 }}>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ height: 36, flex: 1, fontSize: 12 }}
+                        onClick={() => {
+                          setDraftName(program.name);
+                          setRenaming(program.id);
+                        }}
+                      >
+                        Rename
+                      </button>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ height: 36, flex: 1, fontSize: 12 }}
+                        onClick={() => setConfirming({ id: program.id, action: "edit" })}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ height: 36, flex: 1, fontSize: 12 }}
+                        onClick={() => setConfirming({ id: program.id, action: "delete" })}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )
                 )}
               </div>
             ))}
           </div>
         ))}
-
-        {canEditLibrary && removed.length > 0 && (
-          <>
-            {/* Deleting hides rather than destroys -- the template is a code constant and cannot be removed
-                from the bundle, so there is always a way back. Without this, delete would be a one-way door. */}
-            <button className="btn btn-ghost" style={{ fontSize: 12.5, marginTop: 12 }} onClick={() => setShowRemoved((v) => !v)}>
-              {showRemoved ? "Hide" : "Show"} deleted ({removed.length})
-            </button>
-            {showRemoved &&
-              removed.map((t) => (
-                <div key={t.program.id} className="cell">
-                  <div className="mu">{overrides[t.program.id]?.name || t.program.name}</div>
-                  <button
-                    className="btn btn-secondary btn-block"
-                    style={{ height: 40, marginTop: 7, fontSize: 12.5 }}
-                    onClick={() => void restoreToShipped(t.program.id)}
-                  >
-                    Put it back
-                  </button>
-                </div>
-              ))}
-          </>
-        )}
 
         <div className="sh" style={{ marginTop: 14, marginBottom: 4 }}>Saved by {coachName}</div>
         {templates?.length === 0 && <InfoBanner icon="ph-tray">{coachName} hasn't saved any templates yet.</InfoBanner>}

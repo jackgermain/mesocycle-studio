@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { buildTemplate, WOMENS_TEMPLATE_SPECS, womensTemplates } from "../src/coach/womensTemplates";
+import { BUILT_IN_TEMPLATES } from "../src/coach/builtInTemplates";
 import { libraryExercises } from "../src/coach/exerciseLibrary";
 
 /** Twenty-two hand-written templates are twenty-two chances to typo an exercise name.
@@ -179,6 +180,21 @@ test("every template says who it is for, and ids are unique", () => {
     ids.add(t.id);
   }
   assert.equal(ids.size, WOMENS_TEMPLATE_SPECS.length);
+});
+
+test("every shipped template has an id nothing else uses, across all three files", () => {
+  // The check above only ever sees WOMENS_TEMPLATE_SPECS, so a men's or specialty template colliding with a
+  // women's one was invisible to it -- and the id is what a template override is keyed on (migration 0029).
+  // Two templates sharing an id means deleting either hides both on every account, renaming either renames
+  // both, and React draws them under one key. That is indistinguishable from the delete targeting the wrong
+  // card, which is the first thing worth ruling out the next time one goes missing.
+  const seen = new Map<string, string>();
+  for (const t of BUILT_IN_TEMPLATES) {
+    const prev = seen.get(t.program.id);
+    assert.ok(!prev, `id ${t.program.id} is used by both "${prev}" and "${t.program.name}"`);
+    seen.set(t.program.id, t.program.name);
+  }
+  assert.equal(seen.size, BUILT_IN_TEMPLATES.length);
 });
 
 test("an unknown exercise name fails loudly rather than becoming General", () => {
