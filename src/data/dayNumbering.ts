@@ -16,12 +16,16 @@ export function dayDisplayTitle(day: Pick<TrainingDay, "code">): string {
   return `Day ${dayNumberInWeek(day)}`;
 }
 
-/** "Friday, September 4" -- the one date format every day view uses in its kicker, so today's session, an
- * upcoming preview, and a logged day all read the same way. Today's used to show set progress here
- * instead ("Week 1 · 0 of 15 sets"), which made it the odd one out; the remaining-set count is already
- * shown above the Finish button where it's actually actionable. */
+/** "Fri, Sep 4" -- the one date format every day view uses in its kicker, so today's session, an upcoming
+ * preview, and a logged day all read the same way. Today's used to show set progress here instead
+ * ("Week 1 · 0 of 15 sets"), which made it the odd one out; the remaining-set count is already shown above
+ * the Finish button where it's actually actionable.
+ *
+ * Abbreviated because the kicker is set in uppercase with wide tracking, and the long form made it the
+ * loudest thing on the screen -- "TUESDAY, SEPTEMBER 15 · WEEK 1" ran nearly thirty characters above a
+ * six-character title. Jack: "I feel like these are too cluttered." Same information, half the width. */
 export function friendlyDate(iso: string): string {
-  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 }
 
 /** The shared kicker for every day view: "Friday, September 4 · Week 1". */

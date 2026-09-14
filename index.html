@@ -15,7 +15,10 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <title>Jacked</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- 800 and 900 are loaded because two elements ask for them: the JACKED lockup (AuthHero) and the hero
+         number in styles.css. Without the real weights the browser fakes them by smearing the 700 outline,
+         which on a 40px uppercase wordmark reads as a different, wider typeface. -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
     <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>

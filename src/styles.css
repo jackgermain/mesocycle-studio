@@ -4,10 +4,13 @@
 
 :root {
   /* Backgrounds & surfaces */
-  --color-bg: #0b0c11;
-  --color-surface: #131419;
-  --color-surface-raised: #191b22;
-  --color-surface-sunken: #08090c;
+  /* Softer, slightly cooler surfaces than the near-black they replaced (#0b0c11 / #131419 / #191b22).
+     Jack picked the "Soft Build" direction: rounder, lighter-weight, calmer. Lifting the surfaces a step
+     is what makes the bigger radii read as soft rather than as holes cut in a black page. */
+  --color-bg: #0c0f12;
+  --color-surface: #171c21;
+  --color-surface-raised: #1e242b;
+  --color-surface-sunken: #090c0f;
   --color-row-alt: rgba(255, 255, 255, 0.018);
 
   /* Text */
@@ -55,8 +58,11 @@
   --color-neutral-900: #292b31;
 
   /* Type */
-  --font-heading: "Inter", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  /* One swap here retheme's every tab, which is the whole reason nothing outside this block names a
+     typeface. Outfit is geometric and calmer than Inter at the same size, so titles can drop from 800 to
+     600 and still hold the top of a screen. */
+  --font-heading: "Outfit", system-ui, sans-serif;
+  --font-body: "Outfit", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
   --text-xs: 11px;     /* labels, tags, uppercase captions */
@@ -64,7 +70,9 @@
   --text-base: 14px;   /* body */
   --text-md: 16px;     /* card and list titles */
   --text-lg: 21px;     /* screen titles */
-  --text-xl: 21px;     /* kept as an alias of lg -- .h1 already points here */
+  /* No longer an alias of lg. .h1 is its only consumer, and the softer direction wants a title with more
+     presence carrying less weight -- bigger and lighter reads calmer than small and black. */
+  --text-xl: 26px;
   --text-2xl: 32px;    /* the one hero number on a screen */
 
   /* Spacing — comfortable (default) */
@@ -84,10 +92,10 @@
   --space-compact-8: 16px;
 
   /* Radius */
-  --radius-sm: 6px;
-  --radius-md: 14px;
-  --radius-lg: 18px;
-  --radius-xl: 22px;
+  --radius-sm: 10px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-xl: 28px;
 
   /* Shadows — sheets and hero blocks only */
   --shadow-ring: 0 0 0 1px var(--color-divider);
@@ -115,7 +123,7 @@ body {
   font-family: var(--font-body);
   font-size: 15px;
   -webkit-font-smoothing: antialiased;
-  /* Even where a number stays in Inter, keep the digits fixed-width so a changing value doesn't reflow
+  /* Even where a number stays in the body face, keep the digits fixed-width so a changing value doesn't reflow
      the text around it. */
   font-variant-numeric: tabular-nums;
 }
@@ -178,11 +186,13 @@ a { color: var(--color-accent); text-decoration: none; }
   display: flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(#15171f, var(--color-bg));
+  /* Tracks the surfaces above it. These were hardcoded against the old near-black page and would read as
+     a grey bar sitting on a lighter one now. */
+  background: linear-gradient(#171e24, var(--color-bg));
 }
 .hdr.hero {
   padding: calc(12px + env(safe-area-inset-top)) 16px 16px;
-  background: radial-gradient(120% 90% at 12% 0%, #122a1c, #15171f 45%, var(--color-bg));
+  background: radial-gradient(120% 90% at 12% 0%, #14301f, #171e24 45%, var(--color-bg));
   flex-direction: column;
   align-items: stretch;
 }
@@ -195,7 +205,7 @@ a { color: var(--color-accent); text-decoration: none; }
 }
 .hdr .back { font-size: 20px; color: var(--color-accent); flex: none; cursor: pointer; background: none; border: none; padding: 4px; display: flex; }
 .k { font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-faint); }
-.h1 { font-family: var(--font-heading); font-size: var(--text-xl); font-weight: 800; letter-spacing: -0.02em; color: var(--color-text); line-height: 1.15; }
+.h1 { font-family: var(--font-heading); font-size: var(--text-xl); font-weight: 600; letter-spacing: -0.025em; color: var(--color-text); line-height: 1.15; }
 .mu { font-size: var(--text-sm); color: var(--color-text-muted); line-height: 1.45; }
 .sh { font-size: var(--text-sm); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-neutral-300); margin-bottom: 8px; }
 .scr { font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-faint); }
@@ -245,9 +255,9 @@ a { color: var(--color-accent); text-decoration: none; }
   font-size: var(--text-base); font-weight: 700; line-height: 1.2; color: var(--color-text);
   background: transparent; border: none;
   padding: var(--space-2) var(--space-4);
-  /* 10px rather than the 6px --radius-sm, so a button reads as belonging with the 14px cards it sits
-     under instead of as a sharper, older element sitting on top of them. */
-  border-radius: 10px;
+  /* Sits between --radius-sm and the cards above it, so a button reads as belonging with them rather than
+     as a sharper, older element on top. Moved with the rest when the corners softened. */
+  border-radius: 16px;
   transition: background 0.12s ease, transform 0.08s ease;
 }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -301,7 +311,7 @@ a { color: var(--color-accent); text-decoration: none; }
 
 /* — form controls — */
 .field label { display: block; font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; color: var(--color-text-faint); }
-/* Every field gets a visible edge. The fill is --color-surface-sunken (#08090c) against a #0b0c11 page,
+/* Every field gets a visible edge. The fill is --color-surface-sunken (#090c0f) against a #0c0f12 page,
    a difference of three values -- with `border: none` there was nothing to show where a box started or
    ended, so an empty field read as a gap in the layout rather than something to type in.
    box-sizing is border-box globally, so the border costs no height. */
@@ -357,7 +367,7 @@ textarea.input { min-height: 78px; resize: vertical; line-height: 1.5; }
 .tag-neutral { background: rgba(255, 255, 255, 0.05); color: var(--color-neutral-300); }
 .tag-outline { box-shadow: inset 0 0 0 1px var(--color-accent); color: var(--color-accent); }
 
-/* Numerals only -- labels stay in Inter. */
+/* Numerals only -- labels stay in the body face. */
 .mono, .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
 /* Zebra striping for repeated rows inside a cell. Opt-in per row, so it can't land on the set rows,
@@ -589,10 +599,14 @@ input[type="number"] { font-family: var(--font-mono); font-weight: 500; }
     display: flex; flex-direction: column; gap: 4px; flex: none;
     width: 232px; padding: 28px 14px; overflow-y: auto;
     border-right: 1px solid var(--color-divider);
-    background: linear-gradient(#111318, var(--color-bg));
+    /* Matches the mobile header's gradient. Both were hardcoded against the old near-black page; leaving
+       this one behind would make the desktop header darker than the phone's. */
+    background: linear-gradient(#171e24, var(--color-bg));
   }
   .side-brand {
-    font-family: var(--font-heading); font-size: 22px; font-weight: 800; letter-spacing: -0.015em;
+    /* Same weight as .h1 -- this is the same job on a wider screen, and 800 beside a 600 title was the
+       one place the softened direction did not reach. */
+    font-family: var(--font-heading); font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
     text-transform: uppercase; color: var(--color-text); padding: 0 12px 22px;
   }
   .sni {
