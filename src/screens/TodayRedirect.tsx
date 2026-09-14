@@ -23,10 +23,31 @@ export default function TodayRedirect() {
     if (allDone && state.nextProgram) dispatch({ type: "PROMOTE_NEXT_PROGRAM" });
   }, [allDone, state.nextProgram, dispatch]);
 
+  // G120: a block asked for as "keep going until I end it" extends itself instead of ending.
+  //
+  // Same mechanism as the manual "Add 4 more weeks" on the workout screen's options sheet -- this only fires
+  // it automatically, because extending is what the person chose when they built the block. A coach's queued
+  // next block still wins: the two effects are mutually exclusive on `state.nextProgram`, so an explicitly
+  // assigned program is never overridden by an automatic extension.
+  //
+  // This hook sits above every early return below on purpose. Those returns are reached on the first render
+  // of a store that has not hydrated yet, and a hook placed after them runs on the second render but not the
+  // first -- React error #310, which has shipped from this codebase before.
+  useEffect(() => {
+    if (allDone && !state.nextProgram && state.program.openEnded) {
+      dispatch({ type: "EXTEND_PROGRAM", weeks: 4 });
+    }
+  }, [allDone, state.nextProgram, state.program.openEnded, dispatch]);
+
   // A finished block used to fall through to allDays[0] -- day one of the block they just completed,
   // every set already ticked, with no way to tell that's what had happened. A finished block now gets its
   // own screen instead.
   const target = allDays.find((d) => d.status === "today") ?? allDays.find((d) => d.status !== "done") ?? (allDone ? undefined : allDays[0]);
+
+  // One render passes between the last session being logged and the effect above adding more weeks. Render
+  // nothing for that frame rather than flashing "Block complete" or "Nothing scheduled yet" -- on an
+  // open-ended block neither is true, and both would be gone again immediately.
+  if (allDone && !state.nextProgram && state.program.openEnded) return null;
 
   if (allDone && !state.nextProgram) {
     const canBuild = canSelfBuildProgram(account?.role);

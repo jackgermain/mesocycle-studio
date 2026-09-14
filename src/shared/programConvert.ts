@@ -422,6 +422,9 @@ export function repeatProgram(program: Program): Program {
   const repeated = buildProgramFromDraft(program.name, days, weeks, program.coachName, dows.length ? dows : undefined);
   // buildProgramFromDraft puts the owner's name in coachName; on a repeat the block already knows whose
   // it is, and overwriting it would rename a coached client's coach to themselves.
-  return { ...repeated, coachName: program.coachName };
+  //
+  // `openEnded` carries across for the same reason: running an open-ended block again should produce another
+  // open-ended block, not one that quietly starts counting down to an end the person never asked for.
+  return { ...repeated, coachName: program.coachName, openEnded: program.openEnded };
 }
 
