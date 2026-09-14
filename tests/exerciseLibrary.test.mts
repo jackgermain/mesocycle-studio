@@ -89,7 +89,7 @@ test("a fuzzy match supplies a muscle but never rewrites the name", () => {
   // The whole safety property: a scored guess is good enough to book volume against and NOT good enough
   // to retitle a coach's exercise behind their back.
   let checked = 0;
-  for (const written of ["Banana Split Squat", "Cybex Wrist Thing", "Machine Chest Thing"]) {
+  for (const written of ["Banana Split Squat", "Wrist Thing", "Machine Chest Thing"]) {
     const hit = resolveLibraryExercise(written);
     if (hit?.confidence !== "fuzzy") continue;
     checked++;
@@ -104,7 +104,7 @@ test("an unmatched name keeps the sheet's own muscle, then falls back to General
 });
 
 test("normalizeExerciseName strips punctuation, case and bracketed qualifiers", () => {
-  assert.equal(normalizeExerciseName("  Seated Leg Curl (Cybex) — Wide  "), "seated leg curl wide");
+  assert.equal(normalizeExerciseName("  Seated Leg Curl — Wide  "), "seated leg curl wide");
 });
 
 test("an empty or junk name resolves to nothing rather than guessing", () => {

@@ -39,15 +39,15 @@ import type { TemplateCategory, TemplateSex, TemplateSpec } from "./womensTempla
 const PICK: Record<string, string[]> = {
   Chest: ["Barbell Bench Press", "Incline Dumbbell Press", "Pec Deck Machine"],
   Back: ["Barbell Bent-Over Row", "Lat Pulldown — Wide Grip", "Seated Cable Row"],
-  Quads: ["Barbell Back Squat", "Leg Press — 45° (Cybex)", "Leg Extension Machine (Cybex)"],
-  Hamstrings: ["Romanian Deadlift", "Lying Leg Curl (Nautilus)", "Seated Leg Curl (Cybex)"],
+  Quads: ["Barbell Back Squat", "Leg Press — 45°", "Leg Extension Machine"],
+  Hamstrings: ["Romanian Deadlift", "Lying Leg Curl", "Seated Leg Curl"],
   Glutes: ["Barbell Hip Thrust", "Cable Pull-Through", "Glute Bridge"],
   "Front delts": ["Dumbbell Shoulder Press", "Seated Dumbbell Press", "Arnold Press"],
-  "Side delts": ["Dumbbell Lateral Raise", "Cable Lateral Raise", "Cybex Lateral Raise Machine"],
+  "Side delts": ["Dumbbell Lateral Raise", "Cable Lateral Raise", "Lateral Raise Machine"],
   "Rear delts": ["Cable Face Pull", "Rear Delt Fly — Dumbbell"],
   Biceps: ["Barbell Curl", "Incline Dumbbell Curl", "Hammer Curl"],
   Triceps: ["Tricep Rope Pushdown", "EZ-Bar Skull Crusher", "Overhead Cable Tricep Extension"],
-  Calves: ["Standing Calf Raise Machine", "Seated Calf Raise Machine (Cybex)", "Leg Press Calf Raise"],
+  Calves: ["Standing Calf Raise Machine", "Seated Calf Raise Machine", "Leg Press Calf Raise"],
   Abs: ["Cable Crunch", "Hanging Leg Raise", "Captain's Chair Knee Raise"],
 };
 

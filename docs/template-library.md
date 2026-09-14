@@ -33,7 +33,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Cable Crunch | Abs | 3 × 15 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
@@ -44,8 +44,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Glute Deadlift | Glutes | 4 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Chest Supported Row Machine | Back | 3 × 10 |
 | Cable Straight-Arm Pulldown | Back | 3 × 12 |
 | Cable Curl | Biceps | 3 × 12 |
@@ -55,7 +55,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Bulgarian Split Squat | Quads | 3 × 10 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Hanging Leg Raise | Abs | 3 × 12 |
 | Dumbbell Bench Press | Chest | 3 × 10 |
 | Cable Lateral Raise | Side delts | 3 × 15 |
@@ -68,7 +68,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Smith Machine Hip Thrust | Glutes | 4 × 10 |
 | Single-Leg Romanian Deadlift | Hamstrings | 3 × 10 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 3 × 10 |
+| Plate-Loaded Lat Pulldown | Back | 3 × 10 |
 | Meadows Row | Back | 3 × 12 |
 | Preacher Curl — Barbell | Biceps | 3 × 12 |
 
@@ -115,7 +115,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 3 × 12 |
+| Leg Press — Horizontal | Quads | 3 × 12 |
 | Sissy Squat | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Hack Squat Machine | Quads | 2 × 16 |
@@ -137,9 +137,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Smith Machine Hip Thrust | Glutes | 4 × 10 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 3 × 15 |
 | Cable Pull-Through | Glutes | 2 × 17 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 19 |
+| Glute Kickback Machine | Glutes | 2 × 19 |
 | Hip Adduction Machine | Adductors | 3 × 15 |
 | Ab Wheel Rollout | Abs | 3 × 12 |
 
@@ -154,9 +154,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Barbell Back Squat | Quads | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | V-Up | Abs | 3 × 15 |
 
@@ -179,16 +179,16 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Romanian Deadlift | Hamstrings | 4 × 10 |
 | Stiff-Leg Deadlift | Hamstrings | 3 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Glute Bridge | Glutes | 3 × 12 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Russian Twist | Obliques | 3 × 20 |
 
 **Upper B**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Hammer Strength Chest-Supported Row | Back | 3 × 10 |
+| Chest-Supported Row | Back | 3 × 10 |
 | Cable Straight-Arm Pulldown | Back | 3 × 12 |
 | Chin-Up | Back | 2 × 14 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
@@ -219,9 +219,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Glute Bridge | Glutes | 4 × 12 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Seated Cable Row | Back | 3 × 10 |
 | Pec Deck Machine | Chest | 3 × 12 |
 | Dumbbell Curl | Biceps | 3 × 12 |
@@ -233,7 +233,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Smith Machine Hip Thrust | Glutes | 4 × 10 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 | Chest Supported Row Machine | Back | 3 × 10 |
 | Dumbbell Bench Press | Chest | 3 × 10 |
@@ -250,7 +250,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Front Squat | Quads | 2 × 17 |
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -276,10 +276,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Hack Squat Machine | Quads | 4 × 10 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Glute Ham Raise | Hamstrings | 3 × 10 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Cable Fly — Mid | Chest | 3 × 12 |
 | T-Bar Row | Back | 3 × 10 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 12 |
@@ -324,7 +324,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Donkey Calf Raise | Calves | 3 × 15 |
 | Single-Arm Dumbbell Row | Back | 3 × 12 |
 | Pec Deck Machine | Chest | 3 × 12 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | Dumbbell Kickback | Triceps | 3 × 15 |
 | Heel Tap | Obliques | 3 × 20 |
 
@@ -339,7 +339,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Barbell Back Squat | Quads | 3 × 10 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -353,10 +353,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Glute Bridge | Glutes | 4 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 14 |
+| Hip Abduction Machine | Glutes | 3 × 14 |
 | Cable Glute Kickback | Glutes | 2 × 16 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Cable Crunch | Abs | 3 × 15 |
 | Cable Lateral Raise | Side delts | 3 × 15 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
@@ -374,9 +374,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
 | Barbell Front Squat | Quads | 3 × 10 |
-| Leg Press — 45° (Cybex) | Quads | 2 × 12 |
+| Leg Press — 45° | Quads | 2 × 12 |
 | Barbell Hip Thrust | Glutes | 3 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 | Seated Dumbbell Press | Front delts | 3 × 10 |
 | Chest Supported Row Machine | Back | 3 × 10 |
@@ -424,7 +424,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Glute Deadlift | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Walking Lunge | Quads | 3 × 12 |
 | Standing Leg Curl | Hamstrings | 3 × 12 |
 | Russian Twist | Obliques | 3 × 20 |
@@ -443,12 +443,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 3 × 15 |
 | Cable Pull-Through | Glutes | 2 × 17 |
 | Goblet Squat | Quads | 3 × 12 |
 | Barbell Back Squat | Quads | 2 × 14 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
 | Single-Arm Dumbbell Row | Back | 3 × 12 |
 | Push-Up | Chest | 3 × 15 |
@@ -460,7 +460,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Romanian Deadlift | Hamstrings | 4 × 10 |
 | Stiff-Leg Deadlift | Hamstrings | 3 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 3 × 12 |
+| Leg Press — Horizontal | Quads | 3 × 12 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Hip Adduction Machine | Adductors | 3 × 15 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
@@ -481,8 +481,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 3 × 15 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 17 |
+| Glute Kickback Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 2 × 17 |
 | Cable Glute Kickback | Glutes | 2 × 19 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
@@ -502,7 +502,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Hack Squat Machine | Quads | 4 × 10 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Walking Lunge | Quads | 3 × 12 |
 | Barbell Back Squat | Quads | 2 × 14 |
 | Barbell Front Squat | Quads | 2 × 16 |
@@ -516,7 +516,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Fly — Mid | Chest | 3 × 12 |
 | Barbell Bench Press | Chest | 2 × 14 |
 | Seated Dumbbell Press | Front delts | 3 × 10 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | V-Up | Abs | 3 × 15 |
 
 **Hamstrings & Glutes**
@@ -524,7 +524,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Smith Machine Hip Thrust | Glutes | 2 × 14 |
@@ -551,10 +551,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 14 |
+| Leg Press — Horizontal | Quads | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Upper A**
@@ -576,8 +576,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Pull-Through | Glutes | 2 × 14 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Upper B**
 
@@ -596,9 +596,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Hack Squat Machine | Quads | 4 × 10 |
 | Walking Lunge | Quads | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 2 × 14 |
+| Leg Extension Machine | Quads | 2 × 14 |
 | Cable Glute Kickback | Glutes | 3 × 15 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 17 |
+| Glute Kickback Machine | Glutes | 2 × 17 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
 
 
@@ -612,7 +612,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -636,10 +636,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Smith Machine Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Hanging Leg Raise | Abs | 3 × 12 |
 
 **Upper B**
@@ -665,7 +665,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Seated Cable Row | Back | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
@@ -677,8 +677,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
@@ -690,7 +690,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
@@ -709,9 +709,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Barbell Back Squat | Quads | 3 × 10 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Front Squat | Quads | 2 × 17 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
@@ -723,12 +723,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Cable Glute Kickback | Glutes | 3 × 15 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 17 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Hip Abduction Machine | Glutes | 2 × 17 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Seated Cable Row | Back | 3 × 10 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
 | Dumbbell Curl | Biceps | 3 × 12 |
@@ -758,7 +758,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 4 × 10 |
 | Seated Cable Row | Back | 3 × 10 |
 | Cable Straight-Arm Pulldown | Back | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Back Squat | Quads | 2 × 17 |
 | Barbell Front Squat | Quads | 2 × 19 |
 
@@ -802,7 +802,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Chest Supported Row Machine | Back | 4 × 10 |
 | Lat Prayer | Back | 3 × 12 |
 | Pull-Up | Back | 2 × 14 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | Cable Lateral Raise | Side delts | 2 × 17 |
 | Russian Twist | Obliques | 3 × 20 |
 
@@ -820,7 +820,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Fly — Mid | Chest | 3 × 12 |
 | Tricep Rope Pushdown | Triceps | 3 × 12 |
 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 × 14 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 
 **Back & Biceps**
 
@@ -831,7 +831,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Single-Arm Dumbbell Row | Back | 3 × 12 |
 | Dumbbell Curl | Biceps | 3 × 12 |
 | Barbell Curl | Biceps | 2 × 14 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 
 **Legs**
 
@@ -893,7 +893,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Face Pull | Rear delts | 3 × 15 |
 | Rear Delt Fly — Dumbbell | Rear delts | 2 × 17 |
 | Dumbbell Curl | Biceps | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 
 **Push B**
 
@@ -914,7 +914,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Chest Supported Row Machine | Back | 4 × 10 |
 | Lat Prayer | Back | 3 × 12 |
 | Chin-Up | Back | 2 × 14 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 3 × 15 |
+| Reverse Pec Deck | Rear delts | 3 × 15 |
 | Freemotion Y Raise | Rear delts | 2 × 17 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
@@ -935,7 +935,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Curl | Biceps | 2 × 14 |
 | EZ-Bar Curl | Biceps | 2 × 16 |
 | Tricep Rope Pushdown | Triceps | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 
 **Back & Shoulders**
 
@@ -948,7 +948,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Overhead Press | Front delts | 2 × 12 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
 | Cable Face Pull | Rear delts | 3 × 15 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 
 **Upper & Legs**
 
@@ -992,7 +992,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Straight-Arm Pulldown | Back | 3 × 12 |
 | Cable Face Pull | Rear delts | 3 × 15 |
 | Rear Delt Fly — Dumbbell | Rear delts | 2 × 17 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 2 × 19 |
+| Reverse Pec Deck | Rear delts | 2 × 19 |
 | Dumbbell Curl | Biceps | 3 × 12 |
 | Barbell Curl | Biceps | 2 × 14 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
@@ -1011,9 +1011,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Back & Shoulders**
@@ -1032,11 +1032,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
 | Cable Glute Kickback | Glutes | 3 × 15 |
 | Glute Deadlift | Glutes | 2 × 17 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Chest & Arms**
 
@@ -1055,7 +1055,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Smith Machine Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 3 × 15 |
 | Dumbbell Glute Bridge | Glutes | 2 × 17 |
 | Hip Adduction Machine | Adductors | 3 × 15 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1064,7 +1064,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Hammer Strength Chest-Supported Row | Back | 3 × 10 |
+| Chest-Supported Row | Back | 3 × 10 |
 | Lat Prayer | Back | 3 × 12 |
 | Chin-Up | Back | 2 × 14 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
@@ -1091,20 +1091,20 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Quads**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Extension Machine (Cybex) | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 4 × 8 |
 | Barbell Back Squat | Quads | 3 × 10 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Hack Squat Machine | Quads | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1115,7 +1115,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 12 |
+| Hip Abduction Machine | Glutes | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Standing Leg Curl | Hamstrings | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -1124,12 +1124,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Cable Glute Kickback | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Back & Quads**
 
@@ -1138,8 +1138,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Seated Cable Row | Back | 4 × 8 |
 | Barbell Bent-Over Row | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
-| Leg Press — 45° (Cybex) | Quads | 2 × 14 |
+| Leg Extension Machine | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 
@@ -1162,20 +1162,20 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 10 |
+| Leg Press — 45° | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 3 × 10 |
 | Hack Squat Machine | Quads | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Hamstrings**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1186,21 +1186,21 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 12 |
+| Hip Abduction Machine | Glutes | 2 × 12 |
 | Barbell Back Squat | Quads | 3 × 12 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 14 |
+| Leg Press — Horizontal | Quads | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Quads & Glutes**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 10 |
-| Nautilus Leg Extension Machine | Quads | 2 × 12 |
+| Leg Press — 45° | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 3 × 10 |
+| Smith Machine Squat | Quads | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Cable Glute Kickback | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Back & Hamstrings**
 
@@ -1209,8 +1209,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Seated Cable Row | Back | 4 × 8 |
 | Barbell Bent-Over Row | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 2 × 14 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 
@@ -1225,7 +1225,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 2 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Dumbbell Lateral Raise | Side delts | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
@@ -1234,9 +1234,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Cable Glute Kickback | Glutes | 2 × 16 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
@@ -1244,9 +1244,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1267,7 +1267,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Dumbbell Glute Bridge | Glutes | 2 × 14 |
 | Dumbbell Hip Thrust | Glutes | 2 × 16 |
@@ -1280,8 +1280,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Seated Cable Row | Back | 4 × 8 |
 | Barbell Bent-Over Row | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 2 × 14 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 
@@ -1294,7 +1294,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Front Squat | Quads | 4 × 8 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 3 × 12 |
+| Leg Press — Horizontal | Quads | 3 × 12 |
 | Barbell Back Squat | Quads | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Incline Smith Machine Press | Chest | 3 × 10 |
@@ -1306,7 +1306,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Bent-Over Row | Back | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
-| Nautilus Pullover Machine | Back | 3 × 12 |
+| Pullover Machine | Back | 3 × 12 |
 | Pull-Up | Back | 2 × 14 |
 | Decline Sit-Up | Abs | 3 × 15 |
 | Cable Woodchopper | Obliques | 3 × 15 |
@@ -1320,7 +1320,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Pull-Through | Glutes | 2 × 14 |
 | Stiff-Leg Deadlift | Hamstrings | 3 × 10 |
 | Standing Leg Curl | Hamstrings | 3 × 12 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Shoulders & Arms**
 
@@ -1340,8 +1340,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Smith Machine Squat | Quads | 4 × 10 |
 | Reverse Lunge | Quads | 3 × 12 |
 | Hack Squat Machine | Quads | 2 × 14 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 15 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 17 |
+| Hip Abduction Machine | Glutes | 3 × 15 |
+| Glute Kickback Machine | Glutes | 2 × 17 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
 
 **Upper & Abs**
@@ -1351,7 +1351,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Seated Cable Row | Back | 3 × 10 |
 | Chin-Up | Back | 2 × 12 |
 | Dumbbell Bench Press | Chest | 3 × 10 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 | Plank Hip Twist | Obliques | 3 × 20 |
 
@@ -1366,8 +1366,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 3 × 15 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 17 |
+| Glute Kickback Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 2 × 17 |
 | Cable Glute Kickback | Glutes | 2 × 19 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -1387,8 +1387,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Front Squat | Quads | 2 × 17 |
 | Hack Squat Machine | Quads | 2 × 19 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -1409,11 +1409,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Smith Machine Hip Thrust | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 
 ### Glutes & Hamstrings — Five Day
@@ -1427,7 +1427,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Smith Machine Hip Thrust | Glutes | 4 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Glute Kickback | Glutes | 3 × 15 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 17 |
+| Glute Kickback Machine | Glutes | 2 × 17 |
 | Glute Deadlift | Glutes | 2 × 19 |
 | Hanging Leg Raise | Abs | 3 × 12 |
 
@@ -1436,7 +1436,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Glute Ham Raise | Hamstrings | 3 × 10 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
@@ -1447,7 +1447,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Chin-Up | Back | 3 × 8 |
-| Hammer Strength Chest-Supported Row | Back | 3 × 10 |
+| Chest-Supported Row | Back | 3 × 10 |
 | Cable Straight-Arm Pulldown | Back | 3 × 12 |
 | Cable Curl | Biceps | 3 × 12 |
 | Barbell Curl | Biceps | 2 × 14 |
@@ -1459,7 +1459,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 3 × 15 |
 | Dumbbell Glute Bridge | Glutes | 2 × 17 |
 | Dumbbell Hip Thrust | Glutes | 2 × 19 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1495,20 +1495,20 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Quads**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Extension Machine (Cybex) | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 4 × 8 |
 | Barbell Back Squat | Quads | 3 × 10 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Hack Squat Machine | Quads | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1519,7 +1519,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 12 |
+| Hip Abduction Machine | Glutes | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Standing Leg Curl | Hamstrings | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -1528,12 +1528,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Cable Glute Kickback | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 
 ### Glutes & Quads Specialty — Five Day (Women)
@@ -1555,20 +1555,20 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 10 |
+| Leg Press — 45° | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 3 × 10 |
 | Hack Squat Machine | Quads | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Hamstrings**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1579,21 +1579,21 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 12 |
+| Hip Abduction Machine | Glutes | 2 × 12 |
 | Barbell Back Squat | Quads | 3 × 12 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 14 |
+| Leg Press — Horizontal | Quads | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Quads & Glutes**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 10 |
-| Nautilus Leg Extension Machine | Quads | 2 × 12 |
+| Leg Press — 45° | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 3 × 10 |
+| Smith Machine Squat | Quads | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Cable Glute Kickback | Glutes | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 
 ### Glutes & Shoulders Specialty — Five Day (Women)
@@ -1607,7 +1607,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 2 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Dumbbell Lateral Raise | Side delts | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
@@ -1616,9 +1616,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Cable Glute Kickback | Glutes | 2 × 16 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
@@ -1626,9 +1626,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1649,7 +1649,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Dumbbell Glute Bridge | Glutes | 2 × 14 |
 | Dumbbell Hip Thrust | Glutes | 2 × 16 |
@@ -1667,7 +1667,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 5 × 8 |
 | Glute Deadlift | Glutes | 3 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 3 × 15 |
+| Glute Kickback Machine | Glutes | 3 × 15 |
 | Dumbbell Glute Bridge | Glutes | 2 × 17 |
 | Dumbbell Hip Thrust | Glutes | 2 × 19 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -1691,7 +1691,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Smith Machine Hip Thrust | Glutes | 4 × 12 |
 | Glute Bridge | Glutes | 3 × 15 |
 | Cable Glute Kickback | Glutes | 3 × 15 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 3 × 15 |
 | Glute Bridge — Bodyweight | Glutes | 2 × 17 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
@@ -1705,7 +1705,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Incline Dumbbell Press | Chest | 3 × 10 |
 | Incline Barbell Bench Press | Chest | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 
 
 ### Glutes & Hamstrings Specialty — Four Day (Women)
@@ -1718,7 +1718,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 12 |
+| Glute Kickback Machine | Glutes | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
@@ -1728,13 +1728,13 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Standing Leg Curl | Hamstrings | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Cable Glute Kickback | Glutes | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Glutes & Hamstrings**
 
@@ -1743,7 +1743,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Glute Bridge | Glutes | 4 × 8 |
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Smith Machine Hip Thrust | Glutes | 2 × 12 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 14 |
 | Glute Ham Raise | Hamstrings | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -1753,7 +1753,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 8 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 3 × 10 |
 | Dumbbell Romanian Deadlift | Hamstrings | 2 × 12 |
 | Barbell Hip Thrust | Glutes | 3 × 12 |
 | Glute Deadlift | Glutes | 2 × 14 |
@@ -1771,7 +1771,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 12 |
+| Glute Kickback Machine | Glutes | 2 × 12 |
 | Barbell Back Squat | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Hack Squat Machine | Quads | 2 × 16 |
@@ -1781,13 +1781,13 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 10 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 12 |
+| Leg Press — 45° | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 3 × 10 |
+| Leg Press — Horizontal | Quads | 2 × 12 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Cable Glute Kickback | Glutes | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Glutes & Quads**
 
@@ -1796,9 +1796,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Glute Bridge | Glutes | 4 × 8 |
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Smith Machine Hip Thrust | Glutes | 2 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
-| Nautilus Leg Extension Machine | Quads | 2 × 14 |
-| Smith Machine Squat | Quads | 2 × 16 |
+| Leg Extension Machine | Quads | 3 × 12 |
+| Smith Machine Squat | Quads | 2 × 14 |
+| Bulgarian Split Squat | Quads | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Quads & Glutes**
@@ -1806,8 +1806,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 10 |
-| Bulgarian Split Squat | Quads | 2 × 12 |
+| Leg Press — 45° | Quads | 3 × 10 |
+| Walking Lunge | Quads | 2 × 12 |
 | Barbell Hip Thrust | Glutes | 3 × 12 |
 | Glute Deadlift | Glutes | 2 × 14 |
 | Dumbbell Glute Bridge | Glutes | 2 × 16 |
@@ -1824,8 +1824,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 12 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Cable Glute Kickback | Glutes | 2 × 16 |
 | Dumbbell Lateral Raise | Side delts | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -1835,7 +1835,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Smith Machine Hip Thrust | Glutes | 2 × 14 |
 | Glute Deadlift | Glutes | 2 × 16 |
@@ -1850,7 +1850,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Dumbbell Hip Thrust | Glutes | 2 × 12 |
 | Glute Bridge — Bodyweight | Glutes | 2 × 14 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 12 |
+| Lateral Raise Machine | Side delts | 3 × 12 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Side delts & Glutes**
@@ -1872,8 +1872,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
 | Hack Squat Machine | Quads | 2 × 14 |
@@ -1899,7 +1899,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Glute Kickback | Glutes | 3 × 15 |
 | Glute Bridge | Glutes | 2 × 17 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
@@ -1926,7 +1926,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 5 × 8 |
 | Glute Deadlift | Glutes | 3 × 10 |
-| Hammer Strength Glute Kickback Machine | Glutes | 3 × 15 |
+| Glute Kickback Machine | Glutes | 3 × 15 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
@@ -1938,7 +1938,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Cable Glute Kickback | Glutes | 2 × 14 |
@@ -1952,11 +1952,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Smith Machine Hip Thrust | Glutes | 4 × 12 |
 | Glute Bridge | Glutes | 3 × 15 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 3 × 15 |
 | Hip Adduction Machine | Adductors | 3 × 15 |
 | Seated Cable Row | Back | 3 × 10 |
 | Lat Pulldown — Close Grip | Back | 2 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 12 |
 
 
@@ -1971,7 +1971,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 2 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
@@ -1981,26 +1981,26 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Standing Leg Curl | Hamstrings | 2 × 12 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 14 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Cable Glute Kickback | Glutes | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Quads**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Extension Machine (Cybex) | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 4 × 8 |
 | Barbell Back Squat | Quads | 3 × 10 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Hack Squat Machine | Quads | 2 × 16 |
-| Leg Press — 45° (Cybex) | Quads | 2 × 18 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 20 |
+| Leg Press — 45° | Quads | 2 × 18 |
+| Leg Press — Horizontal | Quads | 2 × 20 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 
@@ -2015,7 +2015,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 2 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Barbell Back Squat | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Hack Squat Machine | Quads | 2 × 16 |
@@ -2025,25 +2025,25 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 10 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 12 |
-| Nautilus Leg Extension Machine | Quads | 2 × 14 |
+| Leg Press — 45° | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 3 × 10 |
+| Leg Press — Horizontal | Quads | 2 × 12 |
+| Smith Machine Squat | Quads | 2 × 14 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Cable Glute Kickback | Glutes | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Hamstrings**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 2 × 18 |
+| Lying Leg Curl | Hamstrings | 2 × 18 |
 | Standing Leg Curl | Hamstrings | 2 × 20 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
@@ -2059,8 +2059,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 4 × 8 |
 | Cable Pull-Through | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 2 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 16 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 16 |
 | Cable Glute Kickback | Glutes | 2 × 18 |
 | Dumbbell Lateral Raise | Side delts | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -2070,7 +2070,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
 | Smith Machine Hip Thrust | Glutes | 2 × 14 |
 | Glute Deadlift | Glutes | 2 × 16 |
@@ -2082,12 +2082,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 2 × 18 |
+| Lying Leg Curl | Hamstrings | 2 × 18 |
 | Standing Leg Curl | Hamstrings | 2 × 20 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
@@ -2103,7 +2103,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 5 × 8 |
 | Glute Deadlift | Glutes | 3 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 3 × 15 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
@@ -2121,7 +2121,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Romanian Deadlift | Hamstrings | 3 × 10 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Seated Cable Row | Back | 3 × 10 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
 | Cable Crunch | Abs | 3 × 15 |
@@ -2170,9 +2170,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Cybex Lateral Raise Machine | Side delts | 4 × 15 |
+| Lateral Raise Machine | Side delts | 4 × 15 |
 | Cable Lateral Raise | Side delts | 3 × 15 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 3 × 15 |
+| Reverse Pec Deck | Rear delts | 3 × 15 |
 | Freemotion Y Raise | Rear delts | 2 × 17 |
 
 **Arms B**
@@ -2232,7 +2232,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Pull-Through | Glutes | 2 × 14 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 16 |
+| Glute Kickback Machine | Glutes | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Back & Biceps**
@@ -2254,7 +2254,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Hammer Curl | Biceps | 3 × 10 |
 | Preacher Curl — Barbell | Biceps | 2 × 12 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Chest & Glutes**
@@ -2265,7 +2265,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Bench Press | Chest | 3 × 10 |
 | Incline Barbell Bench Press | Chest | 2 × 12 |
 | Glute Bridge | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 
@@ -2281,7 +2281,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
 | Barbell Hip Thrust | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Cable Crunch | Abs | 3 × 15 |
 
 **Glutes & Back**
@@ -2290,18 +2290,18 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Cable Pull-Through | Glutes | 4 × 8 |
 | Glute Bridge | Glutes | 3 × 10 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 12 |
+| Hip Abduction Machine | Glutes | 2 × 12 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Chin-Up | Back | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Hamstrings**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -2325,8 +2325,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Glute Bridge | Glutes | 3 × 10 |
 | Smith Machine Hip Thrust | Glutes | 2 × 12 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Chest & Hamstrings**
 
@@ -2335,8 +2335,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Pec Deck Machine | Chest | 4 × 8 |
 | Barbell Bench Press | Chest | 3 × 10 |
 | Incline Barbell Bench Press | Chest | 2 × 12 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 2 × 14 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 
@@ -2360,10 +2360,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Lat Pulldown — Close Grip | Back | 2 × 14 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 16 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 16 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Glutes**
@@ -2374,7 +2374,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Pull-Through | Glutes | 2 × 14 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 16 |
+| Glute Kickback Machine | Glutes | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Back & Side delts**
@@ -2384,7 +2384,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Bent-Over Row | Back | 4 × 8 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Seated Cable Row | Back | 2 × 12 |
-| Hammer Strength Chest-Supported Row | Back | 2 × 14 |
+| Chest-Supported Row | Back | 2 × 14 |
 | Dumbbell Lateral Raise | Side delts | 3 × 12 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -2393,7 +2393,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | T-Bar Row | Back | 2 × 14 |
 | Pendlay Row | Back | 2 × 16 |
@@ -2407,7 +2407,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Bench Press | Chest | 3 × 10 |
 | Incline Barbell Bench Press | Chest | 2 × 12 |
 | Glute Bridge | Glutes | 3 × 12 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 
@@ -2431,7 +2431,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Bench Press | Chest | 2 × 14 |
 | Decline Dumbbell Press | Chest | 2 × 16 |
@@ -2464,7 +2464,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Cable Fly — Mid | Chest | 2 × 14 |
 | Cable Fly — Low to High | Chest | 2 × 16 |
@@ -2536,7 +2536,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | EZ-Bar Skull Crusher | Triceps | 4 × 8 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 10 |
-| Nautilus Triceps Dip Machine | Triceps | 2 × 12 |
+| Triceps Dip Machine | Triceps | 2 × 12 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
@@ -2587,7 +2587,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Pull-Through | Glutes | 2 × 14 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 16 |
+| Glute Kickback Machine | Glutes | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Back & Biceps**
@@ -2609,7 +2609,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Hammer Curl | Biceps | 3 × 10 |
 | Preacher Curl — Barbell | Biceps | 2 × 12 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 
@@ -2625,7 +2625,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
 | Barbell Hip Thrust | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
 | Cable Crunch | Abs | 3 × 15 |
 
 **Glutes & Back**
@@ -2634,18 +2634,18 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Cable Pull-Through | Glutes | 4 × 8 |
 | Glute Bridge | Glutes | 3 × 10 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 12 |
+| Hip Abduction Machine | Glutes | 2 × 12 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Chin-Up | Back | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Hamstrings**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -2669,8 +2669,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Glute Bridge | Glutes | 3 × 10 |
 | Smith Machine Hip Thrust | Glutes | 2 × 12 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 
 ### Back & Shoulders Specialty — Five Day (Women)
@@ -2693,10 +2693,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Lat Pulldown — Close Grip | Back | 2 × 14 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 16 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 16 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Glutes**
@@ -2707,7 +2707,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Pull-Through | Glutes | 2 × 14 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 16 |
+| Glute Kickback Machine | Glutes | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Back & Side delts**
@@ -2717,7 +2717,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Bent-Over Row | Back | 4 × 8 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Seated Cable Row | Back | 2 × 12 |
-| Hammer Strength Chest-Supported Row | Back | 2 × 14 |
+| Chest-Supported Row | Back | 2 × 14 |
 | Dumbbell Lateral Raise | Side delts | 3 × 12 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -2726,7 +2726,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | T-Bar Row | Back | 2 × 14 |
 | Pendlay Row | Back | 2 × 16 |
@@ -2753,7 +2753,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Bench Press | Chest | 2 × 14 |
 | Decline Dumbbell Press | Chest | 2 × 16 |
@@ -2786,7 +2786,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Cable Fly — Mid | Chest | 2 × 14 |
 | Cable Fly — Low to High | Chest | 2 × 16 |
@@ -2847,7 +2847,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | EZ-Bar Skull Crusher | Triceps | 4 × 8 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 10 |
-| Nautilus Triceps Dip Machine | Triceps | 2 × 12 |
+| Triceps Dip Machine | Triceps | 2 × 12 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
@@ -2864,7 +2864,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Pull-Through | Glutes | 2 × 14 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 16 |
+| Glute Kickback Machine | Glutes | 2 × 16 |
 | Cable Crunch | Abs | 3 × 15 |
 | Russian Twist | Obliques | 3 × 20 |
 
@@ -2884,7 +2884,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Front Squat | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Reverse Lunge | Quads | 3 × 12 |
 | Barbell Back Squat | Quads | 2 × 14 |
 | Hack Squat Machine | Quads | 2 × 16 |
@@ -2896,7 +2896,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Chin-Up | Back | 3 × 8 |
 | Seated Cable Row | Back | 3 × 10 |
-| Nautilus Pullover Machine | Back | 3 × 12 |
+| Pullover Machine | Back | 3 × 12 |
 | Incline Dumbbell Curl | Biceps | 3 × 12 |
 | Alternating Dumbbell Curl | Biceps | 2 × 14 |
 | Preacher Curl — Barbell | Biceps | 2 × 16 |
@@ -2906,7 +2906,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
@@ -2923,8 +2923,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Hip Thrust | Glutes | 4 × 10 |
 | Cable Pull-Through | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 3 × 15 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 17 |
+| Glute Kickback Machine | Glutes | 3 × 15 |
+| Hip Abduction Machine | Glutes | 2 × 17 |
 | Cable Glute Kickback | Glutes | 2 × 19 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
@@ -2936,7 +2936,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Overhead Press | Front delts | 3 × 12 |
 | Seated Barbell Press | Front delts | 2 × 14 |
 | Cable Lateral Raise | Side delts | 3 × 15 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | Cable Face Pull | Rear delts | 3 × 15 |
 
 **Quads & Hamstrings**
@@ -2946,9 +2946,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Hack Squat Machine | Quads | 4 × 10 |
 | Walking Lunge | Quads | 3 × 12 |
 | Barbell Back Squat | Quads | 2 × 14 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Romanian Deadlift | Hamstrings | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Arms**
 
@@ -3007,10 +3007,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Seated Cable Row | Back | 4 × 8 |
 | Barbell Bent-Over Row | Back | 3 × 10 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 12 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 12 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Preacher Curl — Barbell | Biceps | 2 × 14 |
-| Cybex Preacher Curl Machine | Biceps | 2 × 16 |
+| Preacher Curl Machine | Biceps | 2 × 16 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Biceps & Back**
@@ -3021,7 +3021,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Incline Dumbbell Curl | Biceps | 3 × 10 |
 | Cable Curl | Biceps | 2 × 12 |
 | Barbell Bent-Over Row | Back | 3 × 12 |
-| Hammer Strength Chest-Supported Row | Back | 2 × 14 |
+| Chest-Supported Row | Back | 2 × 14 |
 | T-Bar Row | Back | 2 × 16 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -3038,8 +3038,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
 | Barbell Hip Thrust | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 16 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 16 |
 | Cable Crunch | Abs | 3 × 15 |
 
 **Glutes & Back**
@@ -3052,7 +3052,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Chin-Up | Back | 2 × 14 |
 | Lat Pulldown — Close Grip | Back | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Back & Glutes**
 
@@ -3060,7 +3060,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Seated Cable Row | Back | 4 × 8 |
 | Barbell Bent-Over Row | Back | 3 × 10 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 12 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 12 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Smith Machine Hip Thrust | Glutes | 2 × 14 |
 | Glute Deadlift | Glutes | 2 × 16 |
@@ -3074,7 +3074,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Pull-Through | Glutes | 3 × 10 |
 | Dumbbell Glute Bridge | Glutes | 2 × 12 |
 | Barbell Bent-Over Row | Back | 3 × 12 |
-| Hammer Strength Chest-Supported Row | Back | 2 × 14 |
+| Chest-Supported Row | Back | 2 × 14 |
 | T-Bar Row | Back | 2 × 16 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
@@ -3100,10 +3100,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
-| Hammer Strength Chest-Supported Row | Back | 2 × 16 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Chest-Supported Row | Back | 2 × 16 |
 | T-Bar Row | Back | 2 × 18 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
@@ -3116,7 +3116,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Pendlay Row | Back | 2 × 12 |
 | Single-Arm Dumbbell Row | Back | 2 × 14 |
 | Cable Straight-Arm Pulldown | Back | 2 × 16 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 12 |
+| Lateral Raise Machine | Side delts | 3 × 12 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Side delts & Back**
@@ -3126,8 +3126,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Dumbbell Lateral Raise | Side delts | 4 × 8 |
 | Cable Lateral Raise | Side delts | 3 × 10 |
 | Barbell Bent-Over Row | Back | 3 × 12 |
-| Cybex Assisted Pull-Up Machine | Back | 2 × 14 |
-| Matrix Assisted Pull-Up/Dip Machine | Back | 2 × 16 |
+| Assisted Pull-Up Machine | Back | 2 × 14 |
+| Assisted Pull-Up/Dip Machine | Back | 2 × 16 |
 | Smith Machine Row | Back | 2 × 18 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -3158,7 +3158,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Dumbbell Curl | Biceps | 3 × 12 |
 | Barbell Curl | Biceps | 2 × 14 |
 | EZ-Bar Curl | Biceps | 2 × 16 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 
 **Chest Led B**
 
@@ -3179,7 +3179,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Chest Supported Row Machine | Back | 4 × 10 |
 | Lat Prayer | Back | 3 × 12 |
 | Pull-Up | Back | 2 × 14 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 3 × 15 |
+| Reverse Pec Deck | Rear delts | 3 × 15 |
 | Rear Delt Fly — Dumbbell | Rear delts | 2 × 17 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
@@ -3206,7 +3206,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
 | Dumbbell Fly | Chest | 2 × 16 |
@@ -3222,7 +3222,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Fly — Mid | Chest | 2 × 12 |
 | Cable Fly — Low to High | Chest | 2 × 14 |
 | Cable Fly — High to Low | Chest | 2 × 16 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 12 |
+| Lateral Raise Machine | Side delts | 3 × 12 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Side delts & Chest**
@@ -3232,8 +3232,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Dumbbell Lateral Raise | Side delts | 4 × 8 |
 | Cable Lateral Raise | Side delts | 3 × 10 |
 | Barbell Bench Press | Chest | 3 × 12 |
-| Hammer Strength Chest Press | Chest | 2 × 14 |
-| Hammer Strength Incline Press | Chest | 2 × 16 |
+| Chest Press | Chest | 2 × 14 |
+| Incline Press | Chest | 2 × 16 |
 | Smith Machine Bench Press | Chest | 2 × 18 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -3274,8 +3274,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Bench Press | Chest | 3 × 10 |
 | Decline Dumbbell Press | Chest | 2 × 12 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 12 |
-| Nautilus Triceps Dip Machine | Triceps | 2 × 14 |
-| Cybex Tricep Extension Machine | Triceps | 2 × 16 |
+| Triceps Dip Machine | Triceps | 2 × 14 |
+| Tricep Extension Machine | Triceps | 2 × 16 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Triceps & Chest**
@@ -3329,7 +3329,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Single-Arm Dumbbell Row | Back | 3 × 12 |
 | Lat Pulldown — Close Grip | Back | 2 × 14 |
 | Incline Dumbbell Curl | Biceps | 3 × 12 |
-| Cybex Preacher Curl Machine | Biceps | 2 × 14 |
+| Preacher Curl Machine | Biceps | 2 × 14 |
 | Cable Curl | Biceps | 2 × 16 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
@@ -3362,7 +3362,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Preacher Curl — Barbell | Biceps | 2 × 14 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Lat Pulldown — Close Grip | Back | 2 × 14 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 16 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 16 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Glutes**
@@ -3373,8 +3373,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Pull-Through | Glutes | 2 × 14 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 16 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 18 |
+| Glute Kickback Machine | Glutes | 2 × 16 |
+| Hip Abduction Machine | Glutes | 2 × 18 |
 | Cable Glute Kickback | Glutes | 2 × 20 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
@@ -3392,8 +3392,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Pull-Up | Back | 2 × 12 |
 | Chin-Up | Back | 2 × 14 |
 | Barbell Hip Thrust | Glutes | 3 × 12 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 14 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 16 |
+| Glute Kickback Machine | Glutes | 2 × 14 |
+| Hip Abduction Machine | Glutes | 2 × 16 |
 | Cable Crunch | Abs | 3 × 15 |
 
 **Glutes & Back**
@@ -3406,19 +3406,19 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Smith Machine Hip Thrust | Glutes | 2 × 14 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Lat Pulldown — Close Grip | Back | 2 × 14 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 16 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Hamstrings**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Seated Leg Curl (Cybex) | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 4 × 8 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 2 × 18 |
+| Lying Leg Curl | Hamstrings | 2 × 18 |
 | Standing Leg Curl | Hamstrings | 2 × 20 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
@@ -3436,7 +3436,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Pull-Up | Back | 2 × 12 |
 | Chin-Up | Back | 2 × 14 |
 | Lat Pulldown — Close Grip | Back | 2 × 16 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 18 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 18 |
 | Dumbbell Lateral Raise | Side delts | 3 × 12 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -3445,10 +3445,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Seated Cable Row | Back | 2 × 14 |
-| Hammer Strength Chest-Supported Row | Back | 2 × 16 |
+| Chest-Supported Row | Back | 2 × 16 |
 | T-Bar Row | Back | 2 × 18 |
 | Pendlay Row | Back | 2 × 20 |
 | Hanging Leg Raise | Abs | 3 × 15 |
@@ -3461,8 +3461,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Hip Thrust | Glutes | 3 × 10 |
 | Glute Bridge | Glutes | 3 × 12 |
 | Cable Pull-Through | Glutes | 2 × 14 |
-| Hammer Strength Glute Kickback Machine | Glutes | 2 × 16 |
-| Life Fitness Hip Abduction Machine | Glutes | 2 × 18 |
+| Glute Kickback Machine | Glutes | 2 × 16 |
+| Hip Abduction Machine | Glutes | 2 × 18 |
 | Cable Glute Kickback | Glutes | 2 × 20 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
@@ -3489,7 +3489,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Fly | Chest | 2 × 14 |
 | Incline Dumbbell Fly | Chest | 2 × 16 |
@@ -3535,7 +3535,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | EZ-Bar Skull Crusher | Triceps | 4 × 8 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 10 |
 | Close-Grip Bench Press | Triceps | 2 × 12 |
-| Nautilus Triceps Dip Machine | Triceps | 2 × 14 |
+| Triceps Dip Machine | Triceps | 2 × 14 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Bench Press | Chest | 2 × 14 |
 | Decline Dumbbell Press | Chest | 2 × 16 |
@@ -3886,9 +3886,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
@@ -3896,7 +3896,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Hammer Strength Incline Press | Chest | 4 × 10 |
+| Incline Press | Chest | 4 × 10 |
 | Cable Fly — Mid | Chest | 3 × 12 |
 | Decline Barbell Bench Press | Chest | 2 × 14 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
@@ -3910,7 +3910,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Chin-Up | Back | 4 × 8 |
 | Seated Cable Row | Back | 3 × 10 |
 | Lat Pulldown — Close Grip | Back | 2 × 12 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 3 × 15 |
+| Reverse Pec Deck | Rear delts | 3 × 15 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Dumbbell Reverse Wrist Curl | Forearms | 3 × 15 |
 
@@ -3919,11 +3919,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Hack Squat Machine | Quads | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 
 ### Full Body — Five Day (Men)
@@ -3935,7 +3935,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Barbell Bench Press | Chest | 4 × 8 |
 | Cable Fly — Mid | Chest | 3 × 12 |
@@ -3946,7 +3946,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Cable Crunch | Abs | 3 × 15 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Seated Cable Row | Back | 3 × 10 |
@@ -3956,9 +3956,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 12 |
+| Leg Press — 45° | Quads | 4 × 12 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
 | Cable Face Pull | Rear delts | 3 × 15 |
@@ -3969,7 +3969,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Incline Dumbbell Press | Chest | 4 × 10 |
 | Pec Deck Machine | Chest | 3 × 12 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | EZ-Bar Skull Crusher | Triceps | 3 × 12 |
 | Dumbbell Kickback | Triceps | 3 × 15 |
 | Hanging Leg Raise | Abs | 3 × 12 |
@@ -3995,7 +3995,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Barbell Bench Press | Chest | 4 × 8 |
@@ -4007,9 +4007,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Tricep Rope Pushdown | Triceps | 3 × 12 |
@@ -4018,11 +4018,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 12 |
+| Leg Press — 45° | Quads | 4 × 12 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
 | Hack Squat Machine | Quads | 2 × 12 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
-| Hammer Strength Incline Press | Chest | 3 × 10 |
+| Incline Press | Chest | 3 × 10 |
 | Seated Cable Row | Back | 3 × 10 |
 | Hammer Curl | Biceps | 3 × 12 |
 
@@ -4031,7 +4031,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Stiff-Leg Deadlift | Hamstrings | 4 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Standing Leg Curl | Hamstrings | 2 × 14 |
 | Donkey Calf Raise | Calves | 3 × 15 |
 | Dumbbell Bench Press | Chest | 3 × 10 |
@@ -4048,7 +4048,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Barbell Bench Press | Chest | 4 × 8 |
@@ -4061,7 +4061,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 10 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
@@ -4074,10 +4074,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Hack Squat Machine | Quads | 4 × 10 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Standing Leg Curl | Hamstrings | 3 × 12 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
-| Hammer Strength Chest Press | Chest | 3 × 10 |
+| Chest Press | Chest | 3 × 10 |
 | T-Bar Row | Back | 3 × 10 |
 | Cable Face Pull | Rear delts | 3 × 15 |
 | Cable Curl | Biceps | 3 × 12 |
@@ -4106,11 +4106,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 12 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 3 × 14 |
-| Leg Extension Machine (Cybex) | Quads | 2 × 16 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Leg Press — 45° | Quads | 4 × 12 |
+| Leg Press — Horizontal | Quads | 3 × 14 |
+| Leg Extension Machine | Quads | 2 × 16 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Incline Dumbbell Press | Chest | 4 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
@@ -4129,10 +4129,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Front Squat | Quads | 2 × 17 |
-| Leg Press — 45° (Cybex) | Quads | 2 × 19 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 21 |
+| Leg Press — 45° | Quads | 2 × 19 |
+| Leg Press — Horizontal | Quads | 2 × 21 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Chest & Triceps**
@@ -4151,11 +4151,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
-| Seated Leg Curl (Cybex) | Hamstrings | 2 × 18 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Leg Curl | Hamstrings | 2 × 18 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Back & Biceps**
 
@@ -4174,9 +4174,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Hack Squat Machine | Quads | 4 × 10 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
-| Nautilus Leg Extension Machine | Quads | 2 × 12 |
-| Smith Machine Squat | Quads | 2 × 14 |
-| Walking Lunge | Quads | 2 × 16 |
+| Smith Machine Squat | Quads | 2 × 12 |
+| Walking Lunge | Quads | 2 × 14 |
+| Goblet Squat | Quads | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Shoulders**
@@ -4201,9 +4201,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
 | Hack Squat Machine | Quads | 3 × 10 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Front Squat | Quads | 2 × 17 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 19 |
+| Leg Press — Horizontal | Quads | 2 × 19 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Upper Push**
@@ -4211,7 +4211,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Bench Press | Chest | 4 × 8 |
-| Hammer Strength Incline Press | Chest | 3 × 10 |
+| Incline Press | Chest | 3 × 10 |
 | Incline Barbell Bench Press | Chest | 2 × 12 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
 | EZ-Bar Skull Crusher | Triceps | 3 × 12 |
@@ -4222,7 +4222,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Glute Ham Raise | Hamstrings | 3 × 10 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
@@ -4243,11 +4243,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 12 |
+| Leg Press — 45° | Quads | 4 × 12 |
 | Walking Lunge | Quads | 3 × 12 |
-| Nautilus Leg Extension Machine | Quads | 2 × 14 |
+| Smith Machine Squat | Quads | 2 × 14 |
 | Standing Leg Curl | Hamstrings | 3 × 12 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 2 × 14 |
+| Lying Leg Curl | Hamstrings | 2 × 14 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
 
 
@@ -4260,11 +4260,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Front Squat | Quads | 2 × 17 |
 | Hack Squat Machine | Quads | 2 × 19 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 21 |
+| Leg Press — Horizontal | Quads | 2 × 21 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Upper A**
@@ -4284,12 +4284,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
-| Nautilus Leg Extension Machine | Quads | 2 × 12 |
-| Smith Machine Squat | Quads | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Smith Machine Squat | Quads | 2 × 12 |
+| Walking Lunge | Quads | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Upper B**
 
@@ -4314,7 +4314,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
 | Hack Squat Machine | Quads | 3 × 10 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Barbell Bench Press | Chest | 3 × 8 |
 | Incline Barbell Bench Press | Chest | 2 × 10 |
@@ -4326,7 +4326,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 8 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Glute Ham Raise | Hamstrings | 3 × 10 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
@@ -4338,10 +4338,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Press — 45° (Cybex) | Quads | 4 × 12 |
+| Leg Press — 45° | Quads | 4 × 12 |
 | Walking Lunge | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
@@ -4357,8 +4357,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
-| Leg Press — 45° (Cybex) | Quads | 4 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Press — 45° | Quads | 4 × 12 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Barbell Bench Press | Chest | 3 × 8 |
 | Incline Barbell Bench Press | Chest | 2 × 10 |
@@ -4372,12 +4372,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 12 |
+| Lying Leg Curl | Hamstrings | 4 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 3 × 14 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
 | Hack Squat Machine | Quads | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Barbell Curl | Biceps | 3 × 12 |
@@ -4407,7 +4407,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Chin-Up | Back | 4 × 8 |
 | Barbell Bent-Over Row | Back | 3 × 10 |
 | Cable Straight-Arm Pulldown | Back | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Back Squat | Quads | 2 × 17 |
 | Barbell Front Squat | Quads | 2 × 19 |
 
@@ -4426,7 +4426,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Hammer Strength Incline Press | Chest | 4 × 10 |
+| Incline Press | Chest | 4 × 10 |
 | Dumbbell Bench Press | Chest | 3 × 10 |
 | Pec Deck Machine | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
@@ -4440,9 +4440,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 4 × 10 |
 | Seated Cable Row | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 3 × 15 |
+| Reverse Pec Deck | Rear delts | 3 × 15 |
 | Rear Delt Fly — Dumbbell | Rear delts | 2 × 17 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 
 **Shoulders & Arms B**
 
@@ -4450,8 +4450,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Arnold Press | Front delts | 4 × 10 |
 | Seated Dumbbell Press | Front delts | 3 × 12 |
-| Life Fitness Shoulder Press Machine | Front delts | 2 × 14 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Shoulder Press Machine | Front delts | 2 × 14 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 12 |
 
@@ -4487,10 +4487,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Barbell Front Squat | Quads | 2 × 14 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Shoulders**
@@ -4500,7 +4500,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Dumbbell Shoulder Press | Front delts | 4 × 10 |
 | Barbell Overhead Press | Front delts | 3 × 12 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | Cable Face Pull | Rear delts | 3 × 15 |
 | Russian Twist | Obliques | 3 × 20 |
 
@@ -4548,12 +4548,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Hammer Strength Incline Press | Chest | 4 × 10 |
+| Incline Press | Chest | 4 × 10 |
 | Dumbbell Bench Press | Chest | 3 × 10 |
 | Incline Barbell Bench Press | Chest | 2 × 12 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
 | Barbell Overhead Press | Front delts | 2 × 12 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | Barbell Back Squat | Quads | 3 × 10 |
 
 **Pull B**
@@ -4563,7 +4563,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 4 × 10 |
 | Seated Cable Row | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 3 × 15 |
+| Reverse Pec Deck | Rear delts | 3 × 15 |
 | Rear Delt Fly — Dumbbell | Rear delts | 2 × 17 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
@@ -4584,7 +4584,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Tricep Rope Pushdown | Triceps | 2 × 14 |
 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 × 16 |
 | Barbell Curl | Biceps | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 
 **Back & Shoulders**
 
@@ -4597,17 +4597,17 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Overhead Press | Front delts | 2 × 12 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
 | Cable Face Pull | Rear delts | 3 × 15 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 
 **Upper & Legs**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Hammer Strength Incline Press | Chest | 4 × 10 |
+| Incline Press | Chest | 4 × 10 |
 | Incline Barbell Bench Press | Chest | 3 × 12 |
 | Decline Barbell Bench Press | Chest | 2 × 14 |
 | T-Bar Row | Back | 3 × 10 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 15 |
+| Lateral Raise Machine | Side delts | 3 × 15 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 12 |
 | Barbell Back Squat | Quads | 3 × 10 |
@@ -4641,7 +4641,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Cable Face Pull | Rear delts | 3 × 15 |
 | Rear Delt Fly — Dumbbell | Rear delts | 2 × 17 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 2 × 19 |
+| Reverse Pec Deck | Rear delts | 2 × 19 |
 | Barbell Curl | Biceps | 3 × 12 |
 | Hammer Curl | Biceps | 3 × 12 |
 | EZ-Bar Curl | Biceps | 2 × 14 |
@@ -4659,7 +4659,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 10 |
+| Leg Press — 45° | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
@@ -4669,12 +4669,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 12 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Hack Squat Machine | Quads | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Chest**
 
@@ -4692,8 +4692,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 10 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 12 |
+| Leg Press — 45° | Quads | 3 × 10 |
+| Leg Press — Horizontal | Quads | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Standing Leg Curl | Hamstrings | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -4702,12 +4702,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 12 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Back & Chest**
 
@@ -4730,10 +4730,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Front Squat | Quads | 2 × 17 |
-| Leg Press — 45° (Cybex) | Quads | 2 × 19 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 21 |
+| Leg Press — 45° | Quads | 2 × 19 |
+| Leg Press — Horizontal | Quads | 2 × 21 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Chest & Triceps**
@@ -4752,11 +4752,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
-| Seated Leg Curl (Cybex) | Hamstrings | 2 × 16 |
+| Seated Leg Curl | Hamstrings | 2 × 16 |
 | Standing Leg Curl | Hamstrings | 2 × 18 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Back & Biceps**
 
@@ -4775,9 +4775,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Hack Squat Machine | Quads | 4 × 10 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
-| Nautilus Leg Extension Machine | Quads | 2 × 12 |
-| Smith Machine Squat | Quads | 2 × 14 |
-| Walking Lunge | Quads | 2 × 16 |
+| Smith Machine Squat | Quads | 2 × 12 |
+| Walking Lunge | Quads | 2 × 14 |
+| Goblet Squat | Quads | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Posterior & Abs**
@@ -4801,7 +4801,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 10 |
+| Leg Press — 45° | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
@@ -4811,12 +4811,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 12 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Hack Squat Machine | Quads | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Chest**
 
@@ -4834,8 +4834,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 10 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 12 |
+| Leg Press — 45° | Quads | 3 × 10 |
+| Leg Press — Horizontal | Quads | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Standing Leg Curl | Hamstrings | 2 × 14 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
@@ -4844,12 +4844,12 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 12 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 2 × 14 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 2 × 14 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 
 ### Quad Specialty — Five Day (Men)
@@ -4861,10 +4861,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Barbell Front Squat | Quads | 2 × 17 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 19 |
-| Nautilus Leg Extension Machine | Quads | 2 × 21 |
+| Leg Press — Horizontal | Quads | 2 × 19 |
+| Smith Machine Squat | Quads | 2 × 21 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Hamstrings**
@@ -4872,10 +4872,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 16 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 2 × 18 |
+| Lying Leg Curl | Hamstrings | 2 × 18 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Upper Maintenance**
@@ -4894,10 +4894,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Hack Squat Machine | Quads | 4 × 10 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Walking Lunge | Quads | 3 × 12 |
-| Smith Machine Squat | Quads | 2 × 14 |
-| Goblet Squat | Quads | 2 × 16 |
+| Goblet Squat | Quads | 2 × 14 |
+| Belt Squat | Quads | 2 × 16 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
 
 **Single Leg & Abs**
@@ -4906,7 +4906,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Bulgarian Split Squat | Quads | 4 × 10 |
 | Reverse Lunge | Quads | 3 × 12 |
-| Belt Squat | Quads | 2 × 14 |
+| Sissy Squat | Quads | 2 × 14 |
 | Standing Leg Curl | Hamstrings | 3 × 12 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 12 |
@@ -4921,7 +4921,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 10 |
+| Leg Press — 45° | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 14 |
@@ -4932,22 +4932,22 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Standing Leg Curl | Hamstrings | 2 × 12 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Hack Squat Machine | Quads | 2 × 14 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Leg Press — Horizontal | Quads | 2 × 16 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Quads & Hamstrings**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Extension Machine (Cybex) | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 4 × 8 |
 | Barbell Back Squat | Quads | 3 × 10 |
-| Nautilus Leg Extension Machine | Quads | 2 × 12 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Smith Machine Squat | Quads | 2 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 14 |
 | Glute Ham Raise | Hamstrings | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -4957,11 +4957,11 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 4 × 8 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 3 × 10 |
 | Dumbbell Romanian Deadlift | Hamstrings | 2 × 12 |
 | Barbell Back Squat | Quads | 3 × 12 |
-| Smith Machine Squat | Quads | 2 × 14 |
-| Bulgarian Split Squat | Quads | 2 × 16 |
+| Bulgarian Split Squat | Quads | 2 × 14 |
+| Walking Lunge | Quads | 2 × 16 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 
@@ -4975,10 +4975,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
 | Hack Squat Machine | Quads | 3 × 10 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 17 |
-| Nautilus Leg Extension Machine | Quads | 2 × 19 |
-| Smith Machine Squat | Quads | 2 × 21 |
+| Leg Extension Machine | Quads | 3 × 15 |
+| Leg Press — Horizontal | Quads | 2 × 17 |
+| Smith Machine Squat | Quads | 2 × 19 |
+| Walking Lunge | Quads | 2 × 21 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Hamstrings A**
@@ -4986,23 +4986,23 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Glute Ham Raise | Hamstrings | 3 × 10 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 12 |
 | Single-Leg Romanian Deadlift | Hamstrings | 2 × 14 |
-| Seated Leg Curl (Cybex) | Hamstrings | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Leg Curl | Hamstrings | 2 × 16 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Quads B**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Front Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
+| Leg Press — 45° | Quads | 3 × 12 |
 | Bulgarian Split Squat | Quads | 3 × 10 |
-| Walking Lunge | Quads | 2 × 12 |
-| Goblet Squat | Quads | 2 × 14 |
-| Belt Squat | Quads | 2 × 16 |
+| Goblet Squat | Quads | 2 × 12 |
+| Belt Squat | Quads | 2 × 14 |
+| Sissy Squat | Quads | 2 × 16 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
 
 **Upper Maintenance**
@@ -5027,7 +5027,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Barbell Back Squat | Quads | 4 × 8 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 10 |
+| Leg Press — 45° | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
 | Hack Squat Machine | Quads | 2 × 14 |
 | Romanian Deadlift | Hamstrings | 3 × 12 |
@@ -5039,14 +5039,14 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Lying Leg Curl (Nautilus) | Hamstrings | 4 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 10 |
+| Lying Leg Curl | Hamstrings | 4 × 8 |
+| Seated Leg Curl | Hamstrings | 3 × 10 |
 | Standing Leg Curl | Hamstrings | 2 × 12 |
 | Nordic Hamstring Curl | Hamstrings | 2 × 14 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 14 |
-| Leg Extension Machine (Cybex) | Quads | 2 × 16 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Press — Horizontal | Quads | 2 × 14 |
+| Leg Extension Machine | Quads | 2 × 16 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 
 **Chest**
 
@@ -5072,7 +5072,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
 | Barbell Front Squat | Quads | 3 × 8 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Hack Squat Machine | Quads | 2 × 17 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Barbell Bench Press | Chest | 3 × 8 |
@@ -5084,7 +5084,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
-| Seated Leg Curl (Cybex) | Hamstrings | 3 × 12 |
+| Seated Leg Curl | Hamstrings | 3 × 12 |
 | Glute Ham Raise | Hamstrings | 3 × 10 |
 | Stiff-Leg Deadlift | Hamstrings | 2 × 12 |
 | Leg Press Calf Raise | Calves | 3 × 15 |
@@ -5098,8 +5098,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Bulgarian Split Squat | Quads | 4 × 10 |
 | Walking Lunge | Quads | 3 × 12 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Press — Horizontal (Life Fitness) | Quads | 2 × 14 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Press — Horizontal | Quads | 2 × 14 |
 | Smith Machine Calf Raise | Calves | 3 × 15 |
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
 | Barbell Overhead Press | Front delts | 2 × 12 |
@@ -5116,8 +5116,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Barbell Back Squat | Quads | 5 × 6 |
 | Hack Squat Machine | Quads | 4 × 10 |
-| Leg Press — 45° (Cybex) | Quads | 3 × 12 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Press — 45° | Quads | 3 × 12 |
+| Leg Extension Machine | Quads | 3 × 15 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 | Barbell Bench Press | Chest | 3 × 8 |
 | Incline Barbell Bench Press | Chest | 2 × 10 |
@@ -5131,9 +5131,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Romanian Deadlift | Hamstrings | 5 × 8 |
 | Stiff-Leg Deadlift | Hamstrings | 3 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Glute Ham Raise | Hamstrings | 3 × 10 |
-| Seated Calf Raise Machine (Cybex) | Calves | 3 × 15 |
+| Seated Calf Raise Machine | Calves | 3 × 15 |
 | Incline Dumbbell Press | Chest | 3 × 10 |
 | Dumbbell Bench Press | Chest | 2 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
@@ -5186,9 +5186,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Arnold Press | Front delts | 4 × 10 |
 | Seated Dumbbell Press | Front delts | 3 × 12 |
-| Life Fitness Shoulder Press Machine | Front delts | 2 × 14 |
-| Cybex Lateral Raise Machine | Side delts | 4 × 15 |
-| Hammer Strength Reverse Pec Deck | Rear delts | 3 × 15 |
+| Shoulder Press Machine | Front delts | 2 × 14 |
+| Lateral Raise Machine | Side delts | 4 × 15 |
+| Reverse Pec Deck | Rear delts | 3 × 15 |
 | Rear Delt Fly — Dumbbell | Rear delts | 2 × 17 |
 
 **Arms B**
@@ -5270,14 +5270,14 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Hammer Curl | Biceps | 3 × 10 |
 | Preacher Curl — Barbell | Biceps | 2 × 12 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Quads & Chest**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Extension Machine (Cybex) | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 4 × 8 |
 | Barbell Back Squat | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
 | Pec Deck Machine | Chest | 3 × 12 |
@@ -5339,7 +5339,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Lat Pulldown — Wide Grip | Back | 4 × 8 |
 | Seated Cable Row | Back | 3 × 10 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 12 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 12 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
@@ -5348,7 +5348,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Leg Extension Machine (Cybex) | Quads | 4 × 8 |
+| Leg Extension Machine | Quads | 4 × 8 |
 | Barbell Back Squat | Quads | 3 × 10 |
 | Barbell Front Squat | Quads | 2 × 12 |
 | Arnold Press | Front delts | 3 × 12 |
@@ -5376,7 +5376,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Bench Press | Chest | 2 × 14 |
 | Decline Dumbbell Press | Chest | 2 × 16 |
@@ -5409,7 +5409,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Cable Fly — Mid | Chest | 2 × 14 |
 | Cable Fly — Low to High | Chest | 2 × 16 |
@@ -5481,7 +5481,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | EZ-Bar Skull Crusher | Triceps | 4 × 8 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 10 |
-| Nautilus Triceps Dip Machine | Triceps | 2 × 12 |
+| Triceps Dip Machine | Triceps | 2 × 12 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
@@ -5528,9 +5528,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Cybex Lateral Raise Machine | Side delts | 4 × 8 |
+| Lateral Raise Machine | Side delts | 4 × 8 |
 | Dumbbell Lateral Raise | Side delts | 3 × 10 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 12 |
+| Lateral Raise Machine | Side delts | 3 × 12 |
 | Cable Lateral Raise | Side delts | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
@@ -5553,7 +5553,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Hammer Curl | Biceps | 3 × 10 |
 | Preacher Curl — Barbell | Biceps | 2 × 12 |
 | Seated Dumbbell Press | Front delts | 3 × 12 |
-| Life Fitness Shoulder Press Machine | Front delts | 2 × 14 |
+| Shoulder Press Machine | Front delts | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Triceps & Side delts**
@@ -5564,7 +5564,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Tricep Rope Pushdown | Triceps | 3 × 10 |
 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 × 12 |
 | EZ-Bar Skull Crusher | Triceps | 2 × 14 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 12 |
+| Lateral Raise Machine | Side delts | 3 × 12 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 
@@ -5602,7 +5602,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Front Squat | Quads | 3 × 10 |
 | Hack Squat Machine | Quads | 2 × 12 |
 | Romanian Deadlift | Hamstrings | 3 × 10 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Standing Calf Raise Machine | Calves | 3 × 15 |
 
 **Chest & Shoulders**
@@ -5622,7 +5622,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Incline Dumbbell Curl | Biceps | 4 × 12 |
 | Cable Curl | Biceps | 3 × 12 |
-| Cybex Preacher Curl Machine | Biceps | 2 × 14 |
+| Preacher Curl Machine | Biceps | 2 × 14 |
 | EZ-Bar Skull Crusher | Triceps | 3 × 12 |
 | Tricep Rope Pushdown | Triceps | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 12 |
@@ -5684,7 +5684,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Hammer Curl | Biceps | 3 × 10 |
 | Preacher Curl — Barbell | Biceps | 2 × 12 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 
@@ -5742,7 +5742,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Lat Pulldown — Wide Grip | Back | 4 × 8 |
 | Seated Cable Row | Back | 3 × 10 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 12 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 12 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
@@ -5768,7 +5768,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Bench Press | Chest | 2 × 14 |
 | Decline Dumbbell Press | Chest | 2 × 16 |
@@ -5801,7 +5801,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Cable Fly — Mid | Chest | 2 × 14 |
 | Cable Fly — Low to High | Chest | 2 × 16 |
@@ -5862,7 +5862,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | EZ-Bar Skull Crusher | Triceps | 4 × 8 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 10 |
-| Nautilus Triceps Dip Machine | Triceps | 2 × 12 |
+| Triceps Dip Machine | Triceps | 2 × 12 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
@@ -5898,9 +5898,9 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Cybex Lateral Raise Machine | Side delts | 4 × 8 |
+| Lateral Raise Machine | Side delts | 4 × 8 |
 | Dumbbell Lateral Raise | Side delts | 3 × 10 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 12 |
+| Lateral Raise Machine | Side delts | 3 × 12 |
 | Cable Lateral Raise | Side delts | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
@@ -5923,7 +5923,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Hammer Curl | Biceps | 3 × 10 |
 | Preacher Curl — Barbell | Biceps | 2 × 12 |
 | Seated Dumbbell Press | Front delts | 3 × 12 |
-| Life Fitness Shoulder Press Machine | Front delts | 2 × 14 |
+| Shoulder Press Machine | Front delts | 2 × 14 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 
@@ -5961,10 +5961,10 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 |---|---|---|
 | Seated Cable Row | Back | 4 × 8 |
 | Barbell Bent-Over Row | Back | 3 × 10 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 12 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 12 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Preacher Curl — Barbell | Biceps | 2 × 14 |
-| Cybex Preacher Curl Machine | Biceps | 2 × 16 |
+| Preacher Curl Machine | Biceps | 2 × 16 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Biceps & Back**
@@ -5975,7 +5975,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Incline Dumbbell Curl | Biceps | 3 × 10 |
 | Cable Curl | Biceps | 2 × 12 |
 | Barbell Bent-Over Row | Back | 3 × 12 |
-| Hammer Strength Chest-Supported Row | Back | 2 × 14 |
+| Chest-Supported Row | Back | 2 × 14 |
 | T-Bar Row | Back | 2 × 16 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -6016,8 +6016,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Bench Press | Chest | 3 × 10 |
 | Decline Dumbbell Press | Chest | 2 × 12 |
 | Seated Cable Row | Back | 3 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
-| Hammer Strength Chest-Supported Row | Back | 2 × 16 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Chest-Supported Row | Back | 2 × 16 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Back & Chest**
@@ -6054,7 +6054,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Decline Dumbbell Press | Chest | 2 × 14 |
 | Dumbbell Fly | Chest | 2 × 16 |
@@ -6070,7 +6070,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Cable Fly — Mid | Chest | 2 × 12 |
 | Cable Fly — Low to High | Chest | 2 × 14 |
 | Cable Fly — High to Low | Chest | 2 × 16 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 12 |
+| Lateral Raise Machine | Side delts | 3 × 12 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Side delts & Chest**
@@ -6080,8 +6080,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Dumbbell Lateral Raise | Side delts | 4 × 8 |
 | Cable Lateral Raise | Side delts | 3 × 10 |
 | Barbell Bench Press | Chest | 3 × 12 |
-| Hammer Strength Chest Press | Chest | 2 × 14 |
-| Hammer Strength Incline Press | Chest | 2 × 16 |
+| Chest Press | Chest | 2 × 14 |
+| Incline Press | Chest | 2 × 16 |
 | Smith Machine Bench Press | Chest | 2 × 18 |
 | Cable Crunch | Abs | 3 × 15 |
 
@@ -6112,13 +6112,13 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Curl | Biceps | 3 × 12 |
 | Hammer Curl | Biceps | 3 × 12 |
 | EZ-Bar Curl | Biceps | 2 × 14 |
-| Leg Extension Machine (Cybex) | Quads | 3 × 15 |
+| Leg Extension Machine | Quads | 3 × 15 |
 
 **Chest & Triceps B**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Hammer Strength Incline Press | Chest | 5 × 8 |
+| Incline Press | Chest | 5 × 8 |
 | Dumbbell Bench Press | Chest | 3 × 10 |
 | Pec Deck Machine | Chest | 3 × 12 |
 | Decline Barbell Bench Press | Chest | 2 × 14 |
@@ -6136,7 +6136,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Dumbbell Shoulder Press | Front delts | 3 × 10 |
 | Barbell Overhead Press | Front delts | 2 × 12 |
 | Dumbbell Lateral Raise | Side delts | 3 × 15 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 
 
 ### Chest & Triceps Specialty — Four Day (Men)
@@ -6175,8 +6175,8 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Bench Press | Chest | 3 × 10 |
 | Decline Dumbbell Press | Chest | 2 × 12 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 12 |
-| Nautilus Triceps Dip Machine | Triceps | 2 × 14 |
-| Cybex Tricep Extension Machine | Triceps | 2 × 16 |
+| Triceps Dip Machine | Triceps | 2 × 14 |
+| Tricep Extension Machine | Triceps | 2 × 16 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Triceps & Chest**
@@ -6217,7 +6217,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Alternating Dumbbell Curl | Biceps | 2 × 12 |
 | Seated Dumbbell Press | Front delts | 3 × 12 |
 | Seated Barbell Press | Front delts | 2 × 14 |
-| Life Fitness Shoulder Press Machine | Front delts | 2 × 16 |
+| Shoulder Press Machine | Front delts | 2 × 16 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Front delts & Biceps**
@@ -6229,7 +6229,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Smith Machine Overhead Press | Front delts | 2 × 12 |
 | Hammer Curl | Biceps | 3 × 12 |
 | Preacher Curl — Barbell | Biceps | 2 × 14 |
-| Cybex Preacher Curl Machine | Biceps | 2 × 16 |
+| Preacher Curl Machine | Biceps | 2 × 16 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 **Biceps & Front delts**
@@ -6258,7 +6258,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Overhead Press | Front delts | 2 × 12 |
 | Dumbbell Lateral Raise | Side delts | 4 × 15 |
 | Cable Lateral Raise | Side delts | 3 × 17 |
-| Cybex Lateral Raise Machine | Side delts | 2 × 19 |
+| Lateral Raise Machine | Side delts | 2 × 19 |
 | Cable Face Pull | Rear delts | 3 × 15 |
 | Barbell Back Squat | Quads | 3 × 10 |
 
@@ -6272,7 +6272,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 3 × 10 |
 | Pull-Up | Back | 2 × 12 |
 | Chin-Up | Back | 2 × 14 |
-| Lying Leg Curl (Nautilus) | Hamstrings | 3 × 12 |
+| Lying Leg Curl | Hamstrings | 3 × 12 |
 | Romanian Deadlift | Hamstrings | 2 × 14 |
 
 **Triceps Led**
@@ -6316,7 +6316,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Preacher Curl — Barbell | Biceps | 2 × 14 |
 | Lat Pulldown — Wide Grip | Back | 3 × 12 |
 | Lat Pulldown — Close Grip | Back | 2 × 14 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 16 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 16 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Chest**
@@ -6357,7 +6357,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Lat Pulldown — Wide Grip | Back | 4 × 8 |
 | Seated Cable Row | Back | 3 × 10 |
 | Lat Pulldown — Close Grip | Back | 2 × 12 |
-| Hammer Strength Plate-Loaded Lat Pulldown | Back | 2 × 14 |
+| Plate-Loaded Lat Pulldown | Back | 2 × 14 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Bench Press | Chest | 2 × 14 |
 | Decline Dumbbell Press | Chest | 2 × 16 |
@@ -6373,7 +6373,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Barbell Overhead Press | Front delts | 2 × 14 |
 | Seated Barbell Press | Front delts | 2 × 16 |
 | Seated Dumbbell Press | Front delts | 2 × 18 |
-| Life Fitness Shoulder Press Machine | Front delts | 2 × 20 |
+| Shoulder Press Machine | Front delts | 2 × 20 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 
 
@@ -6399,7 +6399,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
 | Cable Lateral Raise | Side delts | 4 × 8 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 10 |
+| Lateral Raise Machine | Side delts | 3 × 10 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Fly | Chest | 2 × 14 |
 | Incline Dumbbell Fly | Chest | 2 × 16 |
@@ -6445,7 +6445,7 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | EZ-Bar Skull Crusher | Triceps | 4 × 8 |
 | Overhead Cable Tricep Extension | Triceps | 3 × 10 |
 | Close-Grip Bench Press | Triceps | 2 × 12 |
-| Nautilus Triceps Dip Machine | Triceps | 2 × 14 |
+| Triceps Dip Machine | Triceps | 2 × 14 |
 | Incline Dumbbell Press | Chest | 3 × 12 |
 | Dumbbell Bench Press | Chest | 2 × 14 |
 | Decline Dumbbell Press | Chest | 2 × 16 |
@@ -6492,16 +6492,16 @@ Each is one week. The week repeats for the whole block — load progresses, the 
 | Preacher Curl — Barbell | Biceps | 2 × 14 |
 | Seated Dumbbell Press | Front delts | 3 × 12 |
 | Arnold Press | Front delts | 2 × 14 |
-| Life Fitness Shoulder Press Machine | Front delts | 2 × 16 |
+| Shoulder Press Machine | Front delts | 2 × 16 |
 | Hanging Leg Raise | Abs | 3 × 15 |
 
 **Side delts**
 
 | Exercise | Muscle | Sets × Reps |
 |---|---|---|
-| Cybex Lateral Raise Machine | Side delts | 4 × 8 |
+| Lateral Raise Machine | Side delts | 4 × 8 |
 | Dumbbell Lateral Raise | Side delts | 3 × 10 |
-| Cybex Lateral Raise Machine | Side delts | 3 × 12 |
+| Lateral Raise Machine | Side delts | 3 × 12 |
 | Cable Lateral Raise | Side delts | 2 × 14 |
 | Captain's Chair Knee Raise | Abs | 3 × 15 |
 

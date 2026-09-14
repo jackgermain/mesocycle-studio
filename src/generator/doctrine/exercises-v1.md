@@ -4530,7 +4530,7 @@ it would be a different call for an in-person client.
 
 ## Leg Press and Hack Squat — *compounds on a machine*
 
-**Library:** `Leg Press — 45° (Cybex)` · `Leg Press — Horizontal (Life Fitness)` · `Hack Squat Machine`
+**Library:** `Leg Press — 45°` · `Leg Press — Horizontal` · `Hack Squat Machine`
 **His usage:** leg press 8, hack squat 21.
 
 > *"I'm gonna group hack squat and leg press together, because in a way they're compound exercises, but
@@ -4954,7 +4954,7 @@ chest-supported back work the day after, heavier back work later once the erecto
 
 ## Seated and Lying Leg Curl — *one entry, and the pre-stretch difference*
 
-**Library:** `Seated Leg Curl (Cybex)` · `Lying Leg Curl (Nautilus)`
+**Library:** `Seated Leg Curl` · `Lying Leg Curl`
 **His usage:** 106 prescriptions, seated exclusively — he has never written the lying version.
 
 > *"When it comes to hamstring training, you've pretty much got four exercises that are really really good,
@@ -5243,7 +5243,7 @@ another normally has.
 **Library:** `Cable Glute Kickback` · `Hammer Strength Glute Kickback Machine`
 **His usage:** 13 prescriptions.
 
-> *"Hammer Strength glute kickback — I'm not gonna talk about [separately], [it's] pretty much the same thing
+> *"glute kickback — I'm not gonna talk about [separately], [it's] pretty much the same thing
 > as the cable kickback. It's another really great exercise."*
 
 **Rule:** one entry for both.
@@ -5869,7 +5869,7 @@ Diagonal work — movements #3 and #4.
 
 ## Leg Extension — *the axial-sparing accessory*
 
-**Library:** `Leg Extension Machine (Cybex)` · `Nautilus Leg Extension Machine`
+**Library:** `Leg Extension Machine` · `Nautilus Leg Extension Machine`
 **His usage:** 74 prescriptions, concentrated in two of ten programs.
 
 > *"Leg extensions are cool. They're another one of the only exercises, other than the leg press, that won't
@@ -5909,7 +5909,7 @@ extension is the only way to add quad sets without adding any spinal load at all
 
 ## Calf Raises — *one entry; standing is prioritised, seated is additive*
 
-**Library:** `Standing Calf Raise Machine` · `Seated Calf Raise Machine (Cybex)` · `Leg Press Calf Raise` ·
+**Library:** `Standing Calf Raise Machine` · `Seated Calf Raise Machine` · `Leg Press Calf Raise` ·
 `Donkey Calf Raise` · `Smith Machine Calf Raise`
 **His usage:** zero across the ten programs — but see below, this is a frequency effect, not a judgement.
 

@@ -172,7 +172,7 @@ const SIX_DAY: TemplateSpec[] = [
           ["Barbell Hip Thrust", 4, 10],
           ["Glute Bridge", 3, 12],
           ["Romanian Deadlift", 3, 10],
-          ["Seated Leg Curl (Cybex)", 3, 12],
+          ["Seated Leg Curl", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
         ],
       },
@@ -190,10 +190,10 @@ const SIX_DAY: TemplateSpec[] = [
         name: "Quads & Glutes",
         slots: [
           ["Barbell Back Squat", 4, 8],
-          ["Leg Press — 45° (Cybex)", 3, 12],
+          ["Leg Press — 45°", 3, 12],
           ["Bulgarian Split Squat", 3, 10],
           ["Cable Glute Kickback", 3, 15],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Calf Raise Machine", 3, 15],
         ],
       },
       {
@@ -211,7 +211,7 @@ const SIX_DAY: TemplateSpec[] = [
         slots: [
           ["Smith Machine Hip Thrust", 4, 10],
           ["Cable Pull-Through", 3, 12],
-          ["Life Fitness Hip Abduction Machine", 3, 15],
+          ["Hip Abduction Machine", 3, 15],
           ["Hip Adduction Machine", 3, 15],
           ["Leg Press Calf Raise", 3, 15],
         ],
@@ -219,7 +219,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Upper Body",
         slots: [
-          ["Hammer Strength Chest-Supported Row", 3, 10],
+          ["Chest-Supported Row", 3, 10],
           ["Lat Prayer", 3, 12],
           ["Dumbbell Shoulder Press", 3, 10],
           ["Dumbbell Lateral Raise", 3, 15],
@@ -240,7 +240,7 @@ const SIX_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Hip Thrust", 4, 10],
           ["Cable Pull-Through", 3, 12],
-          ["Hammer Strength Glute Kickback Machine", 3, 15],
+          ["Glute Kickback Machine", 3, 15],
           ["Standing Calf Raise Machine", 3, 15],
         ],
       },
@@ -258,7 +258,7 @@ const SIX_DAY: TemplateSpec[] = [
         name: "Quads",
         slots: [
           ["Hack Squat Machine", 4, 10],
-          ["Leg Extension Machine (Cybex)", 3, 15],
+          ["Leg Extension Machine", 3, 15],
           ["Walking Lunge", 3, 12],
           ["Smith Machine Calf Raise", 3, 15],
         ],
@@ -269,7 +269,7 @@ const SIX_DAY: TemplateSpec[] = [
           ["Dumbbell Bench Press", 3, 10],
           ["Cable Fly — Mid", 3, 12],
           ["Seated Dumbbell Press", 3, 10],
-          ["Cybex Lateral Raise Machine", 3, 15],
+          ["Lateral Raise Machine", 3, 15],
           ["V-Up", 3, 15],
         ],
       },
@@ -277,7 +277,7 @@ const SIX_DAY: TemplateSpec[] = [
         name: "Hamstrings & Glutes",
         slots: [
           ["Romanian Deadlift", 4, 10],
-          ["Lying Leg Curl (Nautilus)", 3, 12],
+          ["Lying Leg Curl", 3, 12],
           ["Glute Bridge", 3, 12],
           ["Donkey Calf Raise", 3, 15],
         ],
@@ -316,7 +316,7 @@ const SIX_DAY: TemplateSpec[] = [
         name: "Legs & Push A",
         slots: [
           ["Barbell Back Squat", 4, 8],
-          ["Leg Extension Machine (Cybex)", 3, 15],
+          ["Leg Extension Machine", 3, 15],
           ["Cable Crunch", 3, 15],
           ["Incline Dumbbell Press", 3, 10],
           ["Dumbbell Lateral Raise", 3, 15],
@@ -327,8 +327,8 @@ const SIX_DAY: TemplateSpec[] = [
         name: "Legs & Pull B",
         slots: [
           ["Glute Deadlift", 4, 10],
-          ["Seated Leg Curl (Cybex)", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Leg Curl", 3, 12],
+          ["Seated Calf Raise Machine", 3, 15],
           ["Chest Supported Row Machine", 3, 10],
           ["Cable Straight-Arm Pulldown", 3, 12],
           ["Cable Curl", 3, 12],
@@ -338,7 +338,7 @@ const SIX_DAY: TemplateSpec[] = [
         name: "Legs & Push B",
         slots: [
           ["Bulgarian Split Squat", 3, 10],
-          ["Leg Press — 45° (Cybex)", 3, 12],
+          ["Leg Press — 45°", 3, 12],
           ["Hanging Leg Raise", 3, 12],
           ["Dumbbell Bench Press", 3, 10],
           ["Cable Lateral Raise", 3, 15],
@@ -351,7 +351,7 @@ const SIX_DAY: TemplateSpec[] = [
           ["Smith Machine Hip Thrust", 4, 10],
           ["Single-Leg Romanian Deadlift", 3, 10],
           ["Leg Press Calf Raise", 3, 15],
-          ["Hammer Strength Plate-Loaded Lat Pulldown", 3, 10],
+          ["Plate-Loaded Lat Pulldown", 3, 10],
           ["Meadows Row", 3, 12],
           ["Preacher Curl — Barbell", 3, 12],
         ],
@@ -380,7 +380,7 @@ const SIX_DAY: TemplateSpec[] = [
         name: "Quads & Chest",
         slots: [
           ["Barbell Front Squat", 4, 8],
-          ["Leg Press — Horizontal (Life Fitness)", 3, 12],
+          ["Leg Press — Horizontal", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
           ["Incline Smith Machine Press", 3, 10],
           ["Cable Fly — Low to High", 3, 12],
@@ -391,7 +391,7 @@ const SIX_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Bent-Over Row", 3, 10],
           ["Lat Pulldown — Wide Grip", 3, 10],
-          ["Nautilus Pullover Machine", 3, 12],
+          ["Pullover Machine", 3, 12],
           ["Decline Sit-Up", 3, 15],
           ["Cable Woodchopper", 3, 15],
         ],
@@ -403,7 +403,7 @@ const SIX_DAY: TemplateSpec[] = [
           ["Glute Bridge", 3, 12],
           ["Stiff-Leg Deadlift", 3, 10],
           ["Standing Leg Curl", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Calf Raise Machine", 3, 15],
         ],
       },
       {
@@ -421,7 +421,7 @@ const SIX_DAY: TemplateSpec[] = [
         slots: [
           ["Smith Machine Squat", 4, 10],
           ["Reverse Lunge", 3, 12],
-          ["Life Fitness Hip Abduction Machine", 3, 15],
+          ["Hip Abduction Machine", 3, 15],
           ["Smith Machine Calf Raise", 3, 15],
         ],
       },
@@ -430,7 +430,7 @@ const SIX_DAY: TemplateSpec[] = [
         slots: [
           ["Seated Cable Row", 3, 10],
           ["Dumbbell Bench Press", 3, 10],
-          ["Cybex Lateral Raise Machine", 3, 15],
+          ["Lateral Raise Machine", 3, 15],
           ["Captain's Chair Knee Raise", 3, 15],
           ["Plank Hip Twist", 3, 20],
         ],
@@ -457,7 +457,7 @@ const FIVE_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Hip Thrust", 4, 10],
           ["Cable Pull-Through", 3, 12],
-          ["Hammer Strength Glute Kickback Machine", 3, 15],
+          ["Glute Kickback Machine", 3, 15],
           ["Cable Crunch", 3, 15],
         ],
       },
@@ -474,8 +474,8 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Quads & Calves",
         slots: [
           ["Barbell Back Squat", 4, 8],
-          ["Leg Press — 45° (Cybex)", 3, 12],
-          ["Leg Extension Machine (Cybex)", 3, 15],
+          ["Leg Press — 45°", 3, 12],
+          ["Leg Extension Machine", 3, 15],
           ["Standing Calf Raise Machine", 3, 15],
         ],
       },
@@ -492,9 +492,9 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Hamstrings & Glutes",
         slots: [
           ["Romanian Deadlift", 4, 10],
-          ["Lying Leg Curl (Nautilus)", 3, 12],
+          ["Lying Leg Curl", 3, 12],
           ["Glute Bridge", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Calf Raise Machine", 3, 15],
         ],
       },
     ],
@@ -519,7 +519,7 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Hamstrings",
         slots: [
           ["Romanian Deadlift", 4, 10],
-          ["Seated Leg Curl (Cybex)", 3, 12],
+          ["Seated Leg Curl", 3, 12],
           ["Glute Ham Raise", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
         ],
@@ -528,7 +528,7 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Upper Pull",
         slots: [
           ["Chin-Up", 3, 8],
-          ["Hammer Strength Chest-Supported Row", 3, 10],
+          ["Chest-Supported Row", 3, 10],
           ["Cable Straight-Arm Pulldown", 3, 12],
           ["Cable Curl", 3, 12],
         ],
@@ -538,7 +538,7 @@ const FIVE_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Hip Thrust", 4, 10],
           ["Cable Pull-Through", 3, 12],
-          ["Life Fitness Hip Abduction Machine", 3, 15],
+          ["Hip Abduction Machine", 3, 15],
           ["Leg Press Calf Raise", 3, 15],
         ],
       },
@@ -564,7 +564,7 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Legs A",
         slots: [
           ["Barbell Back Squat", 4, 8],
-          ["Leg Press — 45° (Cybex)", 3, 12],
+          ["Leg Press — 45°", 3, 12],
           ["Bulgarian Split Squat", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
         ],
@@ -583,8 +583,8 @@ const FIVE_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Hip Thrust", 4, 10],
           ["Romanian Deadlift", 3, 10],
-          ["Lying Leg Curl (Nautilus)", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Lying Leg Curl", 3, 12],
+          ["Seated Calf Raise Machine", 3, 15],
         ],
       },
       {
@@ -636,7 +636,7 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Quads & Calves",
         slots: [
           ["Barbell Front Squat", 4, 8],
-          ["Leg Extension Machine (Cybex)", 3, 15],
+          ["Leg Extension Machine", 3, 15],
           ["Reverse Lunge", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
         ],
@@ -646,7 +646,7 @@ const FIVE_DAY: TemplateSpec[] = [
         slots: [
           ["Chin-Up", 3, 8],
           ["Seated Cable Row", 3, 10],
-          ["Nautilus Pullover Machine", 3, 12],
+          ["Pullover Machine", 3, 12],
           ["Incline Dumbbell Curl", 3, 12],
         ],
       },
@@ -654,7 +654,7 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Hamstrings & Shoulders",
         slots: [
           ["Romanian Deadlift", 4, 10],
-          ["Seated Leg Curl (Cybex)", 3, 12],
+          ["Seated Leg Curl", 3, 12],
           ["Leg Press Calf Raise", 3, 15],
           ["Dumbbell Lateral Raise", 3, 15],
         ],
@@ -675,7 +675,7 @@ const FIVE_DAY: TemplateSpec[] = [
           ["Dumbbell Bench Press", 3, 10],
           ["Cable Fly — Mid", 3, 12],
           ["Tricep Rope Pushdown", 3, 12],
-          ["Leg Extension Machine (Cybex)", 3, 15],
+          ["Leg Extension Machine", 3, 15],
         ],
       },
       {
@@ -685,7 +685,7 @@ const FIVE_DAY: TemplateSpec[] = [
           ["Seated Cable Row", 3, 10],
           ["Single-Arm Dumbbell Row", 3, 12],
           ["Dumbbell Curl", 3, 12],
-          ["Lying Leg Curl (Nautilus)", 3, 12],
+          ["Lying Leg Curl", 3, 12],
         ],
       },
       {
@@ -731,7 +731,7 @@ const FIVE_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Hip Thrust", 4, 10],
           ["Cable Pull-Through", 3, 12],
-          ["Hammer Strength Glute Kickback Machine", 3, 15],
+          ["Glute Kickback Machine", 3, 15],
           ["Standing Calf Raise Machine", 3, 15],
         ],
       },
@@ -740,7 +740,7 @@ const FIVE_DAY: TemplateSpec[] = [
         slots: [
           ["Dumbbell Shoulder Press", 4, 10],
           ["Cable Lateral Raise", 3, 15],
-          ["Cybex Lateral Raise Machine", 3, 15],
+          ["Lateral Raise Machine", 3, 15],
           ["Cable Face Pull", 3, 15],
         ],
       },
@@ -749,8 +749,8 @@ const FIVE_DAY: TemplateSpec[] = [
         slots: [
           ["Hack Squat Machine", 4, 10],
           ["Walking Lunge", 3, 12],
-          ["Seated Leg Curl (Cybex)", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Leg Curl", 3, 12],
+          ["Seated Calf Raise Machine", 3, 15],
         ],
       },
       {
@@ -803,7 +803,7 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Quads",
         slots: [
           ["Barbell Back Squat", 4, 8],
-          ["Leg Press — Horizontal (Life Fitness)", 3, 12],
+          ["Leg Press — Horizontal", 3, 12],
           ["Sissy Squat", 3, 12],
           ["Smith Machine Calf Raise", 3, 15],
         ],
@@ -821,7 +821,7 @@ const FIVE_DAY: TemplateSpec[] = [
         name: "Glutes & Abs",
         slots: [
           ["Smith Machine Hip Thrust", 4, 10],
-          ["Life Fitness Hip Abduction Machine", 3, 15],
+          ["Hip Abduction Machine", 3, 15],
           ["Hip Adduction Machine", 3, 15],
           ["Ab Wheel Rollout", 3, 12],
         ],
@@ -869,8 +869,8 @@ const FOUR_DAY: TemplateSpec[] = [
         slots: [
           ["Smith Machine Hip Thrust", 4, 10],
           ["Cable Pull-Through", 3, 12],
-          ["Seated Leg Curl (Cybex)", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Leg Curl", 3, 12],
+          ["Seated Calf Raise Machine", 3, 15],
           ["Hanging Leg Raise", 3, 12],
         ],
       },
@@ -897,8 +897,8 @@ const FOUR_DAY: TemplateSpec[] = [
         name: "Quads",
         slots: [
           ["Barbell Back Squat", 4, 8],
-          ["Leg Press — 45° (Cybex)", 3, 12],
-          ["Leg Extension Machine (Cybex)", 3, 15],
+          ["Leg Press — 45°", 3, 12],
+          ["Leg Extension Machine", 3, 15],
           ["Bulgarian Split Squat", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
         ],
@@ -919,7 +919,7 @@ const FOUR_DAY: TemplateSpec[] = [
           ["Barbell Hip Thrust", 4, 10],
           ["Cable Glute Kickback", 3, 15],
           ["Romanian Deadlift", 3, 10],
-          ["Lying Leg Curl (Nautilus)", 3, 12],
+          ["Lying Leg Curl", 3, 12],
           ["Leg Press Calf Raise", 3, 15],
         ],
       },
@@ -947,7 +947,7 @@ const FOUR_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Hip Thrust", 4, 10],
           ["Barbell Back Squat", 3, 10],
-          ["Seated Leg Curl (Cybex)", 3, 12],
+          ["Seated Leg Curl", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
           ["V-Up", 3, 15],
         ],
@@ -966,16 +966,16 @@ const FOUR_DAY: TemplateSpec[] = [
         name: "Lower B",
         slots: [
           ["Romanian Deadlift", 4, 10],
-          ["Leg Press — 45° (Cybex)", 3, 12],
+          ["Leg Press — 45°", 3, 12],
           ["Glute Bridge", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Calf Raise Machine", 3, 15],
           ["Russian Twist", 3, 20],
         ],
       },
       {
         name: "Upper B",
         slots: [
-          ["Hammer Strength Chest-Supported Row", 3, 10],
+          ["Chest-Supported Row", 3, 10],
           ["Cable Straight-Arm Pulldown", 3, 12],
           ["Incline Dumbbell Press", 3, 10],
           ["Cable Lateral Raise", 3, 15],
@@ -997,7 +997,7 @@ const FOUR_DAY: TemplateSpec[] = [
           ["Barbell Hip Thrust", 5, 8],
           ["Glute Deadlift", 3, 10],
           ["Cable Pull-Through", 3, 12],
-          ["Hammer Strength Glute Kickback Machine", 3, 15],
+          ["Glute Kickback Machine", 3, 15],
           ["Standing Calf Raise Machine", 3, 15],
         ],
       },
@@ -1017,7 +1017,7 @@ const FOUR_DAY: TemplateSpec[] = [
           ["Smith Machine Hip Thrust", 4, 12],
           ["Glute Bridge", 3, 15],
           ["Cable Glute Kickback", 3, 15],
-          ["Life Fitness Hip Abduction Machine", 3, 15],
+          ["Hip Abduction Machine", 3, 15],
           ["Leg Press Calf Raise", 3, 15],
         ],
       },
@@ -1028,7 +1028,7 @@ const FOUR_DAY: TemplateSpec[] = [
           ["Single-Arm Dumbbell Row", 3, 12],
           ["Incline Dumbbell Press", 3, 10],
           ["Romanian Deadlift", 3, 10],
-          ["Lying Leg Curl (Nautilus)", 3, 12],
+          ["Lying Leg Curl", 3, 12],
         ],
       },
     ],
@@ -1065,9 +1065,9 @@ const THREE_DAY: TemplateSpec[] = [
         name: "Full Body B",
         slots: [
           ["Glute Bridge", 4, 12],
-          ["Leg Press — 45° (Cybex)", 3, 12],
-          ["Seated Leg Curl (Cybex)", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Leg Press — 45°", 3, 12],
+          ["Seated Leg Curl", 3, 12],
+          ["Seated Calf Raise Machine", 3, 15],
           ["Seated Cable Row", 3, 10],
           ["Pec Deck Machine", 3, 12],
           ["Dumbbell Curl", 3, 12],
@@ -1079,7 +1079,7 @@ const THREE_DAY: TemplateSpec[] = [
         slots: [
           ["Smith Machine Hip Thrust", 4, 10],
           ["Bulgarian Split Squat", 3, 10],
-          ["Lying Leg Curl (Nautilus)", 3, 12],
+          ["Lying Leg Curl", 3, 12],
           ["Leg Press Calf Raise", 3, 15],
           ["Chest Supported Row Machine", 3, 10],
           ["Dumbbell Bench Press", 3, 10],
@@ -1100,7 +1100,7 @@ const THREE_DAY: TemplateSpec[] = [
         name: "Legs, Push, Pull A",
         slots: [
           ["Barbell Back Squat", 4, 8],
-          ["Leg Extension Machine (Cybex)", 3, 15],
+          ["Leg Extension Machine", 3, 15],
           ["Barbell Hip Thrust", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
           ["Dumbbell Bench Press", 3, 10],
@@ -1126,7 +1126,7 @@ const THREE_DAY: TemplateSpec[] = [
           ["Hack Squat Machine", 4, 10],
           ["Cable Pull-Through", 3, 12],
           ["Glute Ham Raise", 3, 10],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Calf Raise Machine", 3, 15],
           ["Cable Fly — Mid", 3, 12],
           ["T-Bar Row", 3, 10],
           ["Overhead Cable Tricep Extension", 3, 12],
@@ -1175,7 +1175,7 @@ const THREE_DAY: TemplateSpec[] = [
           ["Donkey Calf Raise", 3, 15],
           ["Single-Arm Dumbbell Row", 3, 12],
           ["Pec Deck Machine", 3, 12],
-          ["Cybex Lateral Raise Machine", 3, 15],
+          ["Lateral Raise Machine", 3, 15],
           ["Dumbbell Kickback", 3, 15],
           ["Heel Tap", 3, 20],
         ],
@@ -1215,8 +1215,8 @@ const TWO_DAY: TemplateSpec[] = [
         name: "Full Body B",
         slots: [
           ["Glute Bridge", 4, 12],
-          ["Leg Press — 45° (Cybex)", 3, 12],
-          ["Seated Leg Curl (Cybex)", 3, 12],
+          ["Leg Press — 45°", 3, 12],
+          ["Seated Leg Curl", 3, 12],
           ["Cable Crunch", 3, 15],
           ["Cable Lateral Raise", 3, 15],
           ["Lat Pulldown — Wide Grip", 3, 10],
@@ -1238,7 +1238,7 @@ const TWO_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Back Squat", 4, 8],
           ["Barbell Hip Thrust", 3, 10],
-          ["Lying Leg Curl (Nautilus)", 3, 12],
+          ["Lying Leg Curl", 3, 12],
           ["Leg Press Calf Raise", 3, 15],
           ["Seated Dumbbell Press", 3, 10],
           ["Chest Supported Row Machine", 3, 10],
@@ -1307,10 +1307,10 @@ const TWO_DAY: TemplateSpec[] = [
         name: "Full Body A",
         slots: [
           ["Barbell Hip Thrust", 4, 10],
-          ["Life Fitness Hip Abduction Machine", 3, 15],
+          ["Hip Abduction Machine", 3, 15],
           ["Goblet Squat", 3, 12],
-          ["Seated Leg Curl (Cybex)", 3, 12],
-          ["Seated Calf Raise Machine (Cybex)", 3, 15],
+          ["Seated Leg Curl", 3, 12],
+          ["Seated Calf Raise Machine", 3, 15],
           ["Dumbbell Shoulder Press", 3, 10],
           ["Single-Arm Dumbbell Row", 3, 12],
           ["Push-Up", 3, 15],
@@ -1320,7 +1320,7 @@ const TWO_DAY: TemplateSpec[] = [
         name: "Full Body B",
         slots: [
           ["Romanian Deadlift", 4, 10],
-          ["Leg Press — Horizontal (Life Fitness)", 3, 12],
+          ["Leg Press — Horizontal", 3, 12],
           ["Glute Bridge", 3, 12],
           ["Hip Adduction Machine", 3, 15],
           ["Smith Machine Calf Raise", 3, 15],
@@ -1345,8 +1345,8 @@ const GAP_FILL: TemplateSpec[] = [
     name: "Lower Body Emphasis — Two Day (Women)",
     category: "lower-emphasis", sex: "women", emphasis: "Lower Body", dows: [0, 3],
     days: [
-      { name: "Glutes & Quads", slots: [["Barbell Hip Thrust", 4, 10], ["Glute Bridge", 3, 12], ["Barbell Back Squat", 3, 10], ["Leg Extension Machine (Cybex)", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
-      { name: "Hamstrings & Glutes", slots: [["Romanian Deadlift", 4, 10], ["Lying Leg Curl (Nautilus)", 3, 12], ["Cable Pull-Through", 3, 12], ["Cable Glute Kickback", 3, 15], ["Seated Calf Raise Machine (Cybex)", 3, 15], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Curl", 3, 12]] },
+      { name: "Glutes & Quads", slots: [["Barbell Hip Thrust", 4, 10], ["Glute Bridge", 3, 12], ["Barbell Back Squat", 3, 10], ["Leg Extension Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
+      { name: "Hamstrings & Glutes", slots: [["Romanian Deadlift", 4, 10], ["Lying Leg Curl", 3, 12], ["Cable Pull-Through", 3, 12], ["Cable Glute Kickback", 3, 15], ["Seated Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Curl", 3, 12]] },
     ],
   },
   {
@@ -1354,25 +1354,25 @@ const GAP_FILL: TemplateSpec[] = [
     category: "lower-emphasis", sex: "women", emphasis: "Lower Body", dows: [0, 2, 4],
     days: [
       { name: "Glutes", slots: [["Barbell Hip Thrust", 4, 10], ["Cable Pull-Through", 3, 12], ["Standing Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Curl", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Quads", slots: [["Barbell Back Squat", 4, 8], ["Leg Press — 45° (Cybex)", 3, 12], ["Leg Extension Machine (Cybex)", 3, 15], ["Leg Press Calf Raise", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12]] },
-      { name: "Hamstrings & Glutes", slots: [["Romanian Deadlift", 4, 10], ["Seated Leg Curl (Cybex)", 3, 12], ["Glute Bridge", 3, 12], ["Smith Machine Calf Raise", 3, 15], ["Chest Supported Row Machine", 3, 10], ["Pec Deck Machine", 3, 12], ["Hanging Leg Raise", 3, 12]] },
+      { name: "Quads", slots: [["Barbell Back Squat", 4, 8], ["Leg Press — 45°", 3, 12], ["Leg Extension Machine", 3, 15], ["Leg Press Calf Raise", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12]] },
+      { name: "Hamstrings & Glutes", slots: [["Romanian Deadlift", 4, 10], ["Seated Leg Curl", 3, 12], ["Glute Bridge", 3, 12], ["Smith Machine Calf Raise", 3, 15], ["Chest Supported Row Machine", 3, 10], ["Pec Deck Machine", 3, 12], ["Hanging Leg Raise", 3, 12]] },
     ],
   },
   {
     name: "Glute Specialty — Two Day (Women)",
     category: "lower-specialty", sex: "women", emphasis: "Glutes", dows: [0, 3],
     days: [
-      { name: "Glutes Heavy", slots: [["Barbell Hip Thrust", 5, 8], ["Glute Deadlift", 3, 10], ["Cable Pull-Through", 3, 12], ["Life Fitness Hip Abduction Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Curl", 3, 12]] },
-      { name: "Glutes Volume", slots: [["Smith Machine Hip Thrust", 4, 12], ["Glute Bridge", 3, 15], ["Cable Glute Kickback", 3, 15], ["Romanian Deadlift", 3, 10], ["Seated Calf Raise Machine (Cybex)", 3, 15], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Cable Crunch", 3, 15]] },
+      { name: "Glutes Heavy", slots: [["Barbell Hip Thrust", 5, 8], ["Glute Deadlift", 3, 10], ["Cable Pull-Through", 3, 12], ["Hip Abduction Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Curl", 3, 12]] },
+      { name: "Glutes Volume", slots: [["Smith Machine Hip Thrust", 4, 12], ["Glute Bridge", 3, 15], ["Cable Glute Kickback", 3, 15], ["Romanian Deadlift", 3, 10], ["Seated Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Cable Crunch", 3, 15]] },
     ],
   },
   {
     name: "Glute Specialty — Three Day (Women)",
     category: "lower-specialty", sex: "women", emphasis: "Glutes", dows: [0, 2, 4],
     days: [
-      { name: "Glutes Heavy", slots: [["Barbell Hip Thrust", 5, 8], ["Glute Deadlift", 3, 10], ["Hammer Strength Glute Kickback Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Dumbbell Curl", 3, 12]] },
-      { name: "Glutes & Hamstrings", slots: [["Romanian Deadlift", 4, 10], ["Lying Leg Curl (Nautilus)", 3, 12], ["Cable Pull-Through", 3, 12], ["Leg Press Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
-      { name: "Glutes & Abduction", slots: [["Smith Machine Hip Thrust", 4, 12], ["Glute Bridge", 3, 15], ["Life Fitness Hip Abduction Machine", 3, 15], ["Hip Adduction Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Hanging Leg Raise", 3, 12]] },
+      { name: "Glutes Heavy", slots: [["Barbell Hip Thrust", 5, 8], ["Glute Deadlift", 3, 10], ["Glute Kickback Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Dumbbell Curl", 3, 12]] },
+      { name: "Glutes & Hamstrings", slots: [["Romanian Deadlift", 4, 10], ["Lying Leg Curl", 3, 12], ["Cable Pull-Through", 3, 12], ["Leg Press Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
+      { name: "Glutes & Abduction", slots: [["Smith Machine Hip Thrust", 4, 12], ["Glute Bridge", 3, 15], ["Hip Abduction Machine", 3, 15], ["Hip Adduction Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Hanging Leg Raise", 3, 12]] },
     ],
   },
   {
@@ -1387,8 +1387,8 @@ const GAP_FILL: TemplateSpec[] = [
     name: "Upper Body Emphasis — Three Day (Women)",
     category: "upper-emphasis", sex: "women", emphasis: "Upper Body", dows: [0, 2, 4],
     days: [
-      { name: "Chest & Arms", slots: [["Incline Dumbbell Press", 4, 10], ["Dumbbell Bench Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Leg Extension Machine (Cybex)", 3, 15]] },
-      { name: "Back & Shoulders", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15], ["Lying Leg Curl (Nautilus)", 3, 12]] },
+      { name: "Chest & Arms", slots: [["Incline Dumbbell Press", 4, 10], ["Dumbbell Bench Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Leg Extension Machine", 3, 15]] },
+      { name: "Back & Shoulders", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15], ["Lying Leg Curl", 3, 12]] },
       { name: "Upper & Legs", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Cable Fly — Mid", 3, 12], ["Hammer Curl", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
     ],
   },
@@ -1397,9 +1397,9 @@ const GAP_FILL: TemplateSpec[] = [
     category: "upper-emphasis", sex: "women", emphasis: "Upper Body", dows: [0, 1, 3, 4],
     days: [
       { name: "Push A", slots: [["Incline Dumbbell Press", 4, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Pull A", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Face Pull", 3, 15], ["Dumbbell Curl", 3, 12], ["Leg Extension Machine (Cybex)", 3, 15]] },
+      { name: "Pull A", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Face Pull", 3, 15], ["Dumbbell Curl", 3, 12], ["Leg Extension Machine", 3, 15]] },
       { name: "Push B", slots: [["Dumbbell Bench Press", 4, 10], ["Cable Fly — Low to High", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Overhead Cable Tricep Extension", 3, 12], ["Barbell Hip Thrust", 3, 10]] },
-      { name: "Pull B", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Hammer Strength Reverse Pec Deck", 3, 15], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10]] },
+      { name: "Pull B", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Reverse Pec Deck", 3, 15], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10]] },
     ],
   },
   {
@@ -1407,11 +1407,11 @@ const GAP_FILL: TemplateSpec[] = [
     category: "upper-emphasis", sex: "women", emphasis: "Upper Body", dows: [0, 1, 2, 3, 4, 5],
     days: [
       { name: "Chest", slots: [["Incline Dumbbell Press", 4, 10], ["Pec Deck Machine", 3, 12], ["Cable Fly — Mid", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Back", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Leg Extension Machine (Cybex)", 3, 15]] },
+      { name: "Back", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Leg Extension Machine", 3, 15]] },
       { name: "Shoulders", slots: [["Dumbbell Shoulder Press", 4, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15], ["Hanging Leg Raise", 3, 12]] },
       { name: "Arms", slots: [["Dumbbell Curl", 4, 12], ["Hammer Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Overhead Cable Tricep Extension", 3, 12]] },
       { name: "Legs", slots: [["Barbell Hip Thrust", 4, 10], ["Romanian Deadlift", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
-      { name: "Upper Volume", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Cybex Lateral Raise Machine", 3, 15], ["Russian Twist", 3, 20]] },
+      { name: "Upper Volume", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Lateral Raise Machine", 3, 15], ["Russian Twist", 3, 20]] },
     ],
   },
   {
@@ -1436,9 +1436,9 @@ const GAP_FILL: TemplateSpec[] = [
     category: "upper-specialty", sex: "women", emphasis: "Chest & Back", dows: [0, 1, 3, 4],
     days: [
       { name: "Chest Led A", slots: [["Incline Dumbbell Press", 4, 10], ["Dumbbell Bench Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Back Led A", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Dumbbell Curl", 3, 12], ["Leg Extension Machine (Cybex)", 3, 15]] },
+      { name: "Back Led A", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Dumbbell Curl", 3, 12], ["Leg Extension Machine", 3, 15]] },
       { name: "Chest Led B", slots: [["Cable Fly — Low to High", 4, 12], ["Incline Smith Machine Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Overhead Cable Tricep Extension", 3, 12], ["Barbell Hip Thrust", 3, 10]] },
-      { name: "Back Led B", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Hammer Strength Reverse Pec Deck", 3, 15], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10]] },
+      { name: "Back Led B", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Reverse Pec Deck", 3, 15], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10]] },
     ],
   },
   {
@@ -1448,7 +1448,7 @@ const GAP_FILL: TemplateSpec[] = [
       { name: "Shoulders A", slots: [["Dumbbell Shoulder Press", 4, 10], ["Dumbbell Lateral Raise", 4, 15], ["Cable Face Pull", 3, 15]] },
       { name: "Arms A", slots: [["Dumbbell Curl", 4, 12], ["Hammer Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
       { name: "Legs", slots: [["Barbell Hip Thrust", 4, 10], ["Romanian Deadlift", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
-      { name: "Shoulders B", slots: [["Cybex Lateral Raise Machine", 4, 15], ["Cable Lateral Raise", 3, 15], ["Hammer Strength Reverse Pec Deck", 3, 15]] },
+      { name: "Shoulders B", slots: [["Lateral Raise Machine", 4, 15], ["Cable Lateral Raise", 3, 15], ["Reverse Pec Deck", 3, 15]] },
       { name: "Arms B", slots: [["Incline Dumbbell Curl", 4, 12], ["Cable Curl", 3, 12], ["Overhead Cable Tricep Extension", 3, 12], ["Hanging Leg Raise", 3, 12]] },
       { name: "Chest & Back", slots: [["Incline Dumbbell Press", 4, 10], ["Pec Deck Machine", 3, 12], ["Lat Pulldown — Wide Grip", 3, 10], ["Russian Twist", 3, 20]] },
     ],

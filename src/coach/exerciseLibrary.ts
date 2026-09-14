@@ -32,10 +32,27 @@ function exCardio(name: string, muscle: string = "Full body"): LibraryExercise {
 }
 
 /**
- * A broad, gym-realistic library — free weight, cable, and named-brand plate-
- * loaded / selectorized machines (Hammer Strength, Cybex, Life Fitness,
- * Nautilus, Matrix, Precor, Panatta, Technogym) alongside the generic version
- * of each movement, so a coach can prescribe exactly what's on their floor.
+ * A broad, gym-realistic library — free weight, cable, and plate-loaded /
+ * selectorized machines.
+ *
+ * **No manufacturer names.** Jack: "in the exercise library, remove any brand
+ * from an exercise. Just have the name of the exercise." Twenty-four entries
+ * carried one (Hammer Strength, Cybex, Life Fitness, Nautilus, Matrix), either
+ * as a prefix or a parenthetical, and they are gone.
+ *
+ * The header used to claim these sat "alongside the generic version of each
+ * movement." That was never true: none of the branded entries had a generic
+ * twin, which is why de-branding was a rename rather than a merge — with two
+ * exceptions that DID collide and were dropped outright, their template slots
+ * repointed at the survivor:
+ *   - Nautilus Leg Extension Machine  → Leg Extension Machine
+ *   - Cybex Ab Crunch Machine         → Ab Crunch Machine
+ *
+ * A name here is load-bearing, not cosmetic. `buildTemplate` throws on an
+ * exercise it cannot find, so all 125 templates reference these strings exactly
+ * and any rename has to move both sides in one pass. The equipment heuristic in
+ * screens/exerciseHelpers.ts still matches brand words on purpose — it reads
+ * names people type in, not names from this list.
  */
 export const libraryExercises: LibraryExercise[] = [
   // Chest
@@ -51,14 +68,14 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Cable Fly — Low to High", "Chest", false),
   ex("Cable Fly — High to Low", "Chest", false),
   ex("Pec Deck Machine", "Chest", true),
-  ex("Hammer Strength Chest Press", "Chest", true),
-  ex("Hammer Strength Incline Press", "Chest", false),
+  ex("Chest Press", "Chest", true),
+  ex("Incline Press", "Chest", false),
   ex("Smith Machine Bench Press", "Chest", false),
-  ex("Life Fitness Chest Press Machine", "Chest", false),
-  ex("Cybex Eagle Chest Press", "Chest", false),
+  ex("Chest Press Machine", "Chest", false),
+  ex("Eagle Chest Press", "Chest", false),
   ex("Push-Up", "Chest", false),
   ex("Weighted Dip", "Chest", true),
-  ex("Nautilus Chest Dip Machine", "Chest", false),
+  ex("Chest Dip Machine", "Chest", false),
   ex("Landmine Press", "Chest", false),
   ex("Svend Press", "Chest", false),
 
@@ -67,22 +84,22 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Chin-Up", "Back", false),
   ex("Lat Pulldown — Wide Grip", "Back", true),
   ex("Lat Pulldown — Close Grip", "Back", false),
-  ex("Hammer Strength Plate-Loaded Lat Pulldown", "Back", false),
+  ex("Plate-Loaded Lat Pulldown", "Back", false),
   ex("Seated Cable Row", "Back", true),
-  ex("Hammer Strength Chest-Supported Row", "Back", true),
+  ex("Chest-Supported Row", "Back", true),
   ex("T-Bar Row", "Back", true),
   ex("Barbell Bent-Over Row", "Back", true),
   ex("Pendlay Row", "Back", false),
   ex("Single-Arm Dumbbell Row", "Back", true),
   ex("Cable Straight-Arm Pulldown", "Back", false),
-  ex("Cybex Assisted Pull-Up Machine", "Back", false),
-  ex("Matrix Assisted Pull-Up/Dip Machine", "Back", false),
+  ex("Assisted Pull-Up Machine", "Back", false),
+  ex("Assisted Pull-Up/Dip Machine", "Back", false),
   ex("Smith Machine Row", "Back", false),
   ex("Barbell Deadlift", "Back", true),
   ex("Rack Pull", "Back", false),
   ex("Reverse Hyperextension", "Back", false),
   ex("Back Extension", "Back", false),
-  ex("Nautilus Pullover Machine", "Back", false),
+  ex("Pullover Machine", "Back", false),
   ex("Meadows Row", "Back", false),
 
   // Shoulders
@@ -91,15 +108,15 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Dumbbell Shoulder Press", "Front delts", true),
   ex("Seated Dumbbell Press", "Front delts", false),
   ex("Arnold Press", "Front delts", true),
-  ex("Life Fitness Shoulder Press Machine", "Front delts", false),
+  ex("Shoulder Press Machine", "Front delts", false),
   ex("Smith Machine Overhead Press", "Front delts", false),
   ex("Cable Lateral Raise", "Side delts", true),
   ex("Dumbbell Lateral Raise", "Side delts", true),
-  ex("Cybex Lateral Raise Machine", "Side delts", false),
+  ex("Lateral Raise Machine", "Side delts", false),
   ex("Front Raise — Dumbbell", "Front delts", false),
   ex("Front Raise — Cable", "Front delts", false),
   ex("Rear Delt Fly — Dumbbell", "Rear delts", true),
-  ex("Hammer Strength Reverse Pec Deck", "Rear delts", true),
+  ex("Reverse Pec Deck", "Rear delts", true),
   ex("Barbell Upright Row", "Front delts", false),
   ex("Cable Upright Row", "Front delts", false),
   ex("Cable Face Pull", "Rear delts", true),
@@ -111,11 +128,11 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Alternating Dumbbell Curl", "Biceps", false),
   ex("Incline Dumbbell Curl", "Biceps", false),
   ex("Preacher Curl — Barbell", "Biceps", true),
-  ex("Cybex Preacher Curl Machine", "Biceps", false),
+  ex("Preacher Curl Machine", "Biceps", false),
   ex("Cable Curl", "Biceps", false),
   ex("Hammer Curl", "Biceps", true),
   ex("Concentration Curl", "Biceps", false),
-  ex("Life Fitness Bicep Curl Machine", "Biceps", false),
+  ex("Bicep Curl Machine", "Biceps", false),
   ex("Spider Curl", "Biceps", false),
 
   // Triceps
@@ -125,25 +142,24 @@ export const libraryExercises: LibraryExercise[] = [
   ex("EZ-Bar Skull Crusher", "Triceps", true),
   ex("Dumbbell Overhead Extension", "Triceps", false),
   ex("Close-Grip Bench Press", "Triceps", true),
-  // "Nautilus Triceps Dip Machine", not "Nautilus Dip Machine": the bare name is a strict subset of
-  // "Nautilus Chest Dip Machine" above, so the matcher resolved it to that entry and booked triceps work
+  // "Triceps Dip Machine", not "Dip Machine": the bare name is a strict subset of
+  // "Chest Dip Machine" above, so the matcher resolved it to that entry and booked triceps work
   // as chest volume -- and the triceps entry could never be reached by name at all. Two different
   // machines in the doctrine, so they need two names that are not prefixes of each other.
-  ex("Nautilus Triceps Dip Machine", "Triceps", false),
-  ex("Cybex Tricep Extension Machine", "Triceps", false),
+  ex("Triceps Dip Machine", "Triceps", false),
+  ex("Tricep Extension Machine", "Triceps", false),
   ex("Dumbbell Kickback", "Triceps", false),
   ex("Cable Kickback", "Triceps", false),
-  ex("Hammer Strength Tricep Press", "Triceps", false),
+  ex("Tricep Press", "Triceps", false),
   ex("Bench Dip", "Triceps", false),
 
   // Quads
   ex("Barbell Back Squat", "Quads", true),
   ex("Barbell Front Squat", "Quads", true),
   ex("Hack Squat Machine", "Quads", true),
-  ex("Leg Press — 45° (Cybex)", "Quads", true),
-  ex("Leg Press — Horizontal (Life Fitness)", "Quads", false),
-  ex("Leg Extension Machine (Cybex)", "Quads", true),
-  ex("Nautilus Leg Extension Machine", "Quads", false),
+  ex("Leg Press — 45°", "Quads", true),
+  ex("Leg Press — Horizontal", "Quads", false),
+  ex("Leg Extension Machine", "Quads", true),
   ex("Smith Machine Squat", "Quads", false),
   ex("Bulgarian Split Squat", "Quads", true),
   ex("Walking Lunge", "Quads", false),
@@ -156,14 +172,14 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Romanian Deadlift", "Hamstrings", true),
   ex("Stiff-Leg Deadlift", "Hamstrings", false),
   ex("Single-Leg Romanian Deadlift", "Hamstrings", false),
-  ex("Seated Leg Curl (Cybex)", "Hamstrings", true),
-  ex("Lying Leg Curl (Nautilus)", "Hamstrings", true),
+  ex("Seated Leg Curl", "Hamstrings", true),
+  ex("Lying Leg Curl", "Hamstrings", true),
   ex("Standing Leg Curl", "Hamstrings", false),
   ex("Barbell Hip Thrust", "Glutes", true),
   ex("Glute Bridge", "Glutes", false),
   ex("Cable Pull-Through", "Glutes", false),
-  ex("Hammer Strength Glute Kickback Machine", "Glutes", false),
-  ex("Life Fitness Hip Abduction Machine", "Glutes", false),
+  ex("Glute Kickback Machine", "Glutes", false),
+  ex("Hip Abduction Machine", "Glutes", false),
   ex("Hip Adduction Machine", "Adductors", false),
   ex("Nordic Hamstring Curl", "Hamstrings", false),
   ex("Glute Ham Raise", "Hamstrings", false),
@@ -171,7 +187,7 @@ export const libraryExercises: LibraryExercise[] = [
 
   // Calves
   ex("Standing Calf Raise Machine", "Calves", true),
-  ex("Seated Calf Raise Machine (Cybex)", "Calves", true),
+  ex("Seated Calf Raise Machine", "Calves", true),
   ex("Leg Press Calf Raise", "Calves", false),
   ex("Donkey Calf Raise", "Calves", false),
   ex("Smith Machine Calf Raise", "Calves", false),
@@ -180,15 +196,14 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Cable Crunch", "Abs", true),
   ex("Hanging Leg Raise", "Abs", true),
   ex("Captain's Chair Knee Raise", "Abs", false),
-  ex("Life Fitness Ab Crunch Machine", "Abs", false),
-  ex("Cybex Ab Crunch Machine", "Abs", false),
+  ex("Ab Crunch Machine", "Abs", false),
   ex("Weighted Sit-Up", "Abs", false),
   ex("Plank", "Abs", false),
   ex("Cable Woodchopper", "Obliques", false),
   ex("Russian Twist", "Obliques", false),
   ex("Ab Wheel Rollout", "Abs", false),
   ex("Decline Sit-Up", "Abs", false),
-  ex("Cybex Rotary Torso Machine", "Obliques", false),
+  ex("Rotary Torso Machine", "Obliques", false),
   ex("Landmine Rotation", "Obliques", false),
 
   // Forearms / Traps
@@ -396,7 +411,7 @@ export function resolveLibraryExercise(name: string): { exercise: LibraryExercis
     if (overlap < 2) continue;
     // Scored against the union of both names rather than the library entry's own length. Dividing by the
     // entry alone quietly rewards short names: for the input "Hip Abduction Machine", "Hip Adduction
-    // Machine" scored 2/3 and beat "Life Fitness Hip Abduction Machine" at 3/5 -- picking the opposite
+    // Machine" scored 2/3 and beat "Hip Abduction Machine" at 3/5 -- picking the opposite
     // movement, and the opposite muscle, on the strength of the words "hip" and "machine".
     const union = new Set([...exTokens, ...tokens]).size;
     const score = overlap / union;
