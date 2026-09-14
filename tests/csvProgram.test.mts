@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { parseWeekBlockLayoutToDraftDays, rowsToDraftDays, resolveDraftDays } from "../src/coach/csvProgram";
+import { buildProgramFromDraft } from "../src/shared/programConvert";
 
 /** The spreadsheet importer had no test at all, which is how it came to be unable to read a single one of
  * this project's own spreadsheets while reporting a problem the user did not have.
@@ -124,4 +125,22 @@ test("a genuinely unreadable sheet says what was actually expected", () => {
   assert.equal(r.days.length, 0);
   assert.equal(r.errors.length, 1);
   assert.match(r.errors[0], /D1 \(Monday\)/, "the error should describe the layout that actually works");
+});
+
+test("end to end: the weekdays in the sheet are the weekdays the program is scheduled on", () => {
+  // Reading the chain -- parser to ScratchSeed to buildProgramFromDraft to scheduleWeeks -- says the days
+  // carry through. That is not evidence: if any link drops `dows`, a Mon/Wed sheet silently becomes two
+  // consecutive days and the imported program is not the one that was uploaded. Asserted on the dates the
+  // built program actually holds, not on what was passed in.
+  const parsed = resolveDraftDays(TWO_DAYS);
+  assert.deepEqual(parsed.dows, [0, 2], "precondition: the sheet named Monday and Wednesday");
+
+  const program = buildProgramFromDraft("Imported", parsed.days, 2, "Jack", parsed.dows);
+  const week1 = program.weeks[0];
+  assert.equal(week1.days.length, 2);
+
+  // Program dates are absolute, so compare weekday rather than the date itself. getDay() is Sunday-based;
+  // this project counts from Monday, which is the same shift dowsFromProgram applies.
+  const scheduled = week1.days.map((d) => (new Date(`${d.date}T00:00:00`).getDay() + 6) % 7);
+  assert.deepEqual(scheduled, [0, 2], `sessions landed on ${scheduled} instead of Monday and Wednesday`);
 });
