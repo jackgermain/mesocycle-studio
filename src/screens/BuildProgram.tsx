@@ -370,10 +370,14 @@ function TemplatesStep({ coachName, sex, onBack, onUse }: { coachName: string; s
   // own coach_state, so a template written in code was unreachable however good it was -- Jack, on the
   // six-day glute split: "that one needs to be an official one 100%... Put that one up on the app now."
   //
-  // Falls back to the other population's set when this one has none yet, rather than showing an empty
-  // screen: a half-built library should still be usable, and the labels say what each template is for.
-  const own = groupedByCategory(sex);
-  const groups = own.length ? own : groupedByCategory(sex === "women" ? "men" : "women");
+  // Which set is showing is a CHOICE, not an inference. It used to be derived from profile.sex, which is
+  // only ever set by the nutrition questions (N10) -- so anyone who had not answered those got the women's
+  // set and the thirty men's templates were in the bundle, unreachable. A coach also needs both sets on one
+  // screen regardless of their own sex, since they write for other people.
+  //
+  // The profile still picks the STARTING side, so the common case needs no tap.
+  const [who, setWho] = useState<TemplateSex>(sex);
+  const groups = groupedByCategory(who);
 
   // Days a week is the first thing anyone filters on: you know what you can train before you know what
   // kind of program you want. null is "all", so the page still opens showing everything.
@@ -398,10 +402,24 @@ function TemplatesStep({ coachName, sex, onBack, onUse }: { coachName: string; s
               </button>
             ))}
           </div>
+
+          <div className="sh" style={{ marginTop: 13, marginBottom: 7 }}>Men or women</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            <button className={`chip${who === "women" ? " on" : ""}`} onClick={() => setWho("women")}>Women's</button>
+            <button className={`chip${who === "men" ? " on" : ""}`} onClick={() => setWho("men")}>Men's</button>
+          </div>
+        </div>
+
+        {/* Says which set is on screen. The template names are not a reliable label on their own -- the
+            men's all carry "(Men)" but the original women's twenty-two predate the split and carry nothing,
+            so without this you cannot tell whose list you are looking at from the names alone. */}
+        <div className="sh" style={{ marginTop: 10, marginBottom: 2 }}>
+          {who === "women" ? "Women's" : "Men's"} templates · {visible.reduce((n, g) => n + g.templates.length, 0)}
+          {days !== null ? ` at ${days} days a week` : ""}
         </div>
 
         {visible.length === 0 && (
-          <InfoBanner icon="ph-tray">Nothing at {days} days a week yet.</InfoBanner>
+          <InfoBanner icon="ph-tray">No {who === "women" ? "women's" : "men's"} templates at {days} days a week yet.</InfoBanner>
         )}
 
         {visible.map((g) => (
