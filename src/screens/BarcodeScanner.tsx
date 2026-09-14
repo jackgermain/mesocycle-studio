@@ -4,6 +4,8 @@ import { BarcodeFormat, DecodeHintType, NotFoundException } from "@zxing/library
 import { lookupOffBarcode } from "../data/openFoodFactsApi";
 import type { FoodItem } from "../data/foodDatabase";
 import { InfoBanner } from "../components/UI";
+import { captureFrame, readLabelWithAi } from "../shared/labelScan";
+import { prepareFile } from "../shared/aiImport";
 
 type ScanState = "starting" | "scanning" | "looking-up" | "not-found" | "error";
 type ErrorKind = "permission-denied" | "no-camera" | "lookup-failed";
@@ -22,6 +24,8 @@ export default function BarcodeScanner({ onFound, onNotFound, onClose }: { onFou
   const [state, setState] = useState<ScanState>("starting");
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null);
   const [lastCode, setLastCode] = useState<string | null>(null);
+  const [reading, setReading] = useState(false);
+  const [readError, setReadError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -84,6 +88,37 @@ export default function BarcodeScanner({ onFound, onNotFound, onClose }: { onFou
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** Read the nutrition panel instead of the barcode.
+   *
+   * It belongs on this screen rather than behind its own entry point because the two are the same moment:
+   * someone is holding a packet with the camera already open. A barcode Open Food Facts has never heard of
+   * is the ordinary case for anything own-brand, local, or foreign -- and the label is right there on the
+   * same packet, so the fallback shouldn't be "type it all in by hand".
+   *
+   * The frame comes from the video element already streaming for the barcode reader: no second camera
+   * stream, no file picker, and no extra permission prompt.
+   *
+   * Nothing is logged from here. onFound is the same callback a scanned barcode uses, which saves the food
+   * and puts it on screen with its serving and macros, so a misread gets caught in the same place a wrong
+   * barcode match would. */
+  async function readLabel() {
+    const video = videoRef.current;
+    if (!video || reading) return;
+    setReading(true);
+    setReadError(null);
+    try {
+      const shot = await captureFrame(video);
+      if (!shot) throw new Error("The camera hasn't started yet — give it a second and try again.");
+      const { food } = await readLabelWithAi(await prepareFile(shot));
+      controlsRef.current?.stop();
+      onFound(food);
+    } catch (e) {
+      setReadError(e instanceof Error ? e.message : "Couldn't read that label. Try again.");
+    } finally {
+      setReading(false);
+    }
+  }
+
   const ERROR_COPY: Record<ErrorKind, string> = {
     "permission-denied": "Camera access was denied. Allow camera access in your browser settings to scan a barcode, or search by name instead.",
     "no-camera": "Couldn't access a camera on this device. Search by name instead.",
@@ -117,6 +152,24 @@ export default function BarcodeScanner({ onFound, onNotFound, onClose }: { onFou
               Line up the barcode in the box
             </div>
           </div>
+        )}
+
+        {(state === "starting" || state === "scanning") && (
+          <>
+            {readError && <InfoBanner icon="ph-warning">{readError}</InfoBanner>}
+            <button
+              className="btn btn-secondary btn-block"
+              style={{ height: 44, marginTop: 8, fontSize: 12.5, opacity: reading ? 0.5 : 1 }}
+              disabled={reading}
+              onClick={readLabel}
+            >
+              <i className={reading ? "ph ph-circle-notch" : "ph ph-scan-smiley"} style={{ fontSize: 14 }} />
+              {reading ? "Reading the label…" : "Read the nutrition label"}
+            </button>
+            <div className="mu" style={{ textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
+              No barcode, or nothing found? Point at the nutrition panel instead.
+            </div>
+          </>
         )}
 
         {state === "looking-up" && (
