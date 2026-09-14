@@ -78,10 +78,6 @@ const LENGTH_OPTIONS: { value: string; label: string; weeks: number }[] = [
   { value: "open", label: "Keep going until I end it", weeks: 6 },
 ];
 
-/** G121: higher reps unless they ask for strength. 0.6 is what takes profileFor's opener from 12 reps to
- * about 8 and moves the first two slots onto the longer rest band. */
-const STRENGTH_BIAS = 0.6;
-
 /** G118: in by default rather than asked for. "Abs, calves, forearms, and traps, of course, they're in."
  * The frequency weighting he wanted — "accessories are mostly given when you're training four or five, six
  * times a week" — is not enforced here; it falls out of planCoverage's budget, which spends the mandatory
@@ -412,7 +408,6 @@ function GenerateStep({ profile, onBack, onReview }: {
   const [dows, setDows] = useState<number[]>(DEFAULT_TRAINING_DOWS);
   const [where, setWhere] = useState<string | undefined>("full");
   const [length, setLength] = useState<string | undefined>("6");
-  const [openers, setOpeners] = useState<string | undefined>("reps");
   const [experience, setExperience] = useState<TrainingAge | undefined>(intake.trainingAge);
   const [age, setAge] = useState<string>(() => {
     const known = state.profile.ageYears ?? intake.age;
@@ -459,7 +454,10 @@ function GenerateStep({ profile, onBack, onReview }: {
 
     onReview({
       name: "Generated program",
-      days: weekToDraftDays(filled, { strengthBias: openers === "strength" ? STRENGTH_BIAS : 0 }),
+      // No strength bias: G121 puts the default at the high-rep end ("for the most part I would keep the
+      // reps a little bit higher"), and the question that let someone opt into heavier openers was removed.
+      // profileFor still takes the dial, so restoring the choice later is a UI change, not an engine one.
+      days: weekToDraftDays(filled),
       weeks: chosen.weeks,
       dows,
       openEnded: length === "open",
@@ -497,14 +495,6 @@ function GenerateStep({ profile, onBack, onReview }: {
           options={LENGTH_OPTIONS.map((l) => [l.value, l.label] as [string, string])}
           value={length}
           onPick={setLength}
-        />
-
-        <Ask
-          label="On the first exercise of each session"
-          hint="Heavier openers are fine if that's what you want — most people are better off keeping the reps up."
-          options={[["reps", "Higher reps"], ["strength", "Some strength work"]]}
-          value={openers}
-          onPick={setOpeners}
         />
 
         <Ask
