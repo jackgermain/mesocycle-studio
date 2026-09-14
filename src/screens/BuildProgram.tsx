@@ -19,6 +19,12 @@ import type { CsvParseResult } from "../coach/csvProgram";
 import { coachProgramToDraft, csvDraftDaysToCoachProgram } from "../coach/programOps";
 import { writeTemplateToCoach } from "../coach/assignProgram";
 import { useAuth } from "../lib/auth";
+import { useDictation } from "../shared/useDictation";
+import { parsePrompt } from "../generator/parsePrompt";
+import { planWeek } from "../generator/sessionStructure";
+import { selectForWeek } from "../generator/select";
+import { weekToDraftDays } from "../generator/toDraft";
+import { defaultProfile, type EmphasisProfile } from "../generator/coverage";
 
 const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
   { value: "lb", label: "None" },
@@ -27,7 +33,7 @@ const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
   { value: "rir", label: "RIR" },
 ];
 
-type Mode = "choose" | "scratch" | "templates" | "csv" | "editMesocycle";
+type Mode = "choose" | "generate" | "scratch" | "templates" | "csv" | "editMesocycle";
 const DOW_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 type ScratchSeed = { name: string; days: DraftDay[]; weeks: number; dows?: number[] };
@@ -112,7 +118,9 @@ export default function BuildProgram() {
             </>
           )}
 
-          <InfoBanner icon="ph-info">Nothing here is prescribed by {state.program.coachName === state.profile.name ? "anyone" : "your coach"} — build your own from scratch, or start from one of {state.program.coachName}'s templates and make it yours.</InfoBanner>
+          <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={() => setMode("generate")}>
+            Generate program
+          </button>
 
           <button className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => setMode("scratch")}>
             <i className="ph ph-plus-circle" style={{ fontSize: 20, color: "var(--color-accent-300)", marginRight: 4 }} />
@@ -184,6 +192,22 @@ export default function BuildProgram() {
         </div>
       )}
       </div>
+    );
+  }
+
+  if (mode === "generate") {
+    return (
+      <GenerateStep
+        // The emphasis defaults off the sex stored for the nutrition maths (N10) rather than being asked
+        // again -- a woman who has not said otherwise gets the glute-forward rotation, which is what
+        // coverage.ts's defaultProfile already encodes.
+        profile={defaultProfile(state.profile.sex)}
+        onBack={() => setMode("choose")}
+        onReview={(seed) => {
+          setScratchSeed(seed);
+          setMode("scratch");
+        }}
+      />
     );
   }
 
@@ -274,6 +298,100 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
             </button>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/** Say what you want, see what it understood, then generate.
+ *
+ * The three layers underneath -- planWeek for the shape of the week, selectForWeek for which exercise goes
+ * in each slot, profileFor for sets and reps -- existed for a long time with nothing able to reach them.
+ * This is the way in.
+ *
+ * Two things are deliberate. `understood` is shown BEFORE generating, so a misreading is visible and
+ * correctable rather than silently baked into a block -- "4 days" read out of "for a while" is the failure
+ * worth guarding against. And nothing is saved: this lands in the same editor the spreadsheet and photo
+ * imports land in, so every choice it made can be changed before it becomes a program. */
+function GenerateStep({ profile, onBack, onReview }: {
+  profile: EmphasisProfile;
+  onBack: () => void;
+  onReview: (seed: ScratchSeed) => void;
+}) {
+  const [text, setText] = useState("");
+  // Dictated text appends rather than replaces -- the recogniser fires once per utterance, and someone
+  // adding "and no barbells" after a pause should not lose the first sentence.
+  const dictation = useDictation((heard) => setText((t) => (t ? `${t} ${heard}` : heard)));
+  const [error, setError] = useState<string | null>(null);
+  const parsed = parsePrompt(text);
+
+  function generate() {
+    const days = parsed.daysPerWeek ?? 4;
+    const week = planWeek(days, {
+      profile: parsed.profile ?? profile,
+      goal: parsed.goal,
+      wants: parsed.wants,
+    });
+    if (!week) {
+      setError(`Nothing planned for ${days} days a week — try a number between 2 and 6.`);
+      return;
+    }
+    const filled = selectForWeek(week, {
+      equipment: parsed.equipment ? new Set(parsed.equipment) : undefined,
+    });
+    onReview({ name: "Generated program", days: weekToDraftDays(filled), weeks: 6 });
+  }
+
+  return (
+    <div className="screen">
+      <SubHeader title="Generate a program" onBack={onBack} />
+      <div className="screen-scroll">
+        <div className="field">
+          <label>What are you after?</label>
+          <textarea
+            className="input"
+            style={{ minHeight: 78, lineHeight: 1.5 }}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="e.g. 5 days a week, glute focused, dumbbells only, and add abs"
+            autoFocus
+          />
+          {dictation.supported && (
+            <button
+              className={`btn ${dictation.listening ? "btn-solid" : "btn-secondary"}`}
+              style={{ height: 36, marginTop: 8, width: "100%" }}
+              onClick={dictation.toggle}
+            >
+              <i className={dictation.listening ? "ph-fill ph-microphone" : "ph ph-microphone"} style={{ fontSize: 14 }} />
+              {dictation.listening ? "Listening — tap when you're done" : "Say it instead"}
+            </button>
+          )}
+          {dictation.error && <div className="mu" style={{ marginTop: 6 }}>{dictation.error}</div>}
+        </div>
+
+        {parsed.understood.length > 0 && (
+          <div className="cell">
+            <div className="scr" style={{ marginBottom: 6 }}>What it understood</div>
+            <div className="row" style={{ gap: 5, flexWrap: "wrap" }}>
+              {parsed.understood.map((u) => (
+                <span key={u} className="chip on">{u}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="mu" style={{ lineHeight: 1.55 }}>
+          {parsed.daysPerWeek ? "" : "No number of days mentioned, so it will use four a week. "}
+          Nothing is saved yet — you land in the editor and can change anything before it becomes your program.
+        </div>
+
+        {error && <InfoBanner icon="ph-warning">{error}</InfoBanner>}
+
+        <div style={{ marginTop: "auto", paddingBottom: 8 }}>
+          <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={generate}>
+            Generate
+          </button>
+        </div>
       </div>
     </div>
   );
