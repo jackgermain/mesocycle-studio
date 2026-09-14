@@ -190,8 +190,11 @@ test("the regression: a day-block sheet no longer reports a missing header row",
 test("a genuinely unreadable sheet says what was actually expected", () => {
   const r = resolveDraftDays([["some notes"], ["nothing useful here"]]);
   assert.equal(r.days.length, 0);
-  assert.equal(r.errors.length, 1);
   assert.match(r.errors[0], /D1 \(Monday\)/, "the error should describe the layout that actually works");
+  // The second line reports what actually reached the parser. A real file parses here and failed on a
+  // phone, and with no view of what that device handed over, every new theory cost a round trip through
+  // someone else's hardware. A failure that describes its own input is readable off one screenshot.
+  assert.match(r.errors[1], /Read 2 rows/, "the failure should report the shape it was given");
 });
 
 test("end to end: the weekdays in the sheet are the weekdays the program is scheduled on", () => {

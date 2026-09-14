@@ -410,8 +410,36 @@ export function resolveDraftDays(rows: string[][]): CsvParseResult {
     rowCount: 0,
     errors: [
       "Couldn't read this sheet. It needs either a header row (Day, Exercise, Muscle, Sets, Reps, Load), or day columns headed like \"D1 (Monday)\" with Sets and Reps beside them and the exercises listed underneath.",
+      describeRows(rows),
     ],
   };
+}
+
+/** What the sheet actually looked like by the time it reached the parsers.
+ *
+ * This exists for a specific reason. A real client file parses correctly on a laptop -- five days, thirty
+ * exercises -- through the same SheetJS version, the same XLSX.read call and the same sheet_to_json options
+ * the app uses, and the same file failed on a phone with the parsers finding no day heading at all. Every
+ * difference that could be tested locally was tested and eliminated: the range origin (B3, so the grid is
+ * shifted), ArrayBuffer versus Uint8Array input, the sheet index, the MIME branch, and the deployed bundle.
+ * None of them explained it.
+ *
+ * What was missing was any way to see what the DEVICE handed over, and without that each new theory cost a
+ * round trip through someone else's phone. So the failure now describes its own input. If this reports 0 or
+ * 1 rows, the file never arrived intact and it is not a parsing problem at all; if the first values differ
+ * from what the same file yields here, it is a different copy.
+ *
+ * Same reasoning as the `diagnostic` line api/parse-program.ts relays, and nothing here is sensitive: it is
+ * a row count and the first few cells of a spreadsheet the person is already looking at. */
+function describeRows(rows: string[][]): string {
+  if (!rows.length) return "Read 0 rows from this file — nothing arrived to parse.";
+  const widest = rows.reduce((n, r) => Math.max(n, r.length), 0);
+  const sample = rows
+    .filter((r) => r.some((c) => c))
+    .slice(0, 2)
+    .map((r) => r.filter((c) => c).slice(0, 5).join(" / "));
+  const n = rows.length;
+  return `Read ${n} row${n === 1 ? "" : "s"}, widest ${widest} column${widest === 1 ? "" : "s"}. First values: ${sample.join("  ||  ") || "(all blank)"}.`;
 }
 
 /** Every sheet in a workbook, in order -- used to let the user pick which one to import when a file has
