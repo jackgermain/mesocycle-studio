@@ -6684,9 +6684,16 @@ confirmed from two independent sources: his clients' templates and his own train
 their exercises at the seam"*, measured from a different set of sheets. The block lengths here are 9, 7, 13,
 3, 3, 12 — median 8, and only two of six inside the 2–5 window.
 
-**Not resolved here, and it should not be resolved by picking whichever number is more convenient.** The two
-measurements may be from different training eras, or "block" may mean something different in each sheet. It
-needs putting to him. Until then `SWAP_INTERVAL_WEEKS` is the least-evidenced constant in the generator.
+**Ruled out of scope by Jack, and the question is closed:** *"don't worry about my blocks just worry about
+the splits."*
+
+So the block lengths measured here are **data about this sheet, not a correction to anything**. They do not
+override `SWAP_INTERVAL_WEEKS`, and the 2–5 week note in `trainingAge.ts` stands as it was. What this file is
+evidence for is G122–G125 — the structure of the sessions — and nothing in it should be read as a ruling on
+block length or on how often an exercise is swapped.
+
+`SWAP_INTERVAL_WEEKS` remains the least-evidenced constant in the generator, but that is a pre-existing gap
+rather than a contradiction this file opened.
 
 **A refinement to G116, from the same data.** G116 says what changes at a block seam is the exercise filling a
 slot, never the slot. Within the first block the Wednesday hinge alternates Barbell RDL and Single Leg RDL,
