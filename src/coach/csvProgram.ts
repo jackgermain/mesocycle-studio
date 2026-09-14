@@ -1,4 +1,4 @@
-import type { DraftDay } from "../shared/programConvert";
+import type { DraftDay, DraftExercise } from "../shared/programConvert";
 import { canonicalizeImportedName } from "./exerciseLibrary";
 
 /** A minimal RFC-4180-ish CSV parser -- handles quoted fields, escaped quotes ("") inside them, and both
@@ -50,6 +50,10 @@ export interface CsvParseResult {
   days: DraftDay[];
   rowCount: number;
   errors: string[];
+  /** Weekdays the sheet itself names, as offsets from Monday, when the layout carries them (a "D1 (Monday)"
+   * header does; a flat table does not). Without this a Mon/Wed/Fri/Sat program imports onto four
+   * consecutive days, which is a different program -- see G119 and G122. */
+  dows?: number[];
 }
 
 const REQUIRED_HEADERS = ["day", "exercise", "muscle"];
@@ -236,16 +240,159 @@ function sheetRows(wb: { Sheets: Record<string, unknown> }, name: string): strin
   return raw.map((r) => r.map((c) => String(c ?? "").trim()));
 }
 
-/** Tries the plain "Day, Exercise, Muscle…" header format first (the common case for a simple export); if
- * the sheet isn't laid out that way, falls back to the day-block grid layout above rather than just
- * failing, since a coach uploading their actual program spreadsheet is far more likely to have that than a
- * hand-typed flat table. */
-function resolveDraftDays(rows: string[][]): CsvParseResult {
+const WEEKDAY_INDEX: Record<string, number> = {
+  monday: 0, tuesday: 1, wednesday: 2, thursday: 3, friday: 4, saturday: 5, sunday: 6,
+  mon: 0, tue: 1, tues: 1, wed: 2, thu: 3, thur: 3, thurs: 3, fri: 4, sat: 5, sun: 6,
+};
+
+/** "D1 (Monday)", "D2", "Day 3 (Friday)" -- the day heading in Jack's own sheets and his clients'. */
+const DAY_HEADER = /^(?:D|DAY)\s*(\d+)\s*(?:\(\s*([A-Za-z]+)\s*\))?$/i;
+
+/** Column headings that mean "this column holds a number about the exercise to my left". */
+const FIELD_HEADS = new Set(["sets", "set", "reps", "rep", "weight", "load", "rir", "rpe", "time"]);
+
+/** The week-block layout every real sheet in this project actually uses.
+ *
+ * This is a THIRD dialect, and it exists because the other two could not read a single one of Jack's files.
+ * `rowsToDraftDays` wants a flat header row; `parseGridLayoutToDraftDays` wants the literal text "DAY 1"
+ * plus "T1"/"T2" tier codes and a "SET" sub-header. What his sheets have is:
+ *
+ *     D1 (Monday) | Sets | Reps |  | D2 (Wednesday) | Sets | Reps |  | D3 (Friday) | Sets | Reps
+ *     Lat Pulldown |  2.0 | 16,13 |  | 2 Arm Dumbbell Row | 3.0 | 14,11 | …
+ *
+ * Days run side by side across the sheet; exercises run down under each day; the whole header block repeats
+ * every dozen rows, once per week. Measured against three real files, the old pair returned zero days and --
+ * worse -- zero errors, so the user was shown the flat parser's "first row must be a header" message, which
+ * describes a problem they do not have.
+ *
+ * Four decisions worth stating, because none of them is forced by the data:
+ *
+ *   - **Only the first week block is read.** Every week in a block repeats the same split (G116), and the
+ *     app runs its own week-to-week progression once a program starts, so what it needs from a sheet is a
+ *     starting point. `parseGridLayoutToDraftDays` already took this view for the same reason.
+ *   - **The weekday in the heading becomes the program's training day.** A Mon/Wed/Fri/Sat sheet that
+ *     imports onto four consecutive days is a different program from the one that was uploaded.
+ *   - **Reps take the FIRST number in a list.** "11,9,7" is a descending prescription and the app stores one
+ *     rep target per exercise, which seeds every set; seeding from the top set is how the sheet was written.
+ *     (The other grid parser takes the last, but there each set is its own ROW, so "last" means something
+ *     different there than it would here.)
+ *   - **Muscle is inferred from the exercise name**, since this layout has no muscle column at all.
+ *     `canonicalizeImportedName` already does exactly this and falls back to "General".
+ */
+export function parseWeekBlockLayoutToDraftDays(rows: string[][]): CsvParseResult {
+  const cell = (r: number, c: number) => String(rows[r]?.[c] ?? "").trim();
+
+  const headerCellsAt = (r: number) => {
+    const found: { col: number; n: number; weekday?: string }[] = [];
+    for (let c = 0; c < (rows[r]?.length ?? 0); c++) {
+      const m = cell(r, c).match(DAY_HEADER);
+      if (m) found.push({ col: c, n: Number(m[1]), weekday: m[2]?.toLowerCase() });
+    }
+    return found;
+  };
+
+  // The first header row that also has a Sets/Reps-style column beside a day. That second condition is what
+  // keeps this parser off the "DAY 1" + tier-code dialect, which the grid parser below handles properly.
+  let headerRow = -1;
+  let dayCells: { col: number; n: number; weekday?: string }[] = [];
+  for (let r = 0; r < rows.length && headerRow === -1; r++) {
+    const found = headerCellsAt(r);
+    if (!found.length) continue;
+    const hasField = found.some((d) => {
+      for (let c = d.col + 1; c <= d.col + 6; c++) if (FIELD_HEADS.has(cell(r, c).toLowerCase())) return true;
+      return false;
+    });
+    if (hasField) {
+      headerRow = r;
+      dayCells = found;
+    }
+  }
+  if (headerRow === -1) return { days: [], rowCount: 0, errors: [] };
+
+  // Week one ends where week two's header begins.
+  let endRow = rows.length;
+  for (let r = headerRow + 1; r < rows.length; r++) {
+    if (headerCellsAt(r).length) {
+      endRow = r;
+      break;
+    }
+  }
+
+  const days: DraftDay[] = [];
+  const dows: number[] = [];
+  let rowCount = 0;
+
+  dayCells.forEach((day, i) => {
+    const limit = dayCells[i + 1]?.col ?? day.col + 8;
+    const fields: Record<string, number> = {};
+    for (let c = day.col + 1; c < limit; c++) {
+      const head = cell(headerRow, c).toLowerCase();
+      if (FIELD_HEADS.has(head) && fields[head] === undefined) fields[head] = c;
+    }
+
+    const exercises: DraftExercise[] = [];
+    for (let r = headerRow + 1; r < endRow; r++) {
+      const name = cell(r, day.col);
+      if (!name || DAY_HEADER.test(name)) continue;
+      const sets = firstNumber(cell(r, fields.sets ?? fields.set ?? -1));
+      const reps = firstNumber(cell(r, fields.reps ?? fields.rep ?? -1));
+      const load = firstNumber(cell(r, fields.weight ?? fields.load ?? -1));
+      exercises.push({
+        ...canonicalizeImportedName(titleCase(name)),
+        sets: sets !== undefined ? Math.round(sets) : undefined,
+        reps: reps !== undefined ? Math.round(reps) : undefined,
+        load,
+      });
+      rowCount++;
+    }
+
+    // A day column with a heading but nothing under it is a rest day in that block -- Jack's own sheet has
+    // an empty Friday for nine weeks. Dropping it keeps `days` and `dows` the same length, which matters
+    // because buildProgramFromDraft pairs them by index.
+    if (!exercises.length) return;
+    days.push({ name: day.weekday ? titleCase(day.weekday) : `Day ${day.n}`, exercises });
+    const dow = day.weekday ? WEEKDAY_INDEX[day.weekday] : undefined;
+    if (dow !== undefined) dows.push(dow);
+  });
+
+  if (!days.length) return { days: [], rowCount: 0, errors: ["Found day headings but no exercises under them."] };
+  return { days, rowCount, errors: [], dows: dows.length === days.length ? dows : undefined };
+}
+
+/** The first number in a cell, so "2.0" is 2 and "11,9,7" is 11. Returns undefined for "" and for text. */
+function firstNumber(raw: string): number | undefined {
+  const m = raw.match(/-?\d+(?:\.\d+)?/);
+  if (!m) return undefined;
+  const n = Number(m[0]);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+
+/** Tries the plain "Day, Exercise, Muscle…" header format first (the common case for a simple export), then
+ * the two real-spreadsheet layouts, rather than just failing -- a coach uploading their actual program is far
+ * more likely to have one of those than a hand-typed flat table.
+ *
+ * When everything fails the error has to describe what was actually wanted. It used to return the flat
+ * parser's "first row must be a header" message for any unreadable file, including sheets that were nowhere
+ * near that format, because the grid parser returned no days AND no errors -- a silent failure that made the
+ * flat error the only thing left to show. */
+export function resolveDraftDays(rows: string[][]): CsvParseResult {
   const flat = rowsToDraftDays(rows);
   if (flat.days.length > 0) return flat;
+  const weekBlock = parseWeekBlockLayoutToDraftDays(rows);
+  if (weekBlock.days.length > 0) return weekBlock;
   const grid = parseGridLayoutToDraftDays(rows);
   if (grid.days.length > 0) return grid;
-  return flat;
+
+  // Prefer a real explanation from whichever layout got furthest over the flat parser's generic one.
+  const specific = [...weekBlock.errors, ...grid.errors];
+  if (specific.length) return { days: [], rowCount: 0, errors: specific };
+  return {
+    days: [],
+    rowCount: 0,
+    errors: [
+      "Couldn't read this sheet. It needs either a header row (Day, Exercise, Muscle, Sets, Reps, Load), or day columns headed like \"D1 (Monday)\" with Sets and Reps beside them and the exercises listed underneath.",
+    ],
+  };
 }
 
 /** Every sheet in a workbook, in order -- used to let the user pick which one to import when a file has

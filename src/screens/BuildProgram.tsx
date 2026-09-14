@@ -895,7 +895,13 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
 
         {parsed && parsed.errors.length > 0 && (
           <InfoBanner icon="ph-warning">
-            {parsed.errors.length} row{parsed.errors.length > 1 ? "s" : ""} skipped: {parsed.errors.slice(0, 4).join(" ")}
+            {/* "1 row skipped" was counting ERRORS, not rows. A file the parser couldn't read at all has one
+                error and zero rows, so it announced "1 row skipped" for a sheet where nothing was imported —
+                which reads as a near-miss when it is a total failure. */}
+            {parsed.rowCount === 0
+              ? "Couldn't import this file: "
+              : `${parsed.errors.length} row${parsed.errors.length > 1 ? "s" : ""} skipped: `}
+            {parsed.errors.slice(0, 4).join(" ")}
             {parsed.errors.length > 4 ? ` …and ${parsed.errors.length - 4} more.` : ""}
           </InfoBanner>
         )}
@@ -942,7 +948,7 @@ function CsvStep({ onBack, onReview }: { onBack: () => void; onReview: (seed: Sc
             className="btn btn-primary btn-block"
             style={{ height: 48, opacity: totalExercises > 0 ? 1 : 0.5 }}
             disabled={totalExercises === 0}
-            onClick={() => parsed && onReview({ name: name || "My Program", days: parsed.days, weeks: weeksCount })}
+            onClick={() => parsed && onReview({ name: name || "My Program", days: parsed.days, weeks: weeksCount, dows: parsed.dows })}
           >
             Review & customize
           </button>
