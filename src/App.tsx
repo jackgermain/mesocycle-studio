@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HashRouter, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { StoreProvider, useStore } from "./state/store";
 import { AuthProvider, useAuth } from "./lib/auth";
+import { canSelfBuildProgram } from "./shared/canBuild";
 import { supabase } from "./lib/supabase";
 import { Toast } from "./components/UI";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -74,6 +75,24 @@ function RequireRole({ role, children }: { role: "coach" | "member"; children: R
   if (!account) return <Navigate to="/" replace />;
   if (role === "coach" && account.role !== "coach") return <Navigate to="/" replace />;
   if (role === "member" && account.role === "coach" && !previewingAsClient) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
+/** The inbox belongs to prescribed clients. A self-directed account has no coach writing to them.
+ *
+ * Jack: "general accounts do not have a coach who can message them... that's only client accounts and
+ * coaching accounts." The tab was removed from those accounts already, but the route stayed mounted, so
+ * the screen was still reachable by URL, by an old link, or by back-navigation. Hiding a control is not
+ * access control -- migration 0028 closed the same gap on the database side, where the two messaging RPCs
+ * had been keyed off `coach_id` alone and a General account has one of those too.
+ *
+ * Gated on `canSelfBuildProgram` rather than a fresh role check on purpose: that is the exact predicate
+ * TabBar uses to decide whether to show the Inbox tab, so the tab and the route cannot disagree about who
+ * messaging is for. A new check here would be a second definition free to drift from the first. */
+function RequireInbox({ children }: { children: React.ReactNode }) {
+  const { loading, account } = useAuth();
+  if (loading) return <LoadingShell />;
+  if (canSelfBuildProgram(account?.role)) return <Navigate to="/block" replace />;
   return <>{children}</>;
 }
 
@@ -286,7 +305,7 @@ export default function App() {
               <Route path="/progress/lifts" element={<Gate><AllLifts /></Gate>} />
               <Route path="/progress/lifts/:name" element={<Gate><LiftDetail /></Gate>} />
               <Route path="/nutrition" element={<Gate><Nutrition /></Gate>} />
-              <Route path="/inbox" element={<Gate><Inbox /></Gate>} />
+              <Route path="/inbox" element={<Gate><RequireInbox><Inbox /></RequireInbox></Gate>} />
               <Route path="/build" element={<Gate><BuildProgram /></Gate>} />
             </Route>
 
