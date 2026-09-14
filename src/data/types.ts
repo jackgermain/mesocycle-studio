@@ -143,6 +143,15 @@ export interface Program {
   lastAiEdit?: AiEditMark;
   name: string;
   totalWeeks: number;
+  /** Asked for as "keep going until I end it" (G120).
+   *
+   * The weeks are still real and dated — an open-ended block is a normal program that gets extended, not a
+   * program without an end — so every existing reader of `totalWeeks` keeps working unchanged and this only
+   * decides whether anything presents the block as finishing.
+   *
+   * Optional, and every reader must tolerate undefined: HYDRATE replaces state wholesale rather than merging
+   * field by field, so a program saved before today arrives without it. */
+  openEnded?: boolean;
   coachName: string;
   weeks: TrainingWeek[];
 }

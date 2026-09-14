@@ -25,6 +25,9 @@ import { planWeek } from "../generator/sessionStructure";
 import { selectForWeek } from "../generator/select";
 import { weekToDraftDays } from "../generator/toDraft";
 import { defaultProfile, type EmphasisProfile } from "../generator/coverage";
+import type { GoalPriority } from "../generator/weeklyVolume";
+import type { Equipment } from "../data/types";
+import { blankIntake, TRAINING_AGE_LABELS, type TrainingAge } from "../shared/intake";
 
 const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
   { value: "lb", label: "None" },
@@ -36,7 +39,81 @@ const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
 type Mode = "choose" | "generate" | "scratch" | "templates" | "csv" | "editMesocycle";
 const DOW_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-type ScratchSeed = { name: string; days: DraftDay[]; weeks: number; dows?: number[] };
+type ScratchSeed = { name: string; days: DraftDay[]; weeks: number; dows?: number[]; openEnded?: boolean };
+
+/** The questionnaire's answer tables. Each maps a tap onto something the generator actually consumes, so a
+ * question that changes nothing does not get asked.
+ *
+ * **The seven emphasis labels collapse onto two rotations, and that is a known limitation rather than an
+ * oversight.** `EmphasisProfile` is two values wide and G112 records why that is too coarse: "Chest &
+ * Triceps" and "Back & Biceps" are agonist pairings and "Chest & Back" is a push/pull one, so none of them
+ * is expressible as a region. The answer is stored and shown back; until the profile type widens, the
+ * pairings steer the goal ordering only. */
+const EMPHASIS_OPTIONS: { value: string; label: string; profile: EmphasisProfile; goal: GoalPriority }[] = [
+  { value: "lower", label: "Lower body", profile: "glute-priority", goal: "lower-aesthetic" },
+  { value: "glutes", label: "Glutes", profile: "glute-priority", goal: "lower-aesthetic" },
+  { value: "upper", label: "Upper body", profile: "upper-priority", goal: "upper-aesthetic" },
+  { value: "chest-back", label: "Chest & back", profile: "upper-priority", goal: "upper-aesthetic" },
+  { value: "chest-tri", label: "Chest & triceps", profile: "upper-priority", goal: "upper-aesthetic" },
+  { value: "back-bi", label: "Back & biceps", profile: "upper-priority", goal: "upper-aesthetic" },
+  { value: "arms-delts", label: "Arms & shoulders", profile: "upper-priority", goal: "upper-aesthetic" },
+];
+
+/** Bodyweight rides along with the dumbbell and barbell answers on purpose: someone whose gym is a pair of
+ * dumbbells can still do a push-up, and narrowing to the single implement leaves slots the library cannot
+ * fill, which surface as "— pick an exercise —" placeholders in the review. */
+const WHERE_OPTIONS: { value: string; label: string; equipment?: Equipment[] }[] = [
+  { value: "full", label: "Full gym" },
+  { value: "dumbbell", label: "Dumbbells", equipment: ["dumbbell", "bodyweight"] },
+  { value: "barbell", label: "Barbell", equipment: ["barbell", "bodyweight"] },
+  { value: "machines", label: "Machines & cables", equipment: ["machine", "cable"] },
+  { value: "bodyweight", label: "Bodyweight", equipment: ["bodyweight"] },
+];
+
+/** G120: four, six, or open-ended, and nothing else. An open-ended block is built at six weeks and marked so
+ * it can be extended rather than ending — the weeks are real either way. */
+const LENGTH_OPTIONS: { value: string; label: string; weeks: number }[] = [
+  { value: "4", label: "4 weeks", weeks: 4 },
+  { value: "6", label: "6 weeks", weeks: 6 },
+  { value: "open", label: "Keep going until I end it", weeks: 6 },
+];
+
+/** G121: higher reps unless they ask for strength. 0.6 is what takes profileFor's opener from 12 reps to
+ * about 8 and moves the first two slots onto the longer rest band. */
+const STRENGTH_BIAS = 0.6;
+
+/** G118: in by default rather than asked for. "Abs, calves, forearms, and traps, of course, they're in."
+ * The frequency weighting he wanted — "accessories are mostly given when you're training four or five, six
+ * times a week" — is not enforced here; it falls out of planCoverage's budget, which spends the mandatory
+ * list first. Measured: 3 small-muscle slots a week at two days, 13 at six. */
+const DEFAULT_SMALL_MUSCLES = ["Abs", "Obliques", "Calves", "Forearms", "Traps"];
+
+/** Mon/Tue/Thu/Fri — two on, one off, two on, two off. What all ten of Jack's four-day templates run, and
+ * not what an even spread produces (G111, G119). */
+const DEFAULT_TRAINING_DOWS = [0, 1, 3, 4];
+
+/** One question: a label and a row of chips. Matches IntakeForm's pattern, which has the same job. */
+function Ask<T extends string>({ label, hint, options, value, onPick }: {
+  label: string;
+  hint?: string;
+  options: [T, string][];
+  value: T | undefined;
+  onPick: (v: T | undefined) => void;
+}) {
+  return (
+    <div className="cell">
+      <div className="sh">{label}</div>
+      {hint && <div className="mu" style={{ marginTop: 2, marginBottom: 7 }}>{hint}</div>}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: hint ? 0 : 7 }}>
+        {options.map(([v, text]) => (
+          <button key={v} className={`chip${value === v ? " on" : ""}`} onClick={() => onPick(value === v ? undefined : v)}>
+            {text}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 /** BackHeader's own back button always pops browser history, which would leave this screen entirely from
  * a sub-step reached by local state (not a route) — this small header calls back into that state instead. */
@@ -266,7 +343,10 @@ export default function BuildProgram() {
         setMode("choose");
       }}
       onCreate={(name, days, weeksCount, dows) => {
-        dispatch({ type: "SET_PROGRAM", program: buildProgramFromDraft(name, days, weeksCount, state.profile.name, dows) });
+        // G120: a block asked for as "keep going until I end it" carries that through from the questionnaire,
+        // so nothing downstream presents it as finishing. The weeks themselves are ordinary and dated.
+        const built = buildProgramFromDraft(name, days, weeksCount, state.profile.name, dows);
+        dispatch({ type: "SET_PROGRAM", program: scratchSeed?.openEnded ? { ...built, openEnded: true } : built });
         nav("/block");
       }}
     />
@@ -303,21 +383,42 @@ function TemplatesStep({ coachName, onBack, onUse }: { coachName: string; onBack
   );
 }
 
-/** Say what you want, see what it understood, then generate.
+/** The questions, then Generate.
  *
- * The three layers underneath -- planWeek for the shape of the week, selectForWeek for which exercise goes
- * in each slot, profileFor for sets and reps -- existed for a long time with nothing able to reach them.
- * This is the way in.
+ * Jack: "on this screen we need a list of questions for them to answer", and "for these questions, just have
+ * it click buttons for the most part". So the answers are chips; the box at the bottom is for whatever the
+ * questions did not cover, and feeds the same options through parsePrompt.
  *
- * Two things are deliberate. `understood` is shown BEFORE generating, so a misreading is visible and
- * correctable rather than silently baked into a block -- "4 days" read out of "for a while" is the failure
- * worth guarding against. And nothing is saved: this lands in the same editor the spreadsheet and photo
- * imports land in, so every choice it made can be changed before it becomes a program. */
+ * What is NOT asked is as deliberate as what is. Abs, calves, forearms and traps are in by default (G118)
+ * rather than being a question -- "of course, they're in". There is no "how many days" question either,
+ * because picking the weekdays answers it (G119). And sex, height and bodyweight are already known from the
+ * nutrition work, so they are not asked twice; age is prefilled from it when it is there.
+ *
+ * The three layers underneath -- planWeek for the shape of the week, selectForWeek for which exercise goes in
+ * each slot, profileFor for sets and reps -- existed for a long time with nothing able to reach them. This is
+ * the way in.
+ *
+ * Two things are deliberate. `understood` is shown BEFORE generating, so a misreading of the typed sentence is
+ * visible and correctable rather than silently baked into a block. And nothing is saved as a program: this
+ * lands in the same editor the spreadsheet and photo imports land in, so every choice can be changed first. */
 function GenerateStep({ profile, onBack, onReview }: {
   profile: EmphasisProfile;
   onBack: () => void;
   onReview: (seed: ScratchSeed) => void;
 }) {
+  const { state, dispatch } = useStore();
+  const intake = state.intake ?? blankIntake();
+  const [emphasis, setEmphasis] = useState<string | undefined>(undefined);
+  const [dows, setDows] = useState<number[]>(DEFAULT_TRAINING_DOWS);
+  const [where, setWhere] = useState<string | undefined>("full");
+  const [length, setLength] = useState<string | undefined>("6");
+  const [openers, setOpeners] = useState<string | undefined>("reps");
+  const [experience, setExperience] = useState<TrainingAge | undefined>(intake.trainingAge);
+  const [age, setAge] = useState<string>(() => {
+    const known = state.profile.ageYears ?? intake.age;
+    return known ? String(known) : "";
+  });
+  const [injuries, setInjuries] = useState(intake.injuries ?? "");
   const [text, setText] = useState("");
   // Dictated text appends rather than replaces -- the recogniser fires once per utterance, and someone
   // adding "and no barbells" after a pause should not lose the first sentence.
@@ -326,35 +427,125 @@ function GenerateStep({ profile, onBack, onReview }: {
   const parsed = parsePrompt(text);
 
   function generate() {
-    const days = parsed.daysPerWeek ?? 4;
+    const days = dows.length;
+    const picked = EMPHASIS_OPTIONS.find((e) => e.value === emphasis);
     const week = planWeek(days, {
-      profile: parsed.profile ?? profile,
-      goal: parsed.goal,
-      wants: parsed.wants,
+      profile: picked?.profile ?? parsed.profile ?? profile,
+      goal: picked?.goal ?? parsed.goal,
+      // G118: the small muscles go in by default. Anything named in the text box is added, not substituted.
+      wants: [...new Set([...DEFAULT_SMALL_MUSCLES, ...parsed.wants])],
     });
     if (!week) {
-      setError(`Nothing planned for ${days} days a week — try a number between 2 and 6.`);
+      setError(`Nothing planned for ${days} day${days === 1 ? "" : "s"} a week — pick between 2 and 6 days.`);
       return;
     }
-    const filled = selectForWeek(week, {
-      equipment: parsed.equipment ? new Set(parsed.equipment) : undefined,
+    const equipment = WHERE_OPTIONS.find((w) => w.value === where)?.equipment ?? parsed.equipment;
+    const filled = selectForWeek(week, { equipment: equipment ? new Set(equipment) : undefined });
+    const chosen = LENGTH_OPTIONS.find((l) => l.value === length) ?? LENGTH_OPTIONS[1];
+
+    // The two questions IntakeForm also asks are written back to the intake record rather than living only
+    // in this screen's state -- nobody should have to answer the same question twice, and the AI import path
+    // already reads `injuries` from there.
+    const ageNum = Number(age);
+    dispatch({
+      type: "SET_INTAKE",
+      intake: {
+        ...intake,
+        trainingAge: experience,
+        age: Number.isFinite(ageNum) && ageNum > 0 ? ageNum : intake.age,
+        injuries: injuries.trim() || undefined,
+      },
     });
-    onReview({ name: "Generated program", days: weekToDraftDays(filled), weeks: 6 });
+
+    onReview({
+      name: "Generated program",
+      days: weekToDraftDays(filled, { strengthBias: openers === "strength" ? STRENGTH_BIAS : 0 }),
+      weeks: chosen.weeks,
+      dows,
+      openEnded: length === "open",
+    });
   }
 
   return (
     <div className="screen">
       <SubHeader title="Generate a program" onBack={onBack} />
       <div className="screen-scroll">
+        <Ask
+          label="What do you want to bring up?"
+          options={EMPHASIS_OPTIONS.map((e) => [e.value, e.label] as [string, string])}
+          value={emphasis}
+          onPick={setEmphasis}
+        />
+
+        {/* G119: which weekdays, not how many. "They don't have to be four consecutive days. The person can
+            pick. But have it pick the days of the week before it generates the program." The count of days
+            selected is the training frequency, so there is no separate question for it. */}
+        <div className="cell">
+          <div className="sh" style={{ marginBottom: 7 }}>Which days will you train?</div>
+          <DayOfWeekPicker value={dows} onChange={setDows} />
+        </div>
+
+        <Ask
+          label="Where will you train?"
+          options={WHERE_OPTIONS.map((w) => [w.value, w.label] as [string, string])}
+          value={where}
+          onPick={setWhere}
+        />
+
+        <Ask
+          label="How long?"
+          options={LENGTH_OPTIONS.map((l) => [l.value, l.label] as [string, string])}
+          value={length}
+          onPick={setLength}
+        />
+
+        <Ask
+          label="On the first exercise of each session"
+          hint="Heavier openers are fine if that's what you want — most people are better off keeping the reps up."
+          options={[["reps", "Higher reps"], ["strength", "Some strength work"]]}
+          value={openers}
+          onPick={setOpeners}
+        />
+
+        <Ask
+          label="How long have you been training?"
+          options={Object.entries(TRAINING_AGE_LABELS) as [TrainingAge, string][]}
+          value={experience}
+          onPick={setExperience}
+        />
+
+        <div className="cell">
+          <div className="sh" style={{ marginBottom: 7 }}>How old are you?</div>
+          <input
+            className="input"
+            style={{ height: 40, width: 96 }}
+            inputMode="numeric"
+            value={age}
+            onChange={(e) => setAge(e.target.value.replace(/[^0-9]/g, ""))}
+            placeholder="—"
+          />
+        </div>
+
+        <div className="cell">
+          <div className="sh">Anything sore, injured, or off limits?</div>
+          <div className="mu" style={{ marginTop: 2, marginBottom: 7 }}>Optional, and in your own words.</div>
+          <input
+            className="input"
+            style={{ height: 40 }}
+            value={injuries}
+            onChange={(e) => setInjuries(e.target.value)}
+            placeholder="e.g. left shoulder on overhead work"
+          />
+        </div>
+
         <div className="field">
-          <label>What are you after?</label>
+          <label>Anything else?</label>
           <textarea
             className="input"
-            style={{ minHeight: 78, lineHeight: 1.5 }}
+            style={{ minHeight: 66, lineHeight: 1.5 }}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="e.g. 5 days a week, glute focused, dumbbells only, and add abs"
-            autoFocus
+            placeholder="e.g. no barbells, keep sessions under an hour"
           />
           {dictation.supported && (
             <button
@@ -381,7 +572,6 @@ function GenerateStep({ profile, onBack, onReview }: {
         )}
 
         <div className="mu" style={{ lineHeight: 1.55 }}>
-          {parsed.daysPerWeek ? "" : "No number of days mentioned, so it will use four a week. "}
           Nothing is saved yet — you land in the editor and can change anything before it becomes your program.
         </div>
 
@@ -389,7 +579,7 @@ function GenerateStep({ profile, onBack, onReview }: {
 
         <div style={{ marginTop: "auto", paddingBottom: 8 }}>
           <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={generate}>
-            Generate
+            Continue
           </button>
         </div>
       </div>

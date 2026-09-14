@@ -6549,6 +6549,152 @@ muscle-order skeleton, the equipment it is filled from, the number of days, and 
 and G116 says the first three are **constant for the block** while only the fourth moves, and then only at a
 seam.
 
+**G117 — Condense a muscle into one day rather than spreading it across adjacent ones.**
+
+> *"Try to keep it so that muscle groups are a little bit more condensed. Don't be having less than one chest
+> exercise that day if you're training more than twice a week. If you're gonna have two chest exercises, but
+> one's on Monday and the next one's on Tuesday, it's better to have both of them on Monday. So try to just
+> have a little bit more awareness to grouping things when possible."*
+
+**Rule — two exercises for the same muscle belong in one session before they belong in two**, where the
+schedule allows it. The failure this names is a muscle smeared one-exercise-per-day across consecutive days,
+which buys neither the stimulus of a real session nor the recovery of a rest day.
+
+**Note the qualifier — "when possible", "if that's an option".** This is a preference applied while filling,
+not a constraint that overrides the frequency targets. `WEEKLY_TARGETS` still says chest is trained twice a
+week; G117 says each of those two exposures should be a proper session rather than one exercise apiece on
+Monday and Tuesday.
+
+**Not implemented, and the current code does the opposite.** `fillAccessories` keeps a `placedToday` set and
+explicitly refuses to give a muscle two slots in one day — which is precisely the behaviour this rule asks
+for. Changing it sits behind the LEAD_ROTATION fix: grouping decides where a muscle's *second* exercise
+lands, and three of the five lead rotations are already known wrong, so tuning grouping on top of them tunes
+the wrong thing.
+
+**G118 — Abs, calves, forearms and traps are in. How much depends on frequency.**
+
+> *"Abs, calves, forearms, and traps, of course, they're in. Just make sure that accessories are mostly given
+> when you're training four or five, six times a week."*
+
+**This corrects how `optional: true` was read.** Those four are marked optional in `WEEKLY_TARGETS`, from
+*"for calves, they don't have to unless they really want to — same with traps and forearms"*, and the
+generator consequently passed `wants: []` and scheduled **none of them, at any frequency, in either
+profile** — measured by running `planWeek` across two to six days, not inferred. Optional was implemented as
+"only if asked by name"; it should have meant "in by default, first to go when the week cannot afford them".
+
+**Rule — the small muscles are included unless the person says otherwise, and the frequency weighting is the
+existing budget rather than a new rule.** Measured after passing all four: glute-priority gets 3 small-muscle
+slots a week at two days (abs and traps only), 4 at three days, then 9, 11 and 13 at four, five and six, with
+calves and forearms entering at four. Upper-priority runs 5, 7, 9, 11, 13. That is the shape he describes,
+and `planCoverage` already produced it — the spend order puts the tail last and the budget runs out before
+reaching it at low frequencies.
+
+**G119 — The person picks which weekdays they train, before anything is generated.**
+
+> *"They don't have to be four consecutive days. The person can pick. But have it pick the days of the week
+> before it generates the program."*
+
+**Rule — the weekday selection is an input to generation, not a scheduling detail applied afterwards.** This
+also settles the open question recorded against LEAD_ROTATION's four-day row, which noted that all ten of his
+four-day templates run **Monday, Tuesday, Thursday, Friday** while `scheduleWeeks` lays days out
+consecutively from the upcoming Monday. The fix is not a cleverer default: it is asking.
+
+**Rule — the count of selected days is the training frequency.** There is no separate "how many days"
+question; picking Mon/Tue/Thu/Fri *is* choosing four days a week.
+
+**G120 — A block is four weeks, six weeks, or open-ended.**
+
+> *"Make the length four weeks or six weeks. Remove every other option and just have the button for continue
+> until end."*
+
+**Rule — those are the only three lengths offered.** The builder's 1–16 stepper is more choice than the
+question deserves, and every value in it other than 4 and 6 is one he does not write.
+
+**On the third option.** Confirmed by him as a real third choice alongside 4 and 6: the block runs until the
+person ends it. `EXTEND_PROGRAM` already exists in the client reducer and is already reachable from the
+workout screen's options sheet — *"Add 4 more weeks — keeps this block running instead of ending it"* — so
+the mechanism is present. What was missing is a program that knows it is meant to keep going.
+
+**G121 — Higher reps by default. Strength on the openers is allowed, not assumed.**
+
+> *"There's nothing wrong with strength on openers if they're trying to do that. But for the most part, I
+> would keep the reps a little bit higher."*
+
+**Rule — `strengthBias` defaults to zero, and is raised only when the person asks for it.** `profileFor`
+already scales the opener from 12 reps down toward 6 as the bias rises; what was never stated until now is
+where the default sits, and this fixes it at the high-rep end.
+
+**Consistent with C3 and with the note under `SlotProfile`**, which records that the 5.6-rep opener measured
+off Jack's own training is an advanced lifter's number, and that his clients' programs run 10–20.
+
+---
+
+## G122–G126 — measured from *Jacks Training.xlsx*
+
+Forty-seven consecutive weeks of Jack's own logged training, handed over as "some of my old blocks… don't
+worry about set rep progression but look at the splits… each color is a new block… each row is a week and the
+row beneath is the following week." Six blocks, by font colour: **9, 7, 13, 3, 3 and 12 weeks.**
+
+This is his own training, not a client's — an advanced lifter's programming, and it should not be generalised
+to a beginner without saying so. What it is good for is *structure*, which is what he pointed at.
+
+**G122 — A session's identity is separate from the weekday it lands on.**
+
+The sheet labels sessions `D1`…`D4` and those labels **move between weekday columns from block to block**.
+Through week 16 the order runs D1 Mon, D2 Tue, D3 Wed, D4 Thu/Fri/Sat. From week 17 onward it is **D2 Mon, D2
+Tue, D4 Wed, D3 Thu, D4 Fri, D1 Sat** — D1 is a Saturday session. Within a block the mapping never moves.
+
+**Rule — a session has a type and a weekday, and they are independent.** This is why the weekday question has
+to be asked (G119) rather than derived: `scheduleWeeks` assigns weekdays in order, which silently assumes
+session *n* belongs on the *n*th training day, and that is false in eleven of these fourteen block-weeks.
+
+**G123 — A six-day week is four session types, two of them run twice.**
+
+Counting week 36's header row: D1×1, D2×2, D3×1, D4×2. The same shape holds for every week from 17 to 47.
+
+**This generalises G111 from four days to six.** G111 recorded that all ten four-day templates are two
+session types run twice (A,B,A,B) rather than four distinct days, and flagged LEAD_ROTATION's four-day row as
+wrong in shape. The six-day row is wrong the same way: it gives six distinct leads where he writes four types
+with two repeats. **Only the two-day and three-day rows are now unexamined.**
+
+**G124 — Muscles are contiguous inside a session. This is G117, measured.**
+
+Week 17 Monday: **Incline Dumbbell Press > Chest Press Machine > Incline DB Fly** — three chest movements
+back to back — then lateral raise, then calves, then shrugs. Week 44 Thursday: cable curl > reverse curl (a
+biceps pair), pushdown, then **Preacher Wrist Extension > DB Wrist Flexion** (a forearm pair). Week 36
+Monday: flat press > incline press, then delts, then traps, then calves, then two wrist movements.
+
+**Rule — a session is an ordered run of muscle groups, not an interleave.** Nothing in these 47 weeks
+alternates chest/back/chest. `fillAccessories` currently forbids exactly this with its `placedToday` set, so
+the rule and the code are in direct opposition — see the note under G117.
+
+**G125 — Small muscles are not finishers. They sit anywhere in the session.**
+
+Abs, calves, forearms and traps appear throughout, not at the end. Week 36 Wednesday runs abs work at slots
+4–6 of 8 *and* closes with another. Week 17 Monday puts calves fifth of six and shrugs last; Tuesday finishes
+on abs but reaches forearms at slot 4.
+
+**This confirms the first of the three mismatches recorded against the fifty-one templates** — that
+`FINISHERS = 2` pushing small muscles into the last two slots does not match what he writes. It is now
+confirmed from two independent sources: his clients' templates and his own training.
+
+**G126 — His own blocks run 3 to 13 weeks, and this contradicts what `trainingAge.ts` records.**
+
+`SWAP_INTERVAL_WEEKS.advanced = 4` rests on a note that *"his own blocks run 2-5 weeks and swap 81-84% of
+their exercises at the seam"*, measured from a different set of sheets. The block lengths here are 9, 7, 13,
+3, 3, 12 — median 8, and only two of six inside the 2–5 window.
+
+**Not resolved here, and it should not be resolved by picking whichever number is more convenient.** The two
+measurements may be from different training eras, or "block" may mean something different in each sheet. It
+needs putting to him. Until then `SWAP_INTERVAL_WEEKS` is the least-evidenced constant in the generator.
+
+**A refinement to G116, from the same data.** G116 says what changes at a block seam is the exercise filling a
+slot, never the slot. Within the first block the Wednesday hinge alternates Barbell RDL and Single Leg RDL,
+a shoulder press machine enters at week 6, a dip machine at week 8 — all while the slot order holds exactly.
+So the exercise can change in **any** week, not only at a seam; what is stable for the whole block is the
+*slot*. G116's claim about structure is confirmed; its implication that exercises are fixed between seams is
+not.
+
 ---
 
 ## Deferred — raised, not yet answered
