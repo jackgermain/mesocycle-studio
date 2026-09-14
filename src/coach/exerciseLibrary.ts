@@ -247,6 +247,39 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Glute Deadlift", "Glutes", false),
   ex("Med Ball Toss", "Full body", false),
   ex("Ball Squat Jump Toss", "Full body", false),
+
+  // Dumbbell and bodyweight movements, added for the at-home templates. The library had 19 dumbbell
+  // entries and almost all of them upper body, so a home program could not train legs without borrowing a
+  // machine that isn't there. Every one of these is a movement someone can do with a pair of dumbbells and
+  // a bench, which is the whole constraint of that category.
+  ex("Dumbbell Romanian Deadlift", "Hamstrings", false),
+  ex("Dumbbell Stiff-Leg Deadlift", "Hamstrings", false),
+  ex("Dumbbell Step-Up", "Quads", false),
+  ex("Dumbbell Front Squat", "Quads", false),
+  ex("Dumbbell Split Squat", "Quads", false),
+  ex("Dumbbell Sumo Squat", "Quads", false),
+  ex("Dumbbell Floor Press", "Chest", false),
+  ex("Dumbbell Pullover", "Back", false),
+  ex("Dumbbell Upright Row", "Front delts", false),
+  // No Dumbbell Shrug here: the library already had one, and a second entry is a duplicate the name
+  // matcher would have to choose between. Caught by tests/exerciseLibrary's uniqueness check.
+  ex("Dumbbell Calf Raise", "Calves", false),
+  ex("Dumbbell Glute Bridge", "Glutes", false),
+  ex("Dumbbell Hip Thrust", "Glutes", false),
+  ex("Dumbbell Wrist Curl", "Forearms", false),
+  ex("Dumbbell Reverse Wrist Curl", "Forearms", false),
+  ex("Bodyweight Squat", "Quads", false),
+  ex("Bodyweight Split Squat", "Quads", false),
+  ex("Glute Bridge — Bodyweight", "Glutes", false),
+  ex("Single-Leg Calf Raise", "Calves", false),
+  // No Bench Dip here either: like Dumbbell Shrug, the library already had one. Both duplicates came from
+  // me writing an at-home list from scratch instead of checking what was there, and the uniqueness test
+  // only reports the FIRST duplicate it finds -- which is why this one surfaced a round after the shrug.
+  ex("Incline Push-Up", "Chest", false),
+  ex("Pike Push-Up", "Front delts", false),
+  ex("Side Plank", "Obliques", false),
+  ex("Mountain Climber", "Abs", false),
+  ex("Bird Dog", "Back", false),
 ];
 
 export function normalizeExerciseName(s: string): string {

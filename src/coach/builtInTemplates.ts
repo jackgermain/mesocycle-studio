@@ -7,6 +7,7 @@ import {
   type TemplateSex,
   type TemplateSpec,
 } from "./womensTemplates";
+import { MENS_TEMPLATE_SPECS } from "./mensTemplates";
 
 /** The templates that ship with the app, as opposed to the ones a coach saves.
  *
@@ -44,7 +45,7 @@ export interface BuiltInTemplate {
   frequency: number;
 }
 
-const ALL_SPECS: readonly TemplateSpec[] = [...WOMENS_TEMPLATE_SPECS];
+const ALL_SPECS: readonly TemplateSpec[] = [...WOMENS_TEMPLATE_SPECS, ...MENS_TEMPLATE_SPECS];
 
 /** Every shipped template, expanded. Built once at module load: these are constants, and rebuilding 60
  * programs on each render of a browsing screen would be wasteful for no gain. */

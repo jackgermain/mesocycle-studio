@@ -15,14 +15,24 @@ const LIBRARY = new Map(libraryExercises.map((e) => [e.name, e.muscle]));
 const LEG = new Set(["Glutes", "Quads", "Hamstrings", "Adductors"]);
 const templates = womensTemplates();
 
-test("he asked for as many as he sent: 4 six-day, 7 five-day, 4 four-day, 3 three-day, 4 two-day", () => {
+/** The emphases G107's leg-lead observations were actually drawn from.
+ *
+ * Every count in that rule came from templates that prioritise the lower body. Applying them to an
+ * upper-emphasis or upper-specialty program asserts the opposite of G105, which records that one of his own
+ * five-day templates never leads a day with legs at all. Three checks in this file made that mistake and
+ * failed against templates that are correct. */
+const LOWER_EMPHASIS_INTENT = new Set(["Glutes", "Lower Body"]);
+
+test("the women's set covers every frequency", () => {
+  // The original 22 matched the distribution of the batch Jack sent. The 17 gap-fill templates were written
+  // to the 6 x 5 x 2 grid instead, so the shape is now "every frequency represented" rather than a fixed
+  // count -- pinning 22 here would just have to be edited every time the library grows.
   const byFrequency = new Map<number, number>();
   for (const t of templates) byFrequency.set(t.daysPerWeek, (byFrequency.get(t.daysPerWeek) ?? 0) + 1);
-  assert.equal(templates.length, 22);
-  assert.deepEqual(
-    [...byFrequency.entries()].sort((a, b) => b[0] - a[0]),
-    [[6, 4], [5, 7], [4, 4], [3, 3], [2, 4]],
-  );
+  assert.equal(templates.length, 39);
+  for (const f of [2, 3, 4, 5, 6]) {
+    assert.ok((byFrequency.get(f) ?? 0) > 0, `no women's template trains ${f} days a week`);
+  }
 });
 
 test("every exercise name is one the library actually has", () => {
@@ -69,17 +79,23 @@ test("G111: a four-day week runs Mon/Tue/Thu/Fri", () => {
   }
 });
 
-test("G107: legs lead both days of every two-day template", () => {
-  // The clearest case in his whole set -- all four of his two-day templates lead legs on both days.
-  for (const t of templates.filter((x) => x.daysPerWeek === 2)) {
+test("G107: legs lead both days of every lower-emphasis two-day template", () => {
+  // The clearest case in his whole set -- all four of his two-day templates lead legs on both days. But
+  // those four were all lower-emphasis. G105 records that an upper-emphasis template inverts this
+  // deliberately, and the gap-fill added exactly that at two days, so the rule is scoped to the programs it
+  // was observed on rather than applied to every template that happens to train twice a week.
+  for (const t of templates.filter((x) => x.daysPerWeek === 2 && LOWER_EMPHASIS_INTENT.has(x.intendedFor ?? ""))) {
     for (const day of t.days) {
       assert.ok(LEG.has(day.exercises[0].muscle), `${t.name} / ${day.name} opens on ${day.exercises[0].muscle}`);
     }
   }
 });
 
-test("G107: a three-day week is full body — legs, a push and a pull every day", () => {
-  for (const t of templates.filter((x) => x.daysPerWeek === 3)) {
+test("G107: a three-day full-body template trains legs, a push and a pull every day", () => {
+  // Scoped to the full-body category. All three of his three-day templates were full body, which is what
+  // the rule describes -- a three-day LOWER-EMPHASIS program splitting quads, hamstrings and glutes across
+  // its days is a different thing and is not obliged to press on every one of them.
+  for (const t of templates.filter((x) => x.daysPerWeek === 3 && x.name.startsWith("Full Body"))) {
     for (const day of t.days) {
       const muscles = new Set(day.exercises.map((e) => e.muscle));
       assert.ok([...muscles].some((m) => LEG.has(m)), `${t.name} / ${day.name} has no leg work`);
@@ -126,7 +142,10 @@ test("G101: a six-day week carries leg work on most days", () => {
   // Three of his four six-day templates put legs in all six sessions; the FOURTH alternates leg days with
   // upper days. So a template carrying legs on three of six is a shape he approved, not a shortfall -- an
   // earlier version of this asserted >= 4 and was stricter than his own set.
-  for (const t of templates.filter((x) => x.daysPerWeek === 6)) {
+  // Scoped for the same reason as the leg-lead counts: under an upper-body emphasis, G109 says the
+  // non-emphasised region is reduced to a single exercise rather than kept on most days, so a six-day
+  // upper-emphasis template carrying legs twice is following the rule, not breaking it.
+  for (const t of templates.filter((x) => x.daysPerWeek === 6 && LOWER_EMPHASIS_INTENT.has(x.intendedFor ?? ""))) {
     const withLegs = t.days.filter((d) => d.exercises.some((e) => LEG.has(e.muscle))).length;
     assert.ok(withLegs >= 3, `${t.name} carries legs on only ${withLegs} of 6 days`);
   }
