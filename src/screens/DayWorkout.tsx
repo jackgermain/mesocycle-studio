@@ -13,6 +13,8 @@ import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
 import { SimpleExercisePicker } from "../shared/SimpleExercisePicker";
 import { SwapScopeSheet } from "../shared/SwapScopeSheet";
 import { RemoveExerciseSheet } from "../shared/RemoveExerciseSheet";
+import { AddExerciseSheet } from "../shared/AddExerciseSheet";
+import { canAddOwnExercise } from "../shared/canBuild";
 import { equipmentOf } from "./exerciseHelpers";
 import { ExerciseSection } from "./ExerciseSection";
 import { SetEffortSheet } from "./SetEffortSheet";
@@ -34,6 +36,11 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   const [swapKey, setSwapKey] = useState<string | null>(null);
   const [pendingSwap, setPendingSwap] = useState<{ name: string; muscle: string; hasVideo: boolean } | null>(null);
   const [removeKey, setRemoveKey] = useState<string | null>(null);
+  // Adding a movement mid-block, in two steps: pick it, then say whether it's just today or every one of
+  // these sessions left. Both pieces of state sit up here with every other hook, above the "not found"
+  // return, for the React #310 reason spelled out above.
+  const [addingExercise, setAddingExercise] = useState(false);
+  const [pendingAdd, setPendingAdd] = useState<{ name: string; muscle: string; hasVideo: boolean } | null>(null);
   const [confirmText, setConfirmText] = useState("");
   const [formCheckFor, setFormCheckFor] = useState<string | null>(null);
   // The bucket and table land by hand-run migration, so the button only appears once they exist -- a
@@ -87,6 +94,23 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
     setPendingSwap(null);
     setSwapKey(null);
+  }
+
+  function applyAdd(scope: "day" | "mesocycle") {
+    if (!pendingAdd) return;
+    dispatch({
+      type: "ADD_EXERCISE",
+      dayId,
+      exercise: { name: pendingAdd.name, muscle: pendingAdd.muscle, equipment: equipmentOf({ name: pendingAdd.name }), hasVideo: pendingAdd.hasVideo },
+      scope,
+    });
+    dispatch({
+      type: "SHOW_TOAST",
+      message: scope === "day" ? `Added ${pendingAdd.name} for today.` : `Added ${pendingAdd.name} to every ${day.label} left.`,
+    });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+    setPendingAdd(null);
+    setAddingExercise(false);
   }
 
   // Self-directed: a real client's mesocycle is authored and owned by their coach, so only someone
@@ -308,6 +332,21 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
         />
       )}
 
+      {addingExercise && !pendingAdd && (
+        <SimpleExercisePicker
+          onPick={(picked) => setPendingAdd({ name: picked.name, muscle: picked.muscle, hasVideo: picked.hasVideo })}
+          onClose={() => setAddingExercise(false)}
+        />
+      )}
+      {addingExercise && pendingAdd && (
+        <AddExerciseSheet
+          name={pendingAdd.name}
+          dayLabel={day.label}
+          onChoose={applyAdd}
+          onClose={() => setPendingAdd(null)}
+        />
+      )}
+
       {showOptions && (
         <div className="sheet-backdrop" onClick={closeOptions}>
           <div className="sheet" onClick={(e) => e.stopPropagation()}>
@@ -322,6 +361,27 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
                     <i className="ph ph-x" style={{ fontSize: 16 }} />
                   </button>
                 </div>
+
+                {/* Gated on canAddOwnExercise, NOT on selfDirected. selfDirected excludes coaches, which is
+                    why this was missing from Jack's own account -- he is a coach training himself, the one
+                    case where the athlete and the person who prescribes the work are the same. A prescribed
+                    client still doesn't get this: their block belongs to their coach. */}
+                {canAddOwnExercise(account?.role) && (
+                  <button
+                    className="link-row"
+                    style={{ padding: "11px 12px" }}
+                    onClick={() => {
+                      setShowOptions(false);
+                      setAddingExercise(true);
+                    }}
+                  >
+                    <i className="ph ph-plus-circle" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 12.5 }}>Add an exercise</div>
+                      <div className="mu" style={{ marginTop: 1 }}>Put another movement into this session.</div>
+                    </div>
+                  </button>
+                )}
 
                 <button className="link-row" style={{ padding: "11px 12px" }} onClick={() => setConfirmAction("session")}>
                   <i className="ph ph-flag-checkered" style={{ fontSize: 16, color: "var(--color-accent-300)" }} />

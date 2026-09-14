@@ -10,6 +10,7 @@ import { dayDisplayTitle } from "../data/dayNumbering";
 import { supabase } from "../lib/supabase";
 import { withDerivedStatuses, isoToday } from "../shared/dayStatus";
 import { insertWarmupSet } from "../shared/programEdits";
+import { addExerciseToProgram } from "../shared/addExercise";
 
 export interface AppState {
   /** The last date a "day landed off target" signal was sent, so the coach hears once rather than once
@@ -82,6 +83,7 @@ type Action =
   | { type: "ADD_SET"; dayId: string; exerciseId: string; warmup?: boolean }
   | { type: "SWAP_EXERCISE"; exerciseKey: string; replacement: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "REMOVE_EXERCISE"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
+  | { type: "ADD_EXERCISE"; dayId: string; exercise: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle" }
   | { type: "DROP_SET"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "SET_FEEDBACK_DONE"; dayId: string }
   | { type: "MARK_PROGRESSION_SENT"; dayId: string }
@@ -317,6 +319,13 @@ function reducer(state: AppState, action: Action): AppState {
         day.setCount = Object.values(day.exercises).reduce((n, ex) => n + ex.sets.length, 0);
       }
       return { ...state, program };
+    }
+    case "ADD_EXERCISE": {
+      // The scope rule lives in shared/addExercise.ts rather than here, and is tested there. It has to
+      // differ from every other scoped edit -- targetExercises resolves a key that already exists in the
+      // program, and a new exercise exists nowhere yet -- which is exactly the kind of quiet divergence
+      // worth pinning in a test. This file cannot be imported by one: it creates the Supabase client.
+      return { ...state, program: addExerciseToProgram(state.program, action.dayId, action.exercise, action.scope) };
     }
     case "DROP_SET": {
       // The quick path: no reason asked, the set is simply gone. A prescribed set that a coach decides
