@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useCoachStore } from "../store";
 import { libraryExercises, MUSCLE_GROUPS } from "../exerciseLibrary";
 import type { LibraryExercise } from "../types";
+import { fetchSharedExercises, mergeExercises } from "../../shared/sharedExercises";
 
 /** Shared library picker — used both to swap a logged exercise and to add one to a program day. Always includes the coach's custom exercises alongside the built-in library. */
 export function ExercisePickerSheet({
@@ -25,7 +26,22 @@ export function ExercisePickerSheet({
   const [query, setQuery] = useState("");
   const [muscle, setMuscle] = useState<string | null>(initialMuscle ?? null);
 
-  const options = useMemo(() => [...libraryExercises, ...state.customExercises], [state.customExercises]);
+  const [shared, setShared] = useState<LibraryExercise[]>([]);
+  useEffect(() => {
+    let active = true;
+    fetchSharedExercises().then((x) => active && setShared(x));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Three sources, and they are not the same kind of thing. The built-in library ships in the bundle; this
+  // coach's customExercises live in their own coach_state and never leave it; the shared ones (0030) are on
+  // every account. Shipped and private win a name clash, so a shared row cannot shadow either.
+  const options = useMemo(
+    () => mergeExercises([...libraryExercises, ...state.customExercises], shared),
+    [state.customExercises, shared],
+  );
   const filtered = options.filter((e) => e.name !== excludeName && e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || e.muscle === muscle));
 
   return (

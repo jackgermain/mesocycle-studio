@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useCoachStore } from "../store";
 import { BackHeader, Seg } from "../../components/UI";
 import { libraryExercises, MUSCLE_GROUPS } from "../exerciseLibrary";
 import type { ExerciseKind, LibraryExercise } from "../types";
+import { fetchSharedExercises, mergeExercises } from "../../shared/sharedExercises";
 
 export default function Library() {
   const { state, dispatch } = useCoachStore();
@@ -10,7 +11,21 @@ export default function Library() {
   const [muscle, setMuscle] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
-  const allExercises = useMemo(() => [...libraryExercises, ...state.customExercises], [state.customExercises]);
+  const [shared, setShared] = useState<LibraryExercise[]>([]);
+  useEffect(() => {
+    let active = true;
+    fetchSharedExercises().then((x) => active && setShared(x));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // The shared additions (0030) sit alongside this coach's private ones rather than replacing them: a
+  // shared row reaches every account, customExercises never leaves this coach's own blob.
+  const allExercises = useMemo(
+    () => mergeExercises([...libraryExercises, ...state.customExercises], shared),
+    [state.customExercises, shared],
+  );
   const filtered = allExercises.filter((e) => e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || e.muscle === muscle));
 
   const grouped = useMemo(() => {
