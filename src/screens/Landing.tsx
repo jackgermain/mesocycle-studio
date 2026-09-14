@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import { AuthHero as Hero, InfoBanner } from "../components/UI";
 import InstallPrompt from "../components/InstallPrompt";
 import { pendingInvite } from "../shared/pendingInvite";
+import { shareBaseUrl } from "../shared/appUrl";
 
 export default function Landing() {
   const { loading, session, account, recovering, clearRecovering, revoked, clearRevoked } = useAuth();
@@ -121,9 +122,22 @@ function SignIn() {
   }
 
   async function sendReset() {
+    // Never silently dead. This button was `disabled` whenever the email box was empty -- which is exactly
+    // the state someone is in when they arrive having forgotten their password. Tapping it did nothing at
+    // all, with nothing on screen to say why, and "the forgot password button is broken" is precisely what
+    // that looks like from the outside. It answers now instead of ignoring the tap.
+    if (!email.trim()) {
+      setError("Type the email you signed up with first, then tap Forgot password again.");
+      return;
+    }
     setError(null);
     setBusy(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}${window.location.pathname}` });
+    // shareBaseUrl(), not window.location.origin: an installed home-screen icon stays pinned to whichever
+    // address it was added from, so a reset begun from the old mesocycle-studio address would send the
+    // person back to the old address. It matters more than cosmetics -- Supabase matches redirectTo against
+    // its own allowlist and, on a miss, silently discards it and uses the project's Site URL instead. One
+    // canonical origin is the only version of this that can be allowlisted once and stay working.
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: shareBaseUrl() });
     setBusy(false);
     if (error) setError(error.message);
     else setResetSent(true);
@@ -181,7 +195,8 @@ function SignIn() {
               <button className="btn btn-solid btn-block" style={{ height: 54, fontSize: 14, opacity: email.trim() && password.length >= 6 && !busy ? 1 : 0.5 }} disabled={!email.trim() || password.length < 6 || busy} onClick={submit}>
                 {busy ? "Working…" : "Sign in"}
               </button>
-              <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={!email.trim() || busy} onClick={sendReset}>
+              {/* Only `busy` disables it. Gating on the email box too is what made the tap do nothing. */}
+              <button className="btn btn-ghost" style={{ fontSize: 12.5 }} disabled={busy} onClick={sendReset}>
                 Forgot password?
               </button>
 
