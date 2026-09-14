@@ -12,6 +12,9 @@ import { defaultRestSec } from "../coach/rest";
 export interface AddedExercise {
   name: string;
   muscle: string;
+  /** Carried onto the day so the session knows everything the movement trains, not just its primary --
+   * volume and the soreness check both read it off the WorkExercise, not back out of the library. */
+  secondaryMuscles?: string[];
   equipment: Equipment;
   hasVideo: boolean;
 }
@@ -88,6 +91,7 @@ export function addExerciseToProgram(
       id,
       name: exercise.name,
       muscle: exercise.muscle,
+      ...(exercise.secondaryMuscles?.length ? { secondaryMuscles: exercise.secondaryMuscles } : {}),
       loadMode: "lb",
       metaLine: `${sets.length} sets`,
       hasVideo: exercise.hasVideo,

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useCoachStore } from "../store";
 import { libraryExercises, MUSCLE_GROUPS } from "../exerciseLibrary";
 import type { LibraryExercise } from "../types";
-import { fetchSharedExercises, mergeExercises } from "../../shared/sharedExercises";
+import { fetchSharedExercises, mergeExercises, trainsMuscle } from "../../shared/sharedExercises";
 
 /** Shared library picker — used both to swap a logged exercise and to add one to a program day. Always includes the coach's custom exercises alongside the built-in library. */
 export function ExercisePickerSheet({
@@ -42,7 +42,9 @@ export function ExercisePickerSheet({
     () => mergeExercises([...libraryExercises, ...state.customExercises], shared),
     [state.customExercises, shared],
   );
-  const filtered = options.filter((e) => e.name !== excludeName && e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || e.muscle === muscle));
+  // trainsMuscle rather than an equality test on the primary: an exercise tagged with a secondary muscle
+  // has to show up under that muscle's filter, or tagging it changed nothing anyone can see.
+  const filtered = options.filter((e) => e.name !== excludeName && e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || trainsMuscle(e, muscle)));
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>

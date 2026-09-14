@@ -72,6 +72,12 @@ function forPattern(lib: readonly LibraryExercise[], slot: Slot): LibraryExercis
  * in slot 5 would spend a slot on something the session has had. Accessories are the isolation work --
  * curls, raises, extensions, machine single-joint movements. */
 function forMuscle(lib: readonly LibraryExercise[], muscle: string): LibraryExercise[] {
+  // The PRIMARY muscle only, deliberately -- do not "fix" this to trainsMuscle the way the browsing filters
+  // in the pickers were. Those answer "show me things that work this muscle"; this one is choosing an
+  // exercise to FILL A VOLUME SLOT. An exercise merely tagged with a muscle books that muscle fractional
+  // credit (see DECLARED_SECONDARY_WEIGHT in weeklyVolume.ts), so letting one fill the slot would have the
+  // generator believe it had delivered a full set where half a set landed, and the program would quietly
+  // come in under target on exactly the muscle it was asked to prioritise.
   return lib.filter((e) => e.muscle === muscle && !patternOf(e.name));
 }
 
@@ -84,6 +90,7 @@ function forMuscle(lib: readonly LibraryExercise[], muscle: string): LibraryExer
  * happen *after* filtering for equipment, not before: the library is full of leg extensions, so asking
  * "does isolation exist" of the whole library always says yes and never falls through. */
 function compoundsForMuscle(lib: readonly LibraryExercise[], muscle: string): LibraryExercise[] {
+  // Primary muscle only, for the same reason as the function above.
   return lib.filter((e) => e.muscle === muscle && !!patternOf(e.name));
 }
 

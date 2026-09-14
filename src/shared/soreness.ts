@@ -21,6 +21,10 @@ function musclesWorked(day: TrainingDay): Set<string> {
   for (const ex of Object.values(day.exercises)) {
     set.add(ex.muscle);
     for (const secondary of SECONDARY_MUSCLES[ex.muscle] ?? []) set.add(secondary);
+    // Muscles the exercise itself was tagged with, which the coarse table above cannot know about. A hip
+    // clean tagged with traps has to put traps in the soreness check, or the question never gets asked and
+    // the recovery data for that muscle is simply missing.
+    for (const declared of ex.secondaryMuscles ?? []) set.add(declared);
   }
   return set;
 }

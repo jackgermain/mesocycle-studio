@@ -40,7 +40,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
   // these sessions left. Both pieces of state sit up here with every other hook, above the "not found"
   // return, for the React #310 reason spelled out above.
   const [addingExercise, setAddingExercise] = useState(false);
-  const [pendingAdd, setPendingAdd] = useState<{ name: string; muscle: string; hasVideo: boolean } | null>(null);
+  const [pendingAdd, setPendingAdd] = useState<{ name: string; muscle: string; secondaryMuscles?: string[]; hasVideo: boolean } | null>(null);
   const [confirmText, setConfirmText] = useState("");
   const [formCheckFor, setFormCheckFor] = useState<string | null>(null);
   // The bucket and table land by hand-run migration, so the button only appears once they exist -- a
@@ -101,7 +101,13 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
     dispatch({
       type: "ADD_EXERCISE",
       dayId,
-      exercise: { name: pendingAdd.name, muscle: pendingAdd.muscle, equipment: equipmentOf({ name: pendingAdd.name }), hasVideo: pendingAdd.hasVideo },
+      exercise: {
+        name: pendingAdd.name,
+        muscle: pendingAdd.muscle,
+        secondaryMuscles: pendingAdd.secondaryMuscles,
+        equipment: equipmentOf({ name: pendingAdd.name }),
+        hasVideo: pendingAdd.hasVideo,
+      },
       scope,
     });
     dispatch({
@@ -334,7 +340,7 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
 
       {addingExercise && !pendingAdd && (
         <SimpleExercisePicker
-          onPick={(picked) => setPendingAdd({ name: picked.name, muscle: picked.muscle, hasVideo: picked.hasVideo })}
+          onPick={(picked) => setPendingAdd({ name: picked.name, muscle: picked.muscle, secondaryMuscles: picked.secondaryMuscles, hasVideo: picked.hasVideo })}
           onClose={() => setAddingExercise(false)}
         />
       )}

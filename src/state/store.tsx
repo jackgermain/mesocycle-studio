@@ -83,7 +83,7 @@ type Action =
   | { type: "ADD_SET"; dayId: string; exerciseId: string; warmup?: boolean }
   | { type: "SWAP_EXERCISE"; exerciseKey: string; replacement: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "REMOVE_EXERCISE"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
-  | { type: "ADD_EXERCISE"; dayId: string; exercise: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle" }
+  | { type: "ADD_EXERCISE"; dayId: string; exercise: { name: string; muscle: string; secondaryMuscles?: string[]; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle" }
   | { type: "DROP_SET"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "SET_FEEDBACK_DONE"; dayId: string }
   | { type: "MARK_PROGRESSION_SENT"; dayId: string }

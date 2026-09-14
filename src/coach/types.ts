@@ -161,7 +161,17 @@ export interface CoachProgram {
 export interface LibraryExercise {
   id: string;
   name: string;
+  /** The PRIMARY mover, and deliberately singular. This is what a set is booked against for weekly volume,
+   * and what every muscle filter matches on. See secondaryMuscles for why it did not become a list. */
   muscle: string;
+  /** Other muscles the movement trains, beyond the primary. Jack, adding a hip clean: "I want to be able to
+   * click on back and I also want to be able to click on full body. and quads and traps."
+   *
+   * Additive, never a replacement for `muscle`. These earn FRACTIONAL credit toward effective volume, the
+   * same way weeklyVolume.ts already treats synergists, and they count for the soreness check. Making
+   * `muscle` a list instead would charge every listed muscle a full set for one set of work, and every
+   * over/in-range/under verdict in the app would be wrong. Absent on everything that predates this. */
+  secondaryMuscles?: string[];
   hasVideo: boolean;
   kind?: ExerciseKind; // defaults to "strength" when absent
 }

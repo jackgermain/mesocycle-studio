@@ -58,3 +58,47 @@ test("rows come back heaviest first", () => {
 test("no exercises is not a crash", () => {
   assert.deepEqual(weeklySetVolume([]), []);
 });
+
+/** Muscles an exercise was TAGGED with by hand, as opposed to ones the synergist table infers.
+ *
+ * Jack, adding a hip clean: "I want to be able to click on back and I also want to be able to click on full
+ * body. and quads and traps." The danger in granting that is arithmetic: if four tagged muscles each took a
+ * full set for one set of work, a program would read as four times the volume it actually contains and every
+ * over/in-range/under verdict in the app would be wrong. So the tags are fractional, and the primary keeps
+ * sole ownership of the set. */
+
+test("a tagged secondary muscle earns fractional credit, never direct", () => {
+  const v = byMuscle(weeklySetVolume([{ muscle: "Back", sets: 10, secondaryMuscles: ["Traps"] }]));
+  const traps = v.get("Traps");
+  assert.ok(traps, "a tagged muscle has to appear in the volume report at all");
+  assert.equal(traps.direct, 0, "only the PRIMARY owns the set");
+  assert.ok(traps.effective > 0, "a tagged muscle with zero credit means the tag did nothing");
+  assert.ok(traps.effective < 10, "credit must be fractional, or one set counts as many");
+});
+
+test("the primary keeps its full direct credit when other muscles are tagged", () => {
+  const v = byMuscle(weeklySetVolume([{ muscle: "Back", sets: 10, secondaryMuscles: ["Quads", "Traps"] }]));
+  assert.equal(v.get("Back")?.direct, 10, "tagging extra muscles must not dilute the primary");
+});
+
+test("tagging the primary as its own secondary does not pay it twice", () => {
+  // validateNewExercise dedupes, but a row written before it did, or edited in SQL, can still arrive this way.
+  const tagged = byMuscle(weeklySetVolume([{ muscle: "Back", sets: 10, secondaryMuscles: ["Back"] }]));
+  const plain = byMuscle(weeklySetVolume([{ muscle: "Back", sets: 10 }]));
+  assert.equal(tagged.get("Back")?.effective, plain.get("Back")?.effective);
+});
+
+test("tagged muscles stack with the inferred synergist table rather than replacing it", () => {
+  // Back already pays the biceps through SECONDARY. Tagging traps must not cost the biceps that credit.
+  const v = byMuscle(weeklySetVolume([{ muscle: "Back", sets: 10, secondaryMuscles: ["Traps"] }]));
+  assert.ok((v.get("Biceps")?.effective ?? 0) > 0, "the inferred table still applies");
+  assert.ok((v.get("Traps")?.effective ?? 0) > 0, "and so does the tag");
+});
+
+test("effective still never drops below direct once muscles are tagged", () => {
+  const rows = weeklySetVolume([
+    { muscle: "Back", sets: 12, secondaryMuscles: ["Full body", "Quads", "Traps"] },
+    { muscle: "Quads", sets: 9 },
+  ]);
+  for (const row of rows) assert.ok(row.effective >= row.direct, `${row.muscle}: ${row.effective} < ${row.direct}`);
+});

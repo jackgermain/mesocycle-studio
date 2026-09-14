@@ -73,7 +73,12 @@ export type Equipment = "barbell" | "dumbbell" | "machine" | "cable" | "bodyweig
 export interface WorkExercise {
   id: string;
   name: string;
+  /** The primary mover. A set is booked against this one for weekly volume. */
   muscle: string;
+  /** Other muscles this movement trains, carried onto the day when the exercise was added from the library.
+   * Fractional credit toward effective volume only -- see LibraryExercise.secondaryMuscles. Optional, since
+   * HYDRATE replaces state wholesale and every program saved before this arrives without it. */
+  secondaryMuscles?: string[];
   /** Which unit this exercise's sets were prescribed in. Absent on programs built before this existed --
    * see loadModeOf in ExerciseSection for the fallback that reads it back off the sets. */
   loadMode?: import("../coach/types").LoadMode;

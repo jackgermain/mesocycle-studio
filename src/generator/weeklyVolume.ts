@@ -43,8 +43,15 @@ export interface MuscleVolume {
   verdict: "under" | "low" | "in range" | "over";
 }
 
+/** Credit for a muscle the exercise ITSELF declares as secondary, as opposed to one the SECONDARY table
+ * infers from the primary. Weighted at the top of that table's range, not above it: someone tagging a hip
+ * clean with traps is making a stronger claim than an inference from "it's a back movement", but it is
+ * still not a set of shrugs. Deliberately not 1.0 -- that is what `direct` means, and four muscles each
+ * charged a full set for one set of work would put every verdict in this file out. */
+const DECLARED_SECONDARY_WEIGHT = 0.5;
+
 export function weeklySetVolume(
-  exercises: { muscle: string; sets: number }[],
+  exercises: { muscle: string; sets: number; secondaryMuscles?: string[] }[],
   limits: Record<string, number> = {},
 ): MuscleVolume[] {
   const direct: Record<string, number> = {};
@@ -54,6 +61,12 @@ export function weeklySetVolume(
     effective[ex.muscle] = (effective[ex.muscle] ?? 0) + ex.sets;
     for (const [m, weight] of SECONDARY[ex.muscle] ?? []) {
       effective[m] = (effective[m] ?? 0) + ex.sets * weight;
+    }
+    // Muscles the exercise was tagged with by hand. Additive to the table above rather than replacing it,
+    // and never touching `direct` -- the primary is still the only muscle that owns the set.
+    for (const m of ex.secondaryMuscles ?? []) {
+      if (m === ex.muscle) continue; // already counted as direct; do not pay it twice
+      effective[m] = (effective[m] ?? 0) + ex.sets * DECLARED_SECONDARY_WEIGHT;
     }
   }
   return Object.keys(effective)

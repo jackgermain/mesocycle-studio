@@ -41,22 +41,54 @@ export function mergeExercises(builtIn: LibraryExercise[], shared: LibraryExerci
   return out;
 }
 
+/** Every muscle an exercise trains, primary first. The one place that answers "what does this work", so a
+ * caller never has to remember to look at both fields. */
+export function musclesOf(exercise: Pick<LibraryExercise, "muscle" | "secondaryMuscles">): string[] {
+  return [exercise.muscle, ...(exercise.secondaryMuscles ?? [])];
+}
+
+/** True when the exercise trains this muscle at all, primary or otherwise -- what a muscle FILTER should
+ * ask. Filtering on the primary alone hides a hip clean from the Traps filter even though it was tagged
+ * with traps, which makes the tagging pointless. */
+export function trainsMuscle(exercise: Pick<LibraryExercise, "muscle" | "secondaryMuscles">, muscle: string): boolean {
+  return musclesOf(exercise).includes(muscle);
+}
+
 export type NewExerciseResult = { ok: true; exercise: LibraryExercise } | { ok: false; reason: string };
 
 /** Checks a proposed addition before it is written for everybody.
  *
- * The muscle check is the one that matters. Every consumer of an exercise -- weekly volume, the soreness
- * check, the synergist table -- keys off the MUSCLE_GROUPS taxonomy, and a muscle outside it books the work
- * against nothing while looking completely normal on screen. The database carries the same constraint; this
- * is so the person gets told rather than seeing a raw Postgres error. */
-export function validateNewExercise(name: string, muscle: string | null, existing: LibraryExercise[]): NewExerciseResult {
+ * `muscles` is ordered and the FIRST is the primary -- the one a set is actually booked against. The rest
+ * become secondaryMuscles and earn fractional credit only. That ordering is the whole contract: the picker
+ * records the order they were tapped in, so "first tapped is the main one" is a rule a person can see the
+ * result of rather than a hidden default.
+ *
+ * The taxonomy check is the one that matters. Every consumer of an exercise -- weekly volume, the soreness
+ * check, the synergist table -- keys off MUSCLE_GROUPS, and a muscle outside it books the work against
+ * nothing while looking completely normal on screen. The database carries the same constraint; this is so
+ * the person gets told rather than seeing a raw Postgres error. */
+export function validateNewExercise(name: string, muscles: string[], existing: LibraryExercise[]): NewExerciseResult {
   const clean = name.trim();
   if (!clean) return { ok: false, reason: "Give the exercise a name." };
-  if (!muscle) return { ok: false, reason: "Pick which muscle it trains." };
-  if (!isKnownMuscle(muscle)) return { ok: false, reason: `"${muscle}" isn't one of the muscle groups.` };
+  if (!muscles.length) return { ok: false, reason: "Pick at least one muscle it trains." };
+
+  // Deduped in place so the order the person tapped still decides the primary.
+  const picked = muscles.filter((m, i) => muscles.indexOf(m) === i);
+  const unknown = picked.find((m) => !isKnownMuscle(m));
+  if (unknown) return { ok: false, reason: `"${unknown}" isn't one of the muscle groups.` };
 
   const clash = existing.find((e) => e.name.trim().toLowerCase() === clean.toLowerCase());
   if (clash) return { ok: false, reason: `${clash.name} is already in the library.` };
 
-  return { ok: true, exercise: { id: customExerciseId(clean), name: clean, muscle, hasVideo: false } };
+  const [primary, ...secondary] = picked;
+  return {
+    ok: true,
+    exercise: {
+      id: customExerciseId(clean),
+      name: clean,
+      muscle: primary,
+      ...(secondary.length ? { secondaryMuscles: secondary } : {}),
+      hasVideo: false,
+    },
+  };
 }

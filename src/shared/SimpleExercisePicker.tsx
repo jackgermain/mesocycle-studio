@@ -3,7 +3,7 @@ import { libraryExercises, MUSCLE_GROUPS } from "../coach/exerciseLibrary";
 import type { LibraryExercise } from "../coach/types";
 import { useAuth } from "../lib/auth";
 import { canAddOwnExercise } from "./canBuild";
-import { addSharedExercise, fetchSharedExercises, mergeExercises, validateNewExercise } from "./sharedExercises";
+import { addSharedExercise, fetchSharedExercises, mergeExercises, musclesOf, trainsMuscle, validateNewExercise } from "./sharedExercises";
 
 /** The built-in exercise library picker, with no coach state behind it -- the coach's own
  * ExercisePickerSheet reads customExercises out of useCoachStore, which isn't mounted on the client
@@ -22,7 +22,10 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
   // reading the name off an empty search box would leave nothing to save.
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
-  const [newMuscle, setNewMuscle] = useState<string | null>(null);
+  // Ordered, and the order is the point: the first muscle tapped is the primary -- the one a set is booked
+  // against -- and the rest are secondary. Jack, on a hip clean: "I want to be able to click on back and I
+  // also want to be able to click on full body. and quads and traps."
+  const [newMuscles, setNewMuscles] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -35,7 +38,9 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
   }, []);
 
   const options = useMemo(() => mergeExercises(libraryExercises, shared), [shared]);
-  const filtered = options.filter((e) => e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || e.muscle === muscle) && e.kind !== "cardio");
+  // trainsMuscle, not `e.muscle === muscle`: an exercise tagged with traps as a secondary has to appear
+  // under the Traps filter, or tagging it changed nothing anyone can see.
+  const filtered = options.filter((e) => e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || trainsMuscle(e, muscle)) && e.kind !== "cardio");
 
   // Gated on the ROLE, not on is_platform_admin, and that was a real mistake worth not repeating. The admin
   // flag is set only in SQL and never surfaced anywhere a person can see it, so when the button failed to
@@ -49,14 +54,23 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
   function openCreate() {
     setErr(null);
     // Whatever was searched for is the name they were looking for, so carry it across. Same for the muscle
-    // filter: if they narrowed to Glutes and found nothing, the thing they want to add is a glute exercise.
+    // filter: if they narrowed to Glutes and found nothing, the thing they want to add is a glute exercise,
+    // and it becomes the primary because it is first in the list.
     setNewName(query.trim());
-    setNewMuscle(muscle);
+    setNewMuscles(muscle ? [muscle] : []);
     setCreating(true);
   }
 
+  /** Append on first tap, remove on second. Append rather than insert, so the first muscle chosen stays the
+   * primary until it is actually deselected -- picking a fourth muscle must not silently change what the
+   * exercise is booked against. */
+  function toggleMuscle(m: string) {
+    setErr(null);
+    setNewMuscles((prev) => (prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]));
+  }
+
   async function create() {
-    const check = validateNewExercise(newName, newMuscle, options);
+    const check = validateNewExercise(newName, newMuscles, options);
     if (!check.ok) {
       setErr(check.reason);
       return;
@@ -67,7 +81,7 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
       await addSharedExercise(check.exercise);
       setShared((prev) => [...prev, check.exercise]);
       setCreating(false);
-      setNewMuscle(null);
+      setNewMuscles([]);
       setNewName("");
       // Straight into the day being built. Adding it and then making them find it again is a pointless step.
       onPick(check.exercise);
@@ -113,11 +127,27 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
                 all key off this, and an exercise without a real muscle books its work against nothing at
                 all -- silently, which is how "Deadlifts" became a Romanian deadlift and nobody noticed. */}
             <div>
-              <div className="sh" style={{ marginBottom: 7 }}>Which muscle does it train?</div>
+              <div className="sh" style={{ marginBottom: 7 }}>Which muscles does it train?</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {MUSCLE_GROUPS.map((m) => (
-                  <button key={m} className={`chip${newMuscle === m ? " on" : ""}`} onClick={() => setNewMuscle(m)}>{m}</button>
-                ))}
+                {MUSCLE_GROUPS.map((m) => {
+                  const at = newMuscles.indexOf(m);
+                  return (
+                    <button key={m} className={`chip${at >= 0 ? " on" : ""}`} onClick={() => toggleMuscle(m)}>
+                      {m}
+                      {at === 0 ? " · main" : ""}
+                    </button>
+                  );
+                })}
+              </div>
+              {/* Says out loud which one is the primary and what the others do. Without this, "main" on one
+                  chip is a label with no explanation, and someone tapping four muscles would reasonably
+                  expect four full sets of credit rather than one plus partial. */}
+              <div className="mu" style={{ marginTop: 8, lineHeight: 1.5 }}>
+                {newMuscles.length === 0
+                  ? "Tap every muscle it works. The first one you tap is the main one."
+                  : newMuscles.length === 1
+                    ? `${newMuscles[0]} is the main muscle — a set counts fully toward it. Tap more to add the others.`
+                    : `${newMuscles[0]} is the main muscle — a set counts fully toward it. ${newMuscles.slice(1).join(", ")} get partial credit.`}
               </div>
             </div>
 
@@ -135,8 +165,8 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
             <div className="row" style={{ gap: 6 }}>
               <button
                 className="btn btn-secondary"
-                style={{ height: 42, flex: 1, fontSize: 12.5, opacity: newName.trim() && newMuscle && !busy ? 1 : 0.5 }}
-                disabled={!newName.trim() || !newMuscle || busy}
+                style={{ height: 42, flex: 1, fontSize: 12.5, opacity: newName.trim() && newMuscles.length && !busy ? 1 : 0.5 }}
+                disabled={!newName.trim() || newMuscles.length === 0 || busy}
                 onClick={() => void create()}
               >
                 {busy ? "Saving…" : "Add for everyone"}
@@ -196,7 +226,9 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
                 <button key={e.id} className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => onPick(e)}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="trunc" style={{ fontSize: 12.5 }}>{e.name}</div>
-                    <div className="mu" style={{ marginTop: 2 }}>{e.muscle}</div>
+                    {/* Every muscle, primary first -- an exercise tagged with four of them should say so
+                        here, or the tagging is invisible everywhere except the form that created it. */}
+                    <div className="mu trunc" style={{ marginTop: 2 }}>{musclesOf(e).join(" · ")}</div>
                   </div>
                   <i className="ph ph-arrow-right" style={{ fontSize: 14, color: "var(--color-accent)" }} />
                 </button>

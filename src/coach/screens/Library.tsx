@@ -3,7 +3,7 @@ import { useCoachStore } from "../store";
 import { BackHeader, Seg } from "../../components/UI";
 import { libraryExercises, MUSCLE_GROUPS } from "../exerciseLibrary";
 import type { ExerciseKind, LibraryExercise } from "../types";
-import { fetchSharedExercises, mergeExercises } from "../../shared/sharedExercises";
+import { fetchSharedExercises, mergeExercises, trainsMuscle } from "../../shared/sharedExercises";
 
 export default function Library() {
   const { state, dispatch } = useCoachStore();
@@ -26,7 +26,7 @@ export default function Library() {
     () => mergeExercises([...libraryExercises, ...state.customExercises], shared),
     [state.customExercises, shared],
   );
-  const filtered = allExercises.filter((e) => e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || e.muscle === muscle));
+  const filtered = allExercises.filter((e) => e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || trainsMuscle(e, muscle)));
 
   const grouped = useMemo(() => {
     const map = new Map<string, typeof filtered>();
