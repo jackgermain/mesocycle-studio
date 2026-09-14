@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { libraryExercises, MUSCLE_GROUPS } from "../coach/exerciseLibrary";
 import type { LibraryExercise } from "../coach/types";
 import { useAuth } from "../lib/auth";
+import { canAddOwnExercise } from "./canBuild";
 import { addSharedExercise, fetchSharedExercises, mergeExercises, validateNewExercise } from "./sharedExercises";
 
 /** The built-in exercise library picker, with no coach state behind it -- the coach's own
@@ -36,9 +37,14 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
   const options = useMemo(() => mergeExercises(libraryExercises, shared), [shared]);
   const filtered = options.filter((e) => e.name.toLowerCase().includes(query.toLowerCase()) && (!muscle || e.muscle === muscle) && e.kind !== "cardio");
 
-  // Only the platform owner adds to the shipped library, because the row lands on every account (0030).
-  // The database enforces it too -- hiding the control is not access control.
-  const canAddToLibrary = !!account?.is_platform_admin;
+  // Gated on the ROLE, not on is_platform_admin, and that was a real mistake worth not repeating. The admin
+  // flag is set only in SQL and never surfaced anywhere a person can see it, so when the button failed to
+  // appear there was no way to tell a false flag from a stale bundle -- they look identical on screen, and
+  // it cost three rounds of "there's no button". A role is loaded on every session, visible in the app, and
+  // true for the person who asked for this. 0031 moves the insert policy to match; update and delete stay
+  // with the platform owner, since changing or removing an exercise other people's programs point at is a
+  // different act from adding one. The database is still the real gate either way.
+  const canAddToLibrary = canAddOwnExercise(account?.role);
 
   function openCreate() {
     setErr(null);
