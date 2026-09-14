@@ -200,6 +200,23 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Weighted Sit-Up", "Abs", false),
   ex("Plank", "Abs", false),
   ex("Cable Woodchopper", "Obliques", false),
+  // Chops and anti-rotation work, which the library was missing entirely.
+  //
+  // Jack: "the low to high cable chop does not work your chest. It works your core or abs." It was being
+  // reported as Chest, and not because anything was mis-tagged: no chop existed here at all, so the name
+  // fell through to the fuzzy matcher, which scored "Low to High Cable Chop" against "Cable Fly — Low to
+  // High" on four shared words (low, to, high, cable) out of six and returned Chest. The movement word --
+  // the only one that says what the exercise IS -- carried no more weight than the direction it travels in.
+  //
+  // "Cable Chop" is the entry that actually fixes it: {cable, chop} is a SUBSET of every variant anyone
+  // writes ("Low to High Cable Chop", "Half Kneeling Cable Chop"), and the subset pass returns before the
+  // fuzzy scorer ever runs. The two directional entries follow the same "Cable Fly — Low to High" naming
+  // the chest rows use, so an exact match is available for the spellings people actually type.
+  ex("Cable Chop", "Obliques", false),
+  ex("Cable Chop — Low to High", "Obliques", false),
+  ex("Cable Chop — High to Low", "Obliques", false),
+  ex("Pallof Press", "Obliques", false),
+  ex("Landmine Twist", "Obliques", false),
   ex("Russian Twist", "Obliques", false),
   ex("Ab Wheel Rollout", "Abs", false),
   ex("Decline Sit-Up", "Abs", false),
