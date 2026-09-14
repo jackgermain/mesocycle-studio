@@ -30,7 +30,15 @@ test("no session is ever scheduled before today", () => {
   today.setHours(0, 0, 0, 0);
   for (const d of allDays(p)) {
     if (!d.date) continue;
-    assert.ok(new Date(d.date).getTime() >= today.getTime(), `${d.name} is dated ${d.date}, in the past`);
+    // "T00:00:00" forces LOCAL parsing. `new Date("2026-09-14")` is UTC midnight, which west of Greenwich
+    // is the previous afternoon -- so a session dated today read as yesterday and this assertion failed the
+    // moment the calendar rolled over to match a scheduled date. It passed until then by luck of the hour,
+    // which is worse than failing: the check was only ever green because "today" and the first session were
+    // different days. dowsFromProgram already uses this form for the same reason.
+    assert.ok(
+      new Date(`${d.date}T00:00:00`).getTime() >= today.getTime(),
+      `${d.code ?? d.label ?? d.id} is dated ${d.date}, in the past`,
+    );
   }
 });
 

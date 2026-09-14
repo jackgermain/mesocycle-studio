@@ -25,7 +25,7 @@ import { planWeek } from "../generator/sessionStructure";
 import { selectForWeek } from "../generator/select";
 import { weekToDraftDays } from "../generator/toDraft";
 import { defaultProfile, type EmphasisProfile } from "../generator/coverage";
-import { groupedByCategory } from "../coach/builtInTemplates";
+import { FREQUENCIES, groupedByCategory } from "../coach/builtInTemplates";
 import type { TemplateSex } from "../coach/womensTemplates";
 import type { GoalPriority } from "../generator/weeklyVolume";
 import type { Equipment } from "../data/types";
@@ -375,11 +375,36 @@ function TemplatesStep({ coachName, sex, onBack, onUse }: { coachName: string; s
   const own = groupedByCategory(sex);
   const groups = own.length ? own : groupedByCategory(sex === "women" ? "men" : "women");
 
+  // Days a week is the first thing anyone filters on: you know what you can train before you know what
+  // kind of program you want. null is "all", so the page still opens showing everything.
+  const [days, setDays] = useState<number | null>(null);
+  const matches = (frequency: number) => days === null || frequency === days;
+  const visible = groups
+    .map((g) => ({ ...g, templates: g.templates.filter((t) => matches(t.frequency)) }))
+    .filter((g) => g.templates.length > 0);
+  const savedVisible = (templates ?? []).filter((t) => matches(t.daysPerWeek));
+
   return (
     <div className="screen">
       <SubHeader title="Templates" onBack={onBack} />
       <div className="screen-scroll">
-        {groups.map((g) => (
+        <div className="cell">
+          <div className="sh" style={{ marginBottom: 7 }}>Days a week</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            <button className={`chip${days === null ? " on" : ""}`} onClick={() => setDays(null)}>All</button>
+            {FREQUENCIES.map((f) => (
+              <button key={f} className={`chip${days === f ? " on" : ""}`} onClick={() => setDays(f)}>
+                {f} days
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {visible.length === 0 && (
+          <InfoBanner icon="ph-tray">Nothing at {days} days a week yet.</InfoBanner>
+        )}
+
+        {visible.map((g) => (
           <div key={g.category}>
             <div className="sh" style={{ marginTop: 6, marginBottom: 4 }}>{g.label}</div>
             {g.templates.map((t) => (
@@ -396,7 +421,9 @@ function TemplatesStep({ coachName, sex, onBack, onUse }: { coachName: string; s
 
         <div className="sh" style={{ marginTop: 14, marginBottom: 4 }}>Saved by {coachName}</div>
         {templates?.length === 0 && <InfoBanner icon="ph-tray">{coachName} hasn't saved any templates yet.</InfoBanner>}
-        {(templates ?? []).map((t) => (
+        {/* The saved list filters on the same control, so the number of days shown on screen always means
+            the same thing whichever section you are looking at. */}
+        {savedVisible.map((t) => (
           <div key={t.id} className="cell">
             <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{t.name}</div>
             <div className="mu" style={{ marginTop: 2 }}>{t.weeks} weeks · {t.daysPerWeek} days/week</div>
