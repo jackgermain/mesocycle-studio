@@ -26,6 +26,14 @@ import { selectForWeek } from "../generator/select";
 import { weekToDraftDays } from "../generator/toDraft";
 import { defaultProfile, type EmphasisProfile } from "../generator/coverage";
 import { FREQUENCIES, groupedByCategory } from "../coach/builtInTemplates";
+import {
+  applyOverride,
+  clearTemplateOverride,
+  fetchTemplateOverrides,
+  saveTemplateOverride,
+  type OverrideMap,
+  type TemplateOverride,
+} from "../shared/templateOverrides";
 import type { TemplateSex } from "../coach/womensTemplates";
 import type { GoalPriority } from "../generator/weeklyVolume";
 import type { Equipment } from "../data/types";
@@ -41,7 +49,16 @@ const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
 type Mode = "choose" | "generate" | "scratch" | "templates" | "csv" | "editMesocycle";
 const DOW_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-type ScratchSeed = { name: string; days: DraftDay[]; weeks: number; dows?: number[]; openEnded?: boolean };
+type ScratchSeed = {
+  name: string;
+  days: DraftDay[];
+  weeks: number;
+  dows?: number[];
+  openEnded?: boolean;
+  /** Set when the editor was opened to change a TEMPLATE rather than to build a program. Saving then writes
+   * an override that everybody sees (migration 0029) instead of starting a block for this person. */
+  templateId?: string;
+};
 
 /** The questionnaire's answer tables. Each maps a tap onto something the generator actually consumes, so a
  * question that changes nothing does not get asked.
@@ -303,6 +320,13 @@ export default function BuildProgram() {
           setScratchSeed({ ...coachProgramToDraft(cp), dows: cp.trainingDows });
           setMode("scratch");
         }}
+        // Same editor, different destination -- carrying templateId is what turns "save" from "start this
+        // block for me" into "change this template for everyone". The editMesocycle branch above already
+        // works this way, reusing ScratchStep and routing its save elsewhere.
+        onEdit={(cp) => {
+          setScratchSeed({ ...coachProgramToDraft(cp), dows: cp.trainingDows, templateId: cp.id });
+          setMode("scratch");
+        }}
       />
     );
   }
@@ -345,6 +369,28 @@ export default function BuildProgram() {
         setMode("choose");
       }}
       onCreate={(name, days, weeksCount, dows) => {
+        // Editing a template rather than building a block. The save writes an override that every account
+        // reads (migration 0029) instead of starting this person on a program -- so a set removed here is a
+        // set removed for everybody. Converted through csvDraftDaysToCoachProgram because the override
+        // stores BuilderDay[], the same shape the rest of the template library is in.
+        if (scratchSeed?.templateId) {
+          const templateId = scratchSeed.templateId;
+          saveTemplateOverride({
+            templateId,
+            name,
+            days: csvDraftDaysToCoachProgram(name, days, weeksCount).days,
+            hidden: false,
+          })
+            .then(() => {
+              setScratchSeed(null);
+              setMode("templates");
+            })
+            .catch((e) => {
+              dispatch({ type: "SHOW_TOAST", message: e instanceof Error ? e.message : "That didn't save." });
+              setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3500);
+            });
+          return;
+        }
         // G120: a block asked for as "keep going until I end it" carries that through from the questionnaire,
         // so nothing downstream presents it as finishing. The weeks themselves are ordinary and dated.
         const built = buildProgramFromDraft(name, days, weeksCount, state.profile.name, dows);
@@ -355,8 +401,55 @@ export default function BuildProgram() {
   );
 }
 
-function TemplatesStep({ coachName, sex, onBack, onUse }: { coachName: string; sex: TemplateSex; onBack: () => void; onUse: (t: Awaited<ReturnType<typeof listCoachTemplates>>[number]) => void }) {
+function TemplatesStep({ coachName, sex, onBack, onUse, onEdit }: { coachName: string; sex: TemplateSex; onBack: () => void; onUse: (t: Awaited<ReturnType<typeof listCoachTemplates>>[number]) => void; onEdit: (t: Awaited<ReturnType<typeof listCoachTemplates>>[number]) => void }) {
   const [templates, setTemplates] = useState<Awaited<ReturnType<typeof listCoachTemplates>> | null>(null);
+  const { account } = useAuth();
+  // Only the platform owner changes the shipped library, because a change here lands on every account
+  // (migration 0029). The database enforces it too -- hiding the controls is not access control.
+  const canEditLibrary = !!account?.is_platform_admin;
+
+  const [overrides, setOverrides] = useState<OverrideMap>({});
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const [draftName, setDraftName] = useState("");
+  const [showRemoved, setShowRemoved] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetchTemplateOverrides().then((o) => active && setOverrides(o));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  /** Upserts the whole row, so the fields not being changed have to be carried across -- otherwise renaming
+   * a template would blank out an edit to its exercises, and vice versa. */
+  async function patch(templateId: string, change: Partial<TemplateOverride>) {
+    const current = overrides[templateId];
+    setErr(null);
+    try {
+      await saveTemplateOverride({
+        templateId,
+        name: current?.name ?? null,
+        days: current?.days ?? null,
+        hidden: current?.hidden ?? false,
+        ...change,
+      });
+      setOverrides(await fetchTemplateOverrides());
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "That didn't save.");
+    }
+  }
+
+  async function restoreToShipped(templateId: string) {
+    setErr(null);
+    try {
+      await clearTemplateOverride(templateId);
+      setOverrides(await fetchTemplateOverrides());
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "That didn't save.");
+    }
+  }
 
   useEffect(() => {
     let active = true;
@@ -383,9 +476,20 @@ function TemplatesStep({ coachName, sex, onBack, onUse }: { coachName: string; s
   // kind of program you want. null is "all", so the page still opens showing everything.
   const [days, setDays] = useState<number | null>(null);
   const matches = (frequency: number) => days === null || frequency === days;
+
+  // Overrides are applied BEFORE the filters run, so the count shown beside the heading always matches what
+  // is actually on screen. applyOverride returns null for a template that has been deleted for everyone.
   const visible = groups
-    .map((g) => ({ ...g, templates: g.templates.filter((t) => matches(t.frequency)) }))
+    .map((g) => ({
+      ...g,
+      templates: g.templates
+        .map((t) => ({ t, program: applyOverride(t.program, overrides[t.program.id]) }))
+        .filter((x): x is { t: typeof x.t; program: NonNullable<typeof x.program> } => x.program !== null)
+        .filter((x) => matches(x.t.frequency)),
+    }))
     .filter((g) => g.templates.length > 0);
+
+  const removed = groups.flatMap((g) => g.templates).filter((t) => overrides[t.program.id]?.hidden);
   const savedVisible = (templates ?? []).filter((t) => matches(t.daysPerWeek));
 
   return (
@@ -422,20 +526,83 @@ function TemplatesStep({ coachName, sex, onBack, onUse }: { coachName: string; s
           <InfoBanner icon="ph-tray">No {who === "women" ? "women's" : "men's"} templates at {days} days a week yet.</InfoBanner>
         )}
 
+        {err && <InfoBanner icon="ph-warning">{err}</InfoBanner>}
+
         {visible.map((g) => (
           <div key={g.category}>
             <div className="sh" style={{ marginTop: 6, marginBottom: 4 }}>{g.label}</div>
-            {g.templates.map((t) => (
-              <div key={t.program.id} className="cell">
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{t.program.name}</div>
-                <div className="mu" style={{ marginTop: 2 }}>{t.frequency} days a week · {t.program.intendedFor}</div>
-                <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(t.program)}>
+            {g.templates.map(({ t, program }) => (
+              <div key={program.id} className="cell">
+                {renaming === program.id ? (
+                  <input
+                    className="input"
+                    style={{ height: 38, fontSize: 13 }}
+                    value={draftName}
+                    autoFocus
+                    onChange={(e) => setDraftName(e.target.value)}
+                    onBlur={() => {
+                      void patch(program.id, { name: draftName.trim() || null });
+                      setRenaming(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                      if (e.key === "Escape") setRenaming(null);
+                    }}
+                  />
+                ) : (
+                  <div style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{program.name}</div>
+                )}
+                <div className="mu" style={{ marginTop: 2 }}>{t.frequency} days a week · {program.intendedFor}</div>
+                <button className="btn btn-primary btn-block" style={{ height: 48, marginTop: 9, fontSize: 12.5 }} onClick={() => onUse(program)}>
                   Use this template
                 </button>
+                {canEditLibrary && (
+                  <div className="row" style={{ gap: 6, marginTop: 7 }}>
+                    <button
+                      className="btn btn-secondary"
+                      style={{ height: 36, flex: 1, fontSize: 12 }}
+                      onClick={() => {
+                        setDraftName(program.name);
+                        setRenaming(program.id);
+                      }}
+                    >
+                      Rename
+                    </button>
+                    <button className="btn btn-secondary" style={{ height: 36, flex: 1, fontSize: 12 }} onClick={() => onEdit(program)}>
+                      Edit
+                    </button>
+                    <button className="btn btn-secondary" style={{ height: 36, flex: 1, fontSize: 12 }} onClick={() => void patch(program.id, { hidden: true })}>
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         ))}
+
+        {canEditLibrary && removed.length > 0 && (
+          <>
+            {/* Deleting hides rather than destroys -- the template is a code constant and cannot be removed
+                from the bundle, so there is always a way back. Without this, delete would be a one-way door. */}
+            <button className="btn btn-ghost" style={{ fontSize: 12.5, marginTop: 12 }} onClick={() => setShowRemoved((v) => !v)}>
+              {showRemoved ? "Hide" : "Show"} deleted ({removed.length})
+            </button>
+            {showRemoved &&
+              removed.map((t) => (
+                <div key={t.program.id} className="cell">
+                  <div className="mu">{overrides[t.program.id]?.name || t.program.name}</div>
+                  <button
+                    className="btn btn-secondary btn-block"
+                    style={{ height: 40, marginTop: 7, fontSize: 12.5 }}
+                    onClick={() => void restoreToShipped(t.program.id)}
+                  >
+                    Put it back
+                  </button>
+                </div>
+              ))}
+          </>
+        )}
 
         <div className="sh" style={{ marginTop: 14, marginBottom: 4 }}>Saved by {coachName}</div>
         {templates?.length === 0 && <InfoBanner icon="ph-tray">{coachName} hasn't saved any templates yet.</InfoBanner>}
