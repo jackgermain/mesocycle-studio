@@ -33,7 +33,7 @@ export default function Feedback() {
 
   const muscles = useMemo(() => {
     if (!day) return [];
-    const set = new Map<string, number>();
+    const set = new Map<string, { sets: number; from: string[] }>();
     Object.values(day.exercises).forEach((ex) => {
       // "Full body" is how the library tags the olympic lifts and kettlebell swings (and cardio) -- it's a
       // movement classification, not a muscle, so "how was your Full body pump?" is a question with no
@@ -43,7 +43,16 @@ export default function Feedback() {
       // Asked about the muscle, not wherever the program filed it -- see resolveMuscle. Two exercises that
       // resolve to the same muscle merge into one question, which is what the coach wants anyway.
       const muscle = resolveMuscle(ex.muscle, ex.name);
-      if (sets > 0) set.set(muscle, (set.get(muscle) ?? 0) + sets);
+      if (sets === 0) return;
+      // Which exercises produced this row, kept so the screen can say so. Jack, seeing a chest question on
+      // what he read as a leg day: "why is it asking about my chest.. it should only be asking about muscle
+      // groups from that day." Every muscle here IS from today, but the row named only the muscle, so there
+      // was no way to tell a wrongly-tagged exercise from one he had forgotten was in the session -- and no
+      // way for me to tell either, without asking him to go hunting through the day.
+      const prev = set.get(muscle) ?? { sets: 0, from: [] };
+      prev.sets += sets;
+      if (!prev.from.includes(ex.name)) prev.from.push(ex.name);
+      set.set(muscle, prev);
     });
     return Array.from(set.entries());
   }, [day]);
@@ -164,9 +173,12 @@ export default function Feedback() {
             </InfoBanner>
           )}
 
-          {muscles.map(([muscle, sets], i) => (
+          {muscles.map(([muscle, { sets, from }]) => (
             <div key={muscle}>
-              <div className="sh">{muscle} — {sets} sets{i === muscles.length - 1 && muscles.length > 1 ? "" : ""}</div>
+              <div className="sh" style={{ marginBottom: 2 }}>{muscle} — {sets} sets</div>
+              {/* Names what put this muscle on the list. A muscle on its own is unfalsifiable: you cannot
+                  tell a mis-tagged exercise from one you forgot was in the session. */}
+              <div className="mu" style={{ marginBottom: 8 }}>{from.join(", ")}</div>
               <div style={{ display: "flex", gap: 6 }}>
                 {pumpWording.map((label, idx) => {
                   const v = idx + 1;
