@@ -21,6 +21,22 @@
 --   send_client_message()  should raise "Messaging is only available to coached client accounts"
 -- Then do the same as a real client account and confirm both still work as before. Reading the SQL back
 -- is not evidence -- 0018 and 0019 both read as though they had worked.
+--
+-- APPLIED 2026-09-13 by Jack in the Supabase SQL editor. Recorded here because the absence of this line is
+-- what cost this project months once already: 0002 was written, committed, and never run, and
+-- get_coach_templates silently returned [] the whole time. A migration file in this repo proves nothing
+-- about the live database unless someone says so.
+--
+-- VERIFIED so far, by probe with the publishable key and no session:
+--   get_my_thread()        -> 42501 permission denied for function get_my_thread
+--   send_client_message()  -> 42501 permission denied for function send_client_message
+-- That is the ANON path, and it confirms something worth knowing generally: `create or replace function`
+-- preserved the privileges 0022 set. Replacing a function body does NOT reset its ACLs, so a migration that
+-- only rewrites bodies must not re-issue grants -- and this one did not.
+--
+-- NOT YET VERIFIED: the role gate itself. Confirming that a `friend` account gets null and a `client`
+-- account is unaffected needs a real authenticated session for each, which only Jack can produce from the
+-- app. Until he reports back, treat the gate as applied-but-unconfirmed.
 
 -- get_my_thread: unchanged except for the role gate. A non-client gets null, which is the same answer the
 -- function already gave anyone without a coach, so every caller already handles it.
