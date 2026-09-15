@@ -148,7 +148,7 @@ const FULL_BODY: TemplateSpec[] = [
       {
         name: "Full Body D",
         slots: [
-          ["Stiff-Leg Deadlift", 3, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Seated Leg Curl", 3, 12],
           ["Donkey Calf Raise", 3, 15],
           ["Dumbbell Bench Press", 3, 10],
@@ -815,8 +815,10 @@ const LOWER_SPECIALTY: TemplateSpec[] = [
       {
         name: "Hinge Focus",
         slots: [
+          // One RDL, not two. This day authored a Romanian deadlift and a stiff-leg deadlift -- the same
+          // movement under two names (G134) -- and repointing the stiff-leg onto the Romanian name turned a
+          // synonym-duplicate into a literal one. The second slot goes rather than prescribing it twice.
           ["Romanian Deadlift", 3, 8],
-          ["Stiff-Leg Deadlift", 3, 10],
           ["Lying Leg Curl", 3, 12],
           ["Glute Ham Raise", 3, 10],
           ["Seated Calf Raise Machine", 3, 15],
@@ -1013,7 +1015,7 @@ const LOWER_SPECIALTY: TemplateSpec[] = [
       {
         name: "Posterior & Abs",
         slots: [
-          ["Stiff-Leg Deadlift", 3, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Glute Ham Raise", 3, 10],
           ["Hanging Leg Raise", 3, 12],
         ],
@@ -1295,7 +1297,7 @@ const DUMBBELL_HOME: TemplateSpec[] = [
         name: "Full Body B",
         slots: [
           ["Dumbbell Split Squat", 3, 10],
-          ["Dumbbell Stiff-Leg Deadlift", 3, 10],
+          ["Dumbbell Romanian Deadlift", 3, 10],
           ["Single-Leg Calf Raise", 3, 15],
           ["Incline Dumbbell Press", 3, 10],
           ["Dumbbell Pullover", 3, 12],
@@ -1379,7 +1381,7 @@ const DUMBBELL_HOME: TemplateSpec[] = [
         slots: [
           ["Dumbbell Sumo Squat", 3, 12],
           ["Dumbbell Step-Up", 3, 12],
-          ["Dumbbell Stiff-Leg Deadlift", 3, 10],
+          ["Dumbbell Romanian Deadlift", 3, 10],
           ["Single-Leg Calf Raise", 3, 15],
         ],
       },

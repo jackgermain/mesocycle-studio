@@ -106,6 +106,18 @@ const NEVER_INSERTED = /barbell bench press|front squat|\bpull-?up|\bchin-?up/i;
  * and only wrong once the day already holds a front squat, or the reverse. */
 const SQUAT_PATTERN = /back squat|front squat/i;
 
+/** Movements that leave the spinal erectors resisting flexion for the whole set.
+ *
+ * Jack, on a day that had already run a hip thrust, a pull-through, a squat and an RDL before its row:
+ * *"the amount of spine erector work already done in the session is very, very high. So this won't be very
+ * high quality."* And on the same day's T-bar row: *"even more so than the seated cable row."*
+ *
+ * Erector load ACCUMULATES across a session in a way no per-exercise rule can see. Once a day is carrying
+ * two of these, this pass stops adding more of them -- so a leg-heavy day gets a chest-supported row rather
+ * than a T-bar, and stops collecting a third and fourth hinge. */
+const LOADS_ERECTORS = /deadlift|romanian|good ?morning|back squat|front squat|pull-?through|hip thrust|back extension|hyperextension|bent-?over|pendlay|meadows|t-?bar|seated cable row/i;
+const ERECTOR_BUDGET = 2;
+
 /** G132: no template slot opens above three sets. Four is a progression step later in a block, not a
  * starting prescription. Jack: "anything that would be four sets, let's drop it to three." */
 export const MAX_TEMPLATE_SETS = 3;
@@ -143,6 +155,8 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
     let guard = 0;
     // Recomputed per pass below, not captured once: an insertion can itself be a squat pattern.
     const hasSquat = () => slots.some((s) => SQUAT_PATTERN.test(s[0]));
+    // Likewise recomputed -- each insertion can add to the day's erector load.
+    const erectorLoad = () => slots.filter((s) => LOADS_ERECTORS.test(s[0])).length;
 
     while (slots.length < target && guard++ < 20) {
       // ONE insertion per pass, then recompute. A splice shifts every index after it, so inserting into
@@ -166,7 +180,10 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
               !DENYLISTED.has(name) &&
               !NEVER_INSERTED.test(name) &&
               // G130, the mirror case: never add a second barbell squat to a day that already has one.
-              !(hasSquat() && SQUAT_PATTERN.test(name)),
+              !(hasSquat() && SQUAT_PATTERN.test(name)) &&
+              // G135: a day already carrying two erector movements takes no more of them. This is what put
+              // a T-bar row and a third hinge into a day that had hip thrust + RDL + squat + pull-through.
+              !(erectorLoad() >= ERECTOR_BUDGET && LOADS_ERECTORS.test(name)),
           ),
         }))
         .filter((b) => b.pool.length > 0);

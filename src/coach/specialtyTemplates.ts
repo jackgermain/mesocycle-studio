@@ -52,7 +52,11 @@ const PICK: Record<string, string[]> = {
 };
 
 /** G99: a man's program carries no hip thrust or glute bridge work, so male glute work is hinging. */
-const MENS_GLUTES = ["Romanian Deadlift", "Barbell Back Squat", "Stiff-Leg Deadlift"];
+/* "Stiff-Leg Deadlift" was the third entry and is gone from the library (G134: it and the Romanian deadlift
+ * are one exercise under two names). It survived the deletion sweep because this pool lives in a generator,
+ * not in a template slot, and the library kept building only because pickFor never had to reach the third
+ * candidate -- the throw was one busy day away. Replaced with a hip hinge that is a different movement. */
+const MENS_GLUTES = ["Romanian Deadlift", "Barbell Back Squat", "Barbell Deadlift"];
 
 interface Pairing {
   label: string;

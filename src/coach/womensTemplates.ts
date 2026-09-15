@@ -401,7 +401,7 @@ const SIX_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Hip Thrust", 3, 10],
           ["Glute Bridge", 3, 12],
-          ["Stiff-Leg Deadlift", 3, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Standing Leg Curl", 3, 12],
           ["Seated Calf Raise Machine", 3, 15],
         ],
@@ -1206,7 +1206,11 @@ const TWO_DAY: TemplateSpec[] = [
           ["Romanian Deadlift", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
           ["Dumbbell Shoulder Press", 3, 10],
-          ["Seated Cable Row", 3, 10],
+          // Chest-supported, not a seated cable row. Jack: "the amount of spine erector work already done
+          // in the session is very, very high. So this won't be very high quality." This day runs a hip
+          // thrust, a cable pull-through, a back squat and an RDL before the row -- four erector movements,
+          // the heaviest such day in the library.
+          ["Chest-Supported Row", 3, 10],
           ["Incline Dumbbell Press", 3, 10],
           ["Dumbbell Curl", 3, 12],
         ],
@@ -1254,7 +1258,11 @@ const TWO_DAY: TemplateSpec[] = [
           ["Cable Pull-Through", 3, 12],
           ["Hanging Leg Raise", 3, 12],
           ["Dumbbell Lateral Raise", 3, 15],
-          ["T-Bar Row", 3, 10],
+          // Chest-supported, not a T-bar. This day already runs an RDL and a cable pull-through, and Jack
+          // ranks the T-bar's erector cost ABOVE the seated cable row's: "even more so than the seated cable
+          // row... I would still do something chest supported." Authored, not inserted -- which is why the
+          // density pass's erector budget never touched it.
+          ["Chest-Supported Row", 3, 10],
           ["Cable Fly — Mid", 3, 12],
           ["Overhead Cable Tricep Extension", 3, 12],
         ],
@@ -1273,7 +1281,7 @@ const TWO_DAY: TemplateSpec[] = [
         slots: [
           ["Smith Machine Hip Thrust", 3, 10],
           ["Bulgarian Split Squat", 3, 10],
-          ["Stiff-Leg Deadlift", 3, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
           ["Arnold Press", 3, 10],
           ["Lat Pulldown — Close Grip", 3, 10],
@@ -1458,7 +1466,7 @@ const GAP_FILL: TemplateSpec[] = [
     category: "dumbbell-home", sex: "women", emphasis: "Glutes", dows: [0, 3],
     days: [
       { name: "Full Body A", slots: [["Dumbbell Hip Thrust", 3, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Romanian Deadlift", 3, 10], ["Dumbbell Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Dumbbell Curl", 3, 12]] },
-      { name: "Full Body B", slots: [["Dumbbell Sumo Squat", 3, 12], ["Dumbbell Split Squat", 3, 10], ["Dumbbell Stiff-Leg Deadlift", 3, 10], ["Single-Leg Calf Raise", 3, 15], ["Dumbbell Floor Press", 3, 10], ["Dumbbell Pullover", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Hammer Curl", 3, 12]] },
+      { name: "Full Body B", slots: [["Dumbbell Sumo Squat", 3, 12], ["Dumbbell Split Squat", 3, 10], ["Dumbbell Romanian Deadlift", 3, 10], ["Single-Leg Calf Raise", 3, 15], ["Dumbbell Floor Press", 3, 10], ["Dumbbell Pullover", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Hammer Curl", 3, 12]] },
     ],
   },
   {
@@ -1476,7 +1484,7 @@ const GAP_FILL: TemplateSpec[] = [
     days: [
       { name: "Glutes A", slots: [["Dumbbell Hip Thrust", 3, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Romanian Deadlift", 3, 10], ["Dumbbell Calf Raise", 3, 15]] },
       { name: "Upper A", slots: [["Incline Dumbbell Press", 3, 10], ["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Dumbbell Curl", 3, 12], ["Plank", 3, 45]] },
-      { name: "Glutes B", slots: [["Dumbbell Sumo Squat", 3, 12], ["Dumbbell Split Squat", 3, 10], ["Dumbbell Stiff-Leg Deadlift", 3, 10], ["Single-Leg Calf Raise", 3, 15]] },
+      { name: "Glutes B", slots: [["Dumbbell Sumo Squat", 3, 12], ["Dumbbell Split Squat", 3, 10], ["Dumbbell Romanian Deadlift", 3, 10], ["Single-Leg Calf Raise", 3, 15]] },
       { name: "Upper B", slots: [["Dumbbell Floor Press", 3, 10], ["Dumbbell Pullover", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Hammer Curl", 3, 12], ["Side Plank", 3, 40]] },
     ],
   },

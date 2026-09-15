@@ -57,6 +57,18 @@ test("a barbell bench press is never the third CHEST exercise (G128)", () => {
   }
 });
 
+test("the Romanian and stiff-leg deadlift never appear as two exercises (G134)", () => {
+  // "They are the same exercise and they go by either one of these names." The stiff-leg is deleted from
+  // the library, so this guards the deletion rather than the days: 45 sessions once prescribed both, and
+  // the duplicate test below passed every one of them, because it compares NAMES and these are synonyms.
+  // A string-equality duplicate check cannot see a synonym -- only removing one of the names can.
+  for (const { template, day, exercises } of days) {
+    for (const e of exercises) {
+      assert.ok(!/stiff-?leg deadlift/i.test(e.name), `${where(template, day)} prescribes "${e.name}"`);
+    }
+  }
+});
+
 test("no session lists the same exercise twice", () => {
   // Forty-two days did, hand-authored -- "Dumbbell Shoulder Press, Arnold Press, ... Arnold Press" and
   // "Seated Cable Row, Barbell Bent-Over Row, Seated Cable Row". deepen()'s `used` set is built once per

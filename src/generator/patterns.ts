@@ -63,11 +63,21 @@ const RULES: { test: RegExp; pattern: Pattern; erectors?: boolean }[] = [
   { test: /squat|leg press/, pattern: "squat" },
 ];
 
-/** Movements where the torso is braced against a pad, so the erectors are out of it. Jack's exception. */
-const CHEST_SUPPORTED = /chest-?supported|seated cable row|machine row|t-?bar|smith machine row|pec deck|hammer strength/;
+/** Movements where the torso is braced against a pad, so the erectors are out of it. Jack's exception.
+ *
+ * The seated cable row and the T-bar row were listed here and are NOT chest-supported. Jack, on a seated
+ * cable row late in a leg-heavy day: *"the amount of spine erector work already done in the session is very,
+ * very high. So this won't be very high quality."* And on a T-bar row in the same slot: *"even more so than
+ * the seated cable row."* Nothing braces the torso in either — you sit and hold a hinge against a free
+ * load. Listing them meant `loadsErectors` returned false for both, and select.ts (which reads that flag to
+ * avoid stacking erector work) could not see the very case he caught.
+ *
+ * `chest supported` is added with a space as well as a hyphen: "Chest Supported Row Machine" matched
+ * neither form before, and only landed on the right answer because it failed the UNSUPPORTED test too. */
+const CHEST_SUPPORTED = /chest-?supported|chest supported|machine row|smith machine row|pec deck|hammer strength/;
 
 /** Rows and hinges done standing or bent over. Everything else leaves the erectors alone. */
-const UNSUPPORTED = /bent-?over|pendlay|meadows|single-?arm dumbbell row|barbell.*row/;
+const UNSUPPORTED = /bent-?over|pendlay|meadows|single-?arm dumbbell row|barbell.*row|seated cable row|t-?bar/;
 
 export function patternOf(name: string): PatternInfo | undefined {
   const n = name.toLowerCase();

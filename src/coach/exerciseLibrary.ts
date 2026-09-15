@@ -172,7 +172,6 @@ export const libraryExercises: LibraryExercise[] = [
 
   // Hamstrings / Glutes
   ex("Romanian Deadlift", "Hamstrings", true),
-  ex("Stiff-Leg Deadlift", "Hamstrings", false),
   ex("Single-Leg Romanian Deadlift", "Hamstrings", false),
   ex("Seated Leg Curl", "Hamstrings", true),
   ex("Lying Leg Curl", "Hamstrings", true),
@@ -287,7 +286,6 @@ export const libraryExercises: LibraryExercise[] = [
   // machine that isn't there. Every one of these is a movement someone can do with a pair of dumbbells and
   // a bench, which is the whole constraint of that category.
   ex("Dumbbell Romanian Deadlift", "Hamstrings", false),
-  ex("Dumbbell Stiff-Leg Deadlift", "Hamstrings", false),
   ex("Dumbbell Step-Up", "Quads", false),
   ex("Dumbbell Front Squat", "Quads", false),
   ex("Dumbbell Split Squat", "Quads", false),

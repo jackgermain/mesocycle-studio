@@ -6846,3 +6846,62 @@ a norm."* The templates carried 510 slots at four or more.
 step -- this is the starting prescription, which is what a template is.
 
 ---
+
+---
+
+**G134 — The Romanian deadlift and the stiff-leg deadlift are one exercise.**
+
+> *"Make sure you never have RDLs or Romanian deadlifts and stiff leg deadlifts in the same day. They are
+> the same exercise and they go by either one of these names. So let's remove stiff leg deadlift entirely
+> and just keep Romanian deadlift in because it's the same exercise."*
+
+**Rule:** `Stiff-Leg Deadlift` and `Dumbbell Stiff-Leg Deadlift` are DELETED from the library. The Romanian
+name is the one kept, on both implements.
+
+**This was the most widespread defect in the library, and G133 could not see it.** Fifty-four days
+prescribed a stiff-leg deadlift; in **forty-five** of them it sat beside a Romanian deadlift — the same
+movement, written twice, in the same session. G133 ("no session lists the same exercise twice") passed every
+one, because it compares NAMES and these are two names for one exercise. A duplicate-detection rule that
+works on strings cannot catch a synonym; only deleting one of the names can.
+
+Ten authored slots were repointed onto the Romanian name. The other ~44 days were `deepen()` drawing the
+stiff-leg out of the Hamstrings pool, which the deletion ends at the source.
+
+**G135 — Spinal erector load accumulates across a session, and the row pays for it.**
+
+> *"The amount of spine erector work already done in the session is very, very high. So this won't be very
+> high quality."* — on a seated cable row following a hip thrust, a cable pull-through, a back squat and an
+> RDL. And of a T-bar row in the same position: *"even more so than the seated cable row… I would suggest
+> either making these chest supported or maybe a light seated cable row. But even then, I would still do
+> something chest supported."*
+
+**Rule:** count the movements in a session that leave the erectors resisting flexion — hinges, squats, hip
+thrusts, pull-throughs, and unsupported rows. Past **two**, the remaining slots take chest-supported work
+only. A row late in a leg-heavy day is chest-supported, not a T-bar and not a bent-over row.
+
+**A seated cable row and a T-bar row are NOT chest-supported**, and `patterns.ts` said they were —
+`CHEST_SUPPORTED` listed both, so `loadsErectors` came back false for each and `select.ts` was blind to
+precisely this stacking. His ranking is explicit: the T-bar loads the erectors *more* than the seated cable
+row, and neither belongs with movements where a pad takes the spine out of it.
+
+Unlike every other rule in this file, this one constrains a **session total** rather than an exercise or a
+pair. No per-exercise check can see it.
+
+---
+
+**G135 addendum — the erector budget must cover AUTHORED slots, not only inserted ones.**
+
+The density pass now refuses to insert a third erector movement, and that guard did nothing for the day
+Jack actually complained about. `Full Body — Two Day B / Full Body B` carries its T-bar row in the WRITTEN
+spec, alongside a Romanian deadlift and a cable pull-through — three erector movements before `deepen()`
+runs at all. A filter on insertions cannot see a slot somebody typed.
+
+**Rule:** the count is a property of the finished session, wherever each slot came from. Authored days are
+subject to it exactly as generated ones are, and the assertion in `templateDoctrine.test.mts` is what makes
+that true — it reads the expanded templates, which is the only place both origins are visible together.
+
+Counted properly — erector movements at 3 or more, with the seated cable row and T-bar row classed as
+unsupported where `patterns.ts` had them as chest-supported — the population is **9 days**, not the 49 a
+looser count suggested. One of those, `Back & Biceps Focus — Five Day (Men) / Back Thickness`, runs a
+bent-over row, a T-bar and a Meadows row together; that is a back day doing back work and is Jack's call,
+not a fault to sweep.
