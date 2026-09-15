@@ -69,6 +69,37 @@ test("the Romanian and stiff-leg deadlift never appear as two exercises (G134)",
   }
 });
 
+test("no muscle gets more than four exercises in a session (G136)", () => {
+  // "This is a ridiculous amount of volume for quads." The cap in deepen() was soft -- it preferred a block
+  // under three, then fell back to blocks[0] -- so once every block hit three, every further insertion
+  // piled onto the first. 157 muscle blocks carried four or more, thirteen carried SEVEN.
+  //
+  // Asserted on the expanded templates because that is where the insertions land; the authored specs never
+  // had the problem.
+  for (const { template, day, exercises } of days) {
+    const byMuscle = new Map<string, number>();
+    for (const e of exercises) byMuscle.set(e.muscle, (byMuscle.get(e.muscle) ?? 0) + 1);
+    for (const [muscle, n] of byMuscle) {
+      assert.ok(n <= 4, `${where(template, day)} gives ${muscle} ${n} exercises`);
+    }
+  }
+});
+
+test("an inserted exercise never climbs past 15 reps (G136)", () => {
+  // deepen() took `neighbour reps + 2` per insertion, which compounds: 10 -> 12 -> 14 -> 16 -> 18 -> 20.
+  // Anything above 15 here should be AUTHORED ab work, which repRanges.ts puts at 20-30 deliberately.
+  for (const { template, day, exercises } of days) {
+    for (const e of exercises) {
+      const reps = e.sets[0]?.reps;
+      if (e.timed || typeof reps !== "number" || reps <= 15) continue;
+      assert.ok(
+        e.muscle === "Abs" || e.muscle === "Obliques" || e.muscle === "Calves" || e.muscle === "Forearms",
+        `${where(template, day)} has ${e.name} at ${reps} reps on ${e.muscle}`,
+      );
+    }
+  }
+});
+
 test("no session lists the same exercise twice", () => {
   // Forty-two days did, hand-authored -- "Dumbbell Shoulder Press, Arnold Press, ... Arnold Press" and
   // "Seated Cable Row, Barbell Bent-Over Row, Seated Cable Row". deepen()'s `used` set is built once per

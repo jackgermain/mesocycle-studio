@@ -122,6 +122,29 @@ const ERECTOR_BUDGET = 2;
  * starting prescription. Jack: "anything that would be four sets, let's drop it to three." */
 export const MAX_TEMPLATE_SETS = 3;
 
+/** G136: the most exercises one muscle may get in a single session.
+ *
+ * Jack, on a quad day carrying a back squat, two leg presses, a leg extension and a hack squat: "remove
+ * either the hack squat machine or the leg press. Just one of the two. This is a ridiculous amount of
+ * volume for quads."
+ *
+ * The cap below USED to be soft and that is the whole bug. The selector read
+ * `blocks.find((b) => b.size < 3) ?? blocks[0]`, so the moment every block reached three the fallback
+ * dumped every remaining insertion onto the first one. It produced 157 muscle blocks with four or more
+ * exercises in one session, and thirteen with SEVEN -- seventeen sets on a single muscle in a single day.
+ *
+ * Four, not three, because he asked for one of the two machines removed rather than both. A stricter three
+ * would match the original comment's intent; that is his call. */
+const MAX_PER_MUSCLE = 4;
+
+/** Reps on an inserted exercise, ceiling.
+ *
+ * Each insertion took `neighbour reps + 2`, which compounds: 10 -> 12 -> 14 -> 16 -> 18 -> 20. That is
+ * where the 2x17 and 2x19 slots came from, and 321 non-timed slots sat above 15 reps. The authored
+ * templates top out at 15, and repRanges.ts reserves 20-30 "pretty much strictly for cluster sets, or
+ * crazy forearm training, or calf raises" -- not for a leg press. */
+const MAX_INSERTED_REPS = 15;
+
 const BY_MUSCLE = new Map<string, string[]>();
 for (const e of libraryExercises) {
   if (e.kind === "cardio") continue;
@@ -194,14 +217,24 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
 
       // Depth goes to the leading block first, since the day opens on the emphasised muscle (G105), but no
       // single muscle runs deeper than three before the next one earns its second exercise.
-      const choice = blocks.find((b) => b.size < 3) ?? blocks[0];
+      //
+      // The second clause is a HARD cap (G136), not a fallback to `blocks[0]`. That fallback is what let a
+      // day put seven exercises on one muscle: once every block was at three it kept feeding the first one.
+      // Stopping short of the exercise target is the correct outcome -- the same judgement the `break`
+      // below already makes when no pool has anything left.
+      const choice = blocks.find((b) => b.size < 3) ?? blocks.find((b) => b.size < MAX_PER_MUSCLE);
+      if (!choice) break;
       const pick = choice.pool[0];
       // Sets and reps follow the block's existing work rather than being invented: the added exercise is
       // more of the same job, so it gets the same prescription, one set lighter and a little higher in reps.
       const neighbour = slots[choice.end];
       // G132 caps the inserted work at three sets as well as the authored work. Without the clamp an
       // insertion beside a 4-set opener inherited 3 and one beside a 5-set opener inherited 4.
-      slots.splice(choice.end + 1, 0, [pick, Math.min(MAX_TEMPLATE_SETS, Math.max(2, neighbour[1] - 1)), neighbour[2] + 2]);
+      slots.splice(choice.end + 1, 0, [
+        pick,
+        Math.min(MAX_TEMPLATE_SETS, Math.max(2, neighbour[1] - 1)),
+        Math.min(MAX_INSERTED_REPS, neighbour[2] + 2),
+      ]);
       used.add(pick);
     }
 

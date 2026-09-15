@@ -1,7 +1,7 @@
 # Jacked — Every Template, Day by Day
 
 All **125 templates**, every training day, every lift, with sets and reps.
-3,513 exercise slots · 9,401 working sets.
+3,388 exercise slots · 9,151 working sets.
 
 Each template is one week. The week repeats for the whole block — load progresses, the layout doesn't. Loads are blank on purpose: the template is a muscle-order skeleton, what you lift is yours.
 
@@ -103,7 +103,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Full Lower & Upper — Five Day
 
-**5 days a week** · 80 sets a week · for Lower Body · Mon · Tue · Wed · Fri · Sat
+**5 days a week** · 78 sets a week · for Lower Body · Mon · Tue · Wed · Fri · Sat
 
 #### Day 1 — Glutes & Hamstrings  *(16 sets)*
 
@@ -125,9 +125,9 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
 | 4 | Alternating Dumbbell Curl | Biceps | 3 | 12 |
 | 5 | Barbell Curl | Biceps | 2 | 14 |
-| 6 | EZ-Bar Curl | Biceps | 2 | 16 |
+| 6 | EZ-Bar Curl | Biceps | 2 | 15 |
 
-#### Day 3 — Quads  *(16 sets)*
+#### Day 3 — Quads  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -135,8 +135,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Leg Press — Horizontal | Quads | 3 | 12 |
 | 3 | Leg Extension Machine | Quads | 3 | 12 |
 | 4 | Hack Squat Machine | Quads | 2 | 14 |
-| 5 | Leg Press — 45° | Quads | 2 | 16 |
-| 6 | Smith Machine Calf Raise | Calves | 3 | 15 |
+| 5 | Smith Machine Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Upper Push  *(16 sets)*
 
@@ -155,8 +154,8 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Smith Machine Hip Thrust | Glutes | 3 | 10 |
 | 2 | Hip Abduction Machine | Glutes | 3 | 15 |
-| 3 | Cable Pull-Through | Glutes | 2 | 17 |
-| 4 | Glute Kickback Machine | Glutes | 2 | 19 |
+| 3 | Cable Pull-Through | Glutes | 2 | 15 |
+| 4 | Glute Kickback Machine | Glutes | 2 | 15 |
 | 5 | Hip Adduction Machine | Adductors | 3 | 15 |
 | 6 | Weighted Sit-Up | Abs | 3 | 12 |
 
@@ -274,7 +273,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Barbell Back Squat | Quads | 3 | 8 |
 | 2 | Leg Extension Machine | Quads | 3 | 15 |
-| 3 | Leg Press — 45° | Quads | 2 | 17 |
+| 3 | Leg Press — 45° | Quads | 2 | 15 |
 | 4 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 | 6 | Dumbbell Bench Press | Chest | 3 | 10 |
@@ -381,7 +380,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Glute Bridge | Glutes | 3 | 12 |
 | 2 | Cable Pull-Through | Glutes | 2 | 14 |
-| 3 | Cable Glute Kickback | Glutes | 2 | 16 |
+| 3 | Cable Glute Kickback | Glutes | 2 | 15 |
 | 4 | Leg Press — 45° | Quads | 3 | 12 |
 | 5 | Seated Leg Curl | Hamstrings | 3 | 12 |
 | 6 | Cable Crunch | Abs | 3 | 15 |
@@ -477,7 +476,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 2 | Hip Abduction Machine | Glutes | 3 | 15 |
-| 3 | Cable Pull-Through | Glutes | 2 | 17 |
+| 3 | Cable Pull-Through | Glutes | 2 | 15 |
 | 4 | Goblet Squat | Quads | 3 | 12 |
 | 5 | Hack Squat Machine | Quads | 2 | 14 |
 | 6 | Seated Leg Curl | Hamstrings | 3 | 12 |
@@ -508,18 +507,17 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Lower Body Emphasis — Six Day
 
-**6 days a week** · 99 sets a week · for Lower Body · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 95 sets a week · for Lower Body · Mon · Tue · Wed · Thu · Fri · Sat
 
-#### Day 1 — Glutes  *(16 sets)*
+#### Day 1 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 2 | Cable Pull-Through | Glutes | 3 | 12 |
 | 3 | Glute Kickback Machine | Glutes | 3 | 15 |
-| 4 | Hip Abduction Machine | Glutes | 2 | 17 |
-| 5 | Cable Glute Kickback | Glutes | 2 | 19 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 4 | Hip Abduction Machine | Glutes | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Back & Biceps  *(17 sets)*
 
@@ -532,7 +530,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Hammer Curl | Biceps | 3 | 12 |
 | 6 | Barbell Curl | Biceps | 2 | 14 |
 
-#### Day 3 — Quads  *(16 sets)*
+#### Day 3 — Quads  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -540,8 +538,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Leg Extension Machine | Quads | 3 | 15 |
 | 3 | Walking Lunge | Quads | 3 | 12 |
 | 4 | Barbell Back Squat | Quads | 2 | 14 |
-| 5 | Leg Press — 45° | Quads | 2 | 16 |
-| 6 | Smith Machine Calf Raise | Calves | 3 | 15 |
+| 5 | Smith Machine Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Chest & Shoulders  *(17 sets)*
 
@@ -562,7 +559,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
 | 4 | Glute Bridge | Glutes | 3 | 12 |
-| 5 | Dumbbell Glute Bridge | Glutes | 2 | 14 |
+| 5 | Cable Glute Kickback | Glutes | 2 | 14 |
 | 6 | Donkey Calf Raise | Calves | 3 | 15 |
 
 #### Day 6 — Arms & Abs  *(17 sets)*
@@ -581,9 +578,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Lower Body Emphasis — Five Day
 
-**5 days a week** · 80 sets a week · for Lower Body · Mon · Wed · Fri · Tue · Thu
+**5 days a week** · 78 sets a week · for Lower Body · Mon · Wed · Fri · Tue · Thu
 
-#### Day 1 — Legs A  *(16 sets)*
+#### Day 1 — Legs A  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -591,8 +588,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Leg Press — 45° | Quads | 3 | 12 |
 | 3 | Bulgarian Split Squat | Quads | 3 | 10 |
 | 4 | Leg Press — Horizontal | Quads | 2 | 12 |
-| 5 | Leg Extension Machine | Quads | 2 | 14 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Upper A  *(16 sets)*
 
@@ -624,7 +620,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Pec Deck Machine | Chest | 3 | 12 |
 | 3 | Incline Dumbbell Fly | Chest | 2 | 14 |
 | 4 | Cable Face Pull | Rear delts | 3 | 15 |
-| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
+| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
 | 6 | Hammer Curl | Biceps | 3 | 12 |
 
 #### Day 5 — Legs C  *(16 sets)*
@@ -633,9 +629,9 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Hack Squat Machine | Quads | 3 | 10 |
 | 2 | Walking Lunge | Quads | 3 | 12 |
-| 3 | Smith Machine Squat | Quads | 2 | 14 |
+| 3 | Leg Extension Machine | Quads | 2 | 14 |
 | 4 | Cable Glute Kickback | Glutes | 3 | 15 |
-| 5 | Cable Pull-Through | Glutes | 2 | 17 |
+| 5 | Cable Pull-Through | Glutes | 2 | 15 |
 | 6 | Smith Machine Calf Raise | Calves | 3 | 15 |
 
 
@@ -755,7 +751,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Glute Kickback Machine | Glutes | 2 | 14 |
 | 4 | Barbell Back Squat | Quads | 3 | 10 |
 | 5 | Leg Extension Machine | Quads | 3 | 15 |
-| 6 | Hack Squat Machine | Quads | 2 | 17 |
+| 6 | Hack Squat Machine | Quads | 2 | 15 |
 | 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
 | 8 | Lat Pulldown — Wide Grip | Back | 3 | 10 |
 | 9 | Incline Dumbbell Press | Chest | 3 | 10 |
@@ -770,7 +766,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Seated Leg Curl | Hamstrings | 2 | 14 |
 | 4 | Cable Pull-Through | Glutes | 3 | 12 |
 | 5 | Cable Glute Kickback | Glutes | 3 | 15 |
-| 6 | Hip Abduction Machine | Glutes | 2 | 17 |
+| 6 | Hip Abduction Machine | Glutes | 2 | 15 |
 | 7 | Seated Calf Raise Machine | Calves | 3 | 15 |
 | 8 | Seated Cable Row | Back | 3 | 10 |
 | 9 | Dumbbell Shoulder Press | Front delts | 3 | 10 |
@@ -783,9 +779,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Upper Body Emphasis — Six Day (Women)
 
-**6 days a week** · 95 sets a week · for Upper Body · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 93 sets a week · for Upper Body · Mon · Tue · Wed · Thu · Fri · Sat
 
-#### Day 1 — Chest  *(16 sets)*
+#### Day 1 — Chest  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -793,8 +789,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Pec Deck Machine | Chest | 3 | 12 |
 | 3 | Cable Fly — Mid | Chest | 3 | 12 |
 | 4 | Dumbbell Bench Press | Chest | 2 | 14 |
-| 5 | Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Back  *(16 sets)*
 
@@ -804,8 +799,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Seated Cable Row | Back | 3 | 10 |
 | 3 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
 | 4 | Leg Extension Machine | Quads | 3 | 15 |
-| 5 | Barbell Back Squat | Quads | 2 | 17 |
-| 6 | Hack Squat Machine | Quads | 2 | 19 |
+| 5 | Barbell Back Squat | Quads | 2 | 15 |
+| 6 | Hack Squat Machine | Quads | 2 | 15 |
 
 #### Day 3 — Shoulders  *(16 sets)*
 
@@ -848,7 +843,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lat Prayer | Back | 3 | 12 |
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 14 |
 | 4 | Lateral Raise Machine | Side delts | 3 | 15 |
-| 5 | Cable Lateral Raise | Side delts | 2 | 17 |
+| 5 | Cable Lateral Raise | Side delts | 2 | 15 |
 | 6 | Russian Twist | Obliques | 3 | 20 |
 
 
@@ -928,7 +923,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Pec Deck Machine | Chest | 3 | 12 |
 | 3 | Dumbbell Fly | Chest | 2 | 14 |
 | 4 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
-| 5 | Cable Lateral Raise | Side delts | 2 | 17 |
+| 5 | Cable Lateral Raise | Side delts | 2 | 15 |
 | 6 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
@@ -940,7 +935,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Seated Cable Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Cable Face Pull | Rear delts | 3 | 15 |
-| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
+| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
 | 6 | Dumbbell Curl | Biceps | 3 | 12 |
 | 7 | Leg Extension Machine | Quads | 3 | 15 |
 
@@ -964,7 +959,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lat Prayer | Back | 3 | 12 |
 | 3 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 4 | Reverse Pec Deck | Rear delts | 3 | 15 |
-| 5 | Freemotion Y Raise | Rear delts | 2 | 17 |
+| 5 | Freemotion Y Raise | Rear delts | 2 | 15 |
 | 6 | Hammer Curl | Biceps | 3 | 12 |
 | 7 | Romanian Deadlift | Hamstrings | 3 | 10 |
 
@@ -984,7 +979,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Dumbbell Curl | Biceps | 3 | 12 |
 | 5 | Barbell Curl | Biceps | 2 | 14 |
-| 6 | EZ-Bar Curl | Biceps | 2 | 16 |
+| 6 | EZ-Bar Curl | Biceps | 2 | 15 |
 | 7 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 8 | Leg Extension Machine | Quads | 3 | 15 |
 
@@ -1044,8 +1039,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Seated Cable Row | Back | 3 | 10 |
 | 3 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
 | 4 | Cable Face Pull | Rear delts | 3 | 15 |
-| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
-| 6 | Reverse Pec Deck | Rear delts | 2 | 19 |
+| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
+| 6 | Reverse Pec Deck | Rear delts | 2 | 15 |
 | 7 | Dumbbell Curl | Biceps | 3 | 12 |
 | 8 | Barbell Curl | Biceps | 2 | 14 |
 | 9 | Romanian Deadlift | Hamstrings | 3 | 10 |
@@ -1090,7 +1085,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Leg Press — 45° | Quads | 3 | 12 |
 | 3 | Bulgarian Split Squat | Quads | 3 | 10 |
 | 4 | Cable Glute Kickback | Glutes | 3 | 15 |
-| 5 | Glute Deadlift | Glutes | 2 | 17 |
+| 5 | Glute Deadlift | Glutes | 2 | 15 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 4 — Chest & Arms  *(17 sets)*
@@ -1111,7 +1106,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Smith Machine Hip Thrust | Glutes | 3 | 10 |
 | 2 | Cable Pull-Through | Glutes | 3 | 12 |
 | 3 | Hip Abduction Machine | Glutes | 3 | 15 |
-| 4 | Dumbbell Glute Bridge | Glutes | 2 | 17 |
+| 4 | Dumbbell Glute Bridge | Glutes | 2 | 15 |
 | 5 | Hip Adduction Machine | Adductors | 3 | 15 |
 | 6 | Leg Press Calf Raise | Calves | 3 | 15 |
 
@@ -1131,7 +1126,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Hamstrings Specialty — Six Day (Women)
 
-**6 days a week** · 96 sets a week · for Glutes & Hamstrings · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Glutes & Hamstrings · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Glutes & Hamstrings  *(16 sets)*
 
@@ -1155,7 +1150,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Glute Kickback Machine | Glutes | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Quads  *(16 sets)*
+#### Day 3 — Quads  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1163,8 +1158,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Back Squat | Quads | 3 | 10 |
 | 3 | Leg Press — 45° | Quads | 3 | 12 |
 | 4 | Hack Squat Machine | Quads | 2 | 14 |
-| 5 | Leg Press — Horizontal | Quads | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Glutes & Hamstrings  *(16 sets)*
 
@@ -1196,7 +1190,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 2 | 12 |
 | 4 | Leg Extension Machine | Quads | 3 | 12 |
-| 5 | Smith Machine Squat | Quads | 2 | 14 |
+| 5 | Leg Press — Horizontal | Quads | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -1204,7 +1198,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Quads Specialty — Six Day (Women)
 
-**6 days a week** · 96 sets a week · for Glutes & Quads · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Glutes & Quads · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Glutes & Quads  *(16 sets)*
 
@@ -1228,7 +1222,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Glute Kickback Machine | Glutes | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(16 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1236,8 +1230,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Glutes & Quads  *(16 sets)*
 
@@ -1269,7 +1262,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 2 | 12 |
 | 4 | Seated Leg Curl | Hamstrings | 3 | 12 |
-| 5 | Nordic Hamstring Curl | Hamstrings | 2 | 14 |
+| 5 | Standing Leg Curl | Hamstrings | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -1277,7 +1270,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Shoulders Specialty — Six Day (Women)
 
-**6 days a week** · 94 sets a week · for Glutes & Shoulders · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 92 sets a week · for Glutes & Shoulders · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Glutes & Side delts  *(16 sets)*
 
@@ -1298,10 +1291,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Hip Abduction Machine | Glutes | 2 | 14 |
-| 5 | Cable Glute Kickback | Glutes | 2 | 16 |
+| 5 | Cable Glute Kickback | Glutes | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(16 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1309,8 +1302,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Glutes & Side delts  *(16 sets)*
 
@@ -1341,7 +1333,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 2 | 12 |
 | 4 | Seated Leg Curl | Hamstrings | 3 | 12 |
-| 5 | Nordic Hamstring Curl | Hamstrings | 2 | 14 |
+| 5 | Standing Leg Curl | Hamstrings | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -1403,7 +1395,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Reverse Lunge | Quads | 3 | 12 |
 | 3 | Barbell Back Squat | Quads | 2 | 14 |
 | 4 | Hip Abduction Machine | Glutes | 3 | 15 |
-| 5 | Cable Pull-Through | Glutes | 2 | 17 |
+| 5 | Cable Pull-Through | Glutes | 2 | 15 |
 | 6 | Smith Machine Calf Raise | Calves | 3 | 15 |
 
 #### Day 6 — Upper & Abs  *(17 sets)*
@@ -1422,18 +1414,17 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glute Focus — Five Day
 
-**5 days a week** · 80 sets a week · for Glutes · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 76 sets a week · for Glutes · Mon · Tue · Wed · Thu · Fri
 
-#### Day 1 — Glutes  *(16 sets)*
+#### Day 1 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 2 | Cable Pull-Through | Glutes | 3 | 12 |
 | 3 | Glute Kickback Machine | Glutes | 3 | 15 |
-| 4 | Hip Abduction Machine | Glutes | 2 | 17 |
-| 5 | Cable Glute Kickback | Glutes | 2 | 19 |
-| 6 | Cable Crunch | Abs | 3 | 15 |
+| 4 | Hip Abduction Machine | Glutes | 2 | 15 |
+| 5 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Back & Biceps  *(16 sets)*
 
@@ -1444,18 +1435,17 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Single-Arm Dumbbell Row | Back | 3 | 12 |
 | 4 | Dumbbell Curl | Biceps | 3 | 12 |
 | 5 | Barbell Curl | Biceps | 2 | 14 |
-| 6 | EZ-Bar Curl | Biceps | 2 | 16 |
+| 6 | EZ-Bar Curl | Biceps | 2 | 15 |
 
-#### Day 3 — Quads & Calves  *(16 sets)*
+#### Day 3 — Quads & Calves  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Back Squat | Quads | 3 | 8 |
 | 2 | Leg Press — 45° | Quads | 3 | 12 |
 | 3 | Leg Extension Machine | Quads | 3 | 15 |
-| 4 | Hack Squat Machine | Quads | 2 | 17 |
-| 5 | Leg Press — Horizontal | Quads | 2 | 19 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 4 | Hack Squat Machine | Quads | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 4 — Chest & Shoulders  *(16 sets)*
 
@@ -1476,7 +1466,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
 | 4 | Glute Bridge | Glutes | 3 | 12 |
-| 5 | Dumbbell Glute Bridge | Glutes | 2 | 14 |
+| 5 | Cable Glute Kickback | Glutes | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 
@@ -1484,20 +1474,19 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Hamstrings — Five Day
 
-**5 days a week** · 80 sets a week · for Glutes · Mon · Tue · Thu · Fri · Sat
+**5 days a week** · 74 sets a week · for Glutes · Mon · Tue · Thu · Fri · Sat
 
-#### Day 1 — Glutes A  *(16 sets)*
+#### Day 1 — Glutes A  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Smith Machine Hip Thrust | Glutes | 3 | 10 |
 | 2 | Glute Bridge | Glutes | 3 | 12 |
 | 3 | Cable Glute Kickback | Glutes | 3 | 15 |
-| 4 | Glute Kickback Machine | Glutes | 2 | 17 |
-| 5 | Glute Deadlift | Glutes | 2 | 19 |
-| 6 | Hanging Leg Raise | Abs | 3 | 12 |
+| 4 | Glute Kickback Machine | Glutes | 2 | 15 |
+| 5 | Hanging Leg Raise | Abs | 3 | 12 |
 
-#### Day 2 — Hamstrings  *(16 sets)*
+#### Day 2 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1505,8 +1494,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Seated Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Glute Ham Raise | Hamstrings | 3 | 10 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 12 |
-| 5 | Lying Leg Curl | Hamstrings | 2 | 14 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 3 — Upper Pull  *(16 sets)*
 
@@ -1517,18 +1505,17 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
 | 4 | Cable Curl | Biceps | 3 | 12 |
 | 5 | Barbell Curl | Biceps | 2 | 14 |
-| 6 | EZ-Bar Curl | Biceps | 2 | 16 |
+| 6 | EZ-Bar Curl | Biceps | 2 | 15 |
 
-#### Day 4 — Glutes B  *(16 sets)*
+#### Day 4 — Glutes B  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 2 | Cable Pull-Through | Glutes | 3 | 12 |
 | 3 | Hip Abduction Machine | Glutes | 3 | 15 |
-| 4 | Dumbbell Glute Bridge | Glutes | 2 | 17 |
-| 5 | Glute Bridge — Bodyweight | Glutes | 2 | 19 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 4 | Dumbbell Glute Bridge | Glutes | 2 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 5 — Upper Push  *(16 sets)*
 
@@ -1546,7 +1533,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Hamstrings Specialty — Five Day (Women)
 
-**5 days a week** · 80 sets a week · for Glutes & Hamstrings · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Glutes & Hamstrings · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Glutes & Hamstrings  *(16 sets)*
 
@@ -1570,7 +1557,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Glute Kickback Machine | Glutes | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Quads  *(16 sets)*
+#### Day 3 — Quads  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1578,8 +1565,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Back Squat | Quads | 3 | 10 |
 | 3 | Leg Press — 45° | Quads | 3 | 12 |
 | 4 | Hack Squat Machine | Quads | 2 | 14 |
-| 5 | Leg Press — Horizontal | Quads | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Glutes & Hamstrings  *(16 sets)*
 
@@ -1608,7 +1594,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Quads Specialty — Five Day (Women)
 
-**5 days a week** · 80 sets a week · for Glutes & Quads · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Glutes & Quads · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Glutes & Quads  *(16 sets)*
 
@@ -1632,7 +1618,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Glute Kickback Machine | Glutes | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(16 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1640,8 +1626,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Glutes & Quads  *(16 sets)*
 
@@ -1670,7 +1655,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Shoulders Specialty — Five Day (Women)
 
-**5 days a week** · 78 sets a week · for Glutes & Shoulders · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 76 sets a week · for Glutes & Shoulders · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Glutes & Side delts  *(16 sets)*
 
@@ -1691,10 +1676,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Hip Abduction Machine | Glutes | 2 | 14 |
-| 5 | Cable Glute Kickback | Glutes | 2 | 16 |
+| 5 | Cable Glute Kickback | Glutes | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(16 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1702,8 +1687,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Glutes & Side delts  *(16 sets)*
 
@@ -1731,9 +1715,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glute Specialization — Four Day
 
-**4 days a week** · 74 sets a week · for Glutes · Mon · Tue · Thu · Fri
+**4 days a week** · 68 sets a week · for Glutes · Mon · Tue · Thu · Fri
 
-#### Day 1 — Glutes Heavy  *(19 sets)*
+#### Day 1 — Glutes Heavy  *(15 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1741,9 +1725,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Glute Deadlift | Glutes | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Glute Kickback Machine | Glutes | 3 | 15 |
-| 5 | Dumbbell Glute Bridge | Glutes | 2 | 17 |
-| 6 | Glute Bridge — Bodyweight | Glutes | 2 | 19 |
-| 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Upper & Abs  *(19 sets)*
 
@@ -1757,7 +1739,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 6 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
 | 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
-#### Day 3 — Glutes Volume  *(17 sets)*
+#### Day 3 — Glutes Volume  *(15 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1765,8 +1747,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Glute Bridge | Glutes | 3 | 15 |
 | 3 | Cable Glute Kickback | Glutes | 3 | 15 |
 | 4 | Hip Abduction Machine | Glutes | 3 | 15 |
-| 5 | Dumbbell Hip Thrust | Glutes | 2 | 17 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Upper & Hamstrings  *(19 sets)*
 
@@ -1796,7 +1777,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Glute Kickback Machine | Glutes | 2 | 12 |
 | 4 | Romanian Deadlift | Hamstrings | 3 | 12 |
 | 5 | Standing Leg Curl | Hamstrings | 2 | 14 |
-| 6 | Nordic Hamstring Curl | Hamstrings | 2 | 16 |
+| 6 | Nordic Hamstring Curl | Hamstrings | 2 | 15 |
 | 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Hamstrings & Glutes  *(18 sets)*
@@ -1808,7 +1789,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 12 |
 | 4 | Cable Pull-Through | Glutes | 3 | 12 |
 | 5 | Hip Abduction Machine | Glutes | 2 | 14 |
-| 6 | Cable Glute Kickback | Glutes | 2 | 16 |
+| 6 | Cable Glute Kickback | Glutes | 2 | 15 |
 | 7 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 3 — Glutes & Hamstrings  *(18 sets)*
@@ -1849,7 +1830,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Glute Kickback Machine | Glutes | 2 | 12 |
 | 4 | Barbell Back Squat | Quads | 3 | 12 |
 | 5 | Hack Squat Machine | Quads | 2 | 14 |
-| 6 | Leg Press — Horizontal | Quads | 2 | 16 |
+| 6 | Leg Press — Horizontal | Quads | 2 | 15 |
 | 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Quads & Glutes  *(18 sets)*
@@ -1861,7 +1842,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Smith Machine Squat | Quads | 2 | 12 |
 | 4 | Cable Pull-Through | Glutes | 3 | 12 |
 | 5 | Hip Abduction Machine | Glutes | 2 | 14 |
-| 6 | Cable Glute Kickback | Glutes | 2 | 16 |
+| 6 | Cable Glute Kickback | Glutes | 2 | 15 |
 | 7 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 3 — Glutes & Quads  *(18 sets)*
@@ -1873,7 +1854,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Smith Machine Hip Thrust | Glutes | 2 | 12 |
 | 4 | Leg Extension Machine | Quads | 3 | 12 |
 | 5 | Bulgarian Split Squat | Quads | 2 | 14 |
-| 6 | Walking Lunge | Quads | 2 | 16 |
+| 6 | Walking Lunge | Quads | 2 | 15 |
 | 7 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Quads & Glutes  *(18 sets)*
@@ -1885,7 +1866,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Goblet Squat | Quads | 2 | 12 |
 | 4 | Barbell Hip Thrust | Glutes | 3 | 12 |
 | 5 | Dumbbell Glute Bridge | Glutes | 2 | 14 |
-| 6 | Glute Bridge — Bodyweight | Glutes | 2 | 16 |
+| 6 | Glute Bridge — Bodyweight | Glutes | 2 | 15 |
 | 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 
@@ -1895,7 +1876,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 **4 days a week** · 64 sets a week · for Glutes & Shoulders · Mon · Tue · Thu · Fri
 
-#### Day 1 — Glutes & Side delts  *(18 sets)*
+#### Day 1 — Glutes & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1903,9 +1884,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Cable Pull-Through | Glutes | 3 | 10 |
 | 3 | Glute Kickback Machine | Glutes | 2 | 12 |
 | 4 | Hip Abduction Machine | Glutes | 2 | 14 |
-| 5 | Cable Glute Kickback | Glutes | 2 | 16 |
-| 6 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
-| 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 5 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
+| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Side delts & Glutes  *(18 sets)*
 
@@ -1914,20 +1894,21 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Cable Lateral Raise | Side delts | 3 | 8 |
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
-| 4 | Smith Machine Hip Thrust | Glutes | 2 | 14 |
-| 5 | Dumbbell Glute Bridge | Glutes | 2 | 16 |
-| 6 | Glute Bridge — Bodyweight | Glutes | 2 | 18 |
+| 4 | Cable Glute Kickback | Glutes | 2 | 14 |
+| 5 | Smith Machine Hip Thrust | Glutes | 2 | 15 |
+| 6 | Dumbbell Glute Bridge | Glutes | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Glutes & Side delts  *(14 sets)*
+#### Day 3 — Glutes & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Glute Bridge | Glutes | 3 | 8 |
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Glute Deadlift | Glutes | 2 | 12 |
-| 4 | Lateral Raise Machine | Side delts | 3 | 12 |
-| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 4 | Glute Bridge — Bodyweight | Glutes | 2 | 14 |
+| 5 | Lateral Raise Machine | Side delts | 3 | 12 |
+| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Side delts & Glutes  *(14 sets)*
 
@@ -1944,9 +1925,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Quads & Glutes — Four Day
 
-**4 days a week** · 76 sets a week · for Lower Body · Mon · Tue · Thu · Fri
+**4 days a week** · 72 sets a week · for Lower Body · Mon · Tue · Thu · Fri
 
-#### Day 1 — Quads  *(19 sets)*
+#### Day 1 — Quads  *(15 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -1954,9 +1935,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Leg Press — 45° | Quads | 3 | 12 |
 | 3 | Leg Extension Machine | Quads | 3 | 15 |
 | 4 | Bulgarian Split Squat | Quads | 3 | 10 |
-| 5 | Hack Squat Machine | Quads | 2 | 12 |
-| 6 | Leg Press — Horizontal | Quads | 2 | 14 |
-| 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Upper A  *(19 sets)*
 
@@ -1976,7 +1955,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 2 | Cable Glute Kickback | Glutes | 3 | 15 |
-| 3 | Glute Bridge | Glutes | 2 | 17 |
+| 3 | Glute Bridge | Glutes | 2 | 15 |
 | 4 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 5 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 6 | Seated Leg Curl | Hamstrings | 2 | 14 |
@@ -2045,7 +2024,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Hamstrings Specialty — Three Day (Women)
 
-**3 days a week** · 60 sets a week · for Glutes & Hamstrings · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Glutes & Hamstrings · Mon · Wed · Fri
 
 #### Day 1 — Glutes & Hamstrings  *(20 sets)*
 
@@ -2057,7 +2036,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
 | 5 | Romanian Deadlift | Hamstrings | 3 | 12 |
 | 6 | Standing Leg Curl | Hamstrings | 2 | 14 |
-| 7 | Nordic Hamstring Curl | Hamstrings | 2 | 16 |
+| 7 | Nordic Hamstring Curl | Hamstrings | 2 | 15 |
 | 8 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Hamstrings & Glutes  *(20 sets)*
@@ -2070,10 +2049,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Glute Ham Raise | Hamstrings | 2 | 14 |
 | 5 | Cable Pull-Through | Glutes | 3 | 12 |
 | 6 | Hip Abduction Machine | Glutes | 2 | 14 |
-| 7 | Cable Glute Kickback | Glutes | 2 | 16 |
+| 7 | Cable Glute Kickback | Glutes | 2 | 15 |
 | 8 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Quads  *(20 sets)*
+#### Day 3 — Quads  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2081,17 +2060,14 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Back Squat | Quads | 3 | 10 |
 | 3 | Leg Press — 45° | Quads | 3 | 12 |
 | 4 | Hack Squat Machine | Quads | 2 | 14 |
-| 5 | Leg Press — Horizontal | Quads | 2 | 16 |
-| 6 | Smith Machine Squat | Quads | 2 | 18 |
-| 7 | Bulgarian Split Squat | Quads | 2 | 20 |
-| 8 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
 ---
 
 ### Glutes & Quads Specialty — Three Day (Women)
 
-**3 days a week** · 60 sets a week · for Glutes & Quads · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Glutes & Quads · Mon · Wed · Fri
 
 #### Day 1 — Glutes & Quads  *(20 sets)*
 
@@ -2103,7 +2079,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
 | 5 | Barbell Back Squat | Quads | 3 | 12 |
 | 6 | Hack Squat Machine | Quads | 2 | 14 |
-| 7 | Leg Press — Horizontal | Quads | 2 | 16 |
+| 7 | Leg Press — Horizontal | Quads | 2 | 15 |
 | 8 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Quads & Glutes  *(20 sets)*
@@ -2116,10 +2092,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Bulgarian Split Squat | Quads | 2 | 14 |
 | 5 | Cable Pull-Through | Glutes | 3 | 12 |
 | 6 | Hip Abduction Machine | Glutes | 2 | 14 |
-| 7 | Cable Glute Kickback | Glutes | 2 | 16 |
+| 7 | Cable Glute Kickback | Glutes | 2 | 15 |
 | 8 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(20 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2127,19 +2103,16 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Nordic Hamstring Curl | Hamstrings | 2 | 18 |
-| 7 | Glute Ham Raise | Hamstrings | 2 | 20 |
-| 8 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
 ---
 
 ### Glutes & Shoulders Specialty — Three Day (Women)
 
-**3 days a week** · 58 sets a week · for Glutes & Shoulders · Mon · Wed · Fri
+**3 days a week** · 48 sets a week · for Glutes & Shoulders · Mon · Wed · Fri
 
-#### Day 1 — Glutes & Side delts  *(20 sets)*
+#### Day 1 — Glutes & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2147,10 +2120,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Cable Pull-Through | Glutes | 3 | 10 |
 | 3 | Glute Bridge | Glutes | 2 | 12 |
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 5 | Hip Abduction Machine | Glutes | 2 | 16 |
-| 6 | Cable Glute Kickback | Glutes | 2 | 18 |
-| 7 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
-| 8 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 5 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
+| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Side delts & Glutes  *(18 sets)*
 
@@ -2159,12 +2130,12 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Cable Lateral Raise | Side delts | 3 | 8 |
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
-| 4 | Smith Machine Hip Thrust | Glutes | 2 | 14 |
-| 5 | Dumbbell Glute Bridge | Glutes | 2 | 16 |
-| 6 | Glute Bridge — Bodyweight | Glutes | 2 | 18 |
+| 4 | Hip Abduction Machine | Glutes | 2 | 14 |
+| 5 | Cable Glute Kickback | Glutes | 2 | 15 |
+| 6 | Smith Machine Hip Thrust | Glutes | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(20 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2172,10 +2143,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Nordic Hamstring Curl | Hamstrings | 2 | 18 |
-| 7 | Glute Ham Raise | Hamstrings | 2 | 20 |
-| 8 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
 ---
@@ -2232,7 +2200,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Seated Barbell Press | Front delts | 2 | 14 |
 | 4 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
 | 5 | Cable Face Pull | Rear delts | 3 | 15 |
-| 6 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
+| 6 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
 
 #### Day 2 — Arms A  *(16 sets)*
 
@@ -2263,7 +2231,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Lateral Raise Machine | Side delts | 3 | 15 |
 | 2 | Cable Lateral Raise | Side delts | 3 | 15 |
 | 3 | Reverse Pec Deck | Rear delts | 3 | 15 |
-| 4 | Freemotion Y Raise | Rear delts | 2 | 17 |
+| 4 | Freemotion Y Raise | Rear delts | 2 | 15 |
 
 #### Day 5 — Arms B  *(16 sets)*
 
@@ -2292,7 +2260,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Biceps Specialty — Six Day (Women)
 
-**6 days a week** · 96 sets a week · for Back & Biceps · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Back & Biceps · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Back & Biceps  *(16 sets)*
 
@@ -2316,7 +2284,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Glutes  *(16 sets)*
+#### Day 3 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2324,8 +2292,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 5 | Hip Abduction Machine | Glutes | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Back & Biceps  *(16 sets)*
 
@@ -2357,7 +2324,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Glute Bridge | Glutes | 3 | 12 |
-| 5 | Cable Glute Kickback | Glutes | 2 | 14 |
+| 5 | Hip Abduction Machine | Glutes | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -2365,7 +2332,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Glutes Specialty — Six Day (Women)
 
-**6 days a week** · 96 sets a week · for Back & Glutes · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Back & Glutes · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Back & Glutes  *(16 sets)*
 
@@ -2389,7 +2356,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(16 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2397,8 +2364,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Back & Glutes  *(16 sets)*
 
@@ -2430,7 +2396,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Seated Leg Curl | Hamstrings | 3 | 12 |
-| 5 | Nordic Hamstring Curl | Hamstrings | 2 | 14 |
+| 5 | Standing Leg Curl | Hamstrings | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -2438,7 +2404,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Shoulders Specialty — Six Day (Women)
 
-**6 days a week** · 96 sets a week · for Back & Shoulders · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Back & Shoulders · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Back & Side delts  *(16 sets)*
 
@@ -2459,10 +2425,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Seated Cable Row | Back | 2 | 14 |
-| 5 | Chest-Supported Row | Back | 2 | 16 |
+| 5 | Chest-Supported Row | Back | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Glutes  *(16 sets)*
+#### Day 3 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2470,8 +2436,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 5 | Hip Abduction Machine | Glutes | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Back & Side delts  *(16 sets)*
 
@@ -2492,7 +2457,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Pendlay Row | Back | 2 | 14 |
-| 5 | Cable Straight-Arm Pulldown | Back | 2 | 16 |
+| 5 | Cable Straight-Arm Pulldown | Back | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 6 — Chest & Glutes  *(16 sets)*
@@ -2503,7 +2468,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Glute Bridge | Glutes | 3 | 12 |
-| 5 | Cable Glute Kickback | Glutes | 2 | 14 |
+| 5 | Hip Abduction Machine | Glutes | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -2511,7 +2476,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Shoulders Specialty — Six Day (Women)
 
-**6 days a week** · 96 sets a week · for Chest & Shoulders · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Chest & Shoulders · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Chest & Side delts  *(16 sets)*
 
@@ -2532,10 +2497,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Cable Fly — Mid | Chest | 2 | 16 |
+| 5 | Cable Fly — Mid | Chest | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(16 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2543,8 +2508,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Side delts  *(16 sets)*
 
@@ -2565,7 +2529,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 4 | Pec Deck Machine | Chest | 2 | 14 |
-| 5 | Chest Press | Chest | 2 | 16 |
+| 5 | Chest Press | Chest | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 6 — Glutes & Back  *(16 sets)*
@@ -2576,7 +2540,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Glute Kickback Machine | Glutes | 2 | 12 |
 | 4 | Seated Cable Row | Back | 3 | 12 |
-| 5 | Chest-Supported Row | Back | 2 | 14 |
+| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
@@ -2584,7 +2548,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Triceps Specialty — Six Day (Women)
 
-**6 days a week** · 96 sets a week · for Chest & Triceps · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Chest & Triceps · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Chest & Triceps  *(16 sets)*
 
@@ -2608,7 +2572,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(16 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2616,8 +2580,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Triceps  *(16 sets)*
 
@@ -2649,7 +2612,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Glute Kickback Machine | Glutes | 2 | 12 |
 | 4 | Seated Cable Row | Back | 3 | 12 |
-| 5 | Chest-Supported Row | Back | 2 | 14 |
+| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
@@ -2657,7 +2620,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Biceps Specialty — Five Day (Women)
 
-**5 days a week** · 80 sets a week · for Back & Biceps · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Back & Biceps · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Back & Biceps  *(16 sets)*
 
@@ -2681,7 +2644,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Glutes  *(16 sets)*
+#### Day 3 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2689,8 +2652,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 5 | Hip Abduction Machine | Glutes | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Back & Biceps  *(16 sets)*
 
@@ -2719,7 +2681,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Glutes Specialty — Five Day (Women)
 
-**5 days a week** · 80 sets a week · for Back & Glutes · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Back & Glutes · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Back & Glutes  *(16 sets)*
 
@@ -2743,7 +2705,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(16 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2751,8 +2713,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Back & Glutes  *(16 sets)*
 
@@ -2781,7 +2742,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Shoulders Specialty — Five Day (Women)
 
-**5 days a week** · 80 sets a week · for Back & Shoulders · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Back & Shoulders · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Back & Side delts  *(16 sets)*
 
@@ -2802,10 +2763,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Seated Cable Row | Back | 2 | 14 |
-| 5 | Chest-Supported Row | Back | 2 | 16 |
+| 5 | Chest-Supported Row | Back | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Glutes  *(16 sets)*
+#### Day 3 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2813,8 +2774,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 5 | Hip Abduction Machine | Glutes | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Back & Side delts  *(16 sets)*
 
@@ -2835,7 +2795,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Pendlay Row | Back | 2 | 14 |
-| 5 | Cable Straight-Arm Pulldown | Back | 2 | 16 |
+| 5 | Cable Straight-Arm Pulldown | Back | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
 
@@ -2843,7 +2803,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Shoulders Specialty — Five Day (Women)
 
-**5 days a week** · 80 sets a week · for Chest & Shoulders · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Chest & Shoulders · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Chest & Side delts  *(16 sets)*
 
@@ -2864,10 +2824,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Cable Fly — Mid | Chest | 2 | 16 |
+| 5 | Cable Fly — Mid | Chest | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(16 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2875,8 +2835,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Side delts  *(16 sets)*
 
@@ -2897,7 +2856,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 4 | Pec Deck Machine | Chest | 2 | 14 |
-| 5 | Chest Press | Chest | 2 | 16 |
+| 5 | Chest Press | Chest | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
 
@@ -2905,7 +2864,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Triceps Specialty — Five Day (Women)
 
-**5 days a week** · 80 sets a week · for Chest & Triceps · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Chest & Triceps · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Chest & Triceps  *(16 sets)*
 
@@ -2929,7 +2888,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(16 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2937,8 +2896,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Triceps  *(16 sets)*
 
@@ -2967,7 +2925,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Glutes & Back — Five Day
 
-**5 days a week** · 80 sets a week · for Back & Biceps · Mon · Tue · Wed · Fri · Sat
+**5 days a week** · 78 sets a week · for Back & Biceps · Mon · Tue · Wed · Fri · Sat
 
 #### Day 1 — Glutes & Abs  *(16 sets)*
 
@@ -2976,7 +2934,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 2 | Glute Bridge | Glutes | 3 | 12 |
 | 3 | Cable Pull-Through | Glutes | 2 | 14 |
-| 4 | Glute Kickback Machine | Glutes | 2 | 16 |
+| 4 | Glute Kickback Machine | Glutes | 2 | 15 |
 | 5 | Cable Crunch | Abs | 3 | 15 |
 | 6 | Russian Twist | Obliques | 3 | 20 |
 
@@ -2989,9 +2947,9 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Meadows Row | Back | 3 | 12 |
 | 4 | EZ-Bar Curl | Biceps | 3 | 12 |
 | 5 | Barbell Curl | Biceps | 2 | 14 |
-| 6 | Dumbbell Curl | Biceps | 2 | 16 |
+| 6 | Dumbbell Curl | Biceps | 2 | 15 |
 
-#### Day 3 — Quads & Calves  *(16 sets)*
+#### Day 3 — Quads & Calves  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -2999,8 +2957,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Leg Extension Machine | Quads | 3 | 15 |
 | 3 | Reverse Lunge | Quads | 3 | 12 |
 | 4 | Hack Squat Machine | Quads | 2 | 14 |
-| 5 | Leg Press — 45° | Quads | 2 | 16 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 4 — Back B  *(16 sets)*
 
@@ -3011,7 +2968,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Pullover Machine | Back | 3 | 12 |
 | 4 | Incline Dumbbell Curl | Biceps | 3 | 12 |
 | 5 | Alternating Dumbbell Curl | Biceps | 2 | 14 |
-| 6 | Cable Curl | Biceps | 2 | 16 |
+| 6 | Cable Curl | Biceps | 2 | 15 |
 
 #### Day 5 — Hamstrings & Shoulders  *(16 sets)*
 
@@ -3022,25 +2979,24 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
 | 4 | Leg Press Calf Raise | Calves | 3 | 15 |
 | 5 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
-| 6 | Cable Lateral Raise | Side delts | 2 | 17 |
+| 6 | Cable Lateral Raise | Side delts | 2 | 15 |
 
 
 ---
 
 ### Glutes & Shoulders — Five Day
 
-**5 days a week** · 81 sets a week · for Arms & Shoulders · Mon · Tue · Wed · Thu · Sat
+**5 days a week** · 79 sets a week · for Arms & Shoulders · Mon · Tue · Wed · Thu · Sat
 
-#### Day 1 — Glutes  *(16 sets)*
+#### Day 1 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 2 | Cable Pull-Through | Glutes | 3 | 12 |
 | 3 | Glute Kickback Machine | Glutes | 3 | 15 |
-| 4 | Hip Abduction Machine | Glutes | 2 | 17 |
-| 5 | Cable Glute Kickback | Glutes | 2 | 19 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 4 | Hip Abduction Machine | Glutes | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Shoulders  *(16 sets)*
 
@@ -3081,7 +3037,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Smith Machine Hip Thrust | Glutes | 3 | 10 |
 | 2 | Glute Bridge | Glutes | 3 | 12 |
-| 3 | Glute Deadlift | Glutes | 2 | 14 |
+| 3 | Cable Glute Kickback | Glutes | 2 | 14 |
 | 4 | Hanging Leg Raise | Abs | 3 | 12 |
 | 5 | Seated Row Machine | Back | 3 | 10 |
 | 6 | Lat Pulldown — Close Grip | Back | 3 | 10 |
@@ -3102,7 +3058,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Barbell Curl | Biceps | 3 | 12 |
 | 5 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 6 | Dumbbell Curl | Biceps | 2 | 16 |
+| 6 | Dumbbell Curl | Biceps | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Biceps & Back  *(18 sets)*
@@ -3114,7 +3070,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Alternating Dumbbell Curl | Biceps | 2 | 12 |
 | 4 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
-| 6 | Chest-Supported Row | Back | 2 | 16 |
+| 6 | Chest-Supported Row | Back | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 3 — Back & Biceps  *(18 sets)*
@@ -3126,7 +3082,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Single-Arm Dumbbell Row | Back | 2 | 12 |
 | 4 | Hammer Curl | Biceps | 3 | 12 |
 | 5 | Cable Curl | Biceps | 2 | 14 |
-| 6 | Concentration Curl | Biceps | 2 | 16 |
+| 6 | Concentration Curl | Biceps | 2 | 15 |
 | 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Biceps & Back  *(18 sets)*
@@ -3138,7 +3094,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Bicep Curl Machine | Biceps | 2 | 12 |
 | 4 | Barbell Bent-Over Row | Back | 3 | 12 |
 | 5 | T-Bar Row | Back | 2 | 14 |
-| 6 | Cable Straight-Arm Pulldown | Back | 2 | 16 |
+| 6 | Cable Straight-Arm Pulldown | Back | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -3157,7 +3113,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Barbell Hip Thrust | Glutes | 3 | 12 |
 | 5 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 6 | Hip Abduction Machine | Glutes | 2 | 16 |
+| 6 | Hip Abduction Machine | Glutes | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Glutes & Back  *(18 sets)*
@@ -3169,7 +3125,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Glute Kickback | Glutes | 2 | 12 |
 | 4 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
-| 6 | Chest-Supported Row | Back | 2 | 16 |
+| 6 | Chest-Supported Row | Back | 2 | 15 |
 | 7 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 3 — Back & Glutes  *(18 sets)*
@@ -3181,7 +3137,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Single-Arm Dumbbell Row | Back | 2 | 12 |
 | 4 | Glute Bridge | Glutes | 3 | 12 |
 | 5 | Dumbbell Glute Bridge | Glutes | 2 | 14 |
-| 6 | Glute Bridge — Bodyweight | Glutes | 2 | 16 |
+| 6 | Glute Bridge — Bodyweight | Glutes | 2 | 15 |
 | 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Glutes & Back  *(18 sets)*
@@ -3192,8 +3148,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Cable Pull-Through | Glutes | 3 | 10 |
 | 3 | Barbell Bent-Over Row | Back | 3 | 12 |
 | 4 | Cable Straight-Arm Pulldown | Back | 2 | 14 |
-| 5 | Smith Machine Row | Back | 2 | 16 |
-| 6 | Pullover Machine | Back | 2 | 18 |
+| 5 | Smith Machine Row | Back | 2 | 15 |
+| 6 | Pullover Machine | Back | 2 | 15 |
 | 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 
@@ -3201,9 +3157,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Shoulders Specialty — Four Day (Women)
 
-**4 days a week** · 72 sets a week · for Back & Shoulders · Mon · Tue · Thu · Fri
+**4 days a week** · 68 sets a week · for Back & Shoulders · Mon · Tue · Thu · Fri
 
-#### Day 1 — Back & Side delts  *(18 sets)*
+#### Day 1 — Back & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3211,9 +3167,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lat Pulldown — Wide Grip | Back | 3 | 10 |
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
-| 5 | Chest-Supported Row | Back | 2 | 16 |
-| 6 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
-| 7 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
+| 6 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Side delts & Back  *(18 sets)*
 
@@ -3222,22 +3177,21 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Cable Lateral Raise | Side delts | 3 | 8 |
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
-| 4 | T-Bar Row | Back | 2 | 14 |
-| 5 | Pendlay Row | Back | 2 | 16 |
-| 6 | Single-Arm Dumbbell Row | Back | 2 | 18 |
+| 4 | Chest-Supported Row | Back | 2 | 14 |
+| 5 | T-Bar Row | Back | 2 | 15 |
+| 6 | Pendlay Row | Back | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back & Side delts  *(18 sets)*
+#### Day 3 — Back & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Seated Cable Row | Back | 3 | 8 |
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
-| 3 | Cable Straight-Arm Pulldown | Back | 2 | 12 |
-| 4 | Smith Machine Row | Back | 2 | 14 |
-| 5 | Pullover Machine | Back | 2 | 16 |
-| 6 | Lateral Raise Machine | Side delts | 3 | 12 |
-| 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 3 | Single-Arm Dumbbell Row | Back | 2 | 12 |
+| 4 | Cable Straight-Arm Pulldown | Back | 2 | 14 |
+| 5 | Lateral Raise Machine | Side delts | 3 | 12 |
+| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Side delts & Back  *(18 sets)*
 
@@ -3246,9 +3200,9 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Dumbbell Lateral Raise | Side delts | 3 | 8 |
 | 2 | Cable Lateral Raise | Side delts | 3 | 10 |
 | 3 | Barbell Bent-Over Row | Back | 3 | 12 |
-| 4 | Barbell Deadlift | Back | 2 | 14 |
-| 5 | Chest Supported Row Machine | Back | 2 | 16 |
-| 6 | Seated Row Machine | Back | 2 | 18 |
+| 4 | Smith Machine Row | Back | 2 | 14 |
+| 5 | Barbell Deadlift | Back | 2 | 15 |
+| 6 | Pullover Machine | Back | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -3267,7 +3221,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 5 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 14 |
-| 6 | EZ-Bar Skull Crusher | Triceps | 2 | 16 |
+| 6 | EZ-Bar Skull Crusher | Triceps | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Back Led A  *(19 sets)*
@@ -3279,7 +3233,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
 | 4 | Dumbbell Curl | Biceps | 3 | 12 |
 | 5 | Barbell Curl | Biceps | 2 | 14 |
-| 6 | EZ-Bar Curl | Biceps | 2 | 16 |
+| 6 | EZ-Bar Curl | Biceps | 2 | 15 |
 | 7 | Leg Extension Machine | Quads | 3 | 15 |
 
 #### Day 3 — Chest Led B  *(19 sets)*
@@ -3290,7 +3244,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Smith Machine Press | Chest | 3 | 10 |
 | 3 | Dumbbell Fly | Chest | 2 | 12 |
 | 4 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
-| 5 | Cable Lateral Raise | Side delts | 2 | 17 |
+| 5 | Cable Lateral Raise | Side delts | 2 | 15 |
 | 6 | Overhead Cable Tricep Extension | Triceps | 3 | 12 |
 | 7 | Barbell Hip Thrust | Glutes | 3 | 10 |
 
@@ -3302,7 +3256,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lat Prayer | Back | 3 | 12 |
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 14 |
 | 4 | Reverse Pec Deck | Rear delts | 3 | 15 |
-| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
+| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
 | 6 | Hammer Curl | Biceps | 3 | 12 |
 | 7 | Romanian Deadlift | Hamstrings | 3 | 10 |
 
@@ -3311,9 +3265,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Shoulders Specialty — Four Day (Women)
 
-**4 days a week** · 72 sets a week · for Chest & Shoulders · Mon · Tue · Thu · Fri
+**4 days a week** · 68 sets a week · for Chest & Shoulders · Mon · Tue · Thu · Fri
 
-#### Day 1 — Chest & Side delts  *(18 sets)*
+#### Day 1 — Chest & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3321,9 +3275,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Incline Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
-| 7 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
+| 6 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Side delts & Chest  *(18 sets)*
 
@@ -3332,22 +3285,21 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Cable Lateral Raise | Side delts | 3 | 8 |
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
-| 4 | Cable Fly — Mid | Chest | 2 | 14 |
-| 5 | Cable Fly — Low to High | Chest | 2 | 16 |
-| 6 | Cable Fly — High to Low | Chest | 2 | 18 |
+| 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
+| 5 | Cable Fly — Mid | Chest | 2 | 15 |
+| 6 | Cable Fly — Low to High | Chest | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Chest & Side delts  *(18 sets)*
+#### Day 3 — Chest & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Bench Press | Chest | 3 | 8 |
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
-| 3 | Pec Deck Machine | Chest | 2 | 12 |
-| 4 | Chest Press | Chest | 2 | 14 |
-| 5 | Incline Press | Chest | 2 | 16 |
-| 6 | Lateral Raise Machine | Side delts | 3 | 12 |
-| 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 3 | Cable Fly — High to Low | Chest | 2 | 12 |
+| 4 | Pec Deck Machine | Chest | 2 | 14 |
+| 5 | Lateral Raise Machine | Side delts | 3 | 12 |
+| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Side delts & Chest  *(18 sets)*
 
@@ -3356,9 +3308,9 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Dumbbell Lateral Raise | Side delts | 3 | 8 |
 | 2 | Cable Lateral Raise | Side delts | 3 | 10 |
 | 3 | Barbell Bench Press | Chest | 3 | 12 |
-| 4 | Smith Machine Bench Press | Chest | 2 | 14 |
-| 5 | Chest Press Machine | Chest | 2 | 16 |
-| 6 | Eagle Chest Press | Chest | 2 | 18 |
+| 4 | Chest Press | Chest | 2 | 14 |
+| 5 | Incline Press | Chest | 2 | 15 |
+| 6 | Smith Machine Bench Press | Chest | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -3377,7 +3329,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 5 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 14 |
-| 6 | Dumbbell Overhead Extension | Triceps | 2 | 16 |
+| 6 | Dumbbell Overhead Extension | Triceps | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Triceps & Chest  *(18 sets)*
@@ -3389,7 +3341,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Close-Grip Bench Press | Triceps | 2 | 12 |
 | 4 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
-| 6 | Incline Dumbbell Fly | Chest | 2 | 16 |
+| 6 | Incline Dumbbell Fly | Chest | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 3 — Chest & Triceps  *(18 sets)*
@@ -3401,7 +3353,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Fly — Mid | Chest | 2 | 12 |
 | 4 | Overhead Cable Tricep Extension | Triceps | 3 | 12 |
 | 5 | Triceps Dip Machine | Triceps | 2 | 14 |
-| 6 | Tricep Extension Machine | Triceps | 2 | 16 |
+| 6 | Tricep Extension Machine | Triceps | 2 | 15 |
 | 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Triceps & Chest  *(18 sets)*
@@ -3413,7 +3365,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Dumbbell Kickback | Triceps | 2 | 12 |
 | 4 | Barbell Bench Press | Chest | 3 | 12 |
 | 5 | Cable Fly — Low to High | Chest | 2 | 14 |
-| 6 | Cable Fly — High to Low | Chest | 2 | 16 |
+| 6 | Cable Fly — High to Low | Chest | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -3432,7 +3384,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 14 |
 | 4 | Dumbbell Curl | Biceps | 3 | 12 |
 | 5 | Barbell Curl | Biceps | 2 | 14 |
-| 6 | EZ-Bar Curl | Biceps | 2 | 16 |
+| 6 | EZ-Bar Curl | Biceps | 2 | 15 |
 | 7 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 8 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
@@ -3445,7 +3397,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Plate-Loaded Lat Pulldown | Back | 2 | 12 |
 | 4 | Hammer Curl | Biceps | 3 | 12 |
 | 5 | Alternating Dumbbell Curl | Biceps | 2 | 14 |
-| 6 | Cable Curl | Biceps | 2 | 16 |
+| 6 | Cable Curl | Biceps | 2 | 15 |
 | 7 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 8 | Cable Crunch | Abs | 3 | 15 |
 
@@ -3458,7 +3410,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Chest-Supported Row | Back | 2 | 14 |
 | 4 | Incline Dumbbell Curl | Biceps | 3 | 12 |
 | 5 | Concentration Curl | Biceps | 2 | 14 |
-| 6 | Bicep Curl Machine | Biceps | 2 | 16 |
+| 6 | Bicep Curl Machine | Biceps | 2 | 15 |
 | 7 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 8 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
 
@@ -3467,7 +3419,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Biceps Specialty — Three Day (Women)
 
-**3 days a week** · 60 sets a week · for Back & Biceps · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Back & Biceps · Mon · Wed · Fri
 
 #### Day 1 — Back & Biceps  *(20 sets)*
 
@@ -3479,7 +3431,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 5 | Barbell Curl | Biceps | 3 | 12 |
 | 6 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 7 | Dumbbell Curl | Biceps | 2 | 16 |
+| 7 | Dumbbell Curl | Biceps | 2 | 15 |
 | 8 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Biceps & Back  *(20 sets)*
@@ -3492,10 +3444,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Cable Curl | Biceps | 2 | 14 |
 | 5 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 6 | Seated Cable Row | Back | 2 | 14 |
-| 7 | Chest-Supported Row | Back | 2 | 16 |
+| 7 | Chest-Supported Row | Back | 2 | 15 |
 | 8 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Glutes  *(20 sets)*
+#### Day 3 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3503,17 +3455,14 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 5 | Hip Abduction Machine | Glutes | 2 | 16 |
-| 6 | Cable Glute Kickback | Glutes | 2 | 18 |
-| 7 | Dumbbell Glute Bridge | Glutes | 2 | 20 |
-| 8 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
 ---
 
 ### Back & Glutes Specialty — Three Day (Women)
 
-**3 days a week** · 60 sets a week · for Back & Glutes · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Back & Glutes · Mon · Wed · Fri
 
 #### Day 1 — Back & Glutes  *(20 sets)*
 
@@ -3525,7 +3474,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 5 | Barbell Hip Thrust | Glutes | 3 | 12 |
 | 6 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 7 | Hip Abduction Machine | Glutes | 2 | 16 |
+| 7 | Hip Abduction Machine | Glutes | 2 | 15 |
 | 8 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Glutes & Back  *(20 sets)*
@@ -3538,10 +3487,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Dumbbell Glute Bridge | Glutes | 2 | 14 |
 | 5 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 6 | Seated Cable Row | Back | 2 | 14 |
-| 7 | Chest-Supported Row | Back | 2 | 16 |
+| 7 | Chest-Supported Row | Back | 2 | 15 |
 | 8 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(20 sets)*
+#### Day 3 — Hamstrings  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3549,19 +3498,16 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 3 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 6 | Nordic Hamstring Curl | Hamstrings | 2 | 18 |
-| 7 | Glute Ham Raise | Hamstrings | 2 | 20 |
-| 8 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
 ---
 
 ### Back & Shoulders Specialty — Three Day (Women)
 
-**3 days a week** · 60 sets a week · for Back & Shoulders · Mon · Wed · Fri
+**3 days a week** · 48 sets a week · for Back & Shoulders · Mon · Wed · Fri
 
-#### Day 1 — Back & Side delts  *(20 sets)*
+#### Day 1 — Back & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3569,25 +3515,22 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lat Pulldown — Wide Grip | Back | 3 | 10 |
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
-| 5 | Seated Cable Row | Back | 2 | 16 |
-| 6 | Chest-Supported Row | Back | 2 | 18 |
-| 7 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
-| 8 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
+| 6 | Cable Crunch | Abs | 3 | 15 |
 
-#### Day 2 — Side delts & Back  *(20 sets)*
+#### Day 2 — Side delts & Back  *(18 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Cable Lateral Raise | Side delts | 3 | 8 |
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
-| 4 | T-Bar Row | Back | 2 | 14 |
-| 5 | Pendlay Row | Back | 2 | 16 |
-| 6 | Single-Arm Dumbbell Row | Back | 2 | 18 |
-| 7 | Cable Straight-Arm Pulldown | Back | 2 | 20 |
-| 8 | Hanging Leg Raise | Abs | 3 | 15 |
+| 4 | Seated Cable Row | Back | 2 | 14 |
+| 5 | Chest-Supported Row | Back | 2 | 15 |
+| 6 | T-Bar Row | Back | 2 | 15 |
+| 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Glutes  *(20 sets)*
+#### Day 3 — Glutes  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3595,19 +3538,16 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Hip Thrust | Glutes | 3 | 10 |
 | 3 | Cable Pull-Through | Glutes | 3 | 12 |
 | 4 | Glute Kickback Machine | Glutes | 2 | 14 |
-| 5 | Hip Abduction Machine | Glutes | 2 | 16 |
-| 6 | Cable Glute Kickback | Glutes | 2 | 18 |
-| 7 | Dumbbell Glute Bridge | Glutes | 2 | 20 |
-| 8 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
 ---
 
 ### Chest & Shoulders Specialty — Three Day (Women)
 
-**3 days a week** · 60 sets a week · for Chest & Shoulders · Mon · Wed · Fri
+**3 days a week** · 48 sets a week · for Chest & Shoulders · Mon · Wed · Fri
 
-#### Day 1 — Chest & Side delts  *(20 sets)*
+#### Day 1 — Chest & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3615,25 +3555,22 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Incline Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Cable Fly — Mid | Chest | 2 | 18 |
-| 7 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
-| 8 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
+| 6 | Cable Crunch | Abs | 3 | 15 |
 
-#### Day 2 — Side delts & Chest  *(20 sets)*
+#### Day 2 — Side delts & Chest  *(18 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Cable Lateral Raise | Side delts | 3 | 8 |
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
-| 4 | Cable Fly — Low to High | Chest | 2 | 14 |
-| 5 | Cable Fly — High to Low | Chest | 2 | 16 |
-| 6 | Pec Deck Machine | Chest | 2 | 18 |
-| 7 | Chest Press | Chest | 2 | 20 |
-| 8 | Hanging Leg Raise | Abs | 3 | 15 |
+| 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
+| 5 | Cable Fly — Mid | Chest | 2 | 15 |
+| 6 | Cable Fly — Low to High | Chest | 2 | 15 |
+| 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(20 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3641,17 +3578,14 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Chest-Supported Row | Back | 2 | 18 |
-| 7 | Single-Arm Dumbbell Row | Back | 2 | 20 |
-| 8 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
 ---
 
 ### Chest & Triceps Specialty — Three Day (Women)
 
-**3 days a week** · 60 sets a week · for Chest & Triceps · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Chest & Triceps · Mon · Wed · Fri
 
 #### Day 1 — Chest & Triceps  *(20 sets)*
 
@@ -3663,7 +3597,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Dumbbell Fly | Chest | 2 | 14 |
 | 5 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 6 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 14 |
-| 7 | Dumbbell Overhead Extension | Triceps | 2 | 16 |
+| 7 | Dumbbell Overhead Extension | Triceps | 2 | 15 |
 | 8 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Triceps & Chest  *(20 sets)*
@@ -3676,10 +3610,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Triceps Dip Machine | Triceps | 2 | 14 |
 | 5 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 6 | Incline Dumbbell Fly | Chest | 2 | 14 |
-| 7 | Cable Fly — Mid | Chest | 2 | 16 |
+| 7 | Cable Fly — Mid | Chest | 2 | 15 |
 | 8 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(20 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3687,10 +3621,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Chest-Supported Row | Back | 2 | 18 |
-| 7 | Single-Arm Dumbbell Row | Back | 2 | 20 |
-| 8 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
 ---
@@ -3707,7 +3638,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Overhead Press | Front delts | 2 | 12 |
 | 3 | Seated Barbell Press | Front delts | 2 | 14 |
 | 4 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
-| 5 | Cable Lateral Raise | Side delts | 2 | 17 |
+| 5 | Cable Lateral Raise | Side delts | 2 | 15 |
 | 6 | Cable Face Pull | Rear delts | 3 | 15 |
 | 7 | Dumbbell Curl | Biceps | 3 | 12 |
 | 8 | Tricep Rope Pushdown | Triceps | 3 | 12 |
@@ -3736,7 +3667,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Dumbbells at Home — Six Day (Women)
 
-**6 days a week** · 86 sets a week · for Glutes · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 84 sets a week · for Glutes · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Glutes A  *(11 sets)*
 
@@ -3744,7 +3675,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Dumbbell Hip Thrust | Glutes | 3 | 12 |
 | 2 | Dumbbell Glute Bridge | Glutes | 3 | 15 |
-| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 17 |
+| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 15 |
 | 4 | Dumbbell Calf Raise | Calves | 3 | 15 |
 
 #### Day 2 — Upper Push  *(15 sets)*
@@ -3758,7 +3689,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Dumbbell Overhead Extension | Triceps | 3 | 12 |
 | 6 | Dumbbell Kickback | Triceps | 2 | 14 |
 
-#### Day 3 — Quads  *(15 sets)*
+#### Day 3 — Quads  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -3766,8 +3697,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Dumbbell Split Squat | Quads | 3 | 10 |
 | 3 | Bulgarian Split Squat | Quads | 2 | 12 |
 | 4 | Walking Lunge | Quads | 2 | 14 |
-| 5 | Goblet Squat | Quads | 2 | 16 |
-| 6 | Single-Leg Calf Raise | Calves | 3 | 15 |
+| 5 | Single-Leg Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Upper Pull  *(15 sets)*
 
@@ -3778,15 +3708,15 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Bird Dog | Back | 2 | 14s |
 | 4 | Dumbbell Curl | Biceps | 3 | 12 |
 | 5 | Alternating Dumbbell Curl | Biceps | 2 | 14 |
-| 6 | Incline Dumbbell Curl | Biceps | 2 | 16 |
+| 6 | Incline Dumbbell Curl | Biceps | 2 | 15 |
 
 #### Day 5 — Glutes B  *(15 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Dumbbell Sumo Squat | Quads | 3 | 12 |
-| 2 | Reverse Lunge | Quads | 2 | 14 |
-| 3 | Dumbbell Reverse Lunge | Quads | 2 | 16 |
+| 2 | Goblet Squat | Quads | 2 | 14 |
+| 3 | Reverse Lunge | Quads | 2 | 15 |
 | 4 | Dumbbell Romanian Deadlift | Hamstrings | 3 | 10 |
 | 5 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 12 |
 | 6 | Plank | Abs | 3 | 45s |
@@ -3798,7 +3728,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Dumbbell Shoulder Press | Front delts | 3 | 10 |
 | 2 | Seated Dumbbell Press | Front delts | 2 | 12 |
 | 3 | Arnold Press | Front delts | 2 | 14 |
-| 4 | Front Raise — Dumbbell | Front delts | 2 | 16 |
+| 4 | Front Raise — Dumbbell | Front delts | 2 | 15 |
 | 5 | Rear Delt Fly — Dumbbell | Rear delts | 3 | 15 |
 | 6 | Side Plank | Obliques | 3 | 40s |
 
@@ -3807,7 +3737,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Dumbbells at Home — Five Day (Women)
 
-**5 days a week** · 72 sets a week · for Glutes · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 70 sets a week · for Glutes · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Glutes  *(11 sets)*
 
@@ -3815,7 +3745,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Dumbbell Hip Thrust | Glutes | 3 | 12 |
 | 2 | Dumbbell Glute Bridge | Glutes | 3 | 15 |
-| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 17 |
+| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 15 |
 | 4 | Dumbbell Calf Raise | Calves | 3 | 15 |
 
 #### Day 2 — Upper Push  *(16 sets)*
@@ -3829,16 +3759,15 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Seated Dumbbell Press | Front delts | 2 | 12 |
 | 6 | Bench Dip | Triceps | 3 | 12 |
 
-#### Day 3 — Quads  *(15 sets)*
+#### Day 3 — Quads  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Dumbbell Front Squat | Quads | 3 | 10 |
 | 2 | Dumbbell Step-Up | Quads | 3 | 12 |
 | 3 | Bulgarian Split Squat | Quads | 2 | 14 |
-| 4 | Walking Lunge | Quads | 2 | 16 |
-| 5 | Goblet Squat | Quads | 2 | 18 |
-| 6 | Single-Leg Calf Raise | Calves | 3 | 15 |
+| 4 | Walking Lunge | Quads | 2 | 15 |
+| 5 | Single-Leg Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Upper Pull  *(16 sets)*
 
@@ -3874,7 +3803,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Dumbbell Hip Thrust | Glutes | 3 | 12 |
 | 2 | Dumbbell Glute Bridge | Glutes | 3 | 15 |
-| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 17 |
+| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 15 |
 | 4 | Dumbbell Romanian Deadlift | Hamstrings | 3 | 10 |
 | 5 | Nordic Hamstring Curl | Hamstrings | 2 | 12 |
 | 6 | Dumbbell Calf Raise | Calves | 3 | 15 |
@@ -3928,7 +3857,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Dumbbell Hip Thrust | Glutes | 3 | 12 |
 | 2 | Dumbbell Glute Bridge | Glutes | 3 | 15 |
-| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 17 |
+| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 15 |
 | 4 | Dumbbell Calf Raise | Calves | 3 | 15 |
 | 5 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 6 | Dumbbell Bench Press | Chest | 2 | 12 |
@@ -3974,7 +3903,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Dumbbell Hip Thrust | Glutes | 3 | 12 |
 | 2 | Dumbbell Glute Bridge | Glutes | 3 | 15 |
-| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 17 |
+| 3 | Glute Bridge — Bodyweight | Glutes | 2 | 15 |
 | 4 | Dumbbell Romanian Deadlift | Hamstrings | 3 | 10 |
 | 5 | Nordic Hamstring Curl | Hamstrings | 2 | 12 |
 | 6 | Dumbbell Calf Raise | Calves | 3 | 15 |
@@ -4266,7 +4195,7 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Leg Press — 45° | Quads | 3 | 12 |
 | 2 | Leg Extension Machine | Quads | 2 | 14 |
-| 3 | Smith Machine Squat | Quads | 2 | 16 |
+| 3 | Smith Machine Squat | Quads | 2 | 15 |
 | 4 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 5 | Seated Calf Raise Machine | Calves | 3 | 15 |
 | 6 | Incline Dumbbell Press | Chest | 3 | 10 |
@@ -4282,18 +4211,17 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Lower Body Emphasis — Six Day (Men)
 
-**6 days a week** · 93 sets a week · for Lower Body · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 87 sets a week · for Lower Body · Mon · Tue · Wed · Thu · Fri · Sat
 
-#### Day 1 — Quads A  *(15 sets)*
+#### Day 1 — Quads A  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Back Squat | Quads | 3 | 6 |
 | 2 | Leg Extension Machine | Quads | 3 | 15 |
-| 3 | Leg Press — 45° | Quads | 2 | 17 |
-| 4 | Leg Press — Horizontal | Quads | 2 | 19 |
-| 5 | Smith Machine Squat | Quads | 2 | 21 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 3 | Leg Press — 45° | Quads | 2 | 15 |
+| 4 | Leg Press — Horizontal | Quads | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Chest & Triceps  *(16 sets)*
 
@@ -4306,16 +4234,15 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 14 |
 | 6 | Cable Crunch | Abs | 3 | 15 |
 
-#### Day 3 — Hamstrings  *(15 sets)*
+#### Day 3 — Hamstrings  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Romanian Deadlift | Hamstrings | 3 | 8 |
 | 2 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 4 | Seated Leg Curl | Hamstrings | 2 | 16 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 18 |
-| 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
+| 4 | Seated Leg Curl | Hamstrings | 2 | 15 |
+| 5 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 4 — Back & Biceps  *(16 sets)*
 
@@ -4328,16 +4255,15 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | EZ-Bar Curl | Biceps | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 12 |
 
-#### Day 5 — Quads B  *(15 sets)*
+#### Day 5 — Quads B  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Hack Squat Machine | Quads | 3 | 10 |
 | 2 | Bulgarian Split Squat | Quads | 3 | 10 |
-| 3 | Walking Lunge | Quads | 2 | 12 |
-| 4 | Goblet Squat | Quads | 2 | 14 |
-| 5 | Belt Squat | Quads | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 3 | Smith Machine Squat | Quads | 2 | 12 |
+| 4 | Walking Lunge | Quads | 2 | 14 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 6 — Shoulders  *(16 sets)*
 
@@ -4355,18 +4281,17 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Lower Body Emphasis — Five Day (Men)
 
-**5 days a week** · 82 sets a week · for Lower Body · Mon · Tue · Wed · Fri · Sat
+**5 days a week** · 78 sets a week · for Lower Body · Mon · Tue · Wed · Fri · Sat
 
-#### Day 1 — Squat  *(16 sets)*
+#### Day 1 — Squat  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Back Squat | Quads | 3 | 6 |
 | 2 | Hack Squat Machine | Quads | 3 | 10 |
 | 3 | Leg Extension Machine | Quads | 3 | 15 |
-| 4 | Leg Press — Horizontal | Quads | 2 | 17 |
-| 5 | Smith Machine Squat | Quads | 2 | 19 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 4 | Leg Press — Horizontal | Quads | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Upper Push  *(17 sets)*
 
@@ -4379,7 +4304,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | EZ-Bar Skull Crusher | Triceps | 3 | 12 |
 | 6 | Cable Crunch | Abs | 3 | 15 |
 
-#### Day 3 — Hinge  *(16 sets)*
+#### Day 3 — Hinge  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -4387,8 +4312,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Seated Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Glute Ham Raise | Hamstrings | 3 | 10 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 12 |
-| 5 | Lying Leg Curl | Hamstrings | 2 | 14 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Upper Pull  *(17 sets)*
 
@@ -4407,9 +4331,9 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Leg Press — 45° | Quads | 3 | 12 |
 | 2 | Walking Lunge | Quads | 3 | 12 |
-| 3 | Bulgarian Split Squat | Quads | 2 | 14 |
+| 3 | Smith Machine Squat | Quads | 2 | 14 |
 | 4 | Standing Leg Curl | Hamstrings | 3 | 12 |
-| 5 | Nordic Hamstring Curl | Hamstrings | 2 | 14 |
+| 5 | Lying Leg Curl | Hamstrings | 2 | 14 |
 | 6 | Smith Machine Calf Raise | Calves | 3 | 15 |
 
 
@@ -4417,19 +4341,17 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Lower Body Emphasis — Four Day (Men)
 
-**4 days a week** · 74 sets a week · for Lower Body · Mon · Tue · Thu · Fri
+**4 days a week** · 70 sets a week · for Lower Body · Mon · Tue · Thu · Fri
 
-#### Day 1 — Quads A  *(18 sets)*
+#### Day 1 — Quads A  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Back Squat | Quads | 3 | 6 |
 | 2 | Leg Press — 45° | Quads | 3 | 12 |
 | 3 | Leg Extension Machine | Quads | 3 | 15 |
-| 4 | Hack Squat Machine | Quads | 2 | 17 |
-| 5 | Leg Press — Horizontal | Quads | 2 | 19 |
-| 6 | Smith Machine Squat | Quads | 2 | 21 |
-| 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 4 | Hack Squat Machine | Quads | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Upper A  *(19 sets)*
 
@@ -4451,8 +4373,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
 | 4 | Bulgarian Split Squat | Quads | 3 | 10 |
-| 5 | Walking Lunge | Quads | 2 | 12 |
-| 6 | Goblet Squat | Quads | 2 | 14 |
+| 5 | Leg Press — Horizontal | Quads | 2 | 12 |
+| 6 | Smith Machine Squat | Quads | 2 | 14 |
 | 7 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 4 — Upper B  *(19 sets)*
@@ -4557,9 +4479,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Upper Body Emphasis — Six Day (Men)
 
-**6 days a week** · 96 sets a week · for Upper Body · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 92 sets a week · for Upper Body · Mon · Tue · Wed · Thu · Fri · Sat
 
-#### Day 1 — Chest A  *(16 sets)*
+#### Day 1 — Chest A  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -4567,8 +4489,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Cable Fly — Mid | Chest | 3 | 12 |
 | 4 | Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Incline Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Back A  *(16 sets)*
 
@@ -4578,8 +4499,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
 | 4 | Leg Extension Machine | Quads | 3 | 15 |
-| 5 | Barbell Back Squat | Quads | 2 | 17 |
-| 6 | Hack Squat Machine | Quads | 2 | 19 |
+| 5 | Barbell Back Squat | Quads | 2 | 15 |
+| 6 | Hack Squat Machine | Quads | 2 | 15 |
 
 #### Day 3 — Shoulders & Arms A  *(16 sets)*
 
@@ -4592,16 +4513,15 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Barbell Curl | Biceps | 3 | 12 |
 | 6 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 
-#### Day 4 — Chest B  *(16 sets)*
+#### Day 4 — Chest B  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Incline Press | Chest | 3 | 10 |
 | 2 | Dumbbell Bench Press | Chest | 3 | 10 |
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
-| 4 | Cable Fly — Low to High | Chest | 2 | 14 |
-| 5 | Cable Fly — High to Low | Chest | 2 | 16 |
-| 6 | Hanging Leg Raise | Abs | 3 | 12 |
+| 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
+| 5 | Hanging Leg Raise | Abs | 3 | 12 |
 
 #### Day 5 — Back B  *(16 sets)*
 
@@ -4611,7 +4531,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Seated Cable Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Reverse Pec Deck | Rear delts | 3 | 15 |
-| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
+| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
 | 6 | Lying Leg Curl | Hamstrings | 3 | 12 |
 
 #### Day 6 — Shoulders & Arms B  *(16 sets)*
@@ -4630,9 +4550,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Upper Body Emphasis — Five Day (Men)
 
-**5 days a week** · 85 sets a week · for Upper Body · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 81 sets a week · for Upper Body · Mon · Tue · Wed · Thu · Fri
 
-#### Day 1 — Chest  *(17 sets)*
+#### Day 1 — Chest  *(15 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -4640,10 +4560,9 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Cable Fly — Low to High | Chest | 3 | 12 |
-| 5 | Dumbbell Bench Press | Chest | 2 | 14 |
-| 6 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Cable Crunch | Abs | 3 | 15 |
 
-#### Day 2 — Back  *(17 sets)*
+#### Day 2 — Back  *(15 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -4651,8 +4570,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Close Grip | Back | 3 | 10 |
 | 4 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
-| 5 | Lat Pulldown — Wide Grip | Back | 2 | 14 |
-| 6 | Hanging Leg Raise | Abs | 3 | 12 |
+| 5 | Hanging Leg Raise | Abs | 3 | 12 |
 
 #### Day 3 — Legs  *(17 sets)*
 
@@ -4702,7 +4620,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Cable Fly — Mid | Chest | 3 | 12 |
 | 4 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
-| 5 | Cable Lateral Raise | Side delts | 2 | 17 |
+| 5 | Cable Lateral Raise | Side delts | 2 | 15 |
 | 6 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 7 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 14 |
 
@@ -4715,7 +4633,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
 | 4 | Barbell Curl | Biceps | 3 | 12 |
 | 5 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 6 | Dumbbell Curl | Biceps | 2 | 16 |
+| 6 | Dumbbell Curl | Biceps | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 12 |
 
 #### Day 3 — Push B  *(19 sets)*
@@ -4738,7 +4656,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Seated Cable Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Reverse Pec Deck | Rear delts | 3 | 15 |
-| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
+| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
 | 6 | Hammer Curl | Biceps | 3 | 12 |
 | 7 | Romanian Deadlift | Hamstrings | 3 | 10 |
 
@@ -4758,7 +4676,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | EZ-Bar Skull Crusher | Triceps | 3 | 12 |
 | 5 | Tricep Rope Pushdown | Triceps | 2 | 14 |
-| 6 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 16 |
+| 6 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 15 |
 | 7 | Barbell Curl | Biceps | 3 | 12 |
 | 8 | Leg Extension Machine | Quads | 3 | 15 |
 
@@ -4806,7 +4724,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Barbell Overhead Press | Front delts | 2 | 12 |
 | 6 | Seated Barbell Press | Front delts | 2 | 14 |
 | 7 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
-| 8 | Cable Lateral Raise | Side delts | 2 | 17 |
+| 8 | Cable Lateral Raise | Side delts | 2 | 15 |
 | 9 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 10 | Barbell Back Squat | Quads | 3 | 10 |
 
@@ -4818,8 +4736,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 10 |
 | 4 | Cable Face Pull | Rear delts | 3 | 15 |
-| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
-| 6 | Reverse Pec Deck | Rear delts | 2 | 19 |
+| 5 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
+| 6 | Reverse Pec Deck | Rear delts | 2 | 15 |
 | 7 | Barbell Curl | Biceps | 3 | 12 |
 | 8 | Hammer Curl | Biceps | 3 | 12 |
 | 9 | EZ-Bar Curl | Biceps | 2 | 14 |
@@ -4832,7 +4750,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Legs Specialty — Six Day (Men)
 
-**6 days a week** · 96 sets a week · for Legs · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Legs · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Quads & Hamstrings  *(16 sets)*
 
@@ -4856,7 +4774,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Leg Press — Horizontal | Quads | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Chest  *(16 sets)*
+#### Day 3 — Chest  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -4864,8 +4782,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Dumbbell Bench Press | Chest | 2 | 14 |
-| 5 | Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Quads & Hamstrings  *(16 sets)*
 
@@ -4897,7 +4814,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 2 | 12 |
 | 4 | Pec Deck Machine | Chest | 3 | 12 |
-| 5 | Incline Dumbbell Fly | Chest | 2 | 14 |
+| 5 | Dumbbell Fly | Chest | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -4905,18 +4822,17 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Quad Specialty — Six Day (Men)
 
-**6 days a week** · 88 sets a week · for Lower Body · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 82 sets a week · for Lower Body · Mon · Tue · Wed · Thu · Fri · Sat
 
-#### Day 1 — Heavy Squat  *(15 sets)*
+#### Day 1 — Heavy Squat  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Back Squat | Quads | 3 | 6 |
 | 2 | Leg Extension Machine | Quads | 3 | 15 |
-| 3 | Leg Press — 45° | Quads | 2 | 17 |
-| 4 | Leg Press — Horizontal | Quads | 2 | 19 |
-| 5 | Smith Machine Squat | Quads | 2 | 21 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 3 | Leg Press — 45° | Quads | 2 | 15 |
+| 4 | Leg Press — Horizontal | Quads | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Chest & Triceps  *(15 sets)*
 
@@ -4927,18 +4843,17 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 5 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 14 |
-| 6 | Overhead Cable Tricep Extension | Triceps | 2 | 16 |
+| 6 | Overhead Cable Tricep Extension | Triceps | 2 | 15 |
 
-#### Day 3 — Hamstrings  *(15 sets)*
+#### Day 3 — Hamstrings  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Romanian Deadlift | Hamstrings | 3 | 8 |
 | 2 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 4 | Seated Leg Curl | Hamstrings | 2 | 16 |
-| 5 | Standing Leg Curl | Hamstrings | 2 | 18 |
-| 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
+| 4 | Seated Leg Curl | Hamstrings | 2 | 15 |
+| 5 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 4 — Back & Biceps  *(15 sets)*
 
@@ -4949,18 +4864,17 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Barbell Curl | Biceps | 3 | 12 |
 | 5 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 6 | Dumbbell Curl | Biceps | 2 | 16 |
+| 6 | Dumbbell Curl | Biceps | 2 | 15 |
 
-#### Day 5 — Volume Quads  *(15 sets)*
+#### Day 5 — Volume Quads  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Hack Squat Machine | Quads | 3 | 10 |
 | 2 | Bulgarian Split Squat | Quads | 3 | 10 |
-| 3 | Walking Lunge | Quads | 2 | 12 |
-| 4 | Goblet Squat | Quads | 2 | 14 |
-| 5 | Belt Squat | Quads | 2 | 16 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 3 | Smith Machine Squat | Quads | 2 | 12 |
+| 4 | Walking Lunge | Quads | 2 | 14 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 6 — Posterior & Abs  *(13 sets)*
 
@@ -4968,8 +4882,8 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Romanian Deadlift | Hamstrings | 3 | 10 |
 | 2 | Glute Ham Raise | Hamstrings | 3 | 10 |
-| 3 | Nordic Hamstring Curl | Hamstrings | 2 | 12 |
-| 4 | Dumbbell Romanian Deadlift | Hamstrings | 2 | 14 |
+| 3 | Standing Leg Curl | Hamstrings | 2 | 12 |
+| 4 | Nordic Hamstring Curl | Hamstrings | 2 | 14 |
 | 5 | Hanging Leg Raise | Abs | 3 | 12 |
 
 
@@ -4977,7 +4891,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Legs Specialty — Five Day (Men)
 
-**5 days a week** · 80 sets a week · for Legs · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Legs · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Quads & Hamstrings  *(16 sets)*
 
@@ -5001,7 +4915,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Leg Press — Horizontal | Quads | 2 | 14 |
 | 6 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Chest  *(16 sets)*
+#### Day 3 — Chest  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5009,8 +4923,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Dumbbell Bench Press | Chest | 2 | 14 |
-| 5 | Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Quads & Hamstrings  *(16 sets)*
 
@@ -5039,29 +4952,27 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Quad Specialty — Five Day (Men)
 
-**5 days a week** · 78 sets a week · for Lower Body · Mon · Tue · Wed · Fri · Sat
+**5 days a week** · 72 sets a week · for Lower Body · Mon · Tue · Wed · Fri · Sat
 
-#### Day 1 — Heavy Squat  *(15 sets)*
+#### Day 1 — Heavy Squat  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Back Squat | Quads | 3 | 6 |
 | 2 | Leg Extension Machine | Quads | 3 | 15 |
-| 3 | Leg Press — Horizontal | Quads | 2 | 17 |
-| 4 | Smith Machine Squat | Quads | 2 | 19 |
-| 5 | Goblet Squat | Quads | 2 | 21 |
-| 6 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 3 | Leg Press — Horizontal | Quads | 2 | 15 |
+| 4 | Smith Machine Squat | Quads | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 2 — Hamstrings  *(15 sets)*
+#### Day 2 — Hamstrings  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Romanian Deadlift | Hamstrings | 3 | 8 |
 | 2 | Seated Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 14 |
-| 4 | Lying Leg Curl | Hamstrings | 2 | 16 |
-| 5 | Nordic Hamstring Curl | Hamstrings | 2 | 18 |
-| 6 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 4 | Lying Leg Curl | Hamstrings | 2 | 15 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 3 — Upper Maintenance  *(16 sets)*
 
@@ -5074,16 +4985,15 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
 | 6 | Barbell Curl | Biceps | 3 | 12 |
 
-#### Day 4 — Volume Quads  *(16 sets)*
+#### Day 4 — Volume Quads  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Hack Squat Machine | Quads | 3 | 10 |
 | 2 | Leg Press — 45° | Quads | 3 | 12 |
 | 3 | Walking Lunge | Quads | 3 | 12 |
-| 4 | Belt Squat | Quads | 2 | 14 |
-| 5 | Pendulum Squat Machine | Quads | 2 | 16 |
-| 6 | Smith Machine Calf Raise | Calves | 3 | 15 |
+| 4 | Goblet Squat | Quads | 2 | 14 |
+| 5 | Smith Machine Calf Raise | Calves | 3 | 15 |
 
 #### Day 5 — Single Leg & Abs  *(16 sets)*
 
@@ -5091,9 +5001,9 @@ Each template is one week. The week repeats for the whole block — load progres
 |---:|---|---|---:|---:|
 | 1 | Bulgarian Split Squat | Quads | 3 | 10 |
 | 2 | Reverse Lunge | Quads | 3 | 12 |
-| 3 | Dumbbell Reverse Lunge | Quads | 2 | 14 |
+| 3 | Belt Squat | Quads | 2 | 14 |
 | 4 | Standing Leg Curl | Hamstrings | 3 | 12 |
-| 5 | Glute Ham Raise | Hamstrings | 2 | 14 |
+| 5 | Nordic Hamstring Curl | Hamstrings | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 12 |
 
 
@@ -5112,7 +5022,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Hack Squat Machine | Quads | 2 | 12 |
 | 4 | Romanian Deadlift | Hamstrings | 3 | 12 |
 | 5 | Standing Leg Curl | Hamstrings | 2 | 14 |
-| 6 | Nordic Hamstring Curl | Hamstrings | 2 | 16 |
+| 6 | Nordic Hamstring Curl | Hamstrings | 2 | 15 |
 | 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Hamstrings & Quads  *(18 sets)*
@@ -5124,7 +5034,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 12 |
 | 4 | Leg Press — 45° | Quads | 3 | 12 |
 | 5 | Leg Press — Horizontal | Quads | 2 | 14 |
-| 6 | Smith Machine Squat | Quads | 2 | 16 |
+| 6 | Smith Machine Squat | Quads | 2 | 15 |
 | 7 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 3 — Quads & Hamstrings  *(18 sets)*
@@ -5136,7 +5046,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Bulgarian Split Squat | Quads | 2 | 12 |
 | 4 | Seated Leg Curl | Hamstrings | 3 | 12 |
 | 5 | Glute Ham Raise | Hamstrings | 2 | 14 |
-| 6 | Dumbbell Romanian Deadlift | Hamstrings | 2 | 16 |
+| 6 | Dumbbell Romanian Deadlift | Hamstrings | 2 | 15 |
 | 7 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Hamstrings & Quads  *(18 sets)*
@@ -5147,8 +5057,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lying Leg Curl | Hamstrings | 3 | 10 |
 | 3 | Barbell Back Squat | Quads | 3 | 12 |
 | 4 | Walking Lunge | Quads | 2 | 14 |
-| 5 | Goblet Squat | Quads | 2 | 16 |
-| 6 | Belt Squat | Quads | 2 | 18 |
+| 5 | Goblet Squat | Quads | 2 | 15 |
+| 6 | Belt Squat | Quads | 2 | 15 |
 | 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 
@@ -5156,21 +5066,19 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Quad Specialty — Four Day (Men)
 
-**4 days a week** · 73 sets a week · for Lower Body · Mon · Tue · Thu · Fri
+**4 days a week** · 61 sets a week · for Lower Body · Mon · Tue · Thu · Fri
 
-#### Day 1 — Quads A  *(18 sets)*
+#### Day 1 — Quads A  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Back Squat | Quads | 3 | 6 |
 | 2 | Hack Squat Machine | Quads | 3 | 10 |
 | 3 | Leg Extension Machine | Quads | 3 | 15 |
-| 4 | Leg Press — Horizontal | Quads | 2 | 17 |
-| 5 | Smith Machine Squat | Quads | 2 | 19 |
-| 6 | Walking Lunge | Quads | 2 | 21 |
-| 7 | Standing Calf Raise Machine | Calves | 3 | 15 |
+| 4 | Leg Press — Horizontal | Quads | 2 | 15 |
+| 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 2 — Hamstrings A  *(18 sets)*
+#### Day 2 — Hamstrings A  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5178,21 +5086,17 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lying Leg Curl | Hamstrings | 3 | 12 |
 | 3 | Glute Ham Raise | Hamstrings | 3 | 10 |
 | 4 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 12 |
-| 5 | Seated Leg Curl | Hamstrings | 2 | 14 |
-| 6 | Standing Leg Curl | Hamstrings | 2 | 16 |
-| 7 | Seated Calf Raise Machine | Calves | 3 | 15 |
+| 5 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Quads B  *(18 sets)*
+#### Day 3 — Quads B  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Front Squat | Quads | 3 | 8 |
 | 2 | Leg Press — 45° | Quads | 3 | 12 |
 | 3 | Bulgarian Split Squat | Quads | 3 | 10 |
-| 4 | Goblet Squat | Quads | 2 | 12 |
-| 5 | Belt Squat | Quads | 2 | 14 |
-| 6 | Pendulum Squat Machine | Quads | 2 | 16 |
-| 7 | Leg Press Calf Raise | Calves | 3 | 15 |
+| 4 | Smith Machine Squat | Quads | 2 | 12 |
+| 5 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 #### Day 4 — Upper Maintenance  *(19 sets)*
 
@@ -5211,7 +5115,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Legs Specialty — Three Day (Men)
 
-**3 days a week** · 60 sets a week · for Legs · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Legs · Mon · Wed · Fri
 
 #### Day 1 — Quads & Hamstrings  *(20 sets)*
 
@@ -5223,7 +5127,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Leg Press — Horizontal | Quads | 2 | 14 |
 | 5 | Romanian Deadlift | Hamstrings | 3 | 12 |
 | 6 | Standing Leg Curl | Hamstrings | 2 | 14 |
-| 7 | Nordic Hamstring Curl | Hamstrings | 2 | 16 |
+| 7 | Nordic Hamstring Curl | Hamstrings | 2 | 15 |
 | 8 | Standing Calf Raise Machine | Calves | 3 | 15 |
 
 #### Day 2 — Hamstrings & Quads  *(20 sets)*
@@ -5236,10 +5140,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Glute Ham Raise | Hamstrings | 2 | 14 |
 | 5 | Leg Press — 45° | Quads | 3 | 12 |
 | 6 | Leg Extension Machine | Quads | 2 | 14 |
-| 7 | Smith Machine Squat | Quads | 2 | 16 |
+| 7 | Smith Machine Squat | Quads | 2 | 15 |
 | 8 | Seated Calf Raise Machine | Calves | 3 | 15 |
 
-#### Day 3 — Chest  *(20 sets)*
+#### Day 3 — Chest  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5247,10 +5151,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Dumbbell Bench Press | Chest | 2 | 14 |
-| 5 | Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Incline Dumbbell Fly | Chest | 2 | 18 |
-| 7 | Cable Fly — Mid | Chest | 2 | 20 |
-| 8 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
 ---
@@ -5266,7 +5167,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Barbell Back Squat | Quads | 3 | 6 |
 | 2 | Hack Squat Machine | Quads | 3 | 8 |
 | 3 | Leg Extension Machine | Quads | 3 | 15 |
-| 4 | Leg Press — Horizontal | Quads | 2 | 17 |
+| 4 | Leg Press — Horizontal | Quads | 2 | 15 |
 | 5 | Standing Calf Raise Machine | Calves | 3 | 15 |
 | 6 | Barbell Bench Press | Chest | 3 | 8 |
 | 7 | Dumbbell Bench Press | Chest | 2 | 10 |
@@ -5352,7 +5253,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Overhead Press | Front delts | 2 | 10 |
 | 3 | Seated Barbell Press | Front delts | 2 | 12 |
 | 4 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
-| 5 | Cable Lateral Raise | Side delts | 2 | 17 |
+| 5 | Cable Lateral Raise | Side delts | 2 | 15 |
 | 6 | Cable Face Pull | Rear delts | 3 | 15 |
 
 #### Day 2 — Arms A  *(16 sets)*
@@ -5386,7 +5287,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Shoulder Press Machine | Front delts | 2 | 14 |
 | 4 | Lateral Raise Machine | Side delts | 3 | 15 |
 | 5 | Reverse Pec Deck | Rear delts | 3 | 15 |
-| 6 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 17 |
+| 6 | Rear Delt Fly — Dumbbell | Rear delts | 2 | 15 |
 
 #### Day 5 — Arms B  *(16 sets)*
 
@@ -5397,7 +5298,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Dumbbell Curl | Biceps | 2 | 14 |
 | 4 | Overhead Cable Tricep Extension | Triceps | 3 | 12 |
 | 5 | Dumbbell Kickback | Triceps | 3 | 15 |
-| 6 | Dumbbell Overhead Extension | Triceps | 2 | 17 |
+| 6 | Dumbbell Overhead Extension | Triceps | 2 | 15 |
 
 #### Day 6 — Chest & Back  *(16 sets)*
 
@@ -5415,7 +5316,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Biceps Specialty — Six Day (Men)
 
-**6 days a week** · 96 sets a week · for Back & Biceps · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Back & Biceps · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Back & Biceps  *(16 sets)*
 
@@ -5439,7 +5340,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Chest  *(16 sets)*
+#### Day 3 — Chest  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5447,8 +5348,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Dumbbell Bench Press | Chest | 2 | 14 |
-| 5 | Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Back & Biceps  *(16 sets)*
 
@@ -5480,7 +5380,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Back Squat | Quads | 3 | 10 |
 | 3 | Hack Squat Machine | Quads | 2 | 12 |
 | 4 | Pec Deck Machine | Chest | 3 | 12 |
-| 5 | Incline Dumbbell Fly | Chest | 2 | 14 |
+| 5 | Dumbbell Fly | Chest | 2 | 14 |
 | 6 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
@@ -5488,7 +5388,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Back Specialty — Six Day (Men)
 
-**6 days a week** · 96 sets a week · for Chest & Back · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Chest & Back · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Chest & Back  *(16 sets)*
 
@@ -5512,7 +5412,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Front delts  *(16 sets)*
+#### Day 3 — Front delts  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5520,8 +5420,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Dumbbell Shoulder Press | Front delts | 3 | 10 |
 | 3 | Seated Dumbbell Press | Front delts | 3 | 12 |
 | 4 | Barbell Overhead Press | Front delts | 2 | 14 |
-| 5 | Seated Barbell Press | Front delts | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Back  *(16 sets)*
 
@@ -5553,7 +5452,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Back Squat | Quads | 3 | 10 |
 | 3 | Hack Squat Machine | Quads | 2 | 12 |
 | 4 | Arnold Press | Front delts | 3 | 12 |
-| 5 | Shoulder Press Machine | Front delts | 2 | 14 |
+| 5 | Seated Barbell Press | Front delts | 2 | 14 |
 | 6 | Leg Press Calf Raise | Calves | 3 | 15 |
 
 
@@ -5561,7 +5460,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Shoulders Specialty — Six Day (Men)
 
-**6 days a week** · 96 sets a week · for Chest & Shoulders · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Chest & Shoulders · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Chest & Side delts  *(16 sets)*
 
@@ -5582,10 +5481,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Cable Fly — Mid | Chest | 2 | 16 |
+| 5 | Cable Fly — Mid | Chest | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(16 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5593,8 +5492,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Side delts  *(16 sets)*
 
@@ -5615,7 +5513,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 4 | Pec Deck Machine | Chest | 2 | 14 |
-| 5 | Chest Press | Chest | 2 | 16 |
+| 5 | Chest Press | Chest | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 6 — Triceps & Back  *(16 sets)*
@@ -5626,7 +5524,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Tricep Rope Pushdown | Triceps | 3 | 10 |
 | 3 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 12 |
 | 4 | Seated Cable Row | Back | 3 | 12 |
-| 5 | Chest-Supported Row | Back | 2 | 14 |
+| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -5634,7 +5532,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Triceps Specialty — Six Day (Men)
 
-**6 days a week** · 96 sets a week · for Chest & Triceps · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 94 sets a week · for Chest & Triceps · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Chest & Triceps  *(16 sets)*
 
@@ -5658,7 +5556,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(16 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5666,8 +5564,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Triceps  *(16 sets)*
 
@@ -5699,7 +5596,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Dumbbell Shoulder Press | Front delts | 3 | 10 |
 | 3 | Barbell Overhead Press | Front delts | 2 | 12 |
 | 4 | Seated Cable Row | Back | 3 | 12 |
-| 5 | Chest-Supported Row | Back | 2 | 14 |
+| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
@@ -5789,7 +5686,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Straight-Arm Pulldown | Back | 3 | 12 |
 | 4 | Barbell Curl | Biceps | 3 | 12 |
 | 5 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 6 | Dumbbell Curl | Biceps | 2 | 16 |
+| 6 | Dumbbell Curl | Biceps | 2 | 15 |
 
 #### Day 2 — Back Thickness  *(16 sets)*
 
@@ -5800,7 +5697,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Meadows Row | Back | 3 | 12 |
 | 4 | Hammer Curl | Biceps | 3 | 12 |
 | 5 | Alternating Dumbbell Curl | Biceps | 2 | 14 |
-| 6 | Concentration Curl | Biceps | 2 | 16 |
+| 6 | Concentration Curl | Biceps | 2 | 15 |
 
 #### Day 3 — Legs  *(16 sets)*
 
@@ -5840,7 +5737,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Biceps Specialty — Five Day (Men)
 
-**5 days a week** · 80 sets a week · for Back & Biceps · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Back & Biceps · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Back & Biceps  *(16 sets)*
 
@@ -5864,7 +5761,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Chest  *(16 sets)*
+#### Day 3 — Chest  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5872,8 +5769,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Dumbbell Bench Press | Chest | 2 | 14 |
-| 5 | Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Back & Biceps  *(16 sets)*
 
@@ -5902,7 +5798,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Back Specialty — Five Day (Men)
 
-**5 days a week** · 80 sets a week · for Chest & Back · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Chest & Back · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Chest & Back  *(16 sets)*
 
@@ -5926,7 +5822,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Front delts  *(16 sets)*
+#### Day 3 — Front delts  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5934,8 +5830,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Dumbbell Shoulder Press | Front delts | 3 | 10 |
 | 3 | Seated Dumbbell Press | Front delts | 3 | 12 |
 | 4 | Barbell Overhead Press | Front delts | 2 | 14 |
-| 5 | Seated Barbell Press | Front delts | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Back  *(16 sets)*
 
@@ -5964,7 +5859,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Shoulders Specialty — Five Day (Men)
 
-**5 days a week** · 80 sets a week · for Chest & Shoulders · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Chest & Shoulders · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Chest & Side delts  *(16 sets)*
 
@@ -5985,10 +5880,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Cable Fly — Mid | Chest | 2 | 16 |
+| 5 | Cable Fly — Mid | Chest | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(16 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -5996,8 +5891,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Side delts  *(16 sets)*
 
@@ -6018,7 +5912,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 4 | Pec Deck Machine | Chest | 2 | 14 |
-| 5 | Chest Press | Chest | 2 | 16 |
+| 5 | Chest Press | Chest | 2 | 15 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
 
@@ -6026,7 +5920,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Triceps Specialty — Five Day (Men)
 
-**5 days a week** · 80 sets a week · for Chest & Triceps · Mon · Tue · Wed · Thu · Fri
+**5 days a week** · 78 sets a week · for Chest & Triceps · Mon · Tue · Wed · Thu · Fri
 
 #### Day 1 — Chest & Triceps  *(16 sets)*
 
@@ -6050,7 +5944,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
 | 6 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(16 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -6058,8 +5952,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Chest & Triceps  *(16 sets)*
 
@@ -6159,7 +6052,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Lat Pulldown — Close Grip | Back | 2 | 12 |
 | 4 | Barbell Curl | Biceps | 3 | 12 |
 | 5 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 6 | Dumbbell Curl | Biceps | 2 | 16 |
+| 6 | Dumbbell Curl | Biceps | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Biceps & Back  *(18 sets)*
@@ -6171,7 +6064,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Alternating Dumbbell Curl | Biceps | 2 | 12 |
 | 4 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 5 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
-| 6 | Chest-Supported Row | Back | 2 | 16 |
+| 6 | Chest-Supported Row | Back | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 3 — Back & Biceps  *(18 sets)*
@@ -6183,7 +6076,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Single-Arm Dumbbell Row | Back | 2 | 12 |
 | 4 | Hammer Curl | Biceps | 3 | 12 |
 | 5 | Cable Curl | Biceps | 2 | 14 |
-| 6 | Concentration Curl | Biceps | 2 | 16 |
+| 6 | Concentration Curl | Biceps | 2 | 15 |
 | 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Biceps & Back  *(18 sets)*
@@ -6195,7 +6088,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Bicep Curl Machine | Biceps | 2 | 12 |
 | 4 | Barbell Bent-Over Row | Back | 3 | 12 |
 | 5 | T-Bar Row | Back | 2 | 14 |
-| 6 | Cable Straight-Arm Pulldown | Back | 2 | 16 |
+| 6 | Cable Straight-Arm Pulldown | Back | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -6214,7 +6107,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Barbell Bent-Over Row | Back | 3 | 12 |
 | 5 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 6 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
+| 6 | Plate-Loaded Lat Pulldown | Back | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Back & Chest  *(18 sets)*
@@ -6226,7 +6119,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Chest-Supported Row | Back | 2 | 12 |
 | 4 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
-| 6 | Incline Dumbbell Fly | Chest | 2 | 16 |
+| 6 | Incline Dumbbell Fly | Chest | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 3 — Chest & Back  *(18 sets)*
@@ -6238,7 +6131,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Fly — Mid | Chest | 2 | 12 |
 | 4 | Seated Cable Row | Back | 3 | 12 |
 | 5 | T-Bar Row | Back | 2 | 14 |
-| 6 | Single-Arm Dumbbell Row | Back | 2 | 16 |
+| 6 | Single-Arm Dumbbell Row | Back | 2 | 15 |
 | 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Back & Chest  *(18 sets)*
@@ -6250,7 +6143,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Pendlay Row | Back | 2 | 12 |
 | 4 | Barbell Bench Press | Chest | 3 | 12 |
 | 5 | Cable Fly — Low to High | Chest | 2 | 14 |
-| 6 | Cable Fly — High to Low | Chest | 2 | 16 |
+| 6 | Cable Fly — High to Low | Chest | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -6258,9 +6151,9 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Chest & Shoulders Specialty — Four Day (Men)
 
-**4 days a week** · 72 sets a week · for Chest & Shoulders · Mon · Tue · Thu · Fri
+**4 days a week** · 68 sets a week · for Chest & Shoulders · Mon · Tue · Thu · Fri
 
-#### Day 1 — Chest & Side delts  *(18 sets)*
+#### Day 1 — Chest & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -6268,9 +6161,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Incline Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
-| 7 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
+| 6 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Side delts & Chest  *(18 sets)*
 
@@ -6279,22 +6171,21 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Cable Lateral Raise | Side delts | 3 | 8 |
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
-| 4 | Cable Fly — Mid | Chest | 2 | 14 |
-| 5 | Cable Fly — Low to High | Chest | 2 | 16 |
-| 6 | Cable Fly — High to Low | Chest | 2 | 18 |
+| 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
+| 5 | Cable Fly — Mid | Chest | 2 | 15 |
+| 6 | Cable Fly — Low to High | Chest | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Chest & Side delts  *(18 sets)*
+#### Day 3 — Chest & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Barbell Bench Press | Chest | 3 | 8 |
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
-| 3 | Pec Deck Machine | Chest | 2 | 12 |
-| 4 | Chest Press | Chest | 2 | 14 |
-| 5 | Incline Press | Chest | 2 | 16 |
-| 6 | Lateral Raise Machine | Side delts | 3 | 12 |
-| 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 3 | Cable Fly — High to Low | Chest | 2 | 12 |
+| 4 | Pec Deck Machine | Chest | 2 | 14 |
+| 5 | Lateral Raise Machine | Side delts | 3 | 12 |
+| 6 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Side delts & Chest  *(18 sets)*
 
@@ -6303,9 +6194,9 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Dumbbell Lateral Raise | Side delts | 3 | 8 |
 | 2 | Cable Lateral Raise | Side delts | 3 | 10 |
 | 3 | Barbell Bench Press | Chest | 3 | 12 |
-| 4 | Smith Machine Bench Press | Chest | 2 | 14 |
-| 5 | Chest Press Machine | Chest | 2 | 16 |
-| 6 | Eagle Chest Press | Chest | 2 | 18 |
+| 4 | Chest Press | Chest | 2 | 14 |
+| 5 | Incline Press | Chest | 2 | 15 |
+| 6 | Smith Machine Bench Press | Chest | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -6349,7 +6240,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
 | 5 | Overhead Cable Tricep Extension | Triceps | 3 | 12 |
 | 6 | Dumbbell Kickback | Triceps | 3 | 15 |
-| 7 | Dumbbell Overhead Extension | Triceps | 2 | 17 |
+| 7 | Dumbbell Overhead Extension | Triceps | 2 | 15 |
 
 #### Day 4 — Back & Shoulders B  *(19 sets)*
 
@@ -6379,7 +6270,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 5 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 14 |
-| 6 | Dumbbell Overhead Extension | Triceps | 2 | 16 |
+| 6 | Dumbbell Overhead Extension | Triceps | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Triceps & Chest  *(18 sets)*
@@ -6391,7 +6282,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Close-Grip Bench Press | Triceps | 2 | 12 |
 | 4 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 5 | Dumbbell Fly | Chest | 2 | 14 |
-| 6 | Incline Dumbbell Fly | Chest | 2 | 16 |
+| 6 | Incline Dumbbell Fly | Chest | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 3 — Chest & Triceps  *(18 sets)*
@@ -6403,7 +6294,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Cable Fly — Mid | Chest | 2 | 12 |
 | 4 | Overhead Cable Tricep Extension | Triceps | 3 | 12 |
 | 5 | Triceps Dip Machine | Triceps | 2 | 14 |
-| 6 | Tricep Extension Machine | Triceps | 2 | 16 |
+| 6 | Tricep Extension Machine | Triceps | 2 | 15 |
 | 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Triceps & Chest  *(18 sets)*
@@ -6415,7 +6306,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Dumbbell Kickback | Triceps | 2 | 12 |
 | 4 | Barbell Bench Press | Chest | 3 | 12 |
 | 5 | Cable Fly — Low to High | Chest | 2 | 14 |
-| 6 | Cable Fly — High to Low | Chest | 2 | 16 |
+| 6 | Cable Fly — High to Low | Chest | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -6434,7 +6325,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Barbell Overhead Press | Front delts | 2 | 12 |
 | 4 | Barbell Curl | Biceps | 3 | 12 |
 | 5 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 6 | Dumbbell Curl | Biceps | 2 | 16 |
+| 6 | Dumbbell Curl | Biceps | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Biceps & Front delts  *(18 sets)*
@@ -6446,7 +6337,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Alternating Dumbbell Curl | Biceps | 2 | 12 |
 | 4 | Seated Dumbbell Press | Front delts | 3 | 12 |
 | 5 | Seated Barbell Press | Front delts | 2 | 14 |
-| 6 | Shoulder Press Machine | Front delts | 2 | 16 |
+| 6 | Shoulder Press Machine | Front delts | 2 | 15 |
 | 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 3 — Front delts & Biceps  *(18 sets)*
@@ -6458,7 +6349,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Smith Machine Overhead Press | Front delts | 2 | 12 |
 | 4 | Hammer Curl | Biceps | 3 | 12 |
 | 5 | Cable Curl | Biceps | 2 | 14 |
-| 6 | Concentration Curl | Biceps | 2 | 16 |
+| 6 | Concentration Curl | Biceps | 2 | 15 |
 | 7 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 #### Day 4 — Biceps & Front delts  *(18 sets)*
@@ -6470,7 +6361,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 3 | Bicep Curl Machine | Biceps | 2 | 12 |
 | 4 | Dumbbell Shoulder Press | Front delts | 3 | 12 |
 | 5 | Front Raise — Dumbbell | Front delts | 2 | 14 |
-| 6 | Front Raise — Cable | Front delts | 2 | 16 |
+| 6 | Front Raise — Cable | Front delts | 2 | 15 |
 | 7 | Cable Crunch | Abs | 3 | 15 |
 
 
@@ -6488,8 +6379,8 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Arnold Press | Front delts | 3 | 10 |
 | 3 | Barbell Overhead Press | Front delts | 2 | 12 |
 | 4 | Dumbbell Lateral Raise | Side delts | 3 | 15 |
-| 5 | Cable Lateral Raise | Side delts | 2 | 17 |
-| 6 | Lateral Raise Machine | Side delts | 2 | 19 |
+| 5 | Cable Lateral Raise | Side delts | 2 | 15 |
+| 6 | Lateral Raise Machine | Side delts | 2 | 15 |
 | 7 | Cable Face Pull | Rear delts | 3 | 15 |
 | 8 | Barbell Back Squat | Quads | 3 | 10 |
 
@@ -6524,7 +6415,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Back & Biceps Specialty — Three Day (Men)
 
-**3 days a week** · 60 sets a week · for Back & Biceps · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Back & Biceps · Mon · Wed · Fri
 
 #### Day 1 — Back & Biceps  *(20 sets)*
 
@@ -6536,7 +6427,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Plate-Loaded Lat Pulldown | Back | 2 | 14 |
 | 5 | Barbell Curl | Biceps | 3 | 12 |
 | 6 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 7 | Dumbbell Curl | Biceps | 2 | 16 |
+| 7 | Dumbbell Curl | Biceps | 2 | 15 |
 | 8 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Biceps & Back  *(20 sets)*
@@ -6549,10 +6440,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Cable Curl | Biceps | 2 | 14 |
 | 5 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 6 | Seated Cable Row | Back | 2 | 14 |
-| 7 | Chest-Supported Row | Back | 2 | 16 |
+| 7 | Chest-Supported Row | Back | 2 | 15 |
 | 8 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Chest  *(20 sets)*
+#### Day 3 — Chest  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -6560,17 +6451,14 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Pec Deck Machine | Chest | 3 | 12 |
 | 4 | Dumbbell Bench Press | Chest | 2 | 14 |
-| 5 | Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Incline Dumbbell Fly | Chest | 2 | 18 |
-| 7 | Cable Fly — Mid | Chest | 2 | 20 |
-| 8 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
 ---
 
 ### Chest & Back Specialty — Three Day (Men)
 
-**3 days a week** · 60 sets a week · for Chest & Back · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Chest & Back · Mon · Wed · Fri
 
 #### Day 1 — Chest & Back  *(20 sets)*
 
@@ -6582,7 +6470,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Dumbbell Fly | Chest | 2 | 14 |
 | 5 | Barbell Bent-Over Row | Back | 3 | 12 |
 | 6 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 7 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
+| 7 | Plate-Loaded Lat Pulldown | Back | 2 | 15 |
 | 8 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Back & Chest  *(20 sets)*
@@ -6595,10 +6483,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | T-Bar Row | Back | 2 | 14 |
 | 5 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 6 | Incline Dumbbell Fly | Chest | 2 | 14 |
-| 7 | Cable Fly — Mid | Chest | 2 | 16 |
+| 7 | Cable Fly — Mid | Chest | 2 | 15 |
 | 8 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Front delts  *(20 sets)*
+#### Day 3 — Front delts  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -6606,19 +6494,16 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Dumbbell Shoulder Press | Front delts | 3 | 10 |
 | 3 | Seated Dumbbell Press | Front delts | 3 | 12 |
 | 4 | Barbell Overhead Press | Front delts | 2 | 14 |
-| 5 | Seated Barbell Press | Front delts | 2 | 16 |
-| 6 | Shoulder Press Machine | Front delts | 2 | 18 |
-| 7 | Smith Machine Overhead Press | Front delts | 2 | 20 |
-| 8 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
 ---
 
 ### Chest & Shoulders Specialty — Three Day (Men)
 
-**3 days a week** · 60 sets a week · for Chest & Shoulders · Mon · Wed · Fri
+**3 days a week** · 48 sets a week · for Chest & Shoulders · Mon · Wed · Fri
 
-#### Day 1 — Chest & Side delts  *(20 sets)*
+#### Day 1 — Chest & Side delts  *(16 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -6626,25 +6511,22 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Incline Dumbbell Press | Chest | 3 | 10 |
 | 3 | Dumbbell Bench Press | Chest | 2 | 12 |
 | 4 | Dumbbell Fly | Chest | 2 | 14 |
-| 5 | Incline Dumbbell Fly | Chest | 2 | 16 |
-| 6 | Cable Fly — Mid | Chest | 2 | 18 |
-| 7 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
-| 8 | Cable Crunch | Abs | 3 | 15 |
+| 5 | Dumbbell Lateral Raise | Side delts | 3 | 12 |
+| 6 | Cable Crunch | Abs | 3 | 15 |
 
-#### Day 2 — Side delts & Chest  *(20 sets)*
+#### Day 2 — Side delts & Chest  *(18 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Cable Lateral Raise | Side delts | 3 | 8 |
 | 2 | Lateral Raise Machine | Side delts | 3 | 10 |
 | 3 | Incline Dumbbell Press | Chest | 3 | 12 |
-| 4 | Cable Fly — Low to High | Chest | 2 | 14 |
-| 5 | Cable Fly — High to Low | Chest | 2 | 16 |
-| 6 | Pec Deck Machine | Chest | 2 | 18 |
-| 7 | Chest Press | Chest | 2 | 20 |
-| 8 | Hanging Leg Raise | Abs | 3 | 15 |
+| 4 | Incline Dumbbell Fly | Chest | 2 | 14 |
+| 5 | Cable Fly — Mid | Chest | 2 | 15 |
+| 6 | Cable Fly — Low to High | Chest | 2 | 15 |
+| 7 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(20 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -6652,17 +6534,14 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Chest-Supported Row | Back | 2 | 18 |
-| 7 | Single-Arm Dumbbell Row | Back | 2 | 20 |
-| 8 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
 ---
 
 ### Chest & Triceps Specialty — Three Day (Men)
 
-**3 days a week** · 60 sets a week · for Chest & Triceps · Mon · Wed · Fri
+**3 days a week** · 54 sets a week · for Chest & Triceps · Mon · Wed · Fri
 
 #### Day 1 — Chest & Triceps  *(20 sets)*
 
@@ -6674,7 +6553,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Dumbbell Fly | Chest | 2 | 14 |
 | 5 | Tricep Rope Pushdown | Triceps | 3 | 12 |
 | 6 | Tricep Bar Pushdown — Straight Bar | Triceps | 2 | 14 |
-| 7 | Dumbbell Overhead Extension | Triceps | 2 | 16 |
+| 7 | Dumbbell Overhead Extension | Triceps | 2 | 15 |
 | 8 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Triceps & Chest  *(20 sets)*
@@ -6687,10 +6566,10 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Triceps Dip Machine | Triceps | 2 | 14 |
 | 5 | Incline Dumbbell Press | Chest | 3 | 12 |
 | 6 | Incline Dumbbell Fly | Chest | 2 | 14 |
-| 7 | Cable Fly — Mid | Chest | 2 | 16 |
+| 7 | Cable Fly — Mid | Chest | 2 | 15 |
 | 8 | Hanging Leg Raise | Abs | 3 | 15 |
 
-#### Day 3 — Back  *(20 sets)*
+#### Day 3 — Back  *(14 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
@@ -6698,10 +6577,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Barbell Bent-Over Row | Back | 3 | 10 |
 | 3 | Lat Pulldown — Wide Grip | Back | 3 | 12 |
 | 4 | Lat Pulldown — Close Grip | Back | 2 | 14 |
-| 5 | Plate-Loaded Lat Pulldown | Back | 2 | 16 |
-| 6 | Chest-Supported Row | Back | 2 | 18 |
-| 7 | Single-Arm Dumbbell Row | Back | 2 | 20 |
-| 8 | Captain's Chair Knee Raise | Abs | 3 | 15 |
+| 5 | Captain's Chair Knee Raise | Abs | 3 | 15 |
 
 
 ---
@@ -6720,7 +6596,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Seated Barbell Press | Front delts | 2 | 14 |
 | 5 | Barbell Curl | Biceps | 3 | 12 |
 | 6 | EZ-Bar Curl | Biceps | 2 | 14 |
-| 7 | Dumbbell Curl | Biceps | 2 | 16 |
+| 7 | Dumbbell Curl | Biceps | 2 | 15 |
 | 8 | Cable Crunch | Abs | 3 | 15 |
 
 #### Day 2 — Biceps & Front delts  *(20 sets)*
@@ -6733,7 +6609,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 4 | Cable Curl | Biceps | 2 | 14 |
 | 5 | Seated Dumbbell Press | Front delts | 3 | 12 |
 | 6 | Arnold Press | Front delts | 2 | 14 |
-| 7 | Shoulder Press Machine | Front delts | 2 | 16 |
+| 7 | Shoulder Press Machine | Front delts | 2 | 15 |
 | 8 | Hanging Leg Raise | Abs | 3 | 15 |
 
 #### Day 3 — Side delts  *(12 sets)*
@@ -6789,7 +6665,7 @@ Each template is one week. The week repeats for the whole block — load progres
 
 ### Dumbbells at Home — Six Day (Men)
 
-**6 days a week** · 94 sets a week · for Full body · Mon · Tue · Wed · Thu · Fri · Sat
+**6 days a week** · 92 sets a week · for Full body · Mon · Tue · Wed · Thu · Fri · Sat
 
 #### Day 1 — Push A  *(16 sets)*
 
@@ -6843,19 +6719,18 @@ Each template is one week. The week repeats for the whole block — load progres
 | 2 | Rear Delt Fly — Dumbbell | Rear delts | 3 | 15 |
 | 3 | Hammer Curl | Biceps | 3 | 12 |
 | 4 | Incline Dumbbell Curl | Biceps | 2 | 14 |
-| 5 | Concentration Curl | Biceps | 2 | 16 |
+| 5 | Concentration Curl | Biceps | 2 | 15 |
 | 6 | Dumbbell Reverse Wrist Curl | Forearms | 3 | 15 |
 
-#### Day 6 — Legs B  *(15 sets)*
+#### Day 6 — Legs B  *(13 sets)*
 
 | # | Exercise | Muscle | Sets | Reps |
 |---:|---|---|---:|---:|
 | 1 | Dumbbell Split Squat | Quads | 3 | 10 |
 | 2 | Dumbbell Step-Up | Quads | 3 | 12 |
 | 3 | Goblet Squat | Quads | 2 | 14 |
-| 4 | Reverse Lunge | Quads | 2 | 16 |
-| 5 | Dumbbell Reverse Lunge | Quads | 2 | 18 |
-| 6 | Single-Leg Calf Raise | Calves | 3 | 15 |
+| 4 | Reverse Lunge | Quads | 2 | 15 |
+| 5 | Single-Leg Calf Raise | Calves | 3 | 15 |
 
 
 ---
@@ -6957,7 +6832,7 @@ Each template is one week. The week repeats for the whole block — load progres
 | 1 | Dumbbell Sumo Squat | Quads | 3 | 12 |
 | 2 | Dumbbell Step-Up | Quads | 3 | 12 |
 | 3 | Goblet Squat | Quads | 2 | 14 |
-| 4 | Reverse Lunge | Quads | 2 | 16 |
+| 4 | Reverse Lunge | Quads | 2 | 15 |
 | 5 | Dumbbell Romanian Deadlift | Hamstrings | 3 | 10 |
 | 6 | Single-Leg Romanian Deadlift | Hamstrings | 2 | 12 |
 | 7 | Single-Leg Calf Raise | Calves | 3 | 15 |

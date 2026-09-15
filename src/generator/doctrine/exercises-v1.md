@@ -6905,3 +6905,30 @@ unsupported where `patterns.ts` had them as chest-supported — the population i
 looser count suggested. One of those, `Back & Biceps Focus — Five Day (Men) / Back Thickness`, runs a
 bent-over row, a T-bar and a Meadows row together; that is a back day doing back work and is Jack's call,
 not a fault to sweep.
+
+**G136 — One muscle gets at most four exercises in a session.**
+
+> *"Remove either the hack squat machine or the leg press. Just one of the two. This is a ridiculous amount
+> of volume for quads."* — on a quad day carrying a back squat, two leg presses, a leg extension and a hack
+> squat.
+
+**Rule:** four is the ceiling for a single muscle in one session. Falling short of the day's exercise target
+is the correct outcome when nothing else can take the slot — a shorter honest session beats a fifth
+movement for a muscle that has had enough.
+
+**The cap existed and was soft, which is the whole defect.** `deepen()` selected
+`blocks.find((b) => b.size < 3) ?? blocks[0]`, and the comment above it claimed "no single muscle runs
+deeper than three." The `?? blocks[0]` fallback meant that once every block reached three, every remaining
+insertion went onto the FIRST one. The result across the shipped library: 157 muscle blocks at four or more
+exercises, 67 at five, 10 at six, and **13 at seven — seventeen sets on one muscle in one day.** His day was
+mid-range, not the worst.
+
+A soft cap with a fallback is not a cap. It is a preference that surrenders under exactly the pressure it
+was written to resist.
+
+**Reps compounded the same way.** Each insertion took `neighbour reps + 2`, so a block ran 10 → 12 → 14 →
+16 → 18 → 20 as it deepened; 321 non-timed slots sat above 15 reps, with 2x17 and 2x19 visible on screen.
+Inserted reps are now capped at 15, which is where the authored templates top out. The 20-rep ab work that
+remains is authored and correct — `repRanges.ts` reserves 20-30 for exactly that.
+
+---
