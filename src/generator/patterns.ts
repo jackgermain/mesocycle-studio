@@ -50,7 +50,13 @@ const RULES: { test: RegExp; pattern: Pattern; erectors?: boolean }[] = [
   // Deadlifts are a hinge that happens to be filed under Back in the library.
   { test: /deadlift|rack pull|good ?morning/, pattern: "hinge", erectors: true },
   { test: /romanian|stiff-?leg|pull-?through|hip thrust|glute bridge|hyperextension|back extension|nordic/, pattern: "hinge" },
-  { test: /row|shrug/, pattern: "horizontal pull" },
+  // Shrugs are NOT here, deliberately. Jack: "shrugs are isolation and are in a category of their own
+  // neither vertical or horizontal even though technically vertical." Filed as a horizontal pull they were
+  // compounds, which made them eligible to OPEN a session -- and it left Traps with three compounds and no
+  // isolation at all, so its accessory slots fell through to the compound fallback. Returning no pattern is
+  // exactly the category of their own: forMuscle picks them up as accessories, and nothing can lead a day
+  // with a shrug.
+  { test: /row/, pattern: "horizontal pull" },
   { test: /overhead press|shoulder press|military press|arnold press|push press/, pattern: "vertical push" },
   { test: /bench press|chest press|incline press|decline press|dumbbell press|dip|push-?up|landmine press|svend press/, pattern: "horizontal push" },
   { test: /split squat|lunge|step-?up|pistol/, pattern: "single leg" },

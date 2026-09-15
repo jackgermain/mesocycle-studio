@@ -96,6 +96,10 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Assisted Pull-Up/Dip Machine", "Back", false),
   ex("Smith Machine Row", "Back", false),
   ex("Barbell Deadlift", "Back", true),
+  // Both were missing, and their absence was not harmless: "Trap Bar Deadlift" fuzzy-matched "Trap Bar
+  // Shrug" on the words "trap" and "bar" and came back as Traps -- a heavy hinge booked as shrug volume.
+  ex("Trap Bar Deadlift", "Back", false),
+  ex("Sumo Deadlift", "Back", false),
   ex("Rack Pull", "Back", false),
   ex("Reverse Hyperextension", "Back", false),
   ex("Back Extension", "Back", false),
@@ -398,7 +402,7 @@ export function resolveLibraryExercise(name: string): { exercise: LibraryExercis
   // Most-specific wins. "Barbell RDL" contains both "Barbell Deadlift" and "Romanian Deadlift"; taking
   // whichever came first in the file returned Back instead of Hamstrings -- the right answer is the one
   // that uses more of what was actually written.
-  let subset: { exercise: LibraryExercise; matched: number; generic: number } | undefined;
+  let subset: { exercise: LibraryExercise; matched: number; strayMeaning: number; generic: number } | undefined;
   for (const ex of libraryExercises) {
     const exTokens = words(ex.name);
     if (!exTokens.size) continue;
@@ -409,8 +413,26 @@ export function resolveLibraryExercise(name: string): { exercise: LibraryExercis
     // Deadlift" and "Barbell Deadlift" at two tokens each; the first is the movement and the second is
     // just the bar it's held with, so the one with fewer equipment words wins.
     const generic = [...exTokens].filter((t) => GENERIC_WORDS.has(t)).length;
-    if (!subset || smaller.size > subset.matched || (smaller.size === subset.matched && generic < subset.generic)) {
-      subset = { exercise: ex, matched: smaller.size, generic };
+    // Meaning the ENTRY adds that the written name never asked for, equipment words excluded.
+    //
+    // Jack: "deadlifts are not the same thing as romanian deadlifts." Plain "Deadlifts" is a subset of both
+    // "Barbell Deadlift" and "Romanian Deadlift" at one matched token each, so it came down to the
+    // tie-break -- and preferring fewer GENERIC words picked Romanian (0 generic) over Barbell (1), which
+    // is backwards. "Barbell" only names the bar it is held with; "Romanian" is a different movement, a
+    // different muscle (Hamstrings, not Back) and a different pattern. Preferring the entry that invents
+    // the least meaning fixes that.
+    //
+    // The old rule stays as the tertiary tie-break, because it is still right in the other direction: for
+    // "Barbell RDL" both candidates add nothing beyond the input, and there the entry carrying fewer
+    // equipment words -- Romanian Deadlift -- really is the movement being named.
+    const strayMeaning = [...exTokens].filter((t) => !tokens.has(t) && !GENERIC_WORDS.has(t)).length;
+    const better =
+      !subset ||
+      smaller.size > subset.matched ||
+      (smaller.size === subset.matched && strayMeaning < subset.strayMeaning) ||
+      (smaller.size === subset.matched && strayMeaning === subset.strayMeaning && generic < subset.generic);
+    if (better) {
+      subset = { exercise: ex, matched: smaller.size, strayMeaning, generic };
     }
   }
   if (subset) return { exercise: subset.exercise, confidence: "subset" };

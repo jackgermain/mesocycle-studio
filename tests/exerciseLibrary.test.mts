@@ -38,6 +38,50 @@ test("library names are unique", () => {
   }
 });
 
+/** A bare movement name must not pick up a qualifier that changes the movement.
+ *
+ * Jack: "deadlifts are not the same thing as romanian deadlifts." Plain "Deadlifts" is a subset of both
+ * "Barbell Deadlift" and "Romanian Deadlift" at one matched token each, so the answer came down to the
+ * tie-break -- and the old one preferred the entry with fewer EQUIPMENT words, which handed it to Romanian
+ * (0 generic) over Barbell (1). Backwards: "barbell" only names the bar it is held with, while "Romanian"
+ * is a different movement, a different muscle (Hamstrings, not Back) and different volume.
+ *
+ * These are worth pinning because the failure is silent. Nothing crashes; a conventional deadlift simply
+ * books hamstring volume for months. The same matcher has now done this three times -- "Deadlifts", "Trap
+ * Bar Deadlift", and a cable chop that came back as a chest fly. */
+
+test("a plain deadlift is the conventional one, not a Romanian", () => {
+  for (const written of ["Deadlifts", "Deadlift", "deadlift"]) {
+    const hit = resolveLibraryExercise(written);
+    assert.equal(hit?.exercise.name, "Barbell Deadlift", `"${written}"`);
+    assert.equal(hit?.exercise.muscle, "Back", `"${written}" must book back volume, not hamstrings`);
+  }
+});
+
+test("a written RDL still resolves to the Romanian deadlift", () => {
+  // The guard on the fix above. Here both candidates add nothing the input did not already say, and the
+  // entry carrying fewer equipment words really is the movement being named -- so the older tie-break has
+  // to survive as the tertiary rule. Fixing the case above by simply inverting it would break this one.
+  for (const written of ["Barbell RDL", "RDL", "Romanian Deadlifts"]) {
+    assert.equal(resolveLibraryExercise(written)?.exercise.name, "Romanian Deadlift", `"${written}"`);
+    assert.equal(guessMuscleFromLibrary(written), "Hamstrings", `"${written}"`);
+  }
+});
+
+test("a trap bar deadlift is a deadlift, not a shrug", () => {
+  // It fuzzy-matched "Trap Bar Shrug" on the shared words "trap" and "bar", booking a heavy hinge as trap
+  // volume -- the worst of the three, because the muscle and the movement were both wrong.
+  const hit = resolveLibraryExercise("Trap Bar Deadlift");
+  assert.equal(hit?.exercise.name, "Trap Bar Deadlift");
+  assert.equal(hit?.exercise.muscle, "Back");
+});
+
+test("a bare name prefers the entry that only adds equipment", () => {
+  // The general rule under all three cases: an entry adding just the implement beats one adding a
+  // different movement. "Shrugs" takes Barbell Shrug over Trap Bar Shrug for exactly that reason.
+  assert.equal(resolveLibraryExercise("Shrugs")?.exercise.name, "Barbell Shrug");
+});
+
 test("abbreviations resolve to the right movement", () => {
   const cases: [string, string][] = [
     ["DB Inc Press", "Incline Dumbbell Press"],   // "inc" -- resolved to a FLAT press before this was added
