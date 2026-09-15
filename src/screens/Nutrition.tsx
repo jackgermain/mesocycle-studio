@@ -13,6 +13,7 @@ import { AutoNutritionToggle } from "../shared/AutomationToggles";
 import FoodSearchSheet from "./FoodSearchSheet";
 import type { FoodItem } from "../data/foodDatabase";
 import type { PortionCategory, LoggedFoodItem } from "../data/types";
+import { dailyDeltaKcal, rateLabel, weeklyChangeLb } from "../shared/nutritionPlan";
 
 const PORTION_ICON: Record<PortionCategory, string> = {
   Protein: "ph-hand-palm",
@@ -108,6 +109,27 @@ export default function Nutrition() {
   const totals = totalsFor(state.meals.flatMap(eatenItems));
   const kcalTarget = target.kcal + target.trainingDayCarbBonus * 4;
   const left = Math.max(0, kcalTarget - totals.kcal);
+
+  /** Why the target is the number it is.
+   *
+   * Jack, looking at a 2,699 target while eating 3,350: "why is my calories say 2700 goal if my my intake
+   * is 3350?" Nothing was wrong -- every target is an offset from maintenance (N1), and his rate was set to
+   * a cut -- but the card showed only the result, so the two numbers that produced it were nowhere on
+   * screen and the only way to find out was to ask.
+   *
+   * Read off the STORED maintenance and rate rather than rebuilt with buildPlan. Recomputing here would put
+   * a second, slightly different target beside the one already displayed -- macrosFor reports the true sum
+   * of the rounded grams, which is why the card reads 2,699 against a 2,700 target. */
+  const ratePct = profile.rateTargetPct;
+  const working =
+    profile.maintenanceKcal != null && ratePct != null
+      ? {
+          maintenance: profile.maintenanceKcal,
+          label: rateLabel(ratePct),
+          lbPerWeek: weeklyChangeLb(profile.bodyweight, ratePct),
+          delta: dailyDeltaKcal(weeklyChangeLb(profile.bodyweight, ratePct)),
+        }
+      : null;
 
   /** Submit a meal, and tell the coach once the whole day is in and landed off target.
    *
@@ -221,6 +243,17 @@ export default function Nutrition() {
             </div>
           </div>
           <Meter pct={(totals.kcal / kcalTarget) * 100} large />
+          {/* The arithmetic behind the target, in one line. Shown whenever both numbers exist, including to
+              a coached client: it explains a figure they are already being held to rather than handing them
+              a control over it. */}
+          {working && (
+            <div className="mu" style={{ marginTop: 10 }}>
+              <span className="num">{working.maintenance.toLocaleString()}</span> maintenance
+              {working.delta === 0
+                ? " · holding steady"
+                : ` · ${working.label.toLowerCase()} ${working.delta > 0 ? "+" : ""}${working.delta.toLocaleString()}/day (${working.lbPerWeek > 0 ? "+" : ""}${working.lbPerWeek} lb a week)`}
+            </div>
+          )}
           <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
             <MacroCol label="Protein" value={totals.p} target={target.protein} color="var(--color-accent)" valueColor="var(--color-accent-300)" />
             <MacroCol label="Carbs" value={totals.c} target={target.carbs + target.trainingDayCarbBonus} color="var(--color-neutral-500)" />
