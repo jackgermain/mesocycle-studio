@@ -64,6 +64,13 @@ export interface NutritionProtocolPatch {
   rateTargetLabel: string;
   bodyFatPct: number;
   maintenanceKcal: number;
+  /** Whether `maintenanceKcal` above was typed rather than estimated — see
+   * ClientProfile.maintenanceKcalManual, which is where the consequence lives.
+   *
+   * Required rather than optional on purpose: a new call site has to decide, because getting it wrong is
+   * silent either way — false freezes a figure somebody typed out of the derivation's reach in the wrong
+   * direction, and true stops a stale estimate ever being corrected. */
+  maintenanceKcalManual: boolean;
   rateTargetPct: number;
   autoNutrition: boolean;
   /** N10's inputs. Saved with the rest of the protocol, or the calculator would ask for them again on every
@@ -135,6 +142,9 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
     profile.maintenanceKcal ??
       estimateMaintenance({ bodyweightLb: calcBw, bodyFatPct: calcBf > 0 ? calcBf : undefined, sex, ageYears, heightCm, activity }).kcal,
   );
+  /* Whether the figure above was typed or estimated — see ClientProfile.maintenanceKcalManual. The stored
+   * number cannot say which it is, and the two are treated in opposite ways on read. */
+  const [maintenanceManual, setMaintenanceManual] = useState(profile.maintenanceKcalManual ?? false);
 
   // Calories are derived from the grams, never stored beside them. A 2,500 kcal target made of grams that
   // come to 2,350 is a target the meal log can never hit, because the log adds food up at 4/4/9 and always
@@ -147,6 +157,25 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   // fat alone carbs floor at zero and the calorie line settles at the real total rather than the figure that
   // was typed -- the number on screen is always what the grams come to.
   const setKcalViaCarbs = (v: number) => setCarbs(carbsToHitKcal(v, protein, fat));
+
+  /** A hand edit to the four macro fields is an explicit "I want my own numbers".
+   *
+   * Auto nutrition means the app works them out, so with it on `save` stored the plan's macros and
+   * `deriveNutritionTargets` then recomputed them again on every read — a typed figure was discarded twice
+   * over, silently, and the field simply appeared not to work. Jack: "I went back and changed my macros and
+   * now it's stuck at the previous one."
+   *
+   * Turning auto off is the honest resolution, because the two cannot both be true: either the app computes
+   * the macros or you do. The switch sits a few rows above in this same form, so this reads as a control
+   * moving rather than a hidden mode flip, and it can be turned straight back on.
+   *
+   * The app's OWN writes — the rate presets and the protein suggestion — call the setters directly and
+   * deliberately do not come through here. Those are the plan computing itself, not a person overriding it.
+   */
+  const editMacro = (set: (v: number) => void) => (v: number) => {
+    set(v);
+    setAuto(false);
+  };
 
   /** Re-split the same calorie budget: N7's protein, N11's fat band, carbs taking the rest.
    *
@@ -216,6 +245,9 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   function applyMaintenance() {
     const m = estimated.kcal;
     setMaintenance(m);
+    // Back to an estimated figure, so it is eligible to be recomputed again as the formula improves or the
+    // person's bodyweight changes. This is the one way to clear the manual flag.
+    setMaintenanceManual(false);
     applyPlanMacros(ratePct, m);
   }
 
@@ -248,6 +280,7 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
       rateTargetLabel: plan.label,
       bodyFatPct: calcBf,
       maintenanceKcal: maintenance,
+      maintenanceKcalManual: maintenanceManual,
       // Never store a rate the doctrine forbids, whatever the stepper was left on.
       rateTargetPct: plan.rate.pct,
       autoNutrition: auto,
@@ -385,7 +418,18 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 11 }}>
-              <CalcRow label="Maintenance" unit="kcal" value={maintenance} onChange={setMaintenance} step={50} />
+              {/* Typing here marks the figure as the person's own, so the read-side derivation uses it
+                  instead of recomputing over the top of it. */}
+              <CalcRow
+                label="Maintenance"
+                unit="kcal"
+                value={maintenance}
+                onChange={(v) => {
+                  setMaintenance(v);
+                  setMaintenanceManual(true);
+                }}
+                step={50}
+              />
             </div>
             <div className="row" style={{ marginTop: 9, fontSize: 12.5 }}>
               <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Estimate</span>
@@ -472,10 +516,19 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
               5- or 10-gram step cannot land on every number a person can actually eat. Big moves are typed
               into the field rather than tapped; the step is for the last gram or two. */}
           <div className="cell">
-            <CalcRow label="Calories" unit="kcal" value={kcal} onChange={setKcalViaCarbs} step={50} />
-            <CalcRow label="Protein" unit="g" value={protein} onChange={setProtein} step={1} />
-            <CalcRow label="Carbs" unit="g" value={carbs} onChange={setCarbs} step={1} />
-            <CalcRow label="Fat" unit="g" value={fat} onChange={setFat} step={1} />
+            <CalcRow label="Calories" unit="kcal" value={kcal} onChange={editMacro(setKcalViaCarbs)} step={50} />
+            <CalcRow label="Protein" unit="g" value={protein} onChange={editMacro(setProtein)} step={1} />
+            <CalcRow label="Carbs" unit="g" value={carbs} onChange={editMacro(setCarbs)} step={1} />
+            <CalcRow label="Fat" unit="g" value={fat} onChange={editMacro(setFat)} step={1} />
+            {/* Says what just happened, and only when it happened: auto was on when this form opened and a
+                hand edit has since turned it off. Without this the switch above appears to move on its own. */}
+            {profile.autoNutrition && !auto && (
+              <div className="mu" style={{ marginTop: 6, lineHeight: 1.5, color: "var(--color-accent-200)" }}>
+                <i className="ph ph-info" style={{ fontSize: 13, marginRight: 5 }} />
+                Auto nutrition programming switched off, so these are your numbers now and nothing will
+                recalculate them. Turn it back on above to go back to the worked-out ones.
+              </div>
+            )}
             {/* The per-macro calorie breakdown that used to sit here is gone for the same reason as the
                 maintenance derivation. The behaviour it described is unchanged: the calorie line is still
                 the sum of the grams, so touching a macro still moves it. */}

@@ -211,6 +211,17 @@ export interface ClientProfile {
   /** The maintenance figure targets are an offset from (N1). Estimated to begin with, then corrected from
    * their own weigh-ins by N6 — the scale beats the formula. */
   maintenanceKcal?: number;
+  /** Whether `maintenanceKcal` above was TYPED rather than estimated.
+   *
+   * The number alone cannot tell the two apart, and they have to be treated in opposite ways. An estimated
+   * figure is stale by nature — it was computed once, by whatever the formula looked like that day, and
+   * `deriveNutritionTargets` exists to recompute it. A typed one is the person saying they know their own
+   * maintenance, which is N6's entire premise, and recomputing it would silently throw that away.
+   *
+   * Set only by a hand edit to the maintenance field, cleared by "Use the estimate". Absent means
+   * estimated, which is right for every account saved before this existed — those figures are exactly the
+   * stale ones. */
+  maintenanceKcalManual?: boolean;
   /** Desired rate as a percent of bodyweight per week, negative to lose. Stored as the number rather than
    * only as `rateTargetLabel` prose, because N3's cap and N6's correction both have to compute against it. */
   rateTargetPct?: number;

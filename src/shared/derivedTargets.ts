@@ -49,8 +49,14 @@ export function deriveNutritionTargets(profile: ClientProfile): ClientProfile {
     heightCm: profile.heightCm,
     activity: profile.activityLevel,
     ratePctPerWeek: profile.rateTargetPct,
-    // Deliberately NOT passing profile.maintenanceKcal: that stored figure is the stale one being
-    // corrected. Overriding the estimate with it would derive the same wrong answer, carefully.
+    // A maintenance figure the person TYPED wins; one the app estimated does not.
+    //
+    // An estimated figure is the stale number this whole function exists to correct, so passing it back in
+    // would re-derive the same wrong answer, carefully. But someone who knows their own maintenance has to
+    // be able to say so and have their macros follow it — that is N6's premise, the scale beating the
+    // formula, and the first version of this discarded a typed figure on the very next render. Jack: "I
+    // went back and changed my macros and now it's stuck at the previous one."
+    maintenanceKcal: profile.maintenanceKcalManual ? profile.maintenanceKcal : undefined,
   });
 
   const macroTargets = {

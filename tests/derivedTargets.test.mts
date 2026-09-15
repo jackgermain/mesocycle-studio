@@ -112,6 +112,25 @@ test("an already-correct profile comes back as the same object", () => {
   assert.equal(twice, once, "no churn: a stable profile must not re-render consumers forever");
 });
 
+test("a maintenance figure typed by hand is used, not recomputed over", () => {
+  const out = deriveNutritionTargets(profile({ maintenanceKcal: 3500, maintenanceKcalManual: true }));
+  assert.equal(out.maintenanceKcal, 3500, "the typed figure stands");
+  // And the macros follow it, rather than following the estimate it was overriding.
+  assert.ok(Math.abs(out.macroTargets.kcal - 3500) <= 12, `macros should come to ~3500, got ${out.macroTargets.kcal}`);
+});
+
+test("an ESTIMATED maintenance is still corrected rather than trusted", () => {
+  // The same stale 2,700 as before — unflagged, so it is the seed's output and gets recomputed.
+  const out = deriveNutritionTargets(profile({ maintenanceKcal: 2700 }));
+  assert.ok(out.maintenanceKcal! > 3200, `expected a correction, got ${out.maintenanceKcal}`);
+});
+
+test("a typed maintenance still respects the rate — it sets the baseline, not the target", () => {
+  const out = deriveNutritionTargets(profile({ maintenanceKcal: 3500, maintenanceKcalManual: true, rateTargetPct: -0.5 }));
+  assert.equal(out.maintenanceKcal, 3500);
+  assert.ok(out.macroTargets.kcal < 3500, "a cut off a typed maintenance is still a cut");
+});
+
 test("deriving is idempotent", () => {
   const a = deriveNutritionTargets(profile());
   const b = deriveNutritionTargets(deriveNutritionTargets(a));
