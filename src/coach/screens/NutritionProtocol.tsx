@@ -6,6 +6,7 @@ import { useAuth } from "../../lib/auth";
 import { BackHeader, InfoBanner } from "../../components/UI";
 import { NutritionForm } from "../../shared/NutritionForm";
 import { isoToday } from "../../shared/dayStatus";
+import { deriveNutritionTargets } from "../../shared/derivedTargets";
 import type { ClientProfile } from "../../data/types";
 
 /** Wraps the client's own store — keyed by their account id — so what the coach saves here writes
@@ -48,7 +49,10 @@ function NutritionProtocolGate({ clientName, onDone }: { clientName: string; onD
       </div>
     );
   }
-  return <NutritionFormScreen clientName={clientName} profile={state.profile} onDone={onDone} />;
+  // Derived, exactly as the client's own Nutrition tab does it. Handing the form the RAW profile would show
+  // the coach the stale targets while the client sees the worked-out ones — and a save from this screen
+  // would then write those stale numbers straight back over the corrected ones.
+  return <NutritionFormScreen clientName={clientName} profile={deriveNutritionTargets(state.profile)} onDone={onDone} />;
 }
 
 function NutritionFormScreen({ clientName, profile, onDone }: { clientName: string; profile: ClientProfile; onDone: () => void }) {
