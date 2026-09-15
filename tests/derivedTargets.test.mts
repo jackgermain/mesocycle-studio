@@ -131,6 +131,18 @@ test("a typed maintenance still respects the rate — it sets the baseline, not 
   assert.ok(out.macroTargets.kcal < 3500, "a cut off a typed maintenance is still a cut");
 });
 
+test("every macro follows bodyweight, which is why the form must save it", () => {
+  // Protein is prescribed per POUND (N7) and the fat band is too, so carbs take what is left. A bodyweight
+  // the settings form could change but never store meant the derivation recomputed all four from the
+  // onboarding weight and threw the edit away. Jack: "I hit save settings and then it did not update the
+  // macros."
+  const light = deriveNutritionTargets(profile({ bodyweight: 180 }));
+  const heavy = deriveNutritionTargets(profile({ bodyweight: 220 }));
+  assert.ok(heavy.macroTargets.protein > light.macroTargets.protein, "protein is per pound of bodyweight");
+  assert.ok(heavy.maintenanceKcal! > light.maintenanceKcal!, "and a heavier person burns more");
+  assert.notDeepEqual(heavy.macroTargets, light.macroTargets);
+});
+
 test("deriving is idempotent", () => {
   const a = deriveNutritionTargets(profile());
   const b = deriveNutritionTargets(deriveNutritionTargets(a));

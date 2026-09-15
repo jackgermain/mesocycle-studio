@@ -62,6 +62,14 @@ export interface NutritionProtocolPatch {
   macroTargets: ClientProfile["macroTargets"];
   portionTargets: PortionTarget[];
   rateTargetLabel: string;
+  /** The bodyweight the calculator was actually run on.
+   *
+   * This form has an editable Bodyweight field in two of its cards, and it drives nearly everything —
+   * maintenance, protein per pound, the fat band, and so the carbs left over. It was never saved. That
+   * half-worked while targets were stored: the typed weight fed the macros that got written, once. Once
+   * targets became derived on read, the derivation recomputed them from the profile's own (onboarding-era)
+   * bodyweight and quietly discarded the change, so editing the field did nothing at all. */
+  bodyweight: number;
   bodyFatPct: number;
   maintenanceKcal: number;
   /** Whether `maintenanceKcal` above was typed rather than estimated — see
@@ -278,6 +286,9 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
       // Always the plan's own label, so it can never drift from the rate actually stored beside it. It used
       // to be a free-text box that said whatever was last typed there.
       rateTargetLabel: plan.label,
+      // Every number above was calculated from this weight, so it has to be stored with them or the next
+      // read recomputes them from a different one.
+      bodyweight: calcBw,
       bodyFatPct: calcBf,
       maintenanceKcal: maintenance,
       maintenanceKcalManual: maintenanceManual,
