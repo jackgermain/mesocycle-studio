@@ -105,9 +105,53 @@ const DOWS: Record<number, number[]> = {
   6: [0, 1, 2, 3, 4, 5],
 };
 
+/** Movements that may never open a session. Doctrine, in his own words: *"I would never, in any cases, do
+ * either one of these exercises first. Ever."* */
+const NEVER_OPENS = /\bfly\b|pec deck/i;
+
+/** One barbell squat pattern per day (G130), and the front squat is the one that yields. */
+const SQUAT_PATTERN = /back squat|front squat/i;
+
 function pick(muscle: string, sex: TemplateSex, index: number): string {
   const pool = muscle === "Glutes" && sex === "men" ? MENS_GLUTES : PICK[muscle] ?? [];
   return pool[index % pool.length];
+}
+
+/** The first choice from a muscle's pool that this day can actually accept.
+ *
+ * `pick()` alone produced two classes of bug across all 56 specialty templates, and neither was authored --
+ * both fell out of the index arithmetic:
+ *
+ *   - **A fly opening 14 days.** Slot 1 is `pick(owner, variant)` and slot 2 is `pick(owner, variant + 1)`
+ *     over a three-entry pool, so at `variant = 2` slot 1 takes `pool[2]` -- for Chest, `Pec Deck Machine`
+ *     -- and slot 2 wraps to `pool[0]`, the bench. The fly led the session and the compound followed it.
+ *   - **42 days listing one exercise twice.** The partner slot uses the SAME index as the owner's first
+ *     slot, so whenever a support muscle repeated a lead muscle the pool returned the same name:
+ *     `Arnold Press | Dumbbell Shoulder Press | Arnold Press`, `Seated Cable Row | Barbell Bent-Over Row |
+ *     Seated Cable Row`.
+ *
+ * Walking the pool from the requested index, rather than taking one entry and hoping, fixes both without
+ * changing which muscle leads or how many slots it gets -- which is the whole point of these skeletons. */
+function pickFor(
+  muscle: string,
+  sex: TemplateSex,
+  index: number,
+  taken: Set<string>,
+  opts: { opening?: boolean } = {},
+): string {
+  const pool = muscle === "Glutes" && sex === "men" ? MENS_GLUTES : PICK[muscle] ?? [];
+  const bannedSquat = opts.opening ? false : [...taken].some((n) => SQUAT_PATTERN.test(n));
+  for (let k = 0; k < pool.length; k++) {
+    const name = pool[(index + k) % pool.length];
+    if (taken.has(name)) continue;
+    if (opts.opening && NEVER_OPENS.test(name)) continue;
+    // G130: a day that already holds a barbell squat does not take another squat pattern.
+    if (bannedSquat && SQUAT_PATTERN.test(name)) continue;
+    return name;
+  }
+  // Every candidate is spoken for. Fall back to the plain pick rather than returning nothing -- a day one
+  // exercise short is better than a day that fails to build, and `deepen` fills the gap either way.
+  return pick(muscle, sex, index);
 }
 
 /** One day: the owning muscle takes two consecutive slots, its partner one, then the divider.
@@ -117,13 +161,24 @@ function pick(muscle: string, sex: TemplateSex, index: number): string {
  * marks the leg/upper seam (G102/G110). `deepen` adds the rest. */
 function dayFor(p: Pairing, owner: string, partner: string, variant: number): { name: string; slots: (readonly [string, number, number])[] } {
   const divider = owner === "Quads" || owner === "Hamstrings" || owner === "Glutes" ? "Calves" : "Abs";
+  // Threaded through every pick so no day can name the same exercise twice (G133) -- the bug that put
+  // "Arnold Press ... Arnold Press" into 42 of these.
+  const taken = new Set<string>();
+  const take = (muscle: string, index: number, opening = false) => {
+    const name = pickFor(muscle, p.sex, index, taken, { opening });
+    taken.add(name);
+    return name;
+  };
   return {
     name: owner === partner ? owner : `${owner} & ${partner}`,
     slots: [
-      [pick(owner, p.sex, variant), 4, 8],
-      [pick(owner, p.sex, variant + 1), 3, 10],
-      [pick(partner, p.sex, variant), 3, 12],
-      [pick(divider, p.sex, variant), 3, 15],
+      // G132: three sets, not four. This one line is the opening slot of every generated specialty day, so
+      // it alone accounted for 252 of the library's 4-set prescriptions -- the hand-authored files had none
+      // left after the sweep. Jack: "anything that would be four sets, let's drop it to three."
+      [take(owner, variant, true), 3, 8],
+      [take(owner, variant + 1), 3, 10],
+      [take(partner, variant), 3, 12],
+      [take(divider, variant), 3, 15],
     ],
   };
 }

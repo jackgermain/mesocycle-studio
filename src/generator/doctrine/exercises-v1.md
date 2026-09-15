@@ -6752,4 +6752,97 @@ deficient. He liked the one the stricter rule would have thrown away.
 
 ---
 
+---
+
+**G133 — A session never lists the same exercise twice.**
+
+Not stated by him as a rule, because it should not have needed stating. Forty-two shipped days listed one:
+`Dumbbell Shoulder Press | Arnold Press | … | Arnold Press`, and `Seated Cable Row | Barbell Bent-Over Row
+| Seated Cable Row`. All hand-authored, none introduced by the density pass.
+
+**Why it survived, and it was not authoring at all.** All 42 are in the *generated* specialty templates, and
+both this and the 14 days that opened on a fly fall out of the same index arithmetic in `dayFor()`. Slot 1
+took `pick(owner, variant)` and slot 2 `pick(owner, variant + 1)` over a three-entry pool, so at
+`variant = 2` slot 1 wrapped to the pool's last entry — for Chest, the pec deck — and slot 2 wrapped round to
+the bench, putting the fly in front of the compound. The partner slot then reused the *same* index as the
+owner's first slot, so any support muscle that repeated a lead muscle returned the identical name.
+
+Neither was a judgement anyone made. The hand-authored women's and men's files were clean on both counts.
+
+**Rule:** a duplicate slot is deleted, not replaced. Asked which, he chose deletion — the day keeps its
+remaining work and `deepen()` refills the slot from a pool that now excludes the denylist. In the generated
+templates the equivalent is picking the next candidate the day has not already taken, which is what
+`pickFor()` now does.
+
+**Rule:** a duplicate slot is deleted, not replaced. Asked which, he chose deletion — the day keeps its
+remaining work and `deepen()` refills the slot from a pool that now excludes the denylist.
+
+This is the third rule in this batch that existed only as an assumption. G9 was written and unenforced for
+months; G128-G132 were spoken and unenforced; this one was never written down at all. All of them are now
+asserted in `tests/templateDoctrine.test.mts`, which is the only reason any of them are true.
+
+---
+
 *Entries continue as we go.*
+
+---
+
+## G128-G132 — Rules given while reviewing Full Body — Six Day (Men)
+
+Jack reviewed a generated six-day template day by day. Four of the five rules below were new; the fifth
+was already written and being ignored.
+
+**G128 — A barbell bench press is never a third exercise.** *"No incline barbell bench press after incline
+dumbbell press. And especially not after as a third exercise... in general, just don't have barbell bench
+press third like that."*
+
+**Rule — counted in CHEST exercises, not in slots.** A barbell bench press may not follow two other chest
+exercises. Past that it is an accessory slot, and the occupant is a **machine press or a fly**, not another
+barbell.
+
+**The distinction was checked with him, and it matters.** Written as a raw slot rule ("never 3rd or later")
+it flagged fourteen leg and full-body days — `Back Squat | Leg Extension | Calf Raise | Barbell Bench Press`
+— where the bench sits 4th because the day opens on legs and the bench is the session's *first* pressing
+movement. Enforcing the raw version would have dragged a bench ahead of the squats in every one of them.
+Asked directly, he scoped it: **chest-led days only.**
+
+This sharpens "the bench takes the first slot whenever it appears" into something checkable — the old
+wording said where the bench *should* go, this says where it may not be.
+
+**G129 — Pull-ups come before pulldowns.** *"For the day two, ideally, I would have pull-ups before
+pull-downs. So keep that noted. From now on, if you're going to do pull-ups and pull-downs in the same
+day."*
+
+**Rule:** when both appear in one session, the pull-up or chin-up precedes the pulldown. Straight-arm
+pulldowns are not vertical pulls and are out of scope.
+
+**G130 — Front squat and back squat never share a day.** *"never have front squat and back squat in the
+same day... either have the front squat be a hack squat machine or a leg press or any other version, you
+could do any type of lunge too, as long as it's not crazy heavy. But definitely not, don't have a front
+squat ever like that."*
+
+**Rule:** one barbell squat pattern per session. Where both are present the FRONT squat is the one that
+goes, replaced by a hack squat machine, a leg press, or a lunge variant kept off maximal load.
+
+**G131 — Decline pressing, restated, because G9 was not enforced.** *"never use decline barbell bench
+press. We're not going to use that exercise at all or decline dumbbell press. I think it's a crap
+exercise."*
+
+This is not new doctrine. **G9 already said it**, in his own words, and 61 days across 53 templates
+prescribed it anyway -- because `deepen()` builds its candidate pool from the whole library and never
+consulted the denylist. A rule written and unchecked is a suggestion.
+
+**Rule:** both decline presses are DELETED from the library, not merely denylisted. An exercise that can
+never be prescribed is not a catalogue entry, and removing it is the only version of the rule that a
+density pass cannot walk past.
+
+**G132 — Three sets, not four, at least in week one.** *"Let's start with anything that would be four
+sets. Let's drop it to three sets, at least for the first week on absolutely everything in this program."*
+
+Also already implied: `v1.md` records *"Observed practice sits at 2-3 sets; 4 is a ceiling approached, not
+a norm."* The templates carried 510 slots at four or more.
+
+**Rule:** no template slot opens above **3 sets**. Four remains legal later in a block as a progression
+step -- this is the starting prescription, which is what a template is.
+
+---

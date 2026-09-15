@@ -58,6 +58,58 @@ const HOME = /^(Dumbbell|Incline Dumbbell|Single-Arm Dumbbell|Alternating Dumbbe
 /** G99: a man's program carries no hip thrust or glute bridge work. */
 const MENS_BANNED = /hip thrust|glute bridge/i;
 
+/** G9/G131: exercises the doctrine says are never prescribed, to anyone.
+ *
+ * This list existed only as prose in exercises-v1.md, and the pool below was built from the entire library
+ * without consulting it -- so the density pass cheerfully inserted 61 days of decline pressing across 53
+ * templates, plus preacher curls, sissy squats and ab wheel rollouts. Jack, finding one of them in a
+ * generated day: "never use decline barbell bench press. We're not going to use that exercise at all."
+ *
+ * The two decline presses are gone from the library entirely, which is the stronger fix. These are the
+ * denylisted movements that remain catalogue entries because a coach may still write them by hand. */
+const DENYLISTED = new Set([
+  "Rack Pull",
+  "Ab Wheel Rollout",
+  "Sissy Squat",
+  "Preacher Curl — Barbell",
+  "Preacher Curl Machine",
+]);
+
+/* Flies and the pec deck are deliberately NOT filtered here.
+ *
+ * The doctrine forbids them from OPENING a session -- *"I would never, in any cases, do either one of these
+ * exercises first. Ever."* -- and an earlier version of this file excluded them from the pool outright to
+ * enforce that. That was wrong in a way worth recording: `slots.splice(choice.end + 1, ...)` inserts at
+ * index 1 at the earliest, so this pass structurally cannot create a slot-1 exercise. Filtering them here
+ * enforced nothing and merely stripped every fly from the accessory pool of all 125 templates, when the
+ * same doctrine puts the cable fly at "3rd or last" -- exactly the slot this pass fills.
+ *
+ * The rule belongs where a session's FIRST slot is authored, and is asserted in templateDoctrine.test.mts. */
+
+/** Movements that are session OPENERS, never accessory filler. Everything this pass inserts lands at slot 2
+ * or later by construction, so anything here simply may not be inserted.
+ *
+ * - **Barbell bench press (G128)**: past slot 2 the slot is an accessory slot, and the right occupant is a
+ *   machine press or a fly. *"don't have barbell bench press third like that."*
+ * - **Front squat (G130)**: this is where the front-squat-beside-back-squat days came from. The Legs A spec
+ *   is back squat, leg extension, leg curl, calf raise -- the front squat was INSERTED third, which is
+ *   exactly what he ruled out: *"don't have a front squat ever like that."* Blocking the front squat alone
+ *   left the mirror case standing: two days open on an AUTHORED front squat and had the back squat inserted
+ *   beside it. See SQUAT_PATTERN below -- the real rule is one barbell squat a day, either direction.
+ * - **Pull-up and chin-up (G129)**: a vertical pull done at bodyweight is the hardest pull in the session
+ *   and belongs before the pulldown, not spliced in after it. Inserting one is what produced 55 days with
+ *   the pulldown first. */
+const NEVER_INSERTED = /barbell bench press|front squat|\bpull-?up|\bchin-?up/i;
+
+/** G130: one barbell squat pattern per session, in either direction. Checked against the day being built
+ * rather than as a fixed name, because the violation is a PAIR -- a back squat is perfectly fine on its own
+ * and only wrong once the day already holds a front squat, or the reverse. */
+const SQUAT_PATTERN = /back squat|front squat/i;
+
+/** G132: no template slot opens above three sets. Four is a progression step later in a block, not a
+ * starting prescription. Jack: "anything that would be four sets, let's drop it to three." */
+export const MAX_TEMPLATE_SETS = 3;
+
 const BY_MUSCLE = new Map<string, string[]>();
 for (const e of libraryExercises) {
   if (e.kind === "cardio") continue;
@@ -89,6 +141,8 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
   const days = spec.days.map((day) => {
     const slots = day.slots.map((s) => [...s] as [string, number, number]);
     let guard = 0;
+    // Recomputed per pass below, not captured once: an insertion can itself be a squat pattern.
+    const hasSquat = () => slots.some((s) => SQUAT_PATTERN.test(s[0]));
 
     while (slots.length < target && guard++ < 20) {
       // ONE insertion per pass, then recompute. A splice shifts every index after it, so inserting into
@@ -106,7 +160,13 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
             (name) =>
               !used.has(name) &&
               (!home || HOME.test(name)) &&
-              (spec.sex !== "men" || !MENS_BANNED.test(name)),
+              (spec.sex !== "men" || !MENS_BANNED.test(name)) &&
+              // The doctrine's own denylist, which this pool ignored until it had inserted 61 days of
+              // decline pressing. See DENYLISTED above.
+              !DENYLISTED.has(name) &&
+              !NEVER_INSERTED.test(name) &&
+              // G130, the mirror case: never add a second barbell squat to a day that already has one.
+              !(hasSquat() && SQUAT_PATTERN.test(name)),
           ),
         }))
         .filter((b) => b.pool.length > 0);
@@ -122,7 +182,9 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
       // Sets and reps follow the block's existing work rather than being invented: the added exercise is
       // more of the same job, so it gets the same prescription, one set lighter and a little higher in reps.
       const neighbour = slots[choice.end];
-      slots.splice(choice.end + 1, 0, [pick, Math.max(2, neighbour[1] - 1), neighbour[2] + 2]);
+      // G132 caps the inserted work at three sets as well as the authored work. Without the clamp an
+      // insertion beside a 4-set opener inherited 3 and one beside a 5-set opener inherited 4.
+      slots.splice(choice.end + 1, 0, [pick, Math.min(MAX_TEMPLATE_SETS, Math.max(2, neighbour[1] - 1)), neighbour[2] + 2]);
       used.add(pick);
     }
 

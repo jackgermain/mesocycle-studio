@@ -169,7 +169,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Glutes & Hamstrings",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Glute Bridge", 3, 12],
           ["Romanian Deadlift", 3, 10],
           ["Seated Leg Curl", 3, 12],
@@ -189,7 +189,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Quads & Glutes",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Leg Press — 45°", 3, 12],
           ["Bulgarian Split Squat", 3, 10],
           ["Cable Glute Kickback", 3, 15],
@@ -209,7 +209,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Glutes & Adductors",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 10],
+          ["Smith Machine Hip Thrust", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Hip Abduction Machine", 3, 15],
           ["Hip Adduction Machine", 3, 15],
@@ -238,7 +238,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Glutes",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Glute Kickback Machine", 3, 15],
           ["Standing Calf Raise Machine", 3, 15],
@@ -257,7 +257,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Quads",
         slots: [
-          ["Hack Squat Machine", 4, 10],
+          ["Hack Squat Machine", 3, 10],
           ["Leg Extension Machine", 3, 15],
           ["Walking Lunge", 3, 12],
           ["Smith Machine Calf Raise", 3, 15],
@@ -276,7 +276,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Hamstrings & Glutes",
         slots: [
-          ["Romanian Deadlift", 4, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Lying Leg Curl", 3, 12],
           ["Glute Bridge", 3, 12],
           ["Donkey Calf Raise", 3, 15],
@@ -289,7 +289,7 @@ const SIX_DAY: TemplateSpec[] = [
           ["Incline Dumbbell Curl", 3, 12],
           ["Overhead Cable Tricep Extension", 3, 12],
           ["Tricep Bar Pushdown — Straight Bar", 3, 12],
-          ["Ab Wheel Rollout", 3, 12],
+          ["Weighted Sit-Up", 3, 12],
         ],
       },
     ],
@@ -304,7 +304,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Legs & Pull A",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Romanian Deadlift", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
           ["Lat Pulldown — Wide Grip", 3, 10],
@@ -315,7 +315,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Legs & Push A",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Leg Extension Machine", 3, 15],
           ["Cable Crunch", 3, 15],
           ["Incline Dumbbell Press", 3, 10],
@@ -326,7 +326,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Legs & Pull B",
         slots: [
-          ["Glute Deadlift", 4, 10],
+          ["Glute Deadlift", 3, 10],
           ["Seated Leg Curl", 3, 12],
           ["Seated Calf Raise Machine", 3, 15],
           ["Chest Supported Row Machine", 3, 10],
@@ -348,12 +348,12 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Legs & Pull C",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 10],
+          ["Smith Machine Hip Thrust", 3, 10],
           ["Single-Leg Romanian Deadlift", 3, 10],
           ["Leg Press Calf Raise", 3, 15],
           ["Plate-Loaded Lat Pulldown", 3, 10],
           ["Meadows Row", 3, 12],
-          ["Preacher Curl — Barbell", 3, 12],
+          ["EZ-Bar Curl", 3, 12],
         ],
       },
       {
@@ -379,7 +379,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Quads & Chest",
         slots: [
-          ["Barbell Front Squat", 4, 8],
+          ["Barbell Front Squat", 3, 8],
           ["Leg Press — Horizontal", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
           ["Incline Smith Machine Press", 3, 10],
@@ -399,7 +399,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Glutes & Hamstrings",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Glute Bridge", 3, 12],
           ["Stiff-Leg Deadlift", 3, 10],
           ["Standing Leg Curl", 3, 12],
@@ -419,7 +419,7 @@ const SIX_DAY: TemplateSpec[] = [
       {
         name: "Quads & Glutes",
         slots: [
-          ["Smith Machine Squat", 4, 10],
+          ["Smith Machine Squat", 3, 10],
           ["Reverse Lunge", 3, 12],
           ["Hip Abduction Machine", 3, 15],
           ["Smith Machine Calf Raise", 3, 15],
@@ -455,7 +455,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Glutes",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Glute Kickback Machine", 3, 15],
           ["Cable Crunch", 3, 15],
@@ -473,7 +473,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Quads & Calves",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Leg Press — 45°", 3, 12],
           ["Leg Extension Machine", 3, 15],
           ["Standing Calf Raise Machine", 3, 15],
@@ -491,7 +491,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Hamstrings & Glutes",
         slots: [
-          ["Romanian Deadlift", 4, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Lying Leg Curl", 3, 12],
           ["Glute Bridge", 3, 12],
           ["Seated Calf Raise Machine", 3, 15],
@@ -509,7 +509,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Glutes A",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 10],
+          ["Smith Machine Hip Thrust", 3, 10],
           ["Glute Bridge", 3, 12],
           ["Cable Glute Kickback", 3, 15],
           ["Hanging Leg Raise", 3, 12],
@@ -518,7 +518,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Hamstrings",
         slots: [
-          ["Romanian Deadlift", 4, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Seated Leg Curl", 3, 12],
           ["Glute Ham Raise", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
@@ -536,7 +536,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Glutes B",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Hip Abduction Machine", 3, 15],
           ["Leg Press Calf Raise", 3, 15],
@@ -563,7 +563,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Legs A",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Leg Press — 45°", 3, 12],
           ["Bulgarian Split Squat", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
@@ -581,7 +581,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Legs B",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Romanian Deadlift", 3, 10],
           ["Lying Leg Curl", 3, 12],
           ["Seated Calf Raise Machine", 3, 15],
@@ -599,7 +599,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Legs C",
         slots: [
-          ["Hack Squat Machine", 4, 10],
+          ["Hack Squat Machine", 3, 10],
           ["Walking Lunge", 3, 12],
           ["Cable Glute Kickback", 3, 15],
           ["Smith Machine Calf Raise", 3, 15],
@@ -617,7 +617,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Glutes & Abs",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Glute Bridge", 3, 12],
           ["Cable Crunch", 3, 15],
           ["Russian Twist", 3, 20],
@@ -635,7 +635,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Quads & Calves",
         slots: [
-          ["Barbell Front Squat", 4, 8],
+          ["Barbell Front Squat", 3, 8],
           ["Leg Extension Machine", 3, 15],
           ["Reverse Lunge", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
@@ -653,7 +653,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Hamstrings & Shoulders",
         slots: [
-          ["Romanian Deadlift", 4, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Seated Leg Curl", 3, 12],
           ["Leg Press Calf Raise", 3, 15],
           ["Dumbbell Lateral Raise", 3, 15],
@@ -671,7 +671,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Chest & Triceps",
         slots: [
-          ["Incline Dumbbell Press", 4, 10],
+          ["Incline Dumbbell Press", 3, 10],
           ["Dumbbell Bench Press", 3, 10],
           ["Cable Fly — Mid", 3, 12],
           ["Tricep Rope Pushdown", 3, 12],
@@ -681,7 +681,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Back & Biceps",
         slots: [
-          ["Lat Pulldown — Wide Grip", 4, 10],
+          ["Lat Pulldown — Wide Grip", 3, 10],
           ["Seated Cable Row", 3, 10],
           ["Single-Arm Dumbbell Row", 3, 12],
           ["Dumbbell Curl", 3, 12],
@@ -691,7 +691,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Legs",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Barbell Hip Thrust", 3, 10],
           ["Romanian Deadlift", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
@@ -700,7 +700,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Shoulders & Arms",
         slots: [
-          ["Seated Dumbbell Press", 4, 10],
+          ["Seated Dumbbell Press", 3, 10],
           ["Dumbbell Lateral Raise", 3, 15],
           ["Rear Delt Fly — Dumbbell", 3, 15],
           ["Hammer Curl", 3, 12],
@@ -710,7 +710,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Chest & Back",
         slots: [
-          ["Pec Deck Machine", 3, 12],
+          ["Chest Press Machine", 3, 12],
           ["Incline Smith Machine Press", 3, 10],
           ["Chest Supported Row Machine", 3, 10],
           ["Lat Prayer", 3, 12],
@@ -729,7 +729,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Glutes",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Glute Kickback Machine", 3, 15],
           ["Standing Calf Raise Machine", 3, 15],
@@ -738,7 +738,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Shoulders",
         slots: [
-          ["Dumbbell Shoulder Press", 4, 10],
+          ["Dumbbell Shoulder Press", 3, 10],
           ["Cable Lateral Raise", 3, 15],
           ["Lateral Raise Machine", 3, 15],
           ["Cable Face Pull", 3, 15],
@@ -747,7 +747,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Quads & Hamstrings",
         slots: [
-          ["Hack Squat Machine", 4, 10],
+          ["Hack Squat Machine", 3, 10],
           ["Walking Lunge", 3, 12],
           ["Seated Leg Curl", 3, 12],
           ["Seated Calf Raise Machine", 3, 15],
@@ -765,7 +765,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Glutes & Back",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 10],
+          ["Smith Machine Hip Thrust", 3, 10],
           ["Glute Bridge", 3, 12],
           ["Hanging Leg Raise", 3, 12],
           ["Seated Row Machine", 3, 10],
@@ -784,7 +784,7 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Glutes & Hamstrings",
         slots: [
-          ["Glute Deadlift", 4, 10],
+          ["Glute Deadlift", 3, 10],
           ["Barbell Hip Thrust", 3, 10],
           ["Standing Leg Curl", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
@@ -802,9 +802,9 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Quads",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Leg Press — Horizontal", 3, 12],
-          ["Sissy Squat", 3, 12],
+          ["Leg Extension Machine", 3, 12],
           ["Smith Machine Calf Raise", 3, 15],
         ],
       },
@@ -820,10 +820,10 @@ const FIVE_DAY: TemplateSpec[] = [
       {
         name: "Glutes & Abs",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 10],
+          ["Smith Machine Hip Thrust", 3, 10],
           ["Hip Abduction Machine", 3, 15],
           ["Hip Adduction Machine", 3, 15],
-          ["Ab Wheel Rollout", 3, 12],
+          ["Weighted Sit-Up", 3, 12],
         ],
       },
     ],
@@ -847,7 +847,7 @@ const FOUR_DAY: TemplateSpec[] = [
       {
         name: "Glutes A",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Glute Bridge", 3, 12],
           ["Romanian Deadlift", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
@@ -867,7 +867,7 @@ const FOUR_DAY: TemplateSpec[] = [
       {
         name: "Glutes B",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 10],
+          ["Smith Machine Hip Thrust", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Seated Leg Curl", 3, 12],
           ["Seated Calf Raise Machine", 3, 15],
@@ -896,7 +896,7 @@ const FOUR_DAY: TemplateSpec[] = [
       {
         name: "Quads",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Leg Press — 45°", 3, 12],
           ["Leg Extension Machine", 3, 15],
           ["Bulgarian Split Squat", 3, 10],
@@ -916,7 +916,7 @@ const FOUR_DAY: TemplateSpec[] = [
       {
         name: "Glutes & Hamstrings",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Cable Glute Kickback", 3, 15],
           ["Romanian Deadlift", 3, 10],
           ["Lying Leg Curl", 3, 12],
@@ -945,7 +945,7 @@ const FOUR_DAY: TemplateSpec[] = [
       {
         name: "Lower A",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Barbell Back Squat", 3, 10],
           ["Seated Leg Curl", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
@@ -965,7 +965,7 @@ const FOUR_DAY: TemplateSpec[] = [
       {
         name: "Lower B",
         slots: [
-          ["Romanian Deadlift", 4, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Leg Press — 45°", 3, 12],
           ["Glute Bridge", 3, 12],
           ["Seated Calf Raise Machine", 3, 15],
@@ -994,7 +994,7 @@ const FOUR_DAY: TemplateSpec[] = [
       {
         name: "Glutes Heavy",
         slots: [
-          ["Barbell Hip Thrust", 5, 8],
+          ["Barbell Hip Thrust", 3, 8],
           ["Glute Deadlift", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Glute Kickback Machine", 3, 15],
@@ -1014,7 +1014,7 @@ const FOUR_DAY: TemplateSpec[] = [
       {
         name: "Glutes Volume",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 12],
+          ["Smith Machine Hip Thrust", 3, 12],
           ["Glute Bridge", 3, 15],
           ["Cable Glute Kickback", 3, 15],
           ["Hip Abduction Machine", 3, 15],
@@ -1051,7 +1051,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Full Body A",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Barbell Back Squat", 3, 10],
           ["Romanian Deadlift", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
@@ -1064,7 +1064,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Full Body B",
         slots: [
-          ["Glute Bridge", 4, 12],
+          ["Glute Bridge", 3, 12],
           ["Leg Press — 45°", 3, 12],
           ["Seated Leg Curl", 3, 12],
           ["Seated Calf Raise Machine", 3, 15],
@@ -1077,7 +1077,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Full Body C",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 10],
+          ["Smith Machine Hip Thrust", 3, 10],
           ["Bulgarian Split Squat", 3, 10],
           ["Lying Leg Curl", 3, 12],
           ["Leg Press Calf Raise", 3, 15],
@@ -1099,7 +1099,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Legs, Push, Pull A",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Leg Extension Machine", 3, 15],
           ["Barbell Hip Thrust", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
@@ -1111,7 +1111,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Legs, Push, Pull B",
         slots: [
-          ["Romanian Deadlift", 4, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Standing Leg Curl", 3, 12],
           ["Walking Lunge", 3, 12],
           ["Smith Machine Calf Raise", 3, 15],
@@ -1123,7 +1123,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Legs, Push, Pull C",
         slots: [
-          ["Hack Squat Machine", 4, 10],
+          ["Hack Squat Machine", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Glute Ham Raise", 3, 10],
           ["Seated Calf Raise Machine", 3, 15],
@@ -1144,7 +1144,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Full Body A",
         slots: [
-          ["Glute Deadlift", 4, 10],
+          ["Glute Deadlift", 3, 10],
           ["Goblet Squat", 3, 12],
           ["Standing Calf Raise Machine", 3, 15],
           ["Seated Cable Row", 3, 10],
@@ -1157,7 +1157,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Full Body B",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Reverse Lunge", 3, 12],
           ["Leg Press Calf Raise", 3, 15],
           ["Lat Pulldown — Wide Grip", 3, 10],
@@ -1170,7 +1170,7 @@ const THREE_DAY: TemplateSpec[] = [
       {
         name: "Full Body C",
         slots: [
-          ["Glute Bridge", 4, 12],
+          ["Glute Bridge", 3, 12],
           ["Single-Leg Romanian Deadlift", 3, 10],
           ["Donkey Calf Raise", 3, 15],
           ["Single-Arm Dumbbell Row", 3, 12],
@@ -1201,7 +1201,7 @@ const TWO_DAY: TemplateSpec[] = [
       {
         name: "Full Body A",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Barbell Back Squat", 3, 10],
           ["Romanian Deadlift", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
@@ -1214,7 +1214,7 @@ const TWO_DAY: TemplateSpec[] = [
       {
         name: "Full Body B",
         slots: [
-          ["Glute Bridge", 4, 12],
+          ["Glute Bridge", 3, 12],
           ["Leg Press — 45°", 3, 12],
           ["Seated Leg Curl", 3, 12],
           ["Cable Crunch", 3, 15],
@@ -1236,7 +1236,7 @@ const TWO_DAY: TemplateSpec[] = [
       {
         name: "Full Body A",
         slots: [
-          ["Barbell Back Squat", 4, 8],
+          ["Barbell Back Squat", 3, 8],
           ["Barbell Hip Thrust", 3, 10],
           ["Lying Leg Curl", 3, 12],
           ["Leg Press Calf Raise", 3, 15],
@@ -1249,7 +1249,7 @@ const TWO_DAY: TemplateSpec[] = [
       {
         name: "Full Body B",
         slots: [
-          ["Romanian Deadlift", 4, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Hack Squat Machine", 3, 10],
           ["Cable Pull-Through", 3, 12],
           ["Hanging Leg Raise", 3, 12],
@@ -1271,7 +1271,7 @@ const TWO_DAY: TemplateSpec[] = [
       {
         name: "Full Body A",
         slots: [
-          ["Smith Machine Hip Thrust", 4, 10],
+          ["Smith Machine Hip Thrust", 3, 10],
           ["Bulgarian Split Squat", 3, 10],
           ["Stiff-Leg Deadlift", 3, 10],
           ["Standing Calf Raise Machine", 3, 15],
@@ -1284,7 +1284,7 @@ const TWO_DAY: TemplateSpec[] = [
       {
         name: "Full Body B",
         slots: [
-          ["Glute Deadlift", 4, 10],
+          ["Glute Deadlift", 3, 10],
           ["Walking Lunge", 3, 12],
           ["Standing Leg Curl", 3, 12],
           ["Russian Twist", 3, 20],
@@ -1306,7 +1306,7 @@ const TWO_DAY: TemplateSpec[] = [
       {
         name: "Full Body A",
         slots: [
-          ["Barbell Hip Thrust", 4, 10],
+          ["Barbell Hip Thrust", 3, 10],
           ["Hip Abduction Machine", 3, 15],
           ["Goblet Squat", 3, 12],
           ["Seated Leg Curl", 3, 12],
@@ -1319,7 +1319,7 @@ const TWO_DAY: TemplateSpec[] = [
       {
         name: "Full Body B",
         slots: [
-          ["Romanian Deadlift", 4, 10],
+          ["Romanian Deadlift", 3, 10],
           ["Leg Press — Horizontal", 3, 12],
           ["Glute Bridge", 3, 12],
           ["Hip Adduction Machine", 3, 15],
@@ -1345,162 +1345,162 @@ const GAP_FILL: TemplateSpec[] = [
     name: "Lower Body Emphasis — Two Day (Women)",
     category: "lower-emphasis", sex: "women", emphasis: "Lower Body", dows: [0, 3],
     days: [
-      { name: "Glutes & Quads", slots: [["Barbell Hip Thrust", 4, 10], ["Glute Bridge", 3, 12], ["Barbell Back Squat", 3, 10], ["Leg Extension Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
-      { name: "Hamstrings & Glutes", slots: [["Romanian Deadlift", 4, 10], ["Lying Leg Curl", 3, 12], ["Cable Pull-Through", 3, 12], ["Cable Glute Kickback", 3, 15], ["Seated Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Curl", 3, 12]] },
+      { name: "Glutes & Quads", slots: [["Barbell Hip Thrust", 3, 10], ["Glute Bridge", 3, 12], ["Barbell Back Squat", 3, 10], ["Leg Extension Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
+      { name: "Hamstrings & Glutes", slots: [["Romanian Deadlift", 3, 10], ["Lying Leg Curl", 3, 12], ["Cable Pull-Through", 3, 12], ["Cable Glute Kickback", 3, 15], ["Seated Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Curl", 3, 12]] },
     ],
   },
   {
     name: "Lower Body Emphasis — Three Day (Women)",
     category: "lower-emphasis", sex: "women", emphasis: "Lower Body", dows: [0, 2, 4],
     days: [
-      { name: "Glutes", slots: [["Barbell Hip Thrust", 4, 10], ["Cable Pull-Through", 3, 12], ["Standing Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Curl", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Quads", slots: [["Barbell Back Squat", 4, 8], ["Leg Press — 45°", 3, 12], ["Leg Extension Machine", 3, 15], ["Leg Press Calf Raise", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12]] },
-      { name: "Hamstrings & Glutes", slots: [["Romanian Deadlift", 4, 10], ["Seated Leg Curl", 3, 12], ["Glute Bridge", 3, 12], ["Smith Machine Calf Raise", 3, 15], ["Chest Supported Row Machine", 3, 10], ["Pec Deck Machine", 3, 12], ["Hanging Leg Raise", 3, 12]] },
+      { name: "Glutes", slots: [["Barbell Hip Thrust", 3, 10], ["Cable Pull-Through", 3, 12], ["Standing Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Curl", 3, 12], ["Cable Crunch", 3, 15]] },
+      { name: "Quads", slots: [["Barbell Back Squat", 3, 8], ["Leg Press — 45°", 3, 12], ["Leg Extension Machine", 3, 15], ["Leg Press Calf Raise", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12]] },
+      { name: "Hamstrings & Glutes", slots: [["Romanian Deadlift", 3, 10], ["Seated Leg Curl", 3, 12], ["Glute Bridge", 3, 12], ["Smith Machine Calf Raise", 3, 15], ["Chest Supported Row Machine", 3, 10], ["Pec Deck Machine", 3, 12], ["Hanging Leg Raise", 3, 12]] },
     ],
   },
   {
     name: "Glute Specialty — Two Day (Women)",
     category: "lower-specialty", sex: "women", emphasis: "Glutes", dows: [0, 3],
     days: [
-      { name: "Glutes Heavy", slots: [["Barbell Hip Thrust", 5, 8], ["Glute Deadlift", 3, 10], ["Cable Pull-Through", 3, 12], ["Hip Abduction Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Curl", 3, 12]] },
-      { name: "Glutes Volume", slots: [["Smith Machine Hip Thrust", 4, 12], ["Glute Bridge", 3, 15], ["Cable Glute Kickback", 3, 15], ["Romanian Deadlift", 3, 10], ["Seated Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Cable Crunch", 3, 15]] },
+      { name: "Glutes Heavy", slots: [["Barbell Hip Thrust", 3, 8], ["Glute Deadlift", 3, 10], ["Cable Pull-Through", 3, 12], ["Hip Abduction Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Curl", 3, 12]] },
+      { name: "Glutes Volume", slots: [["Smith Machine Hip Thrust", 3, 12], ["Glute Bridge", 3, 15], ["Cable Glute Kickback", 3, 15], ["Romanian Deadlift", 3, 10], ["Seated Calf Raise Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Cable Crunch", 3, 15]] },
     ],
   },
   {
     name: "Glute Specialty — Three Day (Women)",
     category: "lower-specialty", sex: "women", emphasis: "Glutes", dows: [0, 2, 4],
     days: [
-      { name: "Glutes Heavy", slots: [["Barbell Hip Thrust", 5, 8], ["Glute Deadlift", 3, 10], ["Glute Kickback Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Dumbbell Curl", 3, 12]] },
-      { name: "Glutes & Hamstrings", slots: [["Romanian Deadlift", 4, 10], ["Lying Leg Curl", 3, 12], ["Cable Pull-Through", 3, 12], ["Leg Press Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
-      { name: "Glutes & Abduction", slots: [["Smith Machine Hip Thrust", 4, 12], ["Glute Bridge", 3, 15], ["Hip Abduction Machine", 3, 15], ["Hip Adduction Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Hanging Leg Raise", 3, 12]] },
+      { name: "Glutes Heavy", slots: [["Barbell Hip Thrust", 3, 8], ["Glute Deadlift", 3, 10], ["Glute Kickback Machine", 3, 15], ["Standing Calf Raise Machine", 3, 15], ["Lat Pulldown — Wide Grip", 3, 10], ["Dumbbell Curl", 3, 12]] },
+      { name: "Glutes & Hamstrings", slots: [["Romanian Deadlift", 3, 10], ["Lying Leg Curl", 3, 12], ["Cable Pull-Through", 3, 12], ["Leg Press Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
+      { name: "Glutes & Abduction", slots: [["Smith Machine Hip Thrust", 3, 12], ["Glute Bridge", 3, 15], ["Hip Abduction Machine", 3, 15], ["Hip Adduction Machine", 3, 15], ["Seated Cable Row", 3, 10], ["Hanging Leg Raise", 3, 12]] },
     ],
   },
   {
     name: "Upper Body Emphasis — Two Day (Women)",
     category: "upper-emphasis", sex: "women", emphasis: "Upper Body", dows: [0, 3],
     days: [
-      { name: "Push & Legs", slots: [["Incline Dumbbell Press", 4, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Cable Crunch", 3, 15]] },
-      { name: "Pull & Legs", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Cable Face Pull", 3, 15], ["Dumbbell Curl", 3, 12], ["Romanian Deadlift", 3, 10], ["Russian Twist", 3, 20]] },
+      { name: "Push & Legs", slots: [["Incline Dumbbell Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Cable Crunch", 3, 15]] },
+      { name: "Pull & Legs", slots: [["Lat Pulldown — Wide Grip", 3, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Cable Face Pull", 3, 15], ["Dumbbell Curl", 3, 12], ["Romanian Deadlift", 3, 10], ["Russian Twist", 3, 20]] },
     ],
   },
   {
     name: "Upper Body Emphasis — Three Day (Women)",
     category: "upper-emphasis", sex: "women", emphasis: "Upper Body", dows: [0, 2, 4],
     days: [
-      { name: "Chest & Arms", slots: [["Incline Dumbbell Press", 4, 10], ["Dumbbell Bench Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Leg Extension Machine", 3, 15]] },
-      { name: "Back & Shoulders", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15], ["Lying Leg Curl", 3, 12]] },
-      { name: "Upper & Legs", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Cable Fly — Mid", 3, 12], ["Hammer Curl", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
+      { name: "Chest & Arms", slots: [["Incline Dumbbell Press", 3, 10], ["Dumbbell Bench Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Leg Extension Machine", 3, 15]] },
+      { name: "Back & Shoulders", slots: [["Lat Pulldown — Wide Grip", 3, 10], ["Seated Cable Row", 3, 10], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15], ["Lying Leg Curl", 3, 12]] },
+      { name: "Upper & Legs", slots: [["Chest Supported Row Machine", 3, 10], ["Lat Prayer", 3, 12], ["Cable Fly — Mid", 3, 12], ["Hammer Curl", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
     ],
   },
   {
     name: "Upper Body Emphasis — Four Day (Women)",
     category: "upper-emphasis", sex: "women", emphasis: "Upper Body", dows: [0, 1, 3, 4],
     days: [
-      { name: "Push A", slots: [["Incline Dumbbell Press", 4, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Pull A", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Face Pull", 3, 15], ["Dumbbell Curl", 3, 12], ["Leg Extension Machine", 3, 15]] },
-      { name: "Push B", slots: [["Dumbbell Bench Press", 4, 10], ["Cable Fly — Low to High", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Overhead Cable Tricep Extension", 3, 12], ["Barbell Hip Thrust", 3, 10]] },
-      { name: "Pull B", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Reverse Pec Deck", 3, 15], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10]] },
+      { name: "Push A", slots: [["Incline Dumbbell Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
+      { name: "Pull A", slots: [["Lat Pulldown — Wide Grip", 3, 10], ["Seated Cable Row", 3, 10], ["Cable Face Pull", 3, 15], ["Dumbbell Curl", 3, 12], ["Leg Extension Machine", 3, 15]] },
+      { name: "Push B", slots: [["Dumbbell Bench Press", 3, 10], ["Cable Fly — Low to High", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Overhead Cable Tricep Extension", 3, 12], ["Barbell Hip Thrust", 3, 10]] },
+      { name: "Pull B", slots: [["Chest Supported Row Machine", 3, 10], ["Lat Prayer", 3, 12], ["Reverse Pec Deck", 3, 15], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10]] },
     ],
   },
   {
     name: "Upper Body Emphasis — Six Day (Women)",
     category: "upper-emphasis", sex: "women", emphasis: "Upper Body", dows: [0, 1, 2, 3, 4, 5],
     days: [
-      { name: "Chest", slots: [["Incline Dumbbell Press", 4, 10], ["Pec Deck Machine", 3, 12], ["Cable Fly — Mid", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Back", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Leg Extension Machine", 3, 15]] },
-      { name: "Shoulders", slots: [["Dumbbell Shoulder Press", 4, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15], ["Hanging Leg Raise", 3, 12]] },
-      { name: "Arms", slots: [["Dumbbell Curl", 4, 12], ["Hammer Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Overhead Cable Tricep Extension", 3, 12]] },
-      { name: "Legs", slots: [["Barbell Hip Thrust", 4, 10], ["Romanian Deadlift", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
-      { name: "Upper Volume", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Lateral Raise Machine", 3, 15], ["Russian Twist", 3, 20]] },
+      { name: "Chest", slots: [["Incline Dumbbell Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Cable Fly — Mid", 3, 12], ["Cable Crunch", 3, 15]] },
+      { name: "Back", slots: [["Lat Pulldown — Wide Grip", 3, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Leg Extension Machine", 3, 15]] },
+      { name: "Shoulders", slots: [["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15], ["Hanging Leg Raise", 3, 12]] },
+      { name: "Arms", slots: [["Dumbbell Curl", 3, 12], ["Hammer Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Overhead Cable Tricep Extension", 3, 12]] },
+      { name: "Legs", slots: [["Barbell Hip Thrust", 3, 10], ["Romanian Deadlift", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
+      { name: "Upper Volume", slots: [["Chest Supported Row Machine", 3, 10], ["Lat Prayer", 3, 12], ["Lateral Raise Machine", 3, 15], ["Russian Twist", 3, 20]] },
     ],
   },
   {
     name: "Arms & Shoulders Specialty — Two Day (Women)",
     category: "upper-specialty", sex: "women", emphasis: "Arms & Shoulders", dows: [0, 3],
     days: [
-      { name: "Shoulders Led", slots: [["Dumbbell Shoulder Press", 4, 10], ["Dumbbell Lateral Raise", 4, 15], ["Cable Face Pull", 3, 15], ["Dumbbell Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Cable Crunch", 3, 15]] },
-      { name: "Arms Led", slots: [["Incline Dumbbell Curl", 4, 12], ["Cable Curl", 3, 12], ["EZ-Bar Skull Crusher", 3, 12], ["Overhead Cable Tricep Extension", 3, 12], ["Lat Pulldown — Wide Grip", 3, 10], ["Romanian Deadlift", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
+      { name: "Shoulders Led", slots: [["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15], ["Dumbbell Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Cable Crunch", 3, 15]] },
+      { name: "Arms Led", slots: [["Incline Dumbbell Curl", 3, 12], ["Cable Curl", 3, 12], ["EZ-Bar Skull Crusher", 3, 12], ["Overhead Cable Tricep Extension", 3, 12], ["Lat Pulldown — Wide Grip", 3, 10], ["Romanian Deadlift", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
     ],
   },
   {
     name: "Back & Biceps Focus — Three Day (Women)",
     category: "upper-specialty", sex: "women", emphasis: "Back & Biceps", dows: [0, 2, 4],
     days: [
-      { name: "Back Width", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Dumbbell Curl", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
-      { name: "Back Thickness", slots: [["Chest Supported Row Machine", 4, 10], ["Seated Cable Row", 3, 10], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10], ["Cable Crunch", 3, 15]] },
-      { name: "Back & Upper", slots: [["Lat Prayer", 4, 12], ["Single-Arm Dumbbell Row", 3, 12], ["Incline Dumbbell Curl", 3, 12], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
+      { name: "Back Width", slots: [["Lat Pulldown — Wide Grip", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Dumbbell Curl", 3, 12], ["Barbell Hip Thrust", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
+      { name: "Back Thickness", slots: [["Chest Supported Row Machine", 3, 10], ["Seated Cable Row", 3, 10], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10], ["Cable Crunch", 3, 15]] },
+      { name: "Back & Upper", slots: [["Lat Prayer", 3, 12], ["Single-Arm Dumbbell Row", 3, 12], ["Incline Dumbbell Curl", 3, 12], ["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15]] },
     ],
   },
   {
     name: "Chest & Back Specialty — Four Day (Women)",
     category: "upper-specialty", sex: "women", emphasis: "Chest & Back", dows: [0, 1, 3, 4],
     days: [
-      { name: "Chest Led A", slots: [["Incline Dumbbell Press", 4, 10], ["Dumbbell Bench Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Back Led A", slots: [["Lat Pulldown — Wide Grip", 4, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Dumbbell Curl", 3, 12], ["Leg Extension Machine", 3, 15]] },
-      { name: "Chest Led B", slots: [["Cable Fly — Low to High", 4, 12], ["Incline Smith Machine Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Overhead Cable Tricep Extension", 3, 12], ["Barbell Hip Thrust", 3, 10]] },
-      { name: "Back Led B", slots: [["Chest Supported Row Machine", 4, 10], ["Lat Prayer", 3, 12], ["Reverse Pec Deck", 3, 15], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10]] },
+      { name: "Chest Led A", slots: [["Incline Dumbbell Press", 3, 10], ["Dumbbell Bench Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
+      { name: "Back Led A", slots: [["Lat Pulldown — Wide Grip", 3, 10], ["Seated Cable Row", 3, 10], ["Cable Straight-Arm Pulldown", 3, 12], ["Dumbbell Curl", 3, 12], ["Leg Extension Machine", 3, 15]] },
+      { name: "Chest Led B", slots: [["Chest Press Machine", 3, 12], ["Incline Smith Machine Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Overhead Cable Tricep Extension", 3, 12], ["Barbell Hip Thrust", 3, 10]] },
+      { name: "Back Led B", slots: [["Chest Supported Row Machine", 3, 10], ["Lat Prayer", 3, 12], ["Reverse Pec Deck", 3, 15], ["Hammer Curl", 3, 12], ["Romanian Deadlift", 3, 10]] },
     ],
   },
   {
     name: "Arms & Shoulders Specialty — Six Day (Women)",
     category: "upper-specialty", sex: "women", emphasis: "Arms & Shoulders", dows: [0, 1, 2, 3, 4, 5],
     days: [
-      { name: "Shoulders A", slots: [["Dumbbell Shoulder Press", 4, 10], ["Dumbbell Lateral Raise", 4, 15], ["Cable Face Pull", 3, 15]] },
-      { name: "Arms A", slots: [["Dumbbell Curl", 4, 12], ["Hammer Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
-      { name: "Legs", slots: [["Barbell Hip Thrust", 4, 10], ["Romanian Deadlift", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
-      { name: "Shoulders B", slots: [["Lateral Raise Machine", 4, 15], ["Cable Lateral Raise", 3, 15], ["Reverse Pec Deck", 3, 15]] },
-      { name: "Arms B", slots: [["Incline Dumbbell Curl", 4, 12], ["Cable Curl", 3, 12], ["Overhead Cable Tricep Extension", 3, 12], ["Hanging Leg Raise", 3, 12]] },
-      { name: "Chest & Back", slots: [["Incline Dumbbell Press", 4, 10], ["Pec Deck Machine", 3, 12], ["Lat Pulldown — Wide Grip", 3, 10], ["Russian Twist", 3, 20]] },
+      { name: "Shoulders A", slots: [["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Cable Face Pull", 3, 15]] },
+      { name: "Arms A", slots: [["Dumbbell Curl", 3, 12], ["Hammer Curl", 3, 12], ["Tricep Rope Pushdown", 3, 12], ["Cable Crunch", 3, 15]] },
+      { name: "Legs", slots: [["Barbell Hip Thrust", 3, 10], ["Romanian Deadlift", 3, 10], ["Standing Calf Raise Machine", 3, 15]] },
+      { name: "Shoulders B", slots: [["Lateral Raise Machine", 3, 15], ["Cable Lateral Raise", 3, 15], ["Reverse Pec Deck", 3, 15]] },
+      { name: "Arms B", slots: [["Incline Dumbbell Curl", 3, 12], ["Cable Curl", 3, 12], ["Overhead Cable Tricep Extension", 3, 12], ["Hanging Leg Raise", 3, 12]] },
+      { name: "Chest & Back", slots: [["Incline Dumbbell Press", 3, 10], ["Pec Deck Machine", 3, 12], ["Lat Pulldown — Wide Grip", 3, 10], ["Russian Twist", 3, 20]] },
     ],
   },
   {
     name: "Dumbbells at Home — Two Day (Women)",
     category: "dumbbell-home", sex: "women", emphasis: "Glutes", dows: [0, 3],
     days: [
-      { name: "Full Body A", slots: [["Dumbbell Hip Thrust", 4, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Romanian Deadlift", 3, 10], ["Dumbbell Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Dumbbell Curl", 3, 12]] },
-      { name: "Full Body B", slots: [["Dumbbell Sumo Squat", 4, 12], ["Dumbbell Split Squat", 3, 10], ["Dumbbell Stiff-Leg Deadlift", 3, 10], ["Single-Leg Calf Raise", 3, 15], ["Dumbbell Floor Press", 3, 10], ["Dumbbell Pullover", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Hammer Curl", 3, 12]] },
+      { name: "Full Body A", slots: [["Dumbbell Hip Thrust", 3, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Romanian Deadlift", 3, 10], ["Dumbbell Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Dumbbell Curl", 3, 12]] },
+      { name: "Full Body B", slots: [["Dumbbell Sumo Squat", 3, 12], ["Dumbbell Split Squat", 3, 10], ["Dumbbell Stiff-Leg Deadlift", 3, 10], ["Single-Leg Calf Raise", 3, 15], ["Dumbbell Floor Press", 3, 10], ["Dumbbell Pullover", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Hammer Curl", 3, 12]] },
     ],
   },
   {
     name: "Dumbbells at Home — Three Day (Women)",
     category: "dumbbell-home", sex: "women", emphasis: "Glutes", dows: [0, 2, 4],
     days: [
-      { name: "Glutes & Upper", slots: [["Dumbbell Hip Thrust", 4, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Curl", 3, 12]] },
-      { name: "Quads & Upper", slots: [["Dumbbell Front Squat", 4, 10], ["Dumbbell Step-Up", 3, 12], ["Single-Leg Calf Raise", 3, 15], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Bench Dip", 3, 12]] },
-      { name: "Hamstrings & Core", slots: [["Dumbbell Romanian Deadlift", 4, 10], ["Single-Leg Romanian Deadlift", 3, 10], ["Dumbbell Floor Press", 3, 10], ["Dumbbell Pullover", 3, 12], ["Plank", 3, 45], ["Russian Twist", 3, 20]] },
+      { name: "Glutes & Upper", slots: [["Dumbbell Hip Thrust", 3, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Calf Raise", 3, 15], ["Incline Dumbbell Press", 3, 10], ["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Curl", 3, 12]] },
+      { name: "Quads & Upper", slots: [["Dumbbell Front Squat", 3, 10], ["Dumbbell Step-Up", 3, 12], ["Single-Leg Calf Raise", 3, 15], ["Dumbbell Shoulder Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Bench Dip", 3, 12]] },
+      { name: "Hamstrings & Core", slots: [["Dumbbell Romanian Deadlift", 3, 10], ["Single-Leg Romanian Deadlift", 3, 10], ["Dumbbell Floor Press", 3, 10], ["Dumbbell Pullover", 3, 12], ["Plank", 3, 45], ["Russian Twist", 3, 20]] },
     ],
   },
   {
     name: "Dumbbells at Home — Four Day (Women)",
     category: "dumbbell-home", sex: "women", emphasis: "Glutes", dows: [0, 1, 3, 4],
     days: [
-      { name: "Glutes A", slots: [["Dumbbell Hip Thrust", 4, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Romanian Deadlift", 3, 10], ["Dumbbell Calf Raise", 3, 15]] },
-      { name: "Upper A", slots: [["Incline Dumbbell Press", 4, 10], ["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Dumbbell Curl", 3, 12], ["Plank", 3, 45]] },
-      { name: "Glutes B", slots: [["Dumbbell Sumo Squat", 4, 12], ["Dumbbell Split Squat", 3, 10], ["Dumbbell Stiff-Leg Deadlift", 3, 10], ["Single-Leg Calf Raise", 3, 15]] },
-      { name: "Upper B", slots: [["Dumbbell Floor Press", 4, 10], ["Dumbbell Pullover", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Hammer Curl", 3, 12], ["Side Plank", 3, 40]] },
+      { name: "Glutes A", slots: [["Dumbbell Hip Thrust", 3, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Romanian Deadlift", 3, 10], ["Dumbbell Calf Raise", 3, 15]] },
+      { name: "Upper A", slots: [["Incline Dumbbell Press", 3, 10], ["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Lateral Raise", 3, 15], ["Dumbbell Curl", 3, 12], ["Plank", 3, 45]] },
+      { name: "Glutes B", slots: [["Dumbbell Sumo Squat", 3, 12], ["Dumbbell Split Squat", 3, 10], ["Dumbbell Stiff-Leg Deadlift", 3, 10], ["Single-Leg Calf Raise", 3, 15]] },
+      { name: "Upper B", slots: [["Dumbbell Floor Press", 3, 10], ["Dumbbell Pullover", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Hammer Curl", 3, 12], ["Side Plank", 3, 40]] },
     ],
   },
   {
     name: "Dumbbells at Home — Five Day (Women)",
     category: "dumbbell-home", sex: "women", emphasis: "Glutes", dows: [0, 1, 2, 3, 4],
     days: [
-      { name: "Glutes", slots: [["Dumbbell Hip Thrust", 4, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Calf Raise", 3, 15]] },
-      { name: "Upper Push", slots: [["Incline Dumbbell Press", 4, 10], ["Dumbbell Fly", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Bench Dip", 3, 12]] },
-      { name: "Quads", slots: [["Dumbbell Front Squat", 4, 10], ["Dumbbell Step-Up", 3, 12], ["Single-Leg Calf Raise", 3, 15]] },
-      { name: "Upper Pull", slots: [["Single-Arm Dumbbell Row", 4, 12], ["Dumbbell Pullover", 3, 12], ["Rear Delt Fly — Dumbbell", 3, 15], ["Dumbbell Curl", 3, 12]] },
-      { name: "Hamstrings & Core", slots: [["Dumbbell Romanian Deadlift", 4, 10], ["Single-Leg Romanian Deadlift", 3, 10], ["Plank", 3, 45], ["Russian Twist", 3, 20]] },
+      { name: "Glutes", slots: [["Dumbbell Hip Thrust", 3, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Calf Raise", 3, 15]] },
+      { name: "Upper Push", slots: [["Incline Dumbbell Press", 3, 10], ["Dumbbell Fly", 3, 12], ["Dumbbell Shoulder Press", 3, 10], ["Bench Dip", 3, 12]] },
+      { name: "Quads", slots: [["Dumbbell Front Squat", 3, 10], ["Dumbbell Step-Up", 3, 12], ["Single-Leg Calf Raise", 3, 15]] },
+      { name: "Upper Pull", slots: [["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Pullover", 3, 12], ["Rear Delt Fly — Dumbbell", 3, 15], ["Dumbbell Curl", 3, 12]] },
+      { name: "Hamstrings & Core", slots: [["Dumbbell Romanian Deadlift", 3, 10], ["Single-Leg Romanian Deadlift", 3, 10], ["Plank", 3, 45], ["Russian Twist", 3, 20]] },
     ],
   },
   {
     name: "Dumbbells at Home — Six Day (Women)",
     category: "dumbbell-home", sex: "women", emphasis: "Glutes", dows: [0, 1, 2, 3, 4, 5],
     days: [
-      { name: "Glutes A", slots: [["Dumbbell Hip Thrust", 4, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Calf Raise", 3, 15]] },
-      { name: "Upper Push", slots: [["Incline Dumbbell Press", 4, 10], ["Dumbbell Lateral Raise", 3, 15], ["Dumbbell Overhead Extension", 3, 12]] },
-      { name: "Quads", slots: [["Dumbbell Front Squat", 4, 10], ["Dumbbell Split Squat", 3, 10], ["Single-Leg Calf Raise", 3, 15]] },
-      { name: "Upper Pull", slots: [["Single-Arm Dumbbell Row", 4, 12], ["Dumbbell Pullover", 3, 12], ["Dumbbell Curl", 3, 12]] },
-      { name: "Glutes B", slots: [["Dumbbell Sumo Squat", 4, 12], ["Dumbbell Romanian Deadlift", 3, 10], ["Plank", 3, 45]] },
-      { name: "Shoulders & Core", slots: [["Dumbbell Shoulder Press", 4, 10], ["Rear Delt Fly — Dumbbell", 3, 15], ["Side Plank", 3, 40]] },
+      { name: "Glutes A", slots: [["Dumbbell Hip Thrust", 3, 12], ["Dumbbell Glute Bridge", 3, 15], ["Dumbbell Calf Raise", 3, 15]] },
+      { name: "Upper Push", slots: [["Incline Dumbbell Press", 3, 10], ["Dumbbell Lateral Raise", 3, 15], ["Dumbbell Overhead Extension", 3, 12]] },
+      { name: "Quads", slots: [["Dumbbell Front Squat", 3, 10], ["Dumbbell Split Squat", 3, 10], ["Single-Leg Calf Raise", 3, 15]] },
+      { name: "Upper Pull", slots: [["Single-Arm Dumbbell Row", 3, 12], ["Dumbbell Pullover", 3, 12], ["Dumbbell Curl", 3, 12]] },
+      { name: "Glutes B", slots: [["Dumbbell Sumo Squat", 3, 12], ["Dumbbell Romanian Deadlift", 3, 10], ["Plank", 3, 45]] },
+      { name: "Shoulders & Core", slots: [["Dumbbell Shoulder Press", 3, 10], ["Rear Delt Fly — Dumbbell", 3, 15], ["Side Plank", 3, 40]] },
     ],
   },
 ];

@@ -58,10 +58,8 @@ export const libraryExercises: LibraryExercise[] = [
   // Chest
   ex("Barbell Bench Press", "Chest", true),
   ex("Incline Barbell Bench Press", "Chest", true),
-  ex("Decline Barbell Bench Press", "Chest", false),
   ex("Dumbbell Bench Press", "Chest", true),
   ex("Incline Dumbbell Press", "Chest", true),
-  ex("Decline Dumbbell Press", "Chest", false),
   ex("Dumbbell Fly", "Chest", true),
   ex("Incline Dumbbell Fly", "Chest", false),
   ex("Cable Fly — Mid", "Chest", true),
