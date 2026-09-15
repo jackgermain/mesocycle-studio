@@ -122,7 +122,12 @@ export default function BarcodeScanner({ onFound, onNotFound, onClose }: { onFou
   const ERROR_COPY: Record<ErrorKind, string> = {
     "permission-denied": "Camera access was denied. Allow camera access in your browser settings to scan a barcode, or search by name instead.",
     "no-camera": "Couldn't access a camera on this device. Search by name instead.",
-    "lookup-failed": "Couldn't look up that barcode — check your connection and try again.",
+    // Not "check your connection". This copy only ever appears on the .catch path, which means the request
+    // to Open Food Facts failed or timed out -- their service is volunteer-run and is far more often slow
+    // than the person's wifi is broken. A barcode simply missing from their database never lands here; it
+    // resolves to null and shows the "not-found" screen instead. Telling someone to check a connection that
+    // is fine sends them to fix the wrong thing.
+    "lookup-failed": "Couldn't reach the food database — it's often just busy. Try the scan again, or search for it by name.",
   };
 
   return (

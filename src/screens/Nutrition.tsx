@@ -149,11 +149,16 @@ export default function Nutrition() {
   }
 
   function addFoodTo(mealId: string, food: FoodItem, servings: number) {
-    const scaled = { kcal: Math.round(food.kcal * servings), protein: Math.round(food.protein * servings * 10) / 10, carbs: Math.round(food.carbs * servings * 10) / 10, fat: Math.round(food.fat * servings * 10) / 10 };
+    // Two decimals -- the same precision FoodSearchSheet already shows while you are choosing it. Typing a
+    // gram weight against a "1 cup (158g)" food produced 3.9556962025316458 servings and the meal row
+    // printed every digit of it. Rounded HERE rather than only at display, so the macros are scaled from
+    // the number that actually gets stored and a row's parts still agree with its total.
+    const rounded = Math.round(servings * 100) / 100;
+    const scaled = { kcal: Math.round(food.kcal * rounded), protein: Math.round(food.protein * rounded * 10) / 10, carbs: Math.round(food.carbs * rounded * 10) / 10, fat: Math.round(food.fat * rounded * 10) / 10 };
     dispatch({
       type: "ADD_FOOD_ITEM",
       mealId,
-      item: { id: `li-${Date.now()}`, foodId: food.id, name: food.name, servingLabel: food.servingLabel, servings, ...scaled },
+      item: { id: `li-${Date.now()}`, foodId: food.id, name: food.name, servingLabel: food.servingLabel, servings: rounded, ...scaled },
     });
   }
 
@@ -275,7 +280,9 @@ export default function Nutrition() {
                     <div style={{ flex: 1, minWidth: 0, opacity: ticked ? 1 : 0.62 }}>
                       <div className="trunc" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>{item.name}</div>
                       <div className="mu trunc" style={{ marginTop: 2 }}>
-                        <span className="num">{item.servings}×</span> {item.servingLabel} ·{" "}
+                        {/* Rounded at display as well as at write, because anything logged before the
+                            write-side fix is still carrying its full float. */}
+                        <span className="num">{Math.round(item.servings * 100) / 100}×</span> {item.servingLabel} ·{" "}
                         <span className="num">
                           {item.protein}p · {item.carbs}c · {item.fat}f
                         </span>

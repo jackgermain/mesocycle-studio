@@ -92,7 +92,22 @@ interface OffProductResponse {
  * when it is but fails the same physical-plausibility check searchOpenFoodFacts applies. */
 export async function lookupOffBarcode(code: string): Promise<FoodItem | null> {
   const params = new URLSearchParams({ fields: "code,product_name,brands,serving_size,nutriments,status" });
-  const data = await jsonp<OffProductResponse>(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}.json?${params}`);
+  const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}.json?${params}`;
+
+  // One retry, and a longer window than the 8s the search path uses. Open Food Facts is volunteer-run and
+  // is regularly SLOW rather than down, so a single short timeout turned "their server was busy for a
+  // moment" into a hard failure in front of someone standing in a kitchen holding the packet. A miss here
+  // is expensive: the alternative is typing the whole label in by hand.
+  //
+  // Only the transport is retried. A barcode genuinely absent from their database resolves to null on the
+  // first call and never reaches this path -- that case is "not-found" in the scanner, which is a different
+  // screen with a different answer.
+  let data: OffProductResponse;
+  try {
+    data = await jsonp<OffProductResponse>(url, 12000);
+  } catch {
+    data = await jsonp<OffProductResponse>(url, 12000);
+  }
   if (data.status !== 1 || !data.product) return null;
   return normalizeOffProduct(data.product);
 }
