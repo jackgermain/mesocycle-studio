@@ -38,6 +38,7 @@ import type { TemplateSex } from "../coach/womensTemplates";
 import type { GoalPriority } from "../generator/weeklyVolume";
 import type { Equipment } from "../data/types";
 import { blankIntake, TRAINING_AGE_LABELS, type TrainingAge } from "../shared/intake";
+import { muscleColorVar } from "../shared/muscleColor";
 
 const LOAD_MODE_OPTIONS: { value: LoadMode; label: string }[] = [
   { value: "lb", label: "None" },
@@ -1353,7 +1354,10 @@ function DraftExerciseCard({ ex, onChange, onRemove }: { ex: DraftExercise; onCh
           {/* A rename the importer made on its own has to be visible, or the coach has no way to know the
               sheet said something else. Shown only when it happened -- sourceName is absent otherwise. */}
           <div className="mu" style={{ marginTop: 1 }}>
-            {ex.muscle}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: muscleColorVar(ex.muscle) }}>
+              <i style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", flex: "none" }} />
+              {ex.muscle}
+            </span>
             {ex.sourceName && <span style={{ opacity: 0.75 }}> · sheet said "{ex.sourceName}"</span>}
           </div>
         </div>

@@ -9,6 +9,7 @@ import { isJointAlerting, isJointUrgent, isPumpAlerting, sendSignals } from "../
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { resolveMuscle } from "../shared/muscleNames";
 import { BodyMap, type Tissue } from "../components/BodyMap";
+import { muscleColorVar } from "../shared/muscleColor";
 
 // The three things a coach asks next anyway, and each one changes the answer.
 //
@@ -175,7 +176,9 @@ export default function Feedback() {
 
           {muscles.map(([muscle, { sets, from }]) => (
             <div key={muscle}>
-              <div className="sh" style={{ marginBottom: 2 }}>{muscle} — {sets} sets</div>
+              <div className="sh" style={{ marginBottom: 2 }}>
+                <span style={{ color: muscleColorVar(muscle) }}>{muscle}</span> — {sets} sets
+              </div>
               {/* Names what put this muscle on the list. A muscle on its own is unfalsifiable: you cannot
                   tell a mis-tagged exercise from one you forgot was in the session. */}
               <div className="mu" style={{ marginBottom: 8 }}>{from.join(", ")}</div>

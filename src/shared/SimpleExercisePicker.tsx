@@ -4,6 +4,7 @@ import type { LibraryExercise } from "../coach/types";
 import { useAuth } from "../lib/auth";
 import { canAddOwnExercise } from "./canBuild";
 import { addSharedExercise, fetchSharedExercises, mergeExercises, musclesOf, trainsMuscle, validateNewExercise } from "./sharedExercises";
+import { muscleColorVar } from "./muscleColor";
 
 /** The built-in exercise library picker, with no coach state behind it -- the coach's own
  * ExercisePickerSheet reads customExercises out of useCoachStore, which isn't mounted on the client
@@ -228,7 +229,16 @@ export function SimpleExercisePicker({ onPick, onClose }: { onPick: (e: LibraryE
                     <div className="trunc" style={{ fontSize: 12.5 }}>{e.name}</div>
                     {/* Every muscle, primary first -- an exercise tagged with four of them should say so
                         here, or the tagging is invisible everywhere except the form that created it. */}
-                    <div className="mu trunc" style={{ marginTop: 2 }}>{musclesOf(e).join(" · ")}</div>
+                    {/* Colour carries the region, the word carries the muscle -- see shared/muscleColor.ts.
+                        Each muscle gets its own dot so a multi-muscle exercise reads as two regions. */}
+                    <div className="trunc" style={{ marginTop: 3, fontSize: 10.5, display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {musclesOf(e).map((m) => (
+                        <span key={m} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: muscleColorVar(m) }}>
+                          <i style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", flex: "none" }} />
+                          {m}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <i className="ph ph-arrow-right" style={{ fontSize: 14, color: "var(--color-accent)" }} />
                 </button>

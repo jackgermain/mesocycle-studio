@@ -7,6 +7,7 @@ import { coachOnTheOtherEnd } from "../shared/coachName";
 import { TabBar } from "../components/TabBar";
 import { Seg, InfoBanner, HeroHeader, HeroStat } from "../components/UI";
 import { phaseStatus, RATE_WINDOW_DAYS, type PhaseStatus } from "../shared/nutritionPlan";
+import { muscleColorVar } from "../shared/muscleColor";
 
 function todayISO() {
   const t = new Date();
@@ -124,7 +125,10 @@ function StrengthTab() {
             <div key={l.name} className="cell row">
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 12.5 }}>{l.name}</div>
-                <div className="mu" style={{ marginTop: 2 }}>{l.muscle}</div>
+                <div style={{ marginTop: 2, fontSize: 12.5, display: "inline-flex", alignItems: "center", gap: 5, color: muscleColorVar(l.muscle) }}>
+                  <i style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", flex: "none" }} />
+                  {l.muscle}
+                </div>
               </div>
               <span style={{ fontSize: 12.5, color: "var(--color-accent-300)" }}>{l.lastLoggedTopSet ?? "not logged yet"}</span>
             </div>

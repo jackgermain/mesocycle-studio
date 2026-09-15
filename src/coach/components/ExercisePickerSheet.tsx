@@ -3,6 +3,7 @@ import { useCoachStore } from "../store";
 import { libraryExercises, MUSCLE_GROUPS } from "../exerciseLibrary";
 import type { LibraryExercise } from "../types";
 import { fetchSharedExercises, mergeExercises, trainsMuscle } from "../../shared/sharedExercises";
+import { muscleColorVar } from "../../shared/muscleColor";
 
 /** Shared library picker — used both to swap a logged exercise and to add one to a program day. Always includes the coach's custom exercises alongside the built-in library. */
 export function ExercisePickerSheet({
@@ -76,7 +77,10 @@ export function ExercisePickerSheet({
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="trunc" style={{ fontSize: 12.5 }}>{e.name}</div>
                 <div className="mu" style={{ marginTop: 2 }}>
-                  {e.muscle}
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: muscleColorVar(e.muscle) }}>
+                    <i style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", flex: "none" }} />
+                    {e.muscle}
+                  </span>
                   {e.kind === "cardio" ? " · cardio" : ""}
                 </div>
               </div>

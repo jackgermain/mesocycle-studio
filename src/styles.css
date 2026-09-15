@@ -32,6 +32,21 @@
   --color-accent-900: #123726;
   --color-accent-tint: rgba(76, 224, 143, 0.10);
 
+  /* Muscle colours, by REGION rather than per muscle -- see shared/muscleColor.ts.
+     Five colours, not seventeen: the muscle name is always written beside the dot, so the colour only has
+     to say which part of the body. Legs reuse the app accent deliberately, which means three of the five
+     families needed no new colour invented and the palette stays ours rather than borrowed. */
+  --muscle-legs: var(--color-accent);
+  --muscle-push: #f472b6;
+  --muscle-pull: #38bdf8;
+  --muscle-core: #b98cff;
+  --muscle-other: #ffb84d;
+  --muscle-legs-tint: rgba(76, 224, 143, 0.12);
+  --muscle-push-tint: rgba(244, 114, 182, 0.12);
+  --muscle-pull-tint: rgba(56, 189, 248, 0.12);
+  --muscle-core-tint: rgba(185, 140, 255, 0.12);
+  --muscle-other-tint: rgba(255, 184, 77, 0.12);
+
   /* Semantic (new) */
   --color-danger: #ff6b6b;
   --color-danger-tint: rgba(255, 107, 107, 0.10);

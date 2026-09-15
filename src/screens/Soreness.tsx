@@ -9,6 +9,7 @@ import { useAuth } from "../lib/auth";
 import { isSorenessAlerting, sendSignals } from "../shared/signals";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { judgeVolume, targetRecoveryDay } from "../generator/recoveryWindow";
+import { muscleColorVar } from "../shared/muscleColor";
 
 export default function Soreness({ dayId, due }: { dayId: string; due: { muscle: string; lastTrainedDaysAgo: number }[] }) {
   const { state, dispatch } = useStore();
@@ -101,7 +102,12 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
             once, so they read as one pattern rather than two. */}
         {due.map((m) => (
           <div key={m.muscle}>
-            <div className="sh">{m.muscle} — last trained {m.lastTrainedDaysAgo} {m.lastTrainedDaysAgo === 1 ? "day" : "days"} ago</div>
+            {/* Only the muscle takes the colour; the "last trained" clause stays neutral so the row does not
+                read as one long coloured sentence. */}
+            <div className="sh">
+              <span style={{ color: muscleColorVar(m.muscle) }}>{m.muscle}</span>
+              {" "}— last trained {m.lastTrainedDaysAgo} {m.lastTrainedDaysAgo === 1 ? "day" : "days"} ago
+            </div>
             <div style={{ display: "flex", gap: 6 }}>
               {sorenessWording.map((label, i) => {
                 const v = i + 1;

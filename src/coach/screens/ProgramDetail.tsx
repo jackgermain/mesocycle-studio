@@ -17,6 +17,7 @@ import { useAuth } from "../../lib/auth";
 import { expandCoachProgramToProgram } from "../../shared/programConvert";
 import { writeProgramToSelf } from "../assignProgram";
 import type { BuilderExercise, BuilderSet, CoachProgram, LibraryExercise, LoadMode } from "../types";
+import { muscleColorVar } from "../../shared/muscleColor";
 
 /** Weekly volume landmarks (RP-style MEV/MRV) for the muscle groups coaches actually program direct volume for. */
 const MUSCLE_LANDMARKS: Record<string, { mev: number; mrv: number }> = {
@@ -756,7 +757,11 @@ function BuilderExerciseCard({
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="trunc" style={{ fontSize: 12.5 }}>{ex.name}</div>
-          <div className="mu" style={{ marginTop: 1 }}>{ex.muscle}{ex.kind === "cardio" ? " · cardio" : ""}</div>
+          <div style={{ marginTop: 1, fontSize: 12.5, display: "inline-flex", alignItems: "center", gap: 5, color: muscleColorVar(ex.muscle) }}>
+            <i style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", flex: "none" }} />
+            {ex.muscle}
+            {ex.kind === "cardio" && <span style={{ color: "var(--color-text-muted)" }}> · cardio</span>}
+          </div>
         </div>
         {ex.kind !== "cardio" && (
           <button

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllLifts, useStore } from "../state/store";
 import { CloseHeader } from "../components/UI";
+import { muscleColorVar } from "../shared/muscleColor";
 
 export default function AllLifts() {
   const { state } = useStore();
@@ -34,7 +35,7 @@ export default function AllLifts() {
 
         {grouped.map(([muscle, items]) => (
           <div key={muscle}>
-            <div className="sh">{muscle}</div>
+            <div className="sh" style={{ color: muscleColorVar(muscle) }}>{muscle}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {items.map((l) => (
                 <button key={l.name} className="link-row" style={{ padding: "11px 12px" }} onClick={() => nav(`/progress/lifts/${encodeURIComponent(l.name)}`)}>
