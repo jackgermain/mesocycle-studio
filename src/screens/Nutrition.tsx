@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStore } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
 import { useAuth } from "../lib/auth";
@@ -6,13 +6,14 @@ import { sendSignals } from "../shared/signals";
 import { isNutritionAlerting, KCAL_TOLERANCE } from "../shared/signalScales";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { isoToday } from "../shared/dayStatus";
+import { mealDayLabel, mealNamesForNewDay, mealsOn, shiftIsoDate, weekdayOf } from "../shared/mealDays";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, Meter, HeroHeader, BackHeader, TickButton } from "../components/UI";
 import { NutritionForm } from "../shared/NutritionForm";
 import { AutoNutritionToggle } from "../shared/AutomationToggles";
 import FoodSearchSheet from "./FoodSearchSheet";
 import type { FoodItem } from "../data/foodDatabase";
-import type { PortionCategory, LoggedFoodItem } from "../data/types";
+import type { PortionCategory, LoggedFoodItem, MealSection } from "../data/types";
 import { dailyDeltaKcal, rateLabel, weeklyChangeLb } from "../shared/nutritionPlan";
 
 const PORTION_ICON: Record<PortionCategory, string> = {
@@ -22,15 +23,55 @@ const PORTION_ICON: Record<PortionCategory, string> = {
   Fat: "ph-hand-pointing",
 };
 
-const WEEK = [
-  { d: "M", on: true },
-  { d: "T", on: true },
-  { d: "W", on: true },
-  { d: "T", on: false },
-  { d: "F", on: true },
-  { d: "S", on: true },
-  { d: "S", on: null },
-];
+/** The day this screen is showing, and the way between days.
+ *
+ * The same ‹ calendar › cluster as the train tab's DayNavControls, in the same place, because Jack asked
+ * for it in those words: "an arrow on the right or the left somewhere like on the train tab where I can
+ * view yesterday's macros or view tomorrow's". The middle button goes back to today — the one destination
+ * you always want after browsing, and the only way back that does not involve counting taps. */
+function NutritionDayNav({ date, onChange }: { date: string; onChange: (d: string) => void }) {
+  const today = isoToday();
+  const arrow: React.CSSProperties = {
+    background: "none",
+    border: "none",
+    display: "flex",
+    padding: 7,
+    color: "var(--color-neutral-300)",
+    cursor: "pointer",
+  };
+  return (
+    <div className="row" style={{ gap: 6, width: "100%" }}>
+      <button onClick={() => onChange(shiftIsoDate(date, -1))} aria-label="Previous day" style={arrow}>
+        <i className="ph ph-caret-left" style={{ fontSize: 16 }} />
+      </button>
+      <button
+        onClick={() => onChange(today)}
+        disabled={date === today}
+        aria-label={date === today ? "Showing today" : "Back to today"}
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 7,
+          height: 36,
+          borderRadius: "var(--radius-md)",
+          background: date === today ? "transparent" : "var(--color-surface-raised)",
+          border: `1px solid ${date === today ? "var(--color-divider)" : "var(--color-accent)"}`,
+          color: date === today ? "var(--color-neutral-300)" : "var(--color-accent-200)",
+          fontSize: 12.5,
+          cursor: date === today ? "default" : "pointer",
+        }}
+      >
+        <i className="ph ph-calendar" style={{ fontSize: 14 }} />
+        {mealDayLabel(date, today)}
+      </button>
+      <button onClick={() => onChange(shiftIsoDate(date, 1))} aria-label="Next day" style={arrow}>
+        <i className="ph ph-caret-right" style={{ fontSize: 16 }} />
+      </button>
+    </div>
+  );
+}
 
 function round1(n: number) {
   return Math.round(n * 10) / 10;
@@ -39,6 +80,56 @@ function round1(n: number) {
 function totalsFor(items: { kcal: number; protein: number; carbs: number; fat: number }[]) {
   const raw = items.reduce((acc, i) => ({ kcal: acc.kcal + i.kcal, p: acc.p + i.protein, c: acc.c + i.carbs, f: acc.f + i.fat }), { kcal: 0, p: 0, c: 0, f: 0 });
   return { kcal: Math.round(raw.kcal), p: round1(raw.p), c: round1(raw.c), f: round1(raw.f) };
+}
+
+/** The seven days ending on the one being viewed.
+ *
+ * This was a hardcoded array that always claimed the same six-of-seven days on target whatever anyone had
+ * eaten. That was merely useless while the screen only ever showed "today"; it became a fabrication the
+ * moment the arrows let you look at the very days it was describing. Now that meals carry a date it is
+ * just arithmetic, and it is what makes the arrows worth pressing — you can see which days have anything
+ * in them before you go there. */
+function WeekStrip({ meals, viewDate, kcalTarget }: { meals: MealSection[]; viewDate: string; kcalTarget: number }) {
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const date = shiftIsoDate(viewDate, i - 6);
+    const items = mealsOn(meals, date).flatMap((m) => m.items.filter((f) => f.eaten !== false));
+    return {
+      date,
+      letter: weekdayOf(date).slice(0, 1),
+      logged: items.length > 0,
+      onTarget: items.length > 0 && Math.abs(totalsFor(items).kcal - kcalTarget) <= KCAL_TOLERANCE,
+    };
+  });
+  const hit = days.filter((d) => d.onTarget).length;
+  const logged = days.filter((d) => d.logged).length;
+
+  return (
+    <div>
+      <div className="sh">Week · {hit} of {logged || 7} days on target</div>
+      <div className="cell">
+        <div style={{ display: "flex", gap: 5 }}>
+          {days.map((d) => (
+            <div key={d.date} style={{ flex: 1, textAlign: "center" }}>
+              <div
+                style={{
+                  height: 26,
+                  borderRadius: 6,
+                  // Three states, not two: on target, logged but off it, and nothing logged at all — which
+                  // is a different fact from a bad day and must not be coloured like one.
+                  background: d.onTarget ? "var(--color-accent-800)" : d.logged ? "var(--color-neutral-700)" : "transparent",
+                  border: d.date === viewDate ? "1px solid var(--color-accent)" : d.logged ? undefined : "1px solid var(--color-divider)",
+                }}
+              />
+              <div className="scr" style={{ marginTop: 4, color: d.date === viewDate ? "var(--color-accent)" : undefined }}>{d.letter}</div>
+            </div>
+          ))}
+        </div>
+        <div className="mu" style={{ marginTop: 10 }}>
+          Within <span className="num">{KCAL_TOLERANCE}</span> kcal of your target counts as on target.
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function Nutrition() {
@@ -56,6 +147,26 @@ export default function Nutrition() {
   // them to "ask their coach" (which would be themselves, for the train-yourself case).
   const canSelfServe = (account?.role === "coach" && previewingAsClient) || account?.role === "friend";
 
+  /* Which day is on screen. Defaults to today, every time the tab is opened. */
+  const [viewDate, setViewDate] = useState(isoToday());
+  const dayMeals = mealsOn(state.meals, viewDate);
+
+  /** The rollover.
+   *
+   * Opening the tab on a new day gives you an empty day, WITHOUT yesterday needing to have been submitted
+   * first. Submitting is "close and file this day", not "unlock the next one" — forgetting to submit on
+   * Monday must never leave you unable to log on Tuesday, which is exactly the state Jack's screenshot was
+   * in: Tuesday showing Monday's food, Monday's calories already counted against Tuesday's target.
+   *
+   * Only TODAY seeds itself. Arrowing back to a day you logged nothing on has to show that it was empty
+   * rather than inventing sections for it after the fact, and a future day gets its sections when you
+   * actually add one. */
+  const needsSeeding = profile.nutritionMode !== "off" && viewDate === isoToday() && dayMeals.length === 0;
+  useEffect(() => {
+    if (!needsSeeding) return;
+    for (const name of mealNamesForNewDay(state.meals, viewDate)) dispatch({ type: "ADD_MEAL", name, date: viewDate });
+  }, [needsSeeding, viewDate, state.meals, dispatch]);
+
   if (settingUp || editingTargets) {
     return (
       <div className="screen">
@@ -65,7 +176,7 @@ export default function Nutrition() {
           onSave={(protocol) => {
             dispatch({ type: "SET_NUTRITION_PROTOCOL", protocol });
             if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
-              for (const name of ["Meal 1", "Meal 2", "Meal 3"]) dispatch({ type: "ADD_MEAL", name });
+              for (const name of ["Meal 1", "Meal 2", "Meal 3"]) dispatch({ type: "ADD_MEAL", name, date: isoToday() });
             }
             dispatch({ type: "SHOW_TOAST", message: editingTargets ? "Nutrition targets updated." : "Nutrition tracking is on." });
             setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
@@ -100,13 +211,21 @@ export default function Nutrition() {
   }
 
   if (profile.nutritionMode === "portions") {
-    return <PortionsNutrition canSelfServe={canSelfServe} onEditTargets={() => setEditingTargets(true)} />;
+    return (
+      <PortionsNutrition
+        canSelfServe={canSelfServe}
+        onEditTargets={() => setEditingTargets(true)}
+        viewDate={viewDate}
+        onChangeDate={setViewDate}
+        dayMeals={dayMeals}
+      />
+    );
   }
 
   // Only what was actually ticked counts. `eaten === false` is the planned-but-not-eaten case; undefined
   // is anything logged before this existed and still counts, so nobody's history zeroed itself overnight.
   const eatenItems = (m: { items: LoggedFoodItem[] }) => m.items.filter((i) => i.eaten !== false);
-  const totals = totalsFor(state.meals.flatMap(eatenItems));
+  const totals = totalsFor(dayMeals.flatMap(eatenItems));
   const kcalTarget = target.kcal + target.trainingDayCarbBonus * 4;
   const left = Math.max(0, kcalTarget - totals.kcal);
 
@@ -140,16 +259,18 @@ export default function Nutrition() {
   function submitMeal(mealId: string) {
     dispatch({ type: "SUBMIT_MEAL", mealId });
 
-    const after = state.meals.map((m) => (m.id === mealId ? { ...m, submittedAt: isoToday() } : m));
+    // Scoped to the day on screen. Across the whole list this could never fire once there was more than a
+    // day of history in it, because some meal from a previous day was always still open.
+    const after = dayMeals.map((m) => (m.id === mealId ? { ...m, submittedAt: isoToday() } : m));
     const withFood = after.filter((m) => m.items.length > 0);
     if (withFood.length === 0 || withFood.some((m) => !m.submittedAt)) return;
-    if (state.nutritionAlertSentOn === isoToday()) return;
+    if (state.nutritionAlertSentOn === viewDate) return;
 
     const dayKcal = totalsFor(after.flatMap(eatenItems)).kcal;
     const miss = dayKcal - kcalTarget;
     if (!isNutritionAlerting(miss) || !account) return;
 
-    dispatch({ type: "MARK_NUTRITION_ALERT_SENT", date: isoToday() });
+    dispatch({ type: "MARK_NUTRITION_ALERT_SENT", date: viewDate });
     const under = miss < 0;
     void sendSignals(account.id, account.coach_id, [
       {
@@ -157,7 +278,8 @@ export default function Nutrition() {
         // Not a 1..5 scale: the magnitude of the miss, so the coach sees how far off without asking.
         severity: Math.abs(miss),
         detail: under ? "under" : "over",
-        note: `Day finished ${Math.abs(miss)} kcal ${under ? "under" : "over"} — ${dayKcal} of ${kcalTarget}.`,
+        // Named when it is not today's, since a day filed late reads as today's otherwise.
+        note: `${viewDate === isoToday() ? "Day" : mealDayLabel(viewDate, isoToday())} finished ${Math.abs(miss)} kcal ${under ? "under" : "over"} — ${dayKcal} of ${kcalTarget}.`,
       },
     ]);
     const coach = coachOnTheOtherEnd(account.coach_id, state.program.coachName);
@@ -185,13 +307,17 @@ export default function Nutrition() {
   }
 
   function addSection(kind: "Meal" | "Snack") {
-    const count = state.meals.filter((m) => m.name.startsWith(kind)).length;
-    dispatch({ type: "ADD_MEAL", name: `${kind} ${count + 1}` });
+    // Counted within the DAY. Numbering off the whole list made a fresh Tuesday's first meal "Meal 4",
+    // because Monday's three were still sitting in there.
+    const count = dayMeals.filter((m) => m.name.startsWith(kind)).length;
+    dispatch({ type: "ADD_MEAL", name: `${kind} ${count + 1}`, date: viewDate });
     setShowAddMenu(false);
   }
 
-  const todayLabel = new Date().toLocaleDateString("en-US", { weekday: "long" });
-  const hasTrainingToday = state.program.weeks.some((w) => w.days.some((d) => d.status === "today"));
+  // Both read off the day being VIEWED. Matched on the session's real date rather than its derived
+  // "today" status, so arrowing to another day says whether that day trains, not whether this one does.
+  const todayLabel = weekdayOf(viewDate);
+  const hasTrainingToday = state.program.weeks.some((w) => w.days.some((d) => d.date === viewDate));
 
   return (
     <div className="screen">
@@ -220,7 +346,9 @@ export default function Nutrition() {
             )}
           </div>
         }
-      />
+      >
+        <NutritionDayNav date={viewDate} onChange={setViewDate} />
+      </HeroHeader>
       <div className="screen-scroll" onClick={() => showAddMenu && setShowAddMenu(false)}>
         <div className="cell elev-sm" style={{ position: "relative" }}>
           {canSelfServe && (
@@ -276,7 +404,7 @@ export default function Nutrition() {
           </button>
         )}
 
-        {state.meals.map((meal) => {
+        {dayMeals.map((meal) => {
           const eaten = eatenItems(meal);
           const mealTotals = totalsFor(eaten);
           const submitted = !!meal.submittedAt;
@@ -380,33 +508,13 @@ export default function Nutrition() {
           );
         })}
 
-        <div>
-          <div className="sh">Week · {WEEK.filter((w) => w.on).length} of 7 days on target</div>
-          <div className="cell">
-            <div style={{ display: "flex", gap: 5 }}>
-              {WEEK.map((w, i) => (
-                <div key={i} style={{ flex: 1, textAlign: "center" }}>
-                  <div
-                    style={{
-                      height: 26,
-                      borderRadius: 6,
-                      background: w.on === true ? "var(--color-accent-800)" : w.on === false ? "var(--color-neutral-700)" : "transparent",
-                      border: w.on === null ? "1px solid var(--color-accent)" : undefined,
-                    }}
-                  />
-                  <div className="scr" style={{ marginTop: 4, color: w.on === null ? "var(--color-accent)" : undefined }}>{w.d}</div>
-                </div>
-              ))}
-            </div>
-            <div className="mu" style={{ marginTop: 10 }}>Within <span className="num">50</span> kcal and <span className="num">10</span> g protein counts as on target.</div>
-          </div>
-        </div>
+        <WeekStrip meals={state.meals} viewDate={viewDate} kcalTarget={kcalTarget} />
       </div>
       <TabBar />
 
       {addingTo && (
         <FoodSearchSheet
-          mealName={state.meals.find((m) => m.id === addingTo)?.name ?? "meal"}
+          mealName={dayMeals.find((m) => m.id === addingTo)?.name ?? "meal"}
           onAdd={(food, servings) => addFoodTo(addingTo, food, servings)}
           onClose={() => setAddingTo(null)}
         />
@@ -446,7 +554,20 @@ function fmtPortionQty(unit: string, qty: number) {
   return `${qty} ${unit}${qty === 1 ? "" : "s"}`;
 }
 
-function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: boolean; onEditTargets: () => void }) {
+function PortionsNutrition({
+  canSelfServe,
+  onEditTargets,
+  viewDate,
+  // Aliased to the setter name the macros screen uses, so both render the same day-nav line.
+  onChangeDate: setViewDate,
+  dayMeals,
+}: {
+  canSelfServe: boolean;
+  onEditTargets: () => void;
+  viewDate: string;
+  onChangeDate: (d: string) => void;
+  dayMeals: MealSection[];
+}) {
   const { state, dispatch } = useStore();
   const profile = useEffectiveProfile();
   const targets = profile.portionTargets;
@@ -454,16 +575,20 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
   const [showNutritionOptions, setShowNutritionOptions] = useState(false);
 
   function addSection(kind: "Meal" | "Snack") {
-    const count = state.meals.filter((m) => m.name.startsWith(kind)).length;
-    dispatch({ type: "ADD_MEAL", name: `${kind} ${count + 1}` });
+    // Counted within the DAY. Numbering off the whole list made a fresh Tuesday's first meal "Meal 4",
+    // because Monday's three were still sitting in there.
+    const count = dayMeals.filter((m) => m.name.startsWith(kind)).length;
+    dispatch({ type: "ADD_MEAL", name: `${kind} ${count + 1}`, date: viewDate });
     setShowAddMenu(false);
   }
 
-  const totalSlots = state.meals.length * targets.length;
-  const hitSlots = state.meals.reduce((sum, m) => sum + (m.portionsHit?.length ?? 0), 0);
+  const totalSlots = dayMeals.length * targets.length;
+  const hitSlots = dayMeals.reduce((sum, m) => sum + (m.portionsHit?.length ?? 0), 0);
 
-  const todayLabel = new Date().toLocaleDateString("en-US", { weekday: "long" });
-  const hasTrainingToday = state.program.weeks.some((w) => w.days.some((d) => d.status === "today"));
+  // Both read off the day being VIEWED. Matched on the session's real date rather than its derived
+  // "today" status, so arrowing to another day says whether that day trains, not whether this one does.
+  const todayLabel = weekdayOf(viewDate);
+  const hasTrainingToday = state.program.weeks.some((w) => w.days.some((d) => d.date === viewDate));
 
   return (
     <div className="screen">
@@ -492,7 +617,9 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
             )}
           </div>
         }
-      />
+      >
+        <NutritionDayNav date={viewDate} onChange={setViewDate} />
+      </HeroHeader>
       <div className="screen-scroll" onClick={() => showAddMenu && setShowAddMenu(false)}>
         <InfoBanner icon="ph-hand-palm">
           No calorie counting — just hit your portions each meal. {canSelfServe ? "You set these targets." : `${state.program.coachName} set these targets for you.`}
@@ -532,7 +659,7 @@ function PortionsNutrition({ canSelfServe, onEditTargets }: { canSelfServe: bool
           <Meter pct={totalSlots ? (hitSlots / totalSlots) * 100 : 0} large />
         </div>
 
-        {state.meals.map((meal) => {
+        {dayMeals.map((meal) => {
           const hit = meal.portionsHit ?? [];
           return (
             <div key={meal.id}>

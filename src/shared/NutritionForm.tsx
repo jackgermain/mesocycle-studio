@@ -117,8 +117,23 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
   const heightFt = Math.floor(heightTotalIn / 12);
   const heightIn = heightTotalIn % 12;
   const setHeightParts = (ft: number, inch: number) => setHeightCm(feetInchesToCm(Math.max(0, ft), Math.max(0, inch)));
+  /* Seeded from the SAME inputs as `estimated` below, which it was not.
+   *
+   * It passed only bodyweight and body fat. Without sex, age and height together `estimateMaintenance`
+   * cannot take the Mifflin-St Jeor branch at all, so the seed silently fell through to Katch-McArdle, and
+   * with no `activity` the multiplier fell back to 1.375 rather than the "moderate" 1.55 this form itself
+   * defaults to. Both errors point the same way, so the seeded figure came out low for everyone and then
+   * got stored on save as though it had been calculated properly.
+   *
+   * Jack, on a 2,700 target while eating 3,346 at maintenance: "Why does it say my calories is 2700 when
+   * my maintenance is at 3350". 200 lb at the default 20% body fat seeds 2,670 on the old path and 3,310
+   * on this one — which is the whole of that gap.
+   *
+   * A maintenance figure already stored still wins: it may have been typed deliberately, and recomputing
+   * someone's target behind their back is not a fix. Pressing "Use this" adopts the corrected estimate. */
   const [maintenance, setMaintenance] = useState(
-    profile.maintenanceKcal ?? estimateMaintenance({ bodyweightLb: profile.bodyweight || 200, bodyFatPct: profile.bodyFatPct ?? 20 }).kcal,
+    profile.maintenanceKcal ??
+      estimateMaintenance({ bodyweightLb: calcBw, bodyFatPct: calcBf > 0 ? calcBf : undefined, sex, ageYears, heightCm, activity }).kcal,
   );
 
   // Calories are derived from the grams, never stored beside them. A 2,500 kcal target made of grams that

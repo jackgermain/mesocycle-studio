@@ -257,6 +257,14 @@ export interface MealSection {
   name: string;
   items: LoggedFoodItem[];
   portionsHit?: PortionCategory[];
+  /** ISO yyyy-mm-dd this meal's food belongs to — the day it is eaten on, which is not the same fact as
+   * `submittedAt` below (when it was filed).
+   *
+   * Meals used to be one perpetual undated list, so Monday's food was still on screen and still counting
+   * toward the total on Tuesday, and the only way to start a day was to delete yesterday's by hand.
+   * Optional because blobs written before this exists arrive without it; `backfillMealDates` in
+   * `shared/mealDays.ts` dates them on hydrate, from the `loggedAt` their food already carries. */
+  date?: string;
   /** ISO yyyy-mm-dd the meal was submitted, the way an exercise is finished rather than just started.
    * Absent means still open: food has been added and maybe ticked off, but the meal isn't closed. */
   submittedAt?: string;

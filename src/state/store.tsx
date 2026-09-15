@@ -9,6 +9,7 @@ import { nearestValidLoad } from "../screens/exerciseHelpers";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { supabase } from "../lib/supabase";
 import { withDerivedStatuses, isoToday } from "../shared/dayStatus";
+import { backfillMealDates } from "../shared/mealDays";
 import { insertWarmupSet } from "../shared/programEdits";
 import { addExerciseToProgram } from "../shared/addExercise";
 
@@ -94,7 +95,7 @@ type Action =
   | { type: "SUBMIT_MEAL"; mealId: string }
   | { type: "MARK_NUTRITION_ALERT_SENT"; date: string }
   | { type: "REOPEN_MEAL"; mealId: string }
-  | { type: "ADD_MEAL"; name: string }
+  | { type: "ADD_MEAL"; name: string; date: string }
   | { type: "REMOVE_MEAL"; mealId: string }
   | { type: "ADD_CUSTOM_FOOD"; food: FoodItem }
   | { type: "REMOVE_CUSTOM_FOOD"; foodId: string }
@@ -154,7 +155,11 @@ function targetExercises(
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case "HYDRATE":
-      return action.state;
+      // Meals carried no date until recently, so an existing blob arrives as one perpetual list holding
+      // every day's food at once. Dated here rather than in the screen so that everything reading the blob
+      // -- the coach's copy included -- sees the same shape, and because the backfill returns the very same
+      // array once it has run, a normal load still does not mark the store dirty.
+      return { ...action.state, meals: backfillMealDates(action.state.meals ?? [], isoToday()) };
     case "ONBOARD":
       return { ...state, onboarded: true, profile: { ...state.profile, ...action.profile } };
     case "UPDATE_PROFILE":
@@ -426,7 +431,7 @@ function reducer(state: AppState, action: Action): AppState {
     case "ADD_MEAL": {
       // Date.now() alone collides when several ADD_MEAL actions dispatch in the same tick (e.g. seeding
       // Breakfast/Lunch/Dinner at once on nutrition setup) -- both land in the same millisecond.
-      const meals = [...state.meals, { id: `meal-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: action.name, items: [] }];
+      const meals = [...state.meals, { id: `meal-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: action.name, date: action.date, items: [] }];
       return { ...state, meals };
     }
     case "REMOVE_MEAL": {
