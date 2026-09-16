@@ -178,7 +178,17 @@ export default function Nutrition() {
             if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
               for (const name of ["Meal 1", "Meal 2", "Meal 3"]) dispatch({ type: "ADD_MEAL", name, date: isoToday() });
             }
-            dispatch({ type: "SHOW_TOAST", message: editingTargets ? "Nutrition targets updated." : "Nutrition tracking is on." });
+            // Said here, after the save, rather than inline in the form while editing: an inline notice
+            // appearing on blur shifted the Save button out from under the tap. See NutritionForm.
+            const autoTurnedOff = profile.autoNutrition === true && !protocol.autoNutrition;
+            dispatch({
+              type: "SHOW_TOAST",
+              message: autoTurnedOff
+                ? "Saved — auto nutrition is off, so the numbers you typed stand."
+                : editingTargets
+                  ? "Nutrition targets updated."
+                  : "Nutrition tracking is on.",
+            });
             setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);
             setSettingUp(false);
             setEditingTargets(false);

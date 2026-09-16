@@ -531,15 +531,14 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
             <CalcRow label="Protein" unit="g" value={protein} onChange={editMacro(setProtein)} step={1} />
             <CalcRow label="Carbs" unit="g" value={carbs} onChange={editMacro(setCarbs)} step={1} />
             <CalcRow label="Fat" unit="g" value={fat} onChange={editMacro(setFat)} step={1} />
-            {/* Says what just happened, and only when it happened: auto was on when this form opened and a
-                hand edit has since turned it off. Without this the switch above appears to move on its own. */}
-            {profile.autoNutrition && !auto && (
-              <div className="mu" style={{ marginTop: 6, lineHeight: 1.5, color: "var(--color-accent-200)" }}>
-                <i className="ph ph-info" style={{ fontSize: 13, marginRight: 5 }} />
-                Auto nutrition programming switched off, so these are your numbers now and nothing will
-                recalculate them. Turn it back on above to go back to the worked-out ones.
-              </div>
-            )}
+            {/* NOTHING may appear here in response to a field being edited.
+                A notice used to render in this spot the moment a macro was typed -- and a Stepper commits
+                its value on BLUR, which is the same instant a tap on Save begins. The notice inserted
+                itself between mousedown and mouseup, pushed the Save button 39px down the page, and the
+                tap landed on empty space. Reproduced in dev/harness.html: typed 3200, tapped Save,
+                `saves: 0`. Jack, three times over: "it did not update the macros."
+                The auto-off message is a toast on save instead (Nutrition.tsx, NutritionProtocol.tsx),
+                which is fixed-position and moves nothing; the unticked switch above is the in-form cue. */}
             {/* The per-macro calorie breakdown that used to sit here is gone for the same reason as the
                 maintenance derivation. The behaviour it described is unchanged: the calorie line is still
                 the sum of the grams, so touching a macro still moves it. */}
@@ -639,7 +638,25 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
           : "Set this once and it drives your Nutrition tab, the missed-weigh-in flag, and the trend line on Progress."}
       </div>
 
-      <div style={{ marginTop: "auto", paddingBottom: 8 }}>
+      {/* Pinned to the bottom of the scroll area, so nothing that appears above it can move it.
+          A Stepper commits its typed value on BLUR, and blur is the first thing a tap on Save causes. Any
+          content that renders in response -- a notice, a capped-rate note, the "carbs at zero" hint --
+          lands between mousedown and mouseup, pushes this button down the page, and the tap misses.
+          Removing the one notice that bit Jack fixes today's case; pinning the button fixes the class.
+          The negative side margins span .screen-scroll's padding so scrolled content cannot peek past the
+          button's edges, and the safe-area inset keeps it clear of the home indicator while pinned --
+          in flow, the container's own bottom padding used to do that job. */}
+      <div
+        style={{
+          marginTop: "auto",
+          position: "sticky",
+          bottom: 0,
+          marginLeft: -16,
+          marginRight: -16,
+          padding: "8px 16px calc(8px + env(safe-area-inset-bottom))",
+          background: "var(--color-bg)",
+        }}
+      >
         <button className="btn btn-primary btn-block" style={{ height: 48 }} onClick={save}>
           Save {subjectFirstName ? "protocol" : "nutrition settings"}
         </button>

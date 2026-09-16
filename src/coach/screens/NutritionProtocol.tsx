@@ -70,7 +70,13 @@ function NutritionFormScreen({ clientName, profile, onDone }: { clientName: stri
           if (protocol.nutritionMode !== "off" && state.meals.length === 0) {
             for (const name of ["Meal 1", "Meal 2", "Meal 3"]) dispatch({ type: "ADD_MEAL", name, date: isoToday() });
           }
-          coachDispatch({ type: "SHOW_TOAST", message: `Nutrition protocol saved for ${clientName} — synced to their app.` });
+          const autoTurnedOff = profile.autoNutrition === true && !protocol.autoNutrition;
+          coachDispatch({
+            type: "SHOW_TOAST",
+            message: autoTurnedOff
+              ? `Saved for ${clientName} — auto nutrition is off, so the typed targets stand.`
+              : `Nutrition protocol saved for ${clientName} — synced to their app.`,
+          });
           setTimeout(() => coachDispatch({ type: "CLEAR_TOAST" }), 2800);
           onDone();
         }}
