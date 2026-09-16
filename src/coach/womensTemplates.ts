@@ -72,6 +72,20 @@ type Slot = readonly [name: string, sets: number, reps: number];
 interface TemplateDay {
   readonly name: string;
   readonly slots: readonly Slot[];
+  /** Muscles `deepen` must not add exercises to on this day — slots placed deliberately as a fixed count.
+   *
+   * G138's substitution needs it. Swapping a repeated delt head for a different one creates a NEW single-slot
+   * block, and `deepen` gives depth to the first block with room, so without this the substitute was inflated
+   * to three exercises: one side delt and three front delts, on a day Jack had asked to carry two delt
+   * movements in total. Invisible to everything else — `buildTemplate` reads only `name` and `slots`. */
+  readonly noDepth?: readonly string[];
+  /** Exercise names this template counts as used although no slot names them — G138 again.
+   *
+   * Swapping an exercise out frees its name, and `deepen` treats every unused name as a candidate for any
+   * day. Measured, that rewrote days nobody asked about: Glutes & Shoulders day 1 picked up the displaced
+   * lateral raise machine as a second side delt, and three days' glute insertions shifted. Reserving the
+   * displaced name keeps a swap local to the day it was made on. */
+  readonly reserved?: readonly string[];
 }
 
 export interface TemplateSpec {

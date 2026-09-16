@@ -170,7 +170,9 @@ function blocksOf(slots: readonly (readonly [string, number, number])[]): { musc
 
 export function deepen(spec: TemplateSpec): TemplateSpec {
   const target = TARGET_PER_SESSION[spec.days.length] ?? 6;
-  const used = new Set(spec.days.flatMap((d) => d.slots.map((s) => s[0])));
+  // Reserved names count as used: a template that swapped an exercise out must not have it re-inserted
+  // somewhere else. See TemplateDay.reserved.
+  const used = new Set(spec.days.flatMap((d) => [...d.slots.map((s) => s[0]), ...(d.reserved ?? [])]));
   const home = spec.category === "dumbbell-home";
 
   /* G137: a muscle trained on the previous CALENDAR day takes strictly less today.
@@ -256,7 +258,9 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
         .filter((b) => {
           const y = yesterday.get(b.muscle);
           return y === undefined || b.size < y;
-        });
+        })
+        // A count the template fixed on purpose (G138). See TemplateDay.noDepth.
+        .filter((b) => !day.noDepth?.includes(b.muscle));
 
       // No muscle in this day has an unused exercise left. Stop rather than loop: a day that cannot reach
       // the figure honestly is better than one padded with repeats.

@@ -193,6 +193,44 @@ test("no day is deepened past what the previous calendar day trained (G137)", ()
   });
 });
 
+test("a delt head repeated from yesterday is swapped: two delt movements, the press first (G138)", () => {
+  /* Jack, on Glutes & Shoulders day 2: "Get rid of the lateral raise machine. You did lateral delts the day
+   * before, so I doubt doing all three of these is necessary. Maybe change it to a front delt exercise. And do
+   * it first. Like perhaps a seated dumbbell press. And then do the cable lateral raise afterwards."
+   *
+   * Three failure modes this pins, each of which actually happened while building it: the substitute being
+   * inflated to three exercises by `deepen`; the displaced exercise being re-inserted on another day; and the
+   * press landing second when it is the compound that should open. */
+  const muscleOf = new Map(libraryExercises.map((e) => [e.name, e.muscle]));
+  const HEADS = new Set(["Front delts", "Side delts", "Rear delts"]);
+  const full = deepenAll(SPECIALTY_TEMPLATE_SPECS);
+  let swapped = 0;
+
+  SPECIALTY_TEMPLATE_SPECS.forEach((spec, si) => {
+    const authoredAnywhere = new Set(spec.days.flatMap((d) => d.slots.map((s) => s[0])));
+    spec.days.forEach((d, di) => {
+      if (!d.reserved?.length) return;
+      swapped++;
+      const slots = full[si].days[di].slots;
+      const where = `${spec.name} / day ${di + 1}`;
+      const delts = slots.filter((s) => HEADS.has(muscleOf.get(s[0]) ?? ""));
+      assert.equal(delts.length, 2, `${where}: expected two delt movements, got ${delts.map((s) => s[0]).join(", ")}`);
+      if (delts.some((s) => muscleOf.get(s[0]) === "Front delts")) {
+        assert.equal(muscleOf.get(slots[0][0]), "Front delts", `${where}: the press must open the day`);
+      }
+      for (const displaced of d.reserved) {
+        // Only an exercise nothing authored elsewhere — a reservation cannot be blamed for a slot written by hand.
+        if (authoredAnywhere.has(displaced)) continue;
+        assert.ok(
+          !full[si].days.some((x) => x.slots.some((s) => s[0] === displaced)),
+          `${spec.name}: the displaced "${displaced}" was re-inserted on another day`,
+        );
+      }
+    });
+  });
+  assert.ok(swapped > 0, "the rule should fire somewhere — Glutes & Shoulders six-day at least");
+});
+
 test("every exercise a template names still exists in the library", () => {
   // The backstop for all of the above: deleting a library entry silently orphans any template pointing at
   // it, and buildTemplate would throw at module load -- but only for names it still knows to look for.

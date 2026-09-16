@@ -7018,4 +7018,30 @@ separate groups everywhere (they have their own colours and their own soreness e
 with the pull region rather than with the other two. That taxonomy is what makes this rule expressible at
 all — a single "Shoulders" group could not tell a repeated head from a varied one.
 
+**Implemented, to his exact shape.** A second, more specific ruling on the same day of the same template:
+
+> *"Get rid of the lateral raise machine. You did lateral delts the day before, so I doubt doing all three of
+> these is necessary. Maybe change it to a front delt exercise. And do it first. Like perhaps a seated dumbbell
+> press. And then do the cable lateral raise afterwards. Everything else looks really good."*
+
+So a day whose owning muscle is a delt head that the previous calendar day also trained becomes: **the front
+delt press first, then the first-picked movement for the owning head** — Seated Dumbbell Press, then Cable
+Lateral Raise, on Glutes & Shoulders days 2 and 5. The press opens because it is the compound (G105/G109). A
+rear delt substitute, used only when front is unavailable, is isolation and goes second instead.
+
+**Rule — the day carries two delt movements in total, not three.** "I doubt doing all three of these is
+necessary." Both delt slots are marked so `deepen` will not add to them.
+
+**Rule — the swap is local.** "Everything else looks really good." The displaced exercise is reserved so it is
+not re-inserted on another day. Measured before this held: freeing it put a second side delt onto day 1, the
+opposite of the point, and shifted the glute insertions on three days nobody had commented on.
+
+Three attempts preceded the shipped one, and each failure is now a test: the substitute inflated to three front
+delt exercises; the preferred press applied to *every* front-delt pick, silently changing three-day templates
+that have no adjacent days and cannot trigger the rule; and the displaced name re-inserted elsewhere. Shipped
+result: twelve templates changed, only on the swap days themselves, zero exercises gained or lost.
+
+**Still open:** six cases of a delt head repeated across adjacent days remain, and they are not this pattern —
+they come from a *partner* slot being deepened, not from an owning muscle's two slots.
+
 ---

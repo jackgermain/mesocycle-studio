@@ -163,18 +163,86 @@ function pickFor(
  * Two slots rather than one because the emphasised muscle takes CONSECUTIVE slots and opens the day
  * (G106/G109). The divider closes it -- on a leg day that is the end of the session, on a mixed day it
  * marks the leg/upper seam (G102/G110). `deepen` adds the rest. */
-function dayFor(p: Pairing, owner: string, partner: string, variant: number): { name: string; slots: (readonly [string, number, number])[] } {
+/** G138. The deltoid heads, in the order a substitute is reached for. Front first: Jack named it, it is the
+ * compound press that can open a session, and its pool is the deepest (thirteen exercises to side delts'
+ * three). Rear only when front is unavailable. */
+const DELT_HEADS = ["Front delts", "Rear delts", "Side delts"];
+
+/** G138. Jack's named choice for the substitute press — "like perhaps a seated dumbbell press". */
+const PREFERRED_SUBSTITUTE: Record<string, string> = { "Front delts": "Seated Dumbbell Press" };
+
+interface GeneratedDay {
+  name: string;
+  slots: (readonly [string, number, number])[];
+  noDepth?: string[];
+  reserved?: string[];
+  /** What the day trains, for the NEXT day's G138 check. */
+  muscles: string[];
+}
+
+function dayFor(
+  p: Pairing,
+  owner: string,
+  partner: string,
+  variant: number,
+  /** What the previous CALENDAR day trained; empty when there is no adjacent day before this one. */
+  yesterday: ReadonlySet<string> = new Set(),
+): GeneratedDay {
   const divider = owner === "Quads" || owner === "Hamstrings" || owner === "Glutes" ? "Calves" : "Abs";
   // Threaded through every pick so no day can name the same exercise twice (G133) -- the bug that put
   // "Arnold Press ... Arnold Press" into 42 of these.
   const taken = new Set<string>();
-  const take = (muscle: string, index: number, opening = false) => {
-    const name = pickFor(muscle, p.sex, index, taken, { opening });
+  // `preferred` is passed ONLY for a G138 substitute. The first version applied Jack's named press to every
+  // front-delt pick in the generator, which changed the opening exercise of templates the swap never touches
+  // — three-day ones among them, which have no adjacent days and so cannot trigger it. That was the tell.
+  const take = (muscle: string, index: number, opening = false, preferred?: string) => {
+    const name = preferred && !taken.has(preferred) ? preferred : pickFor(muscle, p.sex, index, taken, { opening });
     taken.add(name);
     return name;
   };
+  const name = owner === partner ? owner : `${owner} & ${partner}`;
+
+  /* G138: a delt head trained yesterday is varied today, not repeated.
+   *
+   * Jack, on a day 2 carrying two lateral raises after a day 1 that also trained side delts: "Get rid of the
+   * lateral raise machine. You did lateral delts the day before, so I doubt doing all three of these is
+   * necessary. Maybe change it to a front delt exercise. And do it first. Like perhaps a seated dumbbell
+   * press. And then do the cable lateral raise afterwards."
+   *
+   * Three things in that sentence, all load-bearing:
+   *   - the day keeps TWO delt movements, not three — so both slots are marked `noDepth`. An earlier attempt
+   *     left them open and `deepen` inflated the substitute into three front delt exercises;
+   *   - the front delt goes FIRST, because it is the compound press and the heaviest movement opens (G105/
+   *     G109). A rear delt substitute is isolation, so it goes second instead;
+   *   - the lateral raise that stays is the first-picked one, with the machine being what goes. */
+  if (DELT_HEADS.includes(owner) && yesterday.has(owner)) {
+    const substitute = DELT_HEADS.find((h) => h !== owner && !yesterday.has(h));
+    if (substitute) {
+      const pressFirst = substitute === "Front delts";
+      const preferred = PREFERRED_SUBSTITUTE[substitute];
+      const first = pressFirst ? take(substitute, variant, true, preferred) : take(owner, variant, true);
+      const second = pressFirst ? take(owner, variant) : take(substitute, variant, false, preferred);
+      // The exercise the swap displaced (the lateral raise machine, in Jack's case). Still TAKEN, exactly as
+      // it was before the swap, so the partner and divider picks below are unchanged — and RESERVED, so
+      // `deepen` cannot hand it to another day.
+      const displaced = take(owner, variant + 1);
+      return {
+        name,
+        slots: [
+          [first, 3, 8],
+          [second, 3, 10],
+          [take(partner, variant), 3, 12],
+          [take(divider, variant), 3, 15],
+        ],
+        noDepth: [owner, substitute],
+        reserved: [displaced],
+        muscles: [owner, substitute, partner, divider],
+      };
+    }
+  }
+
   return {
-    name: owner === partner ? owner : `${owner} & ${partner}`,
+    name,
     slots: [
       // G132: three sets, not four. This one line is the opening slot of every generated specialty day, so
       // it alone accounted for 252 of the library's 4-set prescriptions -- the hand-authored files had none
@@ -184,6 +252,7 @@ function dayFor(p: Pairing, owner: string, partner: string, variant: number): { 
       [take(partner, variant), 3, 12],
       [take(divider, variant), 3, 15],
     ],
+    muscles: [owner, partner, divider],
   };
 }
 
@@ -192,15 +261,25 @@ function build(p: Pairing, frequency: number): TemplateSpec {
   const slotFor = (key: string) => (key === "a" ? a : key === "b" ? b : p.support[Number(key.slice(1))]);
 
   let variant = 0;
-  const days = DAY_PLANS[frequency].map((key, i) => {
+  // Sequential rather than a `.map`: G138 needs day N to know what day N-1 trained. Adjacency is by calendar
+  // day, read off DOWS — a three-day template on Mon/Wed/Fri has no adjacent days, so the rule never fires.
+  const dows = DOWS[frequency];
+  const built: GeneratedDay[] = [];
+  DAY_PLANS[frequency].forEach((key, i) => {
     const owner = slotFor(key);
     // The partner rotates so the second run of a session type is not a copy of the first: G111 records
     // that the exercises vary between the two runs while the muscle order does not.
     const partner = key === "a" ? b : key === "b" ? a : p.support[(i + 1) % p.support.length];
-    const day = dayFor(p, owner, partner, variant);
+    const adjacent = i > 0 && dows[i] === dows[i - 1] + 1;
+    built.push(dayFor(p, owner, partner, variant, new Set(adjacent ? built[i - 1].muscles : [])));
     variant += 1;
-    return day;
   });
+  const days = built.map(({ name, slots, noDepth, reserved }) => ({
+    name,
+    slots,
+    ...(noDepth ? { noDepth } : {}),
+    ...(reserved ? { reserved } : {}),
+  }));
 
   return {
     // "Specialty" in the name, so what kind of program this is survives out of context -- in a saved
