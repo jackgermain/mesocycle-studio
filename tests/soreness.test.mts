@@ -1,22 +1,23 @@
 /** When the soreness check is asked at all.
  *
- * Two rules, and both are about not asking a question whose answer means nothing:
+ * One rule: only muscles today is about to train, and only once they come round again. Asking whether
+ * someone's back has healed on a day they are not training back produces information nobody can act on.
  *
- *  - Only muscles today is about to train. Asking whether someone's back has healed on a day they are not
- *    training back produces information nobody can act on.
- *  - Not in week 0 or week 1. Both are sore by definition -- new movements, new order -- and soreness is a
- *    signal about whether volume is set too high, which needs a previous week of the same prescription to
- *    mean anything.
+ * There used to be a second rule — never in week 0 or week 1 — and it is gone. It was an earlier session's
+ * reasoning, never Jack's, and it suppressed the entire check: he trained biceps on the Monday and Wednesday
+ * of week 1 and was asked nothing. "I was supposed to receive a prompt asking me if my biceps were healed…
+ * because I trained them on Monday and I trained them today." The test that pinned the old rule is replaced
+ * below by one that reproduces his week exactly.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { computeSorenessDue } from "../src/shared/soreness.ts";
 import type { Program } from "../src/data/types.ts";
 
-function day(id: string, date: string, muscle: string, status: "done" | "upcoming") {
+function day(id: string, date: string, muscle: string, status: "done" | "upcoming", name = `${muscle} thing`) {
   return {
     id, date, status, name: id, kicker: "",
-    exercises: { e1: { id: "e1", name: `${muscle} thing`, muscle, sets: [], metaLine: "" } },
+    exercises: { e1: { id: "e1", name, muscle, sets: [], metaLine: "" } },
     order: ["e1"],
   } as unknown as Program["weeks"][number]["days"][number];
 }
@@ -54,13 +55,44 @@ test("synergists come along, because they are trained again too", () => {
   assert.ok(asked.includes("Biceps"), `expected biceps among ${asked.join(", ")}`);
 });
 
-test("never asks in week 0 or week 1", () => {
+test("asks in week 0 and week 1 too — Jack's week, reproduced", () => {
+  // Hammer curls on the Monday of week 1, reverse curls on the Wednesday. He was asked nothing, because a
+  // week gate suppressed the whole check. He expected both of these.
   for (const n of [0, 1]) {
     const p = program([
-      { number: n, days: [day("a", "2026-09-08", "Back", "done"), day("b", "2026-09-12", "Back", "upcoming")] },
+      {
+        number: n,
+        days: [
+          day("mon", "2026-09-14", "Biceps", "done", "Hammer Curl"),
+          day("wed", "2026-09-16", "Forearms", "upcoming", "Dumbbell Reverse Curl"),
+        ],
+      },
     ]);
-    assert.deepEqual(computeSorenessDue(p, "b"), [], `week ${n} should ask nothing`);
+    const due = computeSorenessDue(p, "wed");
+    const asked = due.map((d) => d.muscle);
+    assert.ok(asked.includes("Biceps"), `week ${n}: biceps should be asked, got [${asked.join(", ")}]`);
+    // This one needs the hammer-curl synergist as well as the gate being gone: a hammer curl is tagged
+    // biceps, and nothing linked it to forearm work until it was matched by name.
+    assert.ok(asked.includes("Forearms"), `week ${n}: forearms should be asked, got [${asked.join(", ")}]`);
+    assert.equal(due.find((d) => d.muscle === "Biceps")!.lastTrainedDaysAgo, 2);
   }
+});
+
+test("a curl that is not a hammer curl does not count as forearm work", () => {
+  // The reason the link is by exercise name rather than "biceps -> forearms" for every curl: a spider curl
+  // barely touches brachioradialis, and asking about forearms after one would be noise.
+  const p = program([
+    {
+      number: 2,
+      days: [
+        day("mon", "2026-09-14", "Biceps", "done", "Spider Curl"),
+        day("wed", "2026-09-16", "Forearms", "upcoming", "Dumbbell Reverse Curl"),
+      ],
+    },
+  ]);
+  const asked = computeSorenessDue(p, "wed").map((d) => d.muscle);
+  assert.ok(!asked.includes("Forearms"), `forearms should not be asked after spider curls, got [${asked.join(", ")}]`);
+  assert.ok(asked.includes("Biceps"), "biceps still should be — a reverse curl works them");
 });
 
 test("a muscle never trained before is not asked about", () => {

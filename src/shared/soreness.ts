@@ -16,6 +16,19 @@ const SECONDARY_MUSCLES: Record<string, string[]> = {
   "Full body": ["Back", "Quads", "Glutes", "Traps"],
 };
 
+/** Synergists that belong to a particular EXERCISE rather than to its muscle group.
+ *
+ * The table above is keyed by muscle, which is right for the broad overlaps — every row trains biceps. It
+ * cannot express an overlap that only some exercises for a muscle have. Jack, having done hammer curls on
+ * Monday and reverse curls on Wednesday: "hammer curls on Monday and reverse curls work similar muscle
+ * groups. I should have been asked about that as well."
+ *
+ * A hammer curl's neutral grip loads brachialis and brachioradialis — the same forearm flexors a reverse curl
+ * is tagged for — while a spider curl barely touches them. So this is matched by name, not added as
+ * "Biceps → Forearms" in the table, which would make every curl count forearm work. Library exercises carry
+ * no per-exercise secondary muscles of their own (only custom ones do), which is why it has to live here. */
+const EXERCISE_SYNERGISTS: [RegExp, string[]][] = [[/hammer curl/i, ["Forearms"]]];
+
 function musclesWorked(day: TrainingDay): Set<string> {
   const set = new Set<string>();
   for (const ex of Object.values(day.exercises)) {
@@ -25,6 +38,9 @@ function musclesWorked(day: TrainingDay): Set<string> {
     // clean tagged with traps has to put traps in the soreness check, or the question never gets asked and
     // the recovery data for that muscle is simply missing.
     for (const declared of ex.secondaryMuscles ?? []) set.add(declared);
+    for (const [pattern, muscles] of EXERCISE_SYNERGISTS) {
+      if (pattern.test(ex.name)) for (const m of muscles) set.add(m);
+    }
   }
   return set;
 }
@@ -43,30 +59,26 @@ const MAX_LOOKBACK_DAYS = 10;
  * days earlier on pull day, triceps on chest day after overhead pressing. Surfaced as a pre-session "is
  * this healed" check so a coach can see when a muscle's actual recovery lags its programmed frequency,
  * which is the real signal for whether that muscle's volume is set too high. */
-/** Weeks that are never asked.
+/* There used to be a week gate here: `SKIP_WEEKS_BEFORE = 2`, so weeks 0 and 1 were never asked, on the
+ * reasoning that a new program is sore by definition. That reasoning was an earlier session's, not Jack's —
+ * the commit that added it quoted him only on "only that body part, only on the day it is trained again".
  *
- * Week 0 is the partial catch-up week `scheduleWeeks` creates when a program starts mid-week, and week 1
- * is the first real exposure to the prescription. Both are sore by definition — a new movement, a new
- * order, often a new gym — and nothing useful comes out of asking. Soreness is a signal about whether a
- * muscle's *volume* is set too high, and that only means anything once there is a previous week of the
- * same prescription to compare against. */
-const SKIP_WEEKS_BEFORE = 2;
+ * He then trained biceps on the Monday and Wednesday of week 1 and was asked nothing: "I was supposed to
+ * receive a prompt asking me if my biceps were healed… because I trained them on Monday and I trained them
+ * today." The gate was the entire cause — Monday had been finished and was found correctly; the question was
+ * simply never allowed to exist. Removed for week 0 as well, since its only justification was the identical
+ * argument he has just contradicted. The check now runs whenever a muscle comes round again. */
 
 export function computeSorenessDue(program: Program, dayId: string): { muscle: string; lastTrainedDaysAgo: number }[] {
   let target: TrainingDay | null = null;
-  let targetWeek: number | null = null;
   const doneDays: TrainingDay[] = [];
   for (const week of program.weeks) {
     for (const day of week.days) {
-      if (day.id === dayId) {
-        target = day;
-        targetWeek = week.number;
-      }
+      if (day.id === dayId) target = day;
       if (day.status === "done") doneDays.push(day);
     }
   }
   if (!target) return [];
-  if (targetWeek !== null && targetWeek < SKIP_WEEKS_BEFORE) return [];
 
   const todayMuscles = musclesWorked(target);
   const priorDays = doneDays.filter((d) => d.date < target!.date).sort((a, b) => b.date.localeCompare(a.date));
