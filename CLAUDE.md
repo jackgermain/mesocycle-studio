@@ -25,7 +25,8 @@ home-screen icon installed from it keep working.
 
 React 19 + TypeScript + Vite 8, React Router (**HashRouter** — hence the `#/` in every URL),
 `@supabase/supabase-js`, `@zxing/browser` for barcode scanning. No CSS framework — one hand-written
-design system in `src/styles.css` plus inline styles. No test suite.
+design system in `src/styles.css` plus inline styles. No test *framework* — the suite runs on Node's
+built-in runner, deliberately (see **Tests**).
 
 ```bash
 npm run dev      # vite dev server
@@ -187,12 +188,54 @@ npm run build
 If a pushed commit's bundle hash doesn't change on the live site within a minute or two, suspect a failed
 build rather than a slow one, and go run `tsc -b` locally to find the error.
 
-To confirm a deploy actually went live, compare the local build's asset hash against production:
+To confirm a deploy actually went live, record the live bundle name **before** pushing and check it changed
+afterwards, then grep the new bundle for a string unique to the change:
 
 ```bash
-grep -oE 'assets/index-[A-Za-z0-9_-]+\.js' dist/index.html
+# Before pushing — the baseline.
 curl -s https://jackedapp.vercel.app/ | grep -oE 'assets/index-[A-Za-z0-9_-]+\.js' | head -1
+
+# After — the name must differ from the baseline, and the new bundle must contain the change.
+LIVE=$(curl -s https://jackedapp.vercel.app/ | grep -oE 'assets/index-[A-Za-z0-9_-]+\.js' | head -1)
+curl -s "https://jackedapp.vercel.app/$LIVE" | grep -c 'a string unique to what you changed'
 ```
+
+**Do not compare the local `dist` hash against production.** They never match: the build inlines `VITE_*`
+env vars and Vercel's values differ from `.env`, so the hashes differ on every deploy even when the code is
+identical. And **validate the grep string against local `dist` first** — only expect zero hits if
+`grep -rn` proves it unique to the file you edited, or a shared sentence returns hits from elsewhere and a
+healthy deploy reads as a failure. Both of these have cost real time.
+
+### Verifying behaviour behind the sign-in — `dev/harness.html`
+
+Every client screen sits behind a Supabase session and there is no dev bypass, so for a long time the only
+way to check an *interaction* was to reason about the code and ask Jack to try it on his phone. That cost
+four rounds on a single bug in one day.
+
+`dev/harness.html` mounts a **real** component inside the **real** `StoreProvider` with no sign-in, under
+the nil account id — RLS refuses every write, so nothing real is ever touched. (`permission denied for
+function my_coach_id` in the console is the harness working, not a fault.) Start the dev server, open
+`/dev/harness.html`, and drive it with real clicks and typing.
+
+It exists because reading code cannot see event ordering. Its first run found that a tap on Save was being
+silently swallowed: `Stepper` commits its typed value on **blur**, blur is the first thing a tap causes,
+and a notice rendering in response inserted itself between mousedown and mouseup — moving the button 39px,
+so the tap landed on nothing. A second tap always worked, which is why it read as "save doesn't stick" for
+three rounds of fixes to a save path that was already correct.
+
+Two rules came out of that, both load-bearing in `NutritionForm`:
+
+- **Nothing may render above the submit button in response to a field edit.** Say it in a toast after the
+  save instead — fixed-position content moves nothing.
+- **The Save row is `position: sticky; bottom: 0`.** Two other blocks in that form can appear on blur (the
+  "carbs at zero" hint, the capped-rate note) and either would swallow a tap the same way. Don't
+  "simplify" it back into flow.
+
+When a save appears not to work, first prove whether the handler *ran* — the harness counts saves — before
+touching the save logic.
+
+`dev/` sits outside `tsconfig.app.json`'s `include: ["src"]` and outside the production build, which only
+builds `index.html`. Confirm with `grep -rl 'JAX-shaped' dist/assets/` — it must return nothing.
 
 ---
 
