@@ -6932,3 +6932,69 @@ Inserted reps are now capped at 15, which is where the authored templates top ou
 remains is authored and correct — `repRanges.ts` reserves 20-30 for exactly that.
 
 ---
+
+**G137 — A muscle trained yesterday takes less today. Volume is spread across the week, not stacked.**
+
+Three templates in a row, the same complaint each time:
+
+> *"I don't think there's enough time for hamstrings to heal from day one, especially because it's day two,
+> literally the next day."*
+
+> *"I still think the volume is too much, two days in a row. For quads specifically."*
+
+> *"You're doing glutes two days in a row. You're doing 10 sets of glutes the day before. And then you're
+> doing another seven sets — that's pretty crazy."*
+
+And the instruction that makes it doctrine rather than three edits:
+
+> *"I'm also going off of things in general. So save all this stuff. I'm not just modifying the template.
+> I'm telling you how to program."*
+
+**Rule — when a muscle is trained on consecutive calendar days, the second day carries reduced volume for
+it.** Seventeen sets of glutes across two adjacent days is the case he called crazy; the same shape appears
+for hamstrings (an RDL day followed by three hamstring exercises) and for quads (a squat day followed by a
+full quad session).
+
+**Rule — the fix is to spread, not to delete.** His own remedy on the hamstring template was to *move* two
+exercises onto the quad day two days later, not to cut them — the weekly total was acceptable, its
+distribution was not. Deleting is right only where the week is genuinely over-prescribed.
+
+**Rule — adjacency is by calendar day, not by position in the list.** A three-day template running
+Mon/Wed/Fri has no adjacent days at all, which is why none of these complaints arrive from one.
+
+**Why the generator produces this.** `DAY_PLANS` runs the two emphasised muscles as `a, b` on consecutive
+days at four, five and six days a week, and `deepen()` then fills each day independently, with no knowledge
+of what the day before it holds. Every rule it already enforces — the erector budget, the squat-pattern
+ban, the four-per-muscle cap — is scoped to a single session. This is the first rule that spans two.
+
+**STILL TO RULE ON: the number.** "I would remove like seven of those for sure, or like six or five" sets a
+direction but not a threshold, and the threshold is what a test needs. Candidates: a ceiling on the second
+day's sets for that muscle, or a ceiling on the two-day total. Until he sets it, this is enforced as
+"strictly fewer on the second day" rather than as a figure.
+
+---
+
+**G138 — A head trained yesterday is varied today, not repeated.**
+
+> *"On day two, you should have another deltoid exercise rather than having two side delt exercises. You
+> should have either a front delt exercise or a rear delt exercise. A front delt exercise is totally fine,
+> like a seated dumbbell press… because you already have side delts the day before that."*
+
+**Rule — when a muscle was trained on the previous day, the current day does not stack two exercises of the
+same head onto it. One of them becomes a different head of the same muscle group.**
+
+This is G137's principle applied where the muscle group has heads that can absorb the work instead. Deltoids
+are the clear case: side delts two days running is repeated stimulus on one head, while a front or rear delt
+movement is fresh work for a head that is not still recovering. The named substitution is a seated dumbbell
+press.
+
+**Rule — the substitute keeps the slot, not merely the muscle group.** The day still trains shoulders and
+still runs the same number of exercises; only which head gets the second slot changes. This is a swap, not
+a cut, and it does not alter the day's set count.
+
+**Consequence for the three-delt colour split.** The app already treats front, side and rear delts as three
+separate groups everywhere (they have their own colours and their own soreness entries), and rear delts sit
+with the pull region rather than with the other two. That taxonomy is what makes this rule expressible at
+all — a single "Shoulders" group could not tell a repeated head from a varied one.
+
+---
