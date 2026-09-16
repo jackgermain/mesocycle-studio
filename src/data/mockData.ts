@@ -305,7 +305,7 @@ function buildWeek(weekNumber: number, phase: TrainingWeek["phase"]): TrainingWe
 }
 
 function sessionLog(big: boolean) {
-  return { sessionSets: big ? 20 : 12, sessionTotal: big ? 20 : 12, tonnage: big ? "12.1t" : "6.4t", timeMin: big ? 48 : 32, pumpAvg: 4 };
+  return { sessionSets: big ? 20 : 12, sessionTotal: big ? 20 : 12, pumpAvg: 4 };
 }
 
 export function buildInitialProgram(opts?: { name?: string; coachName?: string }): Program {

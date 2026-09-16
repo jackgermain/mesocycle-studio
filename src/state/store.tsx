@@ -380,7 +380,10 @@ function reducer(state: AppState, action: Action): AppState {
         day.feedbackDone = true;
         day.status = "done";
         const doneSets = Object.values(day.exercises).reduce((n, e) => n + e.sets.filter((s) => s.checked).length, 0);
-        day.log = { sessionSets: doneSets, sessionTotal: doneSets, tonnage: "12.4t", timeMin: 48, pumpAvg: 4 };
+        // Tonnage ("12.4t") and time (48 min) were written here as constants and are gone -- see DayDetail.
+        // pumpAvg is STILL a constant: the finish flow collects a pump rating per muscle but never stores
+        // them on the day, so there is no real average to put here yet.
+        day.log = { sessionSets: doneSets, sessionTotal: doneSets, pumpAvg: 4 };
       }
       return { ...state, program };
     }

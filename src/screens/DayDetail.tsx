@@ -60,8 +60,10 @@ function ReopenedDay({ dayId }: { dayId: string }) {
       <div className="screen-scroll">
         <div className="cell row" style={{ gap: 8 }}>
           <StatCell label="Sets" value={`${day.log?.sessionSets ?? 0}/${day.log?.sessionTotal ?? 0}`} />
-          <StatCell label="Tonnage" value={day.log?.tonnage ?? "—"} />
-          <StatCell label="Time" value={day.log ? `${day.log.timeMin}m` : "—"} />
+          {/* Tonnage and Time used to sit here. Neither was ever measured: finishing a session wrote the
+              constants "12.4t" and 48 minutes, so every logged day in the app showed the same two numbers.
+              Jack: "remove the time thing cause we don't need that at all, and then we also don't need
+              tonnage as well." Don't bring them back without a real source for either. */}
           <StatCell label="Pump" value={day.log?.pumpAvg ?? "—"} valueColor="var(--color-accent-300)" />
         </div>
 

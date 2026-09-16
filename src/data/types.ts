@@ -97,8 +97,6 @@ export type DayStatus = "done" | "today" | "visible";
 export interface DayLog {
   sessionSets: number;
   sessionTotal: number;
-  tonnage: string;
-  timeMin: number;
   pumpAvg: number;
 }
 
