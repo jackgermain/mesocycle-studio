@@ -279,6 +279,52 @@ water swings are bigger than a week of real change) and what counts as "tapering
 below half the fuller one). This is the first rule in the file that changes what somebody eats without being
 asked, which is why it runs only when auto nutrition is switched on.
 
+**N13 — The scale is read as a week-over-week average, and the steps shrink as a phase matures.**
+
+> *"Make sure that since I have auto nutrition enabled, that the algorithm is taking my weigh-ins that I have
+> inputted so far and is formulating a week-over-week average which will be compared to after all of the
+> weigh-ins next week. And then that is when the new macros will come in regarding whether things will be
+> increased or decreased."*
+
+> *"[N12's steps] but this is for weeks 2-4. After that just 50 cal to -100 cal changes depending."*
+
+**Rule — the rate that decides an adjustment is one week's average against the previous week's.** Not the
+28-day least-squares fit. `observedRate` still draws the Progress trend, which answers a different question
+— "how fast am I moving lately" — but the number that moves somebody's calories is two averages and a
+subtraction. The decisive property is that it can be checked by hand against the weigh-in list; a fitted
+slope cannot, and this app has already cost its owner a day over a number he could not verify.
+
+**Rule — only complete weeks count.** A week judged on Tuesday is two mornings compared against seven. This
+is also the trigger: the comparison happens once the week's weigh-ins are all in, which is to say once the
+week is over.
+
+**Rule — a week needs at least two weigh-ins to have an average.** Daily swings on water and food volume are
+larger than a week of real change, so a single-point "average" is that morning's noise wearing a week's
+clothes. Two survives someone on 3x a week missing one, which is the common case.
+
+**Rule — weeks 2-4 take N12's full steps; from week 5 they halve.** A stall moves 150 early and 100 later; a
+taper moves 75 early and 50 later. The follow-up stays 50 either way, being already the smallest step there
+is. The reasoning is that the full steps exist to find the calorie ballpark while the maintenance estimate is
+still a guess — past week four the phase is established, you are fine-tuning, and a 150 swing overshoots and
+sets the intake oscillating around the number it was trying to settle on. Week 1 adjusts nothing: N12 cannot
+call a stall before there are two weeks of scale to call it on.
+
+**Rule — a phase begins when the RATE changes, and the week counter restarts with it.** A cut and the bulk
+after it are different phases. Reopening the settings and pressing save must not restart the clock, or
+someone eight weeks into a cut is handed the step sizes meant for week two.
+
+**Rule — the adjustment is written to maintenance, never to the macros.** The macros are derived from
+maintenance on every read, so anything written to them is recomputed away before it can be seen. Maintenance
+is also the truthful place for it: a stall *means* the maintenance estimate was wrong, which is N6 exactly.
+A corrected figure is then marked authoritative, so the formula does not overwrite it next render.
+
+**MY CALL, and flagged for overturning: the hold rule.** N12 is written for "lose" and "gain" only — a stall
+is a problem only when you meant to be moving, and someone holding steady with a flat scale is succeeding
+and must not be nudged. But someone holding steady who has drifted past the flat band is off target in
+exactly the way N12 exists to catch, and a literal wiring would ignore them forever. So a drift past
+±0.1%/week on a maintenance goal takes the stall step, opposing the drift. Jack's own account sits at rate 0;
+without this the entire feature would do nothing for him.
+
 ---
 
 ## Still to rule on
@@ -297,9 +343,11 @@ asked, which is why it runs only when auto nutrition is switched on.
    days only, and nothing on screen says what that does to the day's calories. N8 makes the four target
    numbers agree with each other; it does not yet say whether a training day's calorie target is supposed to
    rise by the bonus, or whether the bonus is meant to be swapped in against something else.
-5. **N12 is written but wired to nothing.** The stall/taper/follow-up arithmetic is built and tested; what is
-   undecided is *when* it runs — on a weigh-in, on opening the tab, once a day — and whether it applies
-   itself or is offered for approval. It moves what somebody eats, so it stays inert until that is settled.
+5. ~~**N12 is written but wired to nothing.**~~ **Settled, and wired.** Jack answered both open halves in one
+   sentence: it runs when a week's weigh-ins are complete, and with auto nutrition on it applies itself. The
+   rule it now runs under is N13 above; the wiring is `weeklyIntakeReview.ts`, pinned by
+   `tests/weeklyIntakeReview.test.mts`. One number is still open — the hold-drift band, which currently
+   borrows N12's own ±0.1%/week.
 
 Answered since this list was written, and now doctrine above: the gain cap (N9, +0.5%), whether 0.75% becomes
 the cut cap (N3, yes), and whether the app may store sex (N10, it does).

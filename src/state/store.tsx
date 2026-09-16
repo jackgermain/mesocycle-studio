@@ -73,7 +73,7 @@ type Action =
   | { type: "SET_PROGRAM"; program: Program }
   | { type: "RENAME_PROGRAM"; name: string }
   | { type: "PROMOTE_NEXT_PROGRAM" }
-  | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel" | "bodyweight" | "bodyFatPct" | "maintenanceKcal" | "maintenanceKcalManual" | "rateTargetPct" | "autoNutrition" | "sex" | "ageYears" | "heightCm" | "activityLevel"> }
+  | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel" | "bodyweight" | "bodyFatPct" | "maintenanceKcal" | "maintenanceKcalManual" | "rateTargetPct" | "nutritionPhaseStartedAt" | "autoNutrition" | "sex" | "ageYears" | "heightCm" | "activityLevel"> }
   | { type: "TICK_SET"; dayId: string; exerciseId: string; setId: string; actual: { reps: number; load: number | null; clusterBlocks?: number[]; assistanceSplit?: { unassisted: number; assisted: number } } }
   | { type: "EDIT_SET_TARGET"; dayId: string; exerciseId: string; setId: string; reps?: number; load?: number }
   | { type: "SET_EXERCISE_REST"; dayId: string; exerciseId: string; restSec: number }
@@ -94,6 +94,9 @@ type Action =
   | { type: "TOGGLE_FOOD_EATEN"; mealId: string; itemId: string }
   | { type: "SUBMIT_MEAL"; mealId: string }
   | { type: "MARK_NUTRITION_ALERT_SENT"; date: string }
+  /** N13's weekly review, applied. Writes maintenance rather than the macros because the macros are derived
+   * from it — see weeklyIntakeReview.ts. */
+  | { type: "APPLY_NUTRITION_ADJUSTMENT"; maintenanceKcal: number; kind: "stall" | "taper" | "followup"; deltaKcal: number; date: string }
   | { type: "REOPEN_MEAL"; mealId: string }
   | { type: "ADD_MEAL"; name: string; date: string }
   | { type: "REMOVE_MEAL"; mealId: string }
@@ -418,6 +421,20 @@ function reducer(state: AppState, action: Action): AppState {
       );
       return { ...state, meals };
     }
+    case "APPLY_NUTRITION_ADJUSTMENT":
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          maintenanceKcal: action.maintenanceKcal,
+          // Marks the figure as authoritative, which it has to be or this write is pointless:
+          // deriveNutritionTargets recomputes the formula estimate over any maintenance it believes was
+          // merely estimated, so an adjustment left unflagged would be gone on the next render. It is also
+          // the truthful flag — a number corrected from the scale beats the formula, which is N6 exactly.
+          maintenanceKcalManual: true,
+          lastNutritionAdjustment: { date: action.date, kind: action.kind, deltaKcal: action.deltaKcal },
+        },
+      };
     case "MARK_NUTRITION_ALERT_SENT":
       return { ...state, nutritionAlertSentOn: action.date };
     case "SUBMIT_MEAL": {

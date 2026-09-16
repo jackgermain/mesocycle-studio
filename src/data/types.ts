@@ -225,6 +225,18 @@ export interface ClientProfile {
   /** Desired rate as a percent of bodyweight per week, negative to lose. Stored as the number rather than
    * only as `rateTargetLabel` prose, because N3's cap and N6's correction both have to compute against it. */
   rateTargetPct?: number;
+  /** ISO yyyy-mm-dd the current nutrition phase began — N13 needs to know which week of it today is.
+   *
+   * Jack: "#2 but this is for weeks 2-4. after that just 50 cal to -100 cal changes depending." The step
+   * sizes shrink once a phase is established, so "which week" has to be a stored fact rather than something
+   * inferred from the weigh-in log: the first weigh-in of a cut and the first weigh-in after switching to a
+   * bulk look identical in that log, and they are opposite situations.
+   *
+   * Set when the rate target CHANGES, not on every save — a cut and the bulk that follows it are different
+   * phases and the clock restarts, but reopening the settings and pressing save must not restart it.
+   * Absent on every account saved before this existed, which correctly reads as "phase week unknown" and
+   * falls back to the full step sizes. */
+  nutritionPhaseStartedAt?: string;
   /** When on, calories and macros are recomputed from maintenance and the capped rate instead of being
    * hand-set, and maintenance itself is re-derived from the weigh-in trend. */
   autoNutrition?: boolean;

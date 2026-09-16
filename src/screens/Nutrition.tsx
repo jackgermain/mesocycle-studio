@@ -7,6 +7,7 @@ import { isNutritionAlerting, KCAL_TOLERANCE } from "../shared/signalScales";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { isoToday } from "../shared/dayStatus";
 import { mealDayLabel, mealNamesForNewDay, mealsOn, shiftIsoDate, weekdayOf } from "../shared/mealDays";
+import { weeklyIntakeReview } from "../shared/weeklyIntakeReview";
 import { TabBar } from "../components/TabBar";
 import { InfoBanner, Meter, HeroHeader, BackHeader, TickButton } from "../components/UI";
 import { NutritionForm } from "../shared/NutritionForm";
@@ -161,6 +162,32 @@ export default function Nutrition() {
    * Only TODAY seeds itself. Arrowing back to a day you logged nothing on has to show that it was empty
    * rather than inventing sections for it after the fact, and a future day gets its sections when you
    * actually add one. */
+  /** N13. The week's scale, read once the week is complete, moving the calories if it disagrees with the plan.
+   *
+   * Runs off the DERIVED profile, not the stored one: the delta is added to the maintenance figure actually
+   * on screen, and a stored figure can be a stale estimate the derivation is already correcting.
+   *
+   * It cannot loop. Applying it writes `lastNutritionAdjustment` with today's date, and both the N12 branches
+   * and the hold branch refuse to fire again inside the seven-day cooldown — so the next render's review is
+   * null. The effect keys on primitives rather than on `review`, which is a fresh object every render. */
+  const review = weeklyIntakeReview(profile, state.weighIns);
+  const reviewKey = review ? `${review.kind}:${review.maintenanceKcal}` : null;
+  useEffect(() => {
+    if (!review) return;
+    dispatch({
+      type: "APPLY_NUTRITION_ADJUSTMENT",
+      maintenanceKcal: review.maintenanceKcal,
+      // "drift" is the maintenance-goal branch, which is my call rather than N12's and is filed as a stall:
+      // it applies the stall STEP and the cooldown treats the two identically. The note says what happened.
+      kind: review.kind === "drift" ? "stall" : review.kind,
+      deltaKcal: review.deltaKcal,
+      date: isoToday(),
+    });
+    dispatch({ type: "SHOW_TOAST", message: review.note });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 5200);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reviewKey]);
+
   const needsSeeding = profile.nutritionMode !== "off" && viewDate === isoToday() && dayMeals.length === 0;
   useEffect(() => {
     if (!needsSeeding) return;

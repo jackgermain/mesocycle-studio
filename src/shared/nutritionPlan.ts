@@ -532,6 +532,119 @@ export function observedRate(
   };
 }
 
+// ---- N13: the week-over-week average, and magnitudes that follow the phase --------------------
+
+/** N13. How few weigh-ins a week can hold and still have an average worth comparing.
+ *
+ * One morning is not a week. Water and food volume move the scale more in a day than a week of real
+ * change does, so a single-point "average" is just that morning's noise wearing a week's clothes. Two is
+ * the floor: it survives someone on 3x a week missing one, which is the common case. */
+export const MIN_POINTS_PER_WEEK = 2;
+
+export interface WeekAverage {
+  /** Monday of the week, ISO. Weeks are Mon-Sun, matching WEIGH_IN_DAY_KEYS and the calendar. */
+  weekStart: string;
+  average: number;
+  points: number;
+}
+
+/** The Monday of the week `iso` falls in. Built from local date parts, never `new Date(iso)` — that parses
+ * as UTC midnight and reads back as the previous day for anyone west of Greenwich, which would put half
+ * the world's Mondays in the wrong week. */
+export function mondayOfWeek(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  const at = new Date(y, m - 1, d);
+  at.setDate(at.getDate() - ((at.getDay() + 6) % 7));
+  return `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, "0")}-${String(at.getDate()).padStart(2, "0")}`;
+}
+
+/** Every week the scale has anything in, averaged, oldest first.
+ *
+ * Weeks with nothing logged are absent rather than zero — a week you did not weigh in is not a week you
+ * weighed nothing. */
+export function weekAverages(weighIns: { date: string; weight: number }[]): WeekAverage[] {
+  const byWeek = new Map<string, number[]>();
+  for (const w of weighIns) {
+    const k = mondayOfWeek(w.date);
+    const list = byWeek.get(k);
+    if (list) list.push(w.weight);
+    else byWeek.set(k, [w.weight]);
+  }
+  return [...byWeek.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([weekStart, ws]) => ({
+      weekStart,
+      average: round(ws.reduce((a, b) => a + b, 0) / ws.length, 2),
+      points: ws.length,
+    }));
+}
+
+/** N13. The rate from one week's average against the week before it — Jack's method.
+ *
+ * Jack: "the algorithm is taking my weigh-ins that I have inputted so far and is formulating a
+ * week-over-week average which will be compared to after all of the weigh-ins next week."
+ *
+ * Different question from `observedRate`, and deliberately kept beside it rather than replacing it.
+ * `observedRate` fits a trend across a 28-day window and answers "how fast am I moving lately", which is
+ * what the Progress chart draws. This answers "what did last week do against the week before it", which is
+ * what decides whether the intake moves. The decisive advantage is that it can be checked by hand: two
+ * averages and a subtraction, against a least-squares slope nobody can verify from the screen.
+ *
+ * Returns an ObservedRate so every downstream reader — the notes, N12, the cap check — is unchanged. The
+ * two weeks are one week apart by construction, so the difference in their averages IS the weekly rate.
+ *
+ * Only COMPLETE weeks count: `today`'s own week is excluded, because a week judged on Tuesday is two
+ * mornings compared against seven. That is also the trigger Jack described — the comparison happens once
+ * the week's weigh-ins are all in, which is to say once the week is over. */
+export function weekOverWeekRate(
+  weighIns: { date: string; weight: number }[],
+  today = new Date(),
+  minPointsPerWeek = MIN_POINTS_PER_WEEK,
+): ObservedRate | null {
+  const thisWeek = mondayOfWeek(
+    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`,
+  );
+  const weeks = weekAverages(weighIns).filter((w) => w.weekStart < thisWeek && w.points >= minPointsPerWeek);
+  if (weeks.length < 2) return null;
+
+  const prior = weeks[weeks.length - 2];
+  const latest = weeks[weeks.length - 1];
+  const spanDays = daysBetween(prior.weekStart, latest.weekStart);
+  // Adjacent weeks only. With a gap — a fortnight away from the scale — the difference spans more than a
+  // week and calling it a weekly rate would overstate it by however long the gap was.
+  if (spanDays !== 7) return null;
+
+  const lbPerWeek = round(latest.average - prior.average, 2);
+  return {
+    lbPerWeek,
+    pctPerWeek: round((lbPerWeek / (prior.average || latest.average)) * 100, 2),
+    spanDays,
+    points: prior.points + latest.points,
+    from: prior.weekStart,
+    to: latest.weekStart,
+  };
+}
+
+/** N13. From which week of a phase the smaller steps apply.
+ *
+ * Jack: "#2 but this is for weeks 2-4. after that just 50 cal to -100 cal changes depending." Weeks 2-4
+ * take N12's full steps, which is what finds the right calorie ballpark quickly while the maintenance
+ * estimate is still a guess. From week 5 the phase is established and you are fine-tuning — a 150 swing
+ * overshoots and starts oscillating. Week 1 adjusts nothing either way: N12 cannot call a stall before
+ * there are two weeks of scale to call it on. */
+export const LATE_PHASE_FROM_WEEK = 5;
+export const LATE_STALL_ADJUST_KCAL = 100;
+export const LATE_TAPER_ADJUST_KCAL = 50;
+
+/** Which week of the phase `today` is, counting the phase's first week as 1. */
+export function phaseWeekOf(phaseStartedAt: string | undefined, today = new Date()): number | undefined {
+  if (!phaseStartedAt) return undefined;
+  const iso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const days = daysBetween(phaseStartedAt, iso);
+  if (days < 0) return undefined;
+  return Math.floor(days / 7) + 1;
+}
+
 export interface MaintenanceCorrection {
   /** What maintenance looks like given what actually happened. */
   correctedKcal: number;
@@ -663,18 +776,34 @@ export function intakeAdjustment(args: {
   /** What N12 last did and when, from `ClientProfile.lastNutritionAdjustment`. Without it the follow-up rule
    * cannot exist and nothing stops the same correction being offered over and over. */
   lastAdjustment?: { date: string; kind: AdjustmentKind };
+  /** Which week of the nutrition phase this is, from `phaseWeekOf`. Absent keeps the full steps, which is
+   * what every existing caller and test expects. */
+  phaseWeek?: number;
+  /** Rates to judge on, when the caller has a better source than the default 28-day fit — N13's
+   * week-over-week average is the one Jack asked for. Absent computes them here exactly as before. */
+  rates?: { overall: ObservedRate | null; recent: ObservedRate | null };
 }): IntakeAdjustment | null {
   const today = args.today ?? new Date();
   const losing = args.goal === "lose";
   const word = losing ? "pull" : "add";
   const signed = (n: number) => (losing ? -n : n);
 
-  const overall = observedRate(args.weighIns, RATE_WINDOW_DAYS, today);
+  /* N13. Jack: "#2 but this is for weeks 2-4. after that just 50 cal to -100 cal changes depending."
+   *
+   * The full steps are for finding the calorie ballpark while the maintenance estimate is still a guess.
+   * Past week 4 the phase is established and you are fine-tuning — a 150 swing there overshoots and starts
+   * the intake oscillating around the number it was trying to settle on. The follow-up is 50 either way,
+   * because it is already the smallest step there is. */
+  const late = (args.phaseWeek ?? 0) >= LATE_PHASE_FROM_WEEK;
+  const stallKcal = late ? LATE_STALL_ADJUST_KCAL : STALL_ADJUST_KCAL;
+  const taperKcal = late ? LATE_TAPER_ADJUST_KCAL : TAPER_ADJUST_KCAL;
+
+  const overall = args.rates ? args.rates.overall : observedRate(args.weighIns, RATE_WINDOW_DAYS, today);
   if (!overall || overall.spanDays < STALL_MIN_SPAN_DAYS) return null;
 
   const stalled = Math.abs(overall.pctPerWeek) < STALL_PCT_PER_WEEK;
   const movingRightWay = losing ? overall.pctPerWeek < 0 : overall.pctPerWeek > 0;
-  const recent = observedRate(args.weighIns, TAPER_WINDOW_DAYS, today);
+  const recent = args.rates ? args.rates.recent : observedRate(args.weighIns, TAPER_WINDOW_DAYS, today);
   const tapering =
     !stalled && movingRightWay && recent != null &&
     Math.abs(recent.pctPerWeek) < Math.abs(overall.pctPerWeek) * TAPER_FRACTION;
@@ -703,9 +832,9 @@ export function intakeAdjustment(args: {
   if (stalled) {
     return {
       kind: "stall",
-      deltaKcal: signed(STALL_ADJUST_KCAL),
+      deltaKcal: signed(stallKcal),
       observed: overall,
-      note: `Two weeks with the scale flat, so ${word} ${STALL_ADJUST_KCAL} calories.`,
+      note: `Two weeks with the scale flat, so ${word} ${stallKcal} calories.`,
     };
   }
 
@@ -716,9 +845,9 @@ export function intakeAdjustment(args: {
   if (tapering) {
     return {
       kind: "taper",
-      deltaKcal: signed(TAPER_ADJUST_KCAL),
+      deltaKcal: signed(taperKcal),
       observed: recent!,
-      note: `Progress has started to stall, so ${word} ${TAPER_ADJUST_KCAL} calories.`,
+      note: `Progress has started to stall, so ${word} ${taperKcal} calories.`,
     };
   }
   return null;

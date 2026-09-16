@@ -15,6 +15,7 @@ import {
   type ActivityLevel,
 } from "./nutritionPlan";
 import { useStore } from "../state/store";
+import { isoToday } from "./dayStatus";
 import type { ClientProfile, NutritionMode, PortionCategory, PortionTarget, PortionUnit } from "../data/types";
 
 type Cadence = "off" | "3x" | "5x";
@@ -80,6 +81,10 @@ export interface NutritionProtocolPatch {
    * direction, and true stops a stale estimate ever being corrected. */
   maintenanceKcalManual: boolean;
   rateTargetPct: number;
+  /** ISO date the current phase began — see ClientProfile.nutritionPhaseStartedAt. Required rather than
+   * optional so a new call site has to decide: omitting it silently resets N13's week counter, which would
+   * hand somebody eight weeks into a cut the full step sizes meant for week two. */
+  nutritionPhaseStartedAt: string;
   autoNutrition: boolean;
   /** N10's inputs. Saved with the rest of the protocol, or the calculator would ask for them again on every
    * visit and the stored maintenance figure could never be re-derived. */
@@ -294,6 +299,14 @@ export function NutritionForm({ profile, subjectFirstName, onSave }: { profile: 
       maintenanceKcalManual: maintenanceManual,
       // Never store a rate the doctrine forbids, whatever the stepper was left on.
       rateTargetPct: plan.rate.pct,
+      // N13's week counter. A phase begins when the RATE changes — a cut and the bulk after it are
+      // different phases and the step sizes restart with them — so an unchanged rate keeps the date it
+      // already had. Opening these settings and pressing save must not quietly put someone back to week 1
+      // and hand them step sizes meant for a phase that is still finding its range.
+      nutritionPhaseStartedAt:
+        profile.nutritionPhaseStartedAt && Math.abs((profile.rateTargetPct ?? NaN) - plan.rate.pct) < 0.001
+          ? profile.nutritionPhaseStartedAt
+          : isoToday(),
       autoNutrition: auto,
       sex,
       ageYears,
