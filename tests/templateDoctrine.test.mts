@@ -231,6 +231,28 @@ test("a delt head repeated from yesterday is swapped: two delt movements, the pr
   assert.ok(swapped > 0, "the rule should fire somewhere — Glutes & Shoulders six-day at least");
 });
 
+test("two variants of one movement are never split by another exercise (G139)", () => {
+  // Jack: "it's kind of weird how the lat pulldown wide grip is done in between by the pullover machine… I
+  // would just keep them right next to each other." All 18 splits in the library came from `deepen` placing a
+  // variant at the end of its block; this runs over the expanded templates so that is exactly what it sees.
+  for (const { template, day, exercises } of days) {
+    const at = new Map<string, number[]>();
+    exercises.forEach((e, i) => {
+      if (!e.name.includes(" — ")) return;
+      const base = e.name.split(" — ")[0];
+      at.set(base, [...(at.get(base) ?? []), i]);
+    });
+    for (const [base, idx] of at) {
+      if (idx.length < 2) continue;
+      assert.equal(
+        idx[idx.length - 1] - idx[0] + 1,
+        idx.length,
+        `${where(template, day)}: "${base}" variants are split — ${exercises.map((e) => e.name).join(" > ")}`,
+      );
+    }
+  }
+});
+
 test("every exercise a template names still exists in the library", () => {
   // The backstop for all of the above: deleting a library entry silently orphans any template pointing at
   // it, and buildTemplate would throw at module load -- but only for names it still knows to look for.

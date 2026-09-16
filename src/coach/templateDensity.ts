@@ -281,7 +281,28 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
       const neighbour = slots[choice.end];
       // G132 caps the inserted work at three sets as well as the authored work. Without the clamp an
       // insertion beside a 4-set opener inherited 3 and one beside a 5-set opener inherited 4.
-      slots.splice(choice.end + 1, 0, [
+      // G139: a variant of a movement the block already holds goes DIRECTLY after that movement, not at the
+      // end of the block. Jack, on a back day reading Wide Grip Pulldown > Pullover Machine > Close Grip
+      // Pulldown: "it's kind of weird how the lat pulldown wide grip is done in between by the pullover
+      // machine. If you're going to do that, I would just keep them right next to each other. So you do five
+      // sets of pulldowns, three of them wide grip, two of them close grip, and then the pullover machine."
+      //
+      // Measured before writing: all 18 split variants in the library were this — an authored movement with
+      // its variant inserted at the block's end. None were authored that way. "Variant" means the same name
+      // before " — " (Lat Pulldown — Wide Grip / — Close Grip, Leg Press — 45° / — Horizontal). Only the
+      // POSITION moves: the prescription still follows `neighbour`, so no sets or reps change.
+      const baseOf = (n: string) => (n.includes(" — ") ? n.split(" — ")[0] : null);
+      const pickBase = baseOf(pick);
+      let at = choice.end + 1;
+      if (pickBase) {
+        for (let i = choice.end; i >= choice.start; i--) {
+          if (baseOf(slots[i][0]) === pickBase) {
+            at = i + 1;
+            break;
+          }
+        }
+      }
+      slots.splice(at, 0, [
         pick,
         Math.min(MAX_TEMPLATE_SETS, Math.max(2, neighbour[1] - 1)),
         Math.min(MAX_INSERTED_REPS, neighbour[2] + 2),
