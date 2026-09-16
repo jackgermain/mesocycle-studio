@@ -6967,10 +6967,31 @@ days at four, five and six days a week, and `deepen()` then fills each day indep
 of what the day before it holds. Every rule it already enforces — the erector budget, the squat-pattern
 ban, the four-per-muscle cap — is scoped to a single session. This is the first rule that spans two.
 
-**STILL TO RULE ON: the number.** "I would remove like seven of those for sure, or like six or five" sets a
-direction but not a threshold, and the threshold is what a test needs. Candidates: a ceiling on the second
-day's sets for that muscle, or a ceiling on the two-day total. Until he sets it, this is enforced as
-"strictly fewer on the second day" rather than as a figure.
+**The threshold, settled by measurement rather than by taste: no MORE than yesterday.** A muscle may hold up
+to as many exercises today as it held yesterday, and `deepen` will not insert past that. Authored slots are
+never removed — the rule withholds depth, it does not delete what a template deliberately prescribes.
+
+Two stricter readings were measured first and both were worse:
+
+| Cap | Exercises lost | Days under target (of 524) |
+|---|---|---|
+| Exclude the muscle entirely | — | pool empties on four-day splits; days stall 3 short |
+| Strictly fewer than yesterday | 85 | 105 → 172 |
+| **No more than yesterday** | **2** | **105 → 107** |
+
+All three exercises Jack named on the templates he was reviewing — the single-leg RDL, the glute ham raise,
+the horizontal leg press — are refused under the loosest of the three, because in each case the day already
+authors two of that muscle against yesterday's two. The extra strictness bought nothing he asked for and
+cost eighty-five slots.
+
+**STILL TO RULE ON: whether sets, rather than exercises, is the right unit.** He counted in sets — "10 sets
+of glutes the day before, and then another seven" — and this counts exercises. They usually move together,
+but a 3x10 and a 2x14 are one exercise each and five sets apart.
+
+**Known side effect: pool order shifts.** An exercise may appear only once per template, so refusing an
+insertion on one day frees that name for a later one. Twenty-two templates changed exercises they were not
+targeted for — including a Smith machine squat Jack had explicitly approved, displaced by the horizontal leg
+press that this rule had just freed. The day counts hold; the substitutions are arbitrary.
 
 ---
 

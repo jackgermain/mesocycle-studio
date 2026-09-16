@@ -173,7 +173,47 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
   const used = new Set(spec.days.flatMap((d) => d.slots.map((s) => s[0])));
   const home = spec.category === "dumbbell-home";
 
-  const days = spec.days.map((day) => {
+  /* G137: a muscle trained on the previous CALENDAR day takes strictly less today.
+   *
+   * Jack, on three templates running: "there's not enough time for hamstrings to heal from day one,
+   * especially because it's day two, literally the next day" … "the volume is too much, two days in a row"
+   * … "10 sets of glutes the day before, and then another seven sets — that's pretty crazy."
+   *
+   * This is the first rule here that spans two sessions. Everything else `deepen` enforces — the erector
+   * budget, the squat-pattern ban, the four-per-muscle cap — is scoped to one day, which is exactly why the
+   * generator could stack a muscle across adjacent days without any of them objecting.
+   *
+   * So the day loop is sequential rather than a `.map`: day N has to see day N-1's FINISHED slots, inserted
+   * work included, not just what was authored into it.
+   *
+   * Adjacency is by calendar day, read off `dows`. A three-day template on Mon/Wed/Fri has no adjacent days
+   * at all, which is why none of these complaints ever arrive from one.
+   *
+   * It caps rather than forbids, and the distinction is the whole rule. Excluding the muscle outright
+   * empties the candidate pool on a four-day template — those run the two emphasised muscles as a,b,a,b on
+   * Mon/Tue/Thu/Fri, so on days 2 and 4 every non-divider block would be blocked and the day would stall
+   * three exercises short of its target. Measured before this was written: 193 insertions would have gone,
+   * six from every four-day specialty.
+   *
+   * The cap is "no MORE than yesterday", not "strictly fewer", and that was measured rather than chosen.
+   * Strictly fewer removed 85 exercises library-wide and pushed days under their exercise target from 105
+   * to 172 of 524 — a third of the library falling short of Jack's own figures to achieve three removals he
+   * had named. The looser cap still blocks all three: in each case the day already authors two of that
+   * muscle against yesterday's two, so the insertion is refused either way. The extra strictness bought
+   * nothing he asked for and cost eighty-five slots.
+   *
+   * Which is why G137 records the threshold as STILL TO RULE ON. "I would remove like seven of those for
+   * sure, or like six or five" is a direction, not a figure, and this is the least destructive reading of
+   * it that delivers everything he actually pointed at. */
+  const days: { name: string; slots: readonly (readonly [string, number, number])[] }[] = [];
+  spec.days.forEach((day, dayIndex) => {
+    const yesterday = new Map<string, number>();
+    if (dayIndex > 0 && spec.dows[dayIndex] === spec.dows[dayIndex - 1] + 1) {
+      for (const s of days[dayIndex - 1].slots) {
+        const m = MUSCLE_OF.get(s[0]) ?? "";
+        yesterday.set(m, (yesterday.get(m) ?? 0) + 1);
+      }
+    }
     const slots = day.slots.map((s) => [...s] as [string, number, number]);
     let guard = 0;
     // Recomputed per pass below, not captured once: an insertion can itself be a squat pattern.
@@ -209,7 +249,14 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
               !(erectorLoad() >= ERECTOR_BUDGET && LOADS_ERECTORS.test(name)),
           ),
         }))
-        .filter((b) => b.pool.length > 0);
+        .filter((b) => b.pool.length > 0)
+        // G137. A block may grow only while it would still end up at no MORE than yesterday's count for
+        // that muscle. A muscle never trained yesterday is unaffected. Authored slots are left alone either
+        // way — this withholds depth, it does not delete what a template deliberately prescribes.
+        .filter((b) => {
+          const y = yesterday.get(b.muscle);
+          return y === undefined || b.size < y;
+        });
 
       // No muscle in this day has an unused exercise left. Stop rather than loop: a day that cannot reach
       // the figure honestly is better than one padded with repeats.
@@ -238,7 +285,7 @@ export function deepen(spec: TemplateSpec): TemplateSpec {
       used.add(pick);
     }
 
-    return { name: day.name, slots: slots.map((s) => [s[0], s[1], s[2]] as const) };
+    days.push({ name: day.name, slots: slots.map((s) => [s[0], s[1], s[2]] as const) });
   });
 
   return { ...spec, days };

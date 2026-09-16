@@ -2,6 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { BUILT_IN_TEMPLATES } from "../src/coach/builtInTemplates";
 import { libraryExercises } from "../src/coach/exerciseLibrary";
+import { WOMENS_TEMPLATE_SPECS } from "../src/coach/womensTemplates";
+import { MENS_TEMPLATE_SPECS } from "../src/coach/mensTemplates";
+import { SPECIALTY_TEMPLATE_SPECS } from "../src/coach/specialtyTemplates";
+import { deepenAll } from "../src/coach/templateDensity";
 
 /** Every shipped template, checked against the rules Jack has actually written down.
  *
@@ -147,6 +151,46 @@ test("a fly never opens a session", () => {
     const first = exercises[0]?.name ?? "";
     assert.ok(!/\bfly\b|pec deck/i.test(first), `${where(template, day)} opens on ${first}`);
   }
+});
+
+test("no day is deepened past what the previous calendar day trained (G137)", () => {
+  /* Jack, across three templates in a row: "there's not enough time for hamstrings to heal from day one,
+   * especially because it's day two, literally the next day" … "10 sets of glutes the day before, and then
+   * another seven sets — that's pretty crazy."
+   *
+   * Asserted over the specs rather than BUILT_IN_TEMPLATES for two reasons: `dows` lives on the spec and is
+   * never carried onto the built day, so calendar adjacency is only knowable here — and the rule caps what
+   * `deepen` may ADD, so the authored count is the floor. A template that deliberately writes three
+   * hamstring exercises the day after a hamstring day is a spec decision, not a density bug, and this must
+   * not fail on one. What it catches is the generator quietly stacking more on top. */
+  const muscleOf = new Map(libraryExercises.map((e) => [e.name, e.muscle]));
+  const specs = [...WOMENS_TEMPLATE_SPECS, ...MENS_TEMPLATE_SPECS, ...SPECIALTY_TEMPLATE_SPECS];
+  const full = deepenAll(specs);
+  const tally = (slots: readonly (readonly [string, number, number])[]) => {
+    const m = new Map<string, number>();
+    for (const s of slots) {
+      const muscle = muscleOf.get(s[0]) ?? "";
+      m.set(muscle, (m.get(muscle) ?? 0) + 1);
+    }
+    return m;
+  };
+
+  specs.forEach((spec, si) => {
+    for (let i = 1; i < spec.days.length; i++) {
+      if (spec.dows[i] !== spec.dows[i - 1] + 1) continue;
+      const yesterday = tally(full[si].days[i - 1].slots);
+      const authored = tally(spec.days[i].slots);
+      for (const [muscle, today] of tally(full[si].days[i].slots)) {
+        const y = yesterday.get(muscle);
+        if (y === undefined) continue;
+        const floor = authored.get(muscle) ?? 0;
+        assert.ok(
+          today <= Math.max(y, floor),
+          `${spec.name} / day ${i + 1}: ${today}x ${muscle} after ${y}x the day before (${floor} authored)`,
+        );
+      }
+    }
+  });
 });
 
 test("every exercise a template names still exists in the library", () => {
