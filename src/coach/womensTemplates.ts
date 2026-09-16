@@ -395,9 +395,13 @@ const SIX_DAY: TemplateSpec[] = [
         slots: [
           ["Barbell Front Squat", 3, 8],
           ["Leg Press — Horizontal", 3, 12],
-          ["Standing Calf Raise Machine", 3, 15],
+          // Calves LAST, after the chest work, not at the leg/upper seam. Jack: "have the standing calf raise go
+          // after the cable flies... even though it violates having all the muscles in the same area. Calves I
+          // would put in their own group. They don't have to be trained directly after quads and hamstrings
+          // and glutes." Recorded as G140; whether it applies beyond this template is his call.
           ["Incline Smith Machine Press", 3, 10],
           ["Cable Fly — Low to High", 3, 12],
+          ["Standing Calf Raise Machine", 3, 15],
         ],
       },
       {
@@ -482,6 +486,14 @@ const FIVE_DAY: TemplateSpec[] = [
           ["Seated Cable Row", 3, 10],
           ["Single-Arm Dumbbell Row", 3, 12],
           ["Dumbbell Curl", 3, 12],
+          // G141. Written out to the day's full count so `deepen` adds nothing here. It used to fill the two
+          // missing slots with a barbell curl and an EZ-bar curl, because biceps was the only block with room
+          // — three curls on a week with no triceps work anywhere. Jack: "I'm not sure why there are three
+          // bicep exercises when there's no other triceps work during the week. So maybe remove the EZ-bar
+          // curls and put down a tricep pushdown… and instead of barbell curls, I would put some lateral
+          // raises for shoulders." Each takes the two sets of the curl it replaces, so the day stays at 16.
+          ["Dumbbell Lateral Raise", 2, 15],
+          ["Tricep Rope Pushdown", 2, 12],
         ],
       },
       {

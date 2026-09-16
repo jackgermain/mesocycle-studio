@@ -7045,3 +7045,69 @@ result: twelve templates changed, only on the swap days themselves, zero exercis
 they come from a *partner* slot being deepened, not from an owning muscle's two slots.
 
 ---
+
+**G139 — Variants of one movement sit next to each other.**
+
+> *"It's kind of weird how the lat pulldown wide grip is done in between by the pullover machine. So if you're
+> going to do that, I would just keep them right next to each other. So you do five sets of pull downs, three
+> of them wide grip, two of them close grip, and then you do the pullover machine after that."*
+
+**Rule — two variants of the same movement are one movement's sets split by grip or angle, and they are
+programmed consecutively.** Wide then close grip pulldown; 45° then horizontal leg press.
+
+**Where it came from: `deepen`, every time.** All 18 split variants in the shipped library were an authored
+movement with its variant inserted at the *end* of the muscle's block, after whatever else the block held.
+None were written that way by hand. So an inserted variant now goes directly after its sibling. Only the
+position moves — the prescription still follows the block's last exercise — so the fix changed 19 days and
+every one of them was a pure reorder: same exercises, same sets, same reps, nothing gained or lost.
+
+"Variant" means the same name before " — ". That is deliberately narrow: it matches every case Jack pointed
+at and every case measured, and it will not group, say, a glute bridge with a bodyweight glute bridge.
+
+---
+
+**G140 — Calves are their own group, and may finish the session rather than close the leg block.**
+
+> *"On the first day, the only thing I would do is have the standing calf raise go after the cable flies… I
+> would do that even though it violates having all the muscles in the same area. Calves I would put in their
+> own group. They don't have to be trained directly after quads and hamstrings and glutes."*
+
+Applied to Quad & Glute Split — Six Day, day 1: front squat, leg press, hack squat, incline Smith press, cable
+fly, **standing calf raise**.
+
+**This contradicts G102 and G110, and the contradiction is recorded rather than resolved.** Those were written
+from his own templates, which put calves between the leg block and the upper-body work on **57 days** across
+the hand-authored men's and women's templates — none of them generated. G102 went as far as calling that "the
+normal one, and finishing with the small muscles is the alternative rather than the rule."
+
+His wording also leaves room: calves "don't *have* to be" trained after the legs is a permission, not a ban. He
+was asked whether calves-last applies to all 57 days or to this template, and did not answer.
+
+**STILL TO RULE ON: scope.** Until he does, this is one template's ruling, and calves at the seam remain
+acceptable everywhere else.
+
+---
+
+**G141 — Arm work is balanced across the week; three exercises for one arm muscle and none for its antagonist
+is wrong.**
+
+> *"I'm not sure why there are three bicep exercises when there's no other triceps work during the week. So
+> maybe remove the EZ-bar curls and put down a tricep pushdown or something like that. And instead of barbell
+> curls, I would put some lateral raises for shoulders."*
+
+Applied to Glute Focus — Five Day, day 2: the barbell curl became a dumbbell lateral raise and the EZ-bar curl a
+tricep rope pushdown, each keeping the two sets of the curl it replaced so the day stays at 16.
+
+**Where it came from: `deepen` again.** That day was authored with one curl. `deepen` filled it to six by adding
+two more, because biceps was the only block left with room — it balances depth within a day and has no notion
+of what the rest of the week trains. The fix writes the day out to its full count so nothing is inserted.
+
+**Measured, and not applied beyond what he named:** 23 templates have three or more exercises for one arm muscle
+and none for the other all week. Only one more is an ordinary template — **Glutes & Back — Five Day**, six
+biceps exercises (four inserted) and no triceps. The other 21 are Back & Biceps, Chest & Triceps and Shoulders &
+Arms specialties, where emphasising one arm muscle is the point.
+
+**STILL TO RULE ON:** whether Glutes & Back — Five Day gets the same treatment, and whether a specialty that
+names one arm muscle should still carry some work for the other.
+
+---
