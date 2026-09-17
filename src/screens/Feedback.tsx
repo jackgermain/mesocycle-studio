@@ -6,6 +6,7 @@ import { pumpWording, jointReasonLabels } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { useAuth } from "../lib/auth";
 import { isJointAlerting, isJointUrgent, isPumpAlerting, sendSignals } from "../shared/signals";
+import { signalRecipient } from "../shared/signalRecipient";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { resolveMuscle } from "../shared/muscleNames";
 import { BodyMap, type Tissue } from "../components/BodyMap";
@@ -128,7 +129,9 @@ export default function Feedback() {
           }]
         : []),
     ];
-    if (account) void sendSignals(account.id, account.coach_id, signals);
+    // signalRecipient, not account.coach_id: a coach training themselves has none, and their own pump and
+    // joint reports were being dropped before they left the phone.
+    if (account) void sendSignals(account.id, signalRecipient(account), signals);
 
     const flagged = signals.length > 0;
     if (flagged) {

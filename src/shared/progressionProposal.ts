@@ -18,6 +18,7 @@ import {
   addReps, holdAndLoad, isLightLoad, jumpLoad, levelUp, needsScheduledDeload, nextLoadUp, type PerformedSet,
 } from "../generator/doubleProgression";
 import { bandForReps } from "../generator/repRanges";
+import { signalRecipient } from "./signalRecipient";
 import { equipmentOf } from "../screens/exerciseHelpers";
 
 export interface ProposalInput {
@@ -255,7 +256,9 @@ export function progressionDueDay(program: Program, todayIso: string, withinDays
 /** Who reviews a session's proposals: the person's coach, or a coach's own desk when they are training
  * themselves (migration 0027 lets only that one self-addressed kind through). Anyone else has nobody. */
 export function progressionRecipient(account: { id: string; role: string; coach_id: string | null }): string | null {
-  return account.coach_id ?? (account.role === "coach" ? account.id : null);
+  // The same rule now governs every kind of feedback, not just progression — see shared/signalRecipient.ts.
+  // Kept as a named export because it reads correctly at its call site and its tests pin this behaviour.
+  return signalRecipient(account);
 }
 
 /** A reviewer's verdict on one proposal. Kept inside the payload, next to the exact numbers it judged, so

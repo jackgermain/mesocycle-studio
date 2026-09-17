@@ -8,6 +8,7 @@ import { dayDisplayTitle } from "../data/dayNumbering";
 import { useAuth } from "../lib/auth";
 import { sendSignals } from "../shared/signals";
 import { buildSorenessSignals } from "../shared/sorenessSignals";
+import { signalRecipient } from "../shared/signalRecipient";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { judgeVolume, targetRecoveryDay } from "../generator/recoveryWindow";
 import { muscleColorVar } from "../shared/muscleColor";
@@ -50,14 +51,21 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
      * on time / partly recovered this was instead of inferring it from the number alone. */
     const dayLabel = found ? dayDisplayTitle(found.day) : null;
     const signals = buildSorenessSignals(due, answers, recovered, dayLabel);
-    if (account) void sendSignals(account.id, account.coach_id, signals);
+    // Not `account.coach_id`: a coach training themselves has none, and every answer they gave was dropped
+    // before it left the phone. Migration 0033 lets them address it to their own desk.
+    const to = account ? signalRecipient(account) : null;
+    if (account) void sendSignals(account.id, to, signals);
 
     // The old toast promised "those sets hold at last week's number". Nothing held anything: nothing in the
     // app read these answers. It now says only what is true.
     const coach = coachOnTheOtherEnd(account?.coach_id, state.program.coachName);
     dispatch({
       type: "SHOW_TOAST",
-      message: coach ? `Noted — ${coach} has your answers.` : "Noted — saved against this session.",
+      message: coach
+        ? `Noted — ${coach} has your answers.`
+        : to
+          ? "Noted — your answers are on your desk."
+          : "Noted — saved against this session.",
     });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
     nav(`/block/day/${dayId}`, { replace: true });

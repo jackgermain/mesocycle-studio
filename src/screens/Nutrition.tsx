@@ -3,6 +3,7 @@ import { useStore } from "../state/store";
 import { useEffectiveProfile } from "../state/useEffectiveProfile";
 import { useAuth } from "../lib/auth";
 import { sendSignals } from "../shared/signals";
+import { signalRecipient } from "../shared/signalRecipient";
 import { isNutritionAlerting, KCAL_TOLERANCE } from "../shared/signalScales";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { isoToday } from "../shared/dayStatus";
@@ -309,7 +310,7 @@ export default function Nutrition() {
 
     dispatch({ type: "MARK_NUTRITION_ALERT_SENT", date: viewDate });
     const under = miss < 0;
-    void sendSignals(account.id, account.coach_id, [
+    void sendSignals(account.id, signalRecipient(account), [
       {
         kind: "nutrition",
         // Not a 1..5 scale: the magnitude of the miss, so the coach sees how far off without asking.

@@ -1,6 +1,7 @@
 import { useStore } from "../state/store";
 import { useAuth } from "../lib/auth";
 import { sendSignals, EFFORT_ALERT_AT, EFFORT_WORDING } from "../shared/signals";
+import { signalRecipient } from "../shared/signalRecipient";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import type { WorkExercise } from "../data/types";
 
@@ -15,7 +16,7 @@ export function useRecordEffort() {
     if (effort < EFFORT_ALERT_AT || !account) return;
     // Only a 5 travels. Everything below it is ordinary training, and a roster rating a set an exercise
     // would bury a coach in notifications inside a day.
-    void sendSignals(account.id, account.coach_id, [
+    void sendSignals(account.id, signalRecipient(account), [
       {
         kind: "effort",
         severity: effort,
