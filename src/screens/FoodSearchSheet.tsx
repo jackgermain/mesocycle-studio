@@ -230,7 +230,13 @@ export default function FoodSearchSheet({ mealName, onAdd, onClose }: { mealName
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: "80%" }}>
+      {/* A fixed HEIGHT, not only a max. The sheet is anchored to the bottom of the screen, which on an
+          iPhone is behind the keyboard, so its top edge sits wherever its height puts it. With only a max,
+          the height followed the results: typing cleared the list, the sheet shrank, and the search bar at
+          its top dropped behind the keyboard mid-word. Jack: "the search bar and everything dips below…
+          we need that to stay up there so people can read what they're typing." Pinned, the top never
+          moves; the results scroll inside it. */}
+      <div className="sheet" onClick={(e) => e.stopPropagation()} style={{ height: "80%", maxHeight: "80%" }}>
         <div className="row">
           <div style={{ flex: 1, fontSize: 14, fontFamily: "var(--font-heading)" }}>Add food to {mealName}</div>
           <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--color-neutral-400)", cursor: "pointer", display: "flex" }}>

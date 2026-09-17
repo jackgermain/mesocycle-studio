@@ -7,6 +7,7 @@ import { ago } from "../../shared/ago";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
 import { readProgression } from "../../shared/progressionProposal";
+import { sorenessWording } from "../../data/mockData";
 import { loadWeighInGaps, applyWeighInDismissals, weighInKeys, type ClientWeighInGap } from "../weighInWatch";
 import { loadComplianceGaps, totalComplianceItems, applyDismissals, complianceKeys, type ClientComplianceGap } from "../complianceWatch";
 import { listFormChecks, type FormCheck } from "../../shared/formChecks";
@@ -113,13 +114,13 @@ export default function Desk() {
       return `Hit failure on ${s.exercise ?? "an exercise"}${s.detail ? ` — ${s.detail}` : ""}`;
     }
     if (s.kind === "joint") return `Joint pain${s.note ? ` — ${s.note}` : ""}${s.exercise ? ` on ${s.exercise}` : ""}`;
-    // Soreness signals now run both ways: still sore (volume too high) and healed early (room for more).
-    // The high-severity ones are the second kind, and reading them as "still sore" would be backwards.
+    // Every soreness answer is sent now, not only the two alarming cases, so the row has to say WHICH case
+    // it was — and the note does: still sore, never got sore, healed on day N (early or on target), or a
+    // little sore. This used to call every non-alerting answer "recovered early", which an on-time recovery
+    // would have been mislabelled as the moment those started arriving. Signals sent before the change carry
+    // the same shape of note, so they read correctly here too.
     if (s.kind === "soreness") {
-      if (isSorenessAlerting(s.severity)) {
-        return `${s.muscle} still sore${s.note ? ` — ${s.note.toLowerCase()}` : ""}`;
-      }
-      return `${s.muscle} recovered early${s.note ? ` — ${s.note.toLowerCase()}` : ""}`;
+      return `${s.muscle} — ${s.note ?? sorenessWording[s.severity - 1] ?? `soreness ${s.severity}/5`}`;
     }
     return `${s.muscle} pump was low`;
   }
@@ -408,6 +409,10 @@ export default function Desk() {
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {signals.map((s) => {
                 const urgent =
+                  // Still sore when the muscle comes round again is the one soreness reading that means
+                  // something on its own: the last session did more damage than the gap could absorb. It
+                  // was never marked, and now that every on-time answer arrives too it would drown.
+                  (s.kind === "soreness" && isSorenessAlerting(s.severity)) ||
                   (s.kind === "joint" && isJointUrgent(s.severity)) ||
                   // A 5 on the FINAL set is what caps next week's jump (G62), so it is the one worth
                   // pulling out. A 5 before the last set was already acted on inside the session.

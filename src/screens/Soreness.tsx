@@ -6,7 +6,8 @@ import { InfoBanner } from "../components/UI";
 import { sorenessWording } from "../data/mockData";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import { useAuth } from "../lib/auth";
-import { isSorenessAlerting, sendSignals } from "../shared/signals";
+import { sendSignals } from "../shared/signals";
+import { buildSorenessSignals } from "../shared/sorenessSignals";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { judgeVolume, targetRecoveryDay } from "../generator/recoveryWindow";
 import { muscleColorVar } from "../shared/muscleColor";
@@ -25,7 +26,6 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
   const allAnswered = due.every(
     (m) => answers[m.muscle] !== undefined && (!healed(m.muscle) || recovered[m.muscle] !== undefined),
   );
-  const anyUnhealed = due.some((m) => (answers[m.muscle] ?? 5) <= 2);
 
   function submit() {
     const record: NonNullable<TrainingDay["sorenessAnswers"]> = {};
@@ -38,48 +38,28 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
     }
     dispatch({ type: "SET_SORENESS_DONE", dayId, answers: record });
 
-    // A muscle still sore on the day it's due to be trained again is the signal that its volume may be
-    // too high -- that's the whole reason this question is asked, so it has to reach the coach.
+    /* EVERY answer is sent, one signal per muscle — not only the alarming ones.
+     *
+     * This used to send two cases: still sore (under 3) and healed early enough to add volume. An on-time
+     * recovery, or a muscle that was a little sore, reached nobody. Jack: "those notifications need to be
+     * being sent no matter what. They're incredibly important. It completely breaks our algorithm for
+     * training if they don't work, so the coach needs to be able to see that feedback."
+     *
+     * `severity` is now always the real 1-5 answer (the early case used to be forced to 5), and `detail`
+     * carries the gap and, when asked, the recovery day — so the desk can say which of still sore / early /
+     * on time / partly recovered this was instead of inferring it from the number alone. */
     const dayLabel = found ? dayDisplayTitle(found.day) : null;
-    const sore = due
-      .map((m) => ({ muscle: m.muscle, severity: answers[m.muscle], daysAgo: m.lastTrainedDaysAgo }))
-      .filter((m) => typeof m.severity === "number" && isSorenessAlerting(m.severity))
-      .map((m) => ({
-        kind: "soreness" as const,
-        muscle: m.muscle,
-        severity: m.severity,
-        note: `Still sore ${m.daysAgo} day${m.daysAgo === 1 ? "" : "s"} after training it`,
-        dayLabel,
-      }));
+    const signals = buildSorenessSignals(due, answers, recovered, dayLabel);
+    if (account) void sendSignals(account.id, account.coach_id, signals);
 
-    // The other direction, which the coach could not previously see at all: a muscle that healed well
-    // before it was trained again had room for more work, and every day it sat healed is a day of growth
-    // not bought. Sent as a soreness signal with a high severity so it does not trip the alert
-    // thresholds -- it is information, not a problem.
-    const early = due
-      .filter((m) => recovered[m.muscle] !== undefined)
-      .filter((m) => judgeVolume(m.lastTrainedDaysAgo, recovered[m.muscle]) === "add-volume")
-      .map((m) => ({
-        kind: "soreness" as const,
-        muscle: m.muscle,
-        severity: 5,
-        note: `Healed on day ${recovered[m.muscle]} of a ${m.lastTrainedDaysAgo}-day gap — room for another set`,
-        detail: `recoveredOnDay=${recovered[m.muscle]};gapDays=${m.lastTrainedDaysAgo}`,
-        dayLabel,
-      }));
-
-    if (account) void sendSignals(account.id, account.coach_id, [...sore, ...early]);
-
-    if (anyUnhealed) {
-      const coach = coachOnTheOtherEnd(account?.coach_id, state.program.coachName);
-      dispatch({
-        type: "SHOW_TOAST",
-        message: coach
-          ? `Noted — those sets hold at last week's number, and ${coach}'s flagged.`
-          : "Noted — those sets hold at last week's number.",
-      });
-      setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
-    }
+    // The old toast promised "those sets hold at last week's number". Nothing held anything: nothing in the
+    // app read these answers. It now says only what is true.
+    const coach = coachOnTheOtherEnd(account?.coach_id, state.program.coachName);
+    dispatch({
+      type: "SHOW_TOAST",
+      message: coach ? `Noted — ${coach} has your answers.` : "Noted — saved against this session.",
+    });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
     nav(`/block/day/${dayId}`, { replace: true });
   }
 

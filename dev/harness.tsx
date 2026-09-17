@@ -24,6 +24,7 @@ import "../src/styles.css";
 import { StoreProvider, useStore } from "../src/state/store";
 import { NutritionForm } from "../src/shared/NutritionForm";
 import { deriveNutritionTargets } from "../src/shared/derivedTargets";
+import FoodSearchSheet from "../src/screens/FoodSearchSheet";
 
 const NIL_ACCOUNT = "00000000-0000-0000-0000-000000000000";
 
@@ -109,8 +110,23 @@ function Harness() {
   );
 }
 
+/** `?food` — the food search sheet on its own, inside a phone-sized fixed frame like `.app-root`.
+ *
+ * Built to check one property: the search bar's top edge does not move when the results change height.
+ * On an iPhone the sheet is anchored behind the keyboard, so any movement of its top pushes the search bar
+ * out of sight mid-word. Desktop Chrome has no on-screen keyboard, but the sheet's geometry is the same, so
+ * measuring the input's top before and after typing tests the actual cause. */
+function FoodHarness() {
+  return (
+    <div id="frame" style={{ position: "fixed", inset: 0, background: "var(--color-bg)" }}>
+      <FoodSearchSheet mealName="Meal 2" onAdd={() => {}} onClose={() => {}} />
+    </div>
+  );
+}
+
+const mode = new URLSearchParams(location.search).has("food") ? <FoodHarness /> : <Harness />;
 createRoot(document.getElementById("root")!).render(
   <StoreProvider accountId={NIL_ACCOUNT} ownerName="Harness" coachName="Coach">
-    <Harness />
+    {mode}
   </StoreProvider>,
 );
