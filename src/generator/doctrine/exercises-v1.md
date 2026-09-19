@@ -7213,3 +7213,37 @@ A prescribed client keeps the review path: the app proposes, the coach decides. 
 keeps the switch they already had, since that is the same person directing their own training.
 
 ---
+
+**G144 — A set never comes off a major lift. It comes off the muscle's smallest accessory, and the whole
+muscle holds its weight.**
+
+> *"I wouldn't take a set away from a major exercise. No matter what. I would take it away from one of the
+> smaller accessories."*
+
+G142 had the cut land on the muscle's **last slot**, on the reasoning that it is the work done most fatigued
+and so the least productive set in the session. That is true as far as it goes, and it is wrong whenever the
+last slot is a compound — a leg press closing a quad day, an incline press closing chest.
+
+**The rule now:**
+
+1. Of that muscle's exercises in the session, take the ones that are **not** major lifts.
+2. Of those, the **last** — still the work done most fatigued, but only among accessories.
+3. If the muscle has **no** accessory in that session, **nothing is dropped.** "No matter what" is taken
+   literally. The weight still holds for every one of its exercises, which on its own is a real reduction in
+   what the session asks for, and three readings in a row still escalates to the swap.
+
+**And the hold is muscle-wide.** *"Keep the load the same when a muscle is still sore"* is about the muscle,
+so every exercise for it repeats last week — bench, incline and flies alike — not only whichever one loses
+the set.
+
+**How major is decided: `shared/majorLift.ts`.** `patternOf` already answers most of it, from his own words
+about shrugs being *"in a category of their own"* — a movement with a pattern is a compound, one without is
+an accessory. Run over the whole 202-exercise library it gets Chest, Back, Quads, Biceps, Triceps, the
+delts, Abs and Traps right. Six real majors it misses (Seated Barbell Press, Incline Smith Machine Press,
+Dumbbell Floor Press, Power Clean, Clean and Jerk, Snatch, Kettlebell Swing, Glute Ham Raise) and one it
+over-claims (Leg Press Calf Raise, which matches /leg press/ and is a calf raise) are corrected **outside**
+`patterns.ts`. That table also decides which movements may open a session in the generator, so widening it
+would change generated programs — and a generator change has to be measured across all 125 templates and
+rendered, never assumed. This rule only ever protects an exercise from losing a set, so it needs none of it.
+
+---

@@ -98,7 +98,7 @@ test("a reading is only spent by the session it was taken at", () => {
 
 // --- the wire ----------------------------------------------------------------------------------------
 
-test("still sore takes one set off the muscle's last slot, not one off every exercise", () => {
+test("still sore takes one set off the muscle, not one off every exercise", () => {
   const p = program(day("d1", "2026-09-10", sore(2)));
   const squat = named(p, "d1", "Barbell Squat");
   const ext = named(p, "d1", "Leg Extension");
@@ -176,6 +176,32 @@ test("a deload week is never cut further, and a finished block is never touched"
   const f = proposalsForDay(finished, "d1", "lb")!.proposals.find((x) => x.exercise === "Leg Extension")!;
   assert.equal(f.move, "finished");
   assert.equal(f.nextSets!.length, 3, "nothing is written past the end of a block");
+});
+
+test("a set never comes off a major lift, even when it is the only place left", () => {
+  // Jack: "I wouldn't take a set away from a major exercise. No matter what. I would take it away from one
+  // of the smaller accessories." Both slots here are squats, so nothing is dropped -- but the weight still
+  // holds, which on its own is a real reduction in what the session asks for.
+  const compoundsOnly = day("d1", "2026-09-10", sore(2));
+  compoundsOnly.exercises.e2.name = "Hack Squat Machine";
+  const p = program(compoundsOnly);
+  for (const name of ["Barbell Squat", "Hack Squat Machine"]) {
+    const ex = named(p, "d1", name);
+    assert.equal(ex.nextSets!.length, 3, `${name} keeps its sets`);
+    assert.equal(ex.move, "hold");
+    assert.match(ex.why, /Every Quads movement here is a major lift/);
+  }
+});
+
+test("the cut skips past a major lift to reach the accessory behind it", () => {
+  // The old rule was "the muscle's last slot", which here would have taken a set off the leg press.
+  const withPress = day("d1", "2026-09-10", sore(2));
+  withPress.order = ["e1", "e2", "e3"];
+  withPress.exercises.e3 = { ...withPress.exercises.e1, id: "e3", name: "Leg Press — 45°" };
+  const p = program(withPress);
+  assert.equal(named(p, "d1", "Leg Press — 45°").nextSets!.length, 3, "the last slot is a major lift");
+  assert.equal(named(p, "d1", "Leg Extension").nextSets!.length, 2, "so the set comes off the accessory");
+  assert.match(named(p, "d1", "Leg Press — 45°").why, /set comes off Leg Extension/);
 });
 
 test("a muscle already down to one set still holds the weight, and says why", () => {

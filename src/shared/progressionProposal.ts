@@ -20,6 +20,7 @@ import {
 import { bandForReps } from "../generator/repRanges";
 import { signalRecipient } from "./signalRecipient";
 import { volumeActionsForDay } from "./sorenessVolume";
+import { isMajorLift } from "./majorLift";
 import type { VolumeAction } from "../generator/recoveryWindow";
 import { equipmentOf } from "../screens/exerciseHelpers";
 
@@ -199,36 +200,39 @@ export interface DayProposals {
  *
  * Two moves are exempt. `finished` writes nothing anywhere — the block is over. `deload` has already had
  * C7a halve its sets, and taking another off a deload week is cutting a cut. */
-function withSetChange(
-  p: Proposal, action: VolumeAction, units: string, reason: string, loggedSets: PerformedSet[],
+/** A still-sore muscle repeats last week. Every exercise for it holds; one of them also loses a set.
+ *
+ * The hold is muscle-wide because that is what Jack said it applies to — *"keep the load the same when a
+ * muscle is still sore"* — so bench, incline and flies all stay where they were, not just whichever one the
+ * set comes off. `move` becomes a plain hold because that is now what it is. */
+function holdForSoreness(
+  p: Proposal, loggedSets: PerformedSet[], units: string, note: string, cut: boolean,
 ): Proposal {
-  const note = (extra: string) => `${p.why} Soreness: ${extra}`;
-  if (p.move === "finished" || p.move === "deload" || action.sets === 0) return p;
+  // `finished` writes nothing anywhere -- the block is over. `deload` has already had C7a halve its sets and
+  // hold its weight, which is the same answer this rule would give, only more of it.
+  if (p.move === "finished" || p.move === "deload") return p;
+  const held = loggedSets.map((s) => ({ ...s }));
+  if (held.length === 0) return p;
+  const dropping = cut && held.length > 1;
+  if (dropping) held.pop();
+  return {
+    ...p,
+    move: "hold",
+    next: formatSets(held, units),
+    nextSets: held,
+    label: dropping ? "Same weight, −1 set" : "Same weight",
+    why: `${p.why} Soreness: ${note}`,
+  };
+}
 
-  if (action.sets < 0) {
-    // Last week's own numbers, not the proposed ones. `move` becomes a hold because that is now what it is,
-    // and applyProgressionToProgram removes the dropped set with its ordinary reason.
-    const held = loggedSets.map((s) => ({ ...s }));
-    if (held.length === 0) return p;
-    if (held.length === 1) {
-      // Nothing left to take off. The weight still holds, and it is said out loud rather than silently
-      // doing nothing, because a muscle still sore on one set is the case the swap rule exists for.
-      return {
-        ...p, move: "hold", next: formatSets(held, units), nextSets: held, label: "Same weight",
-        why: note(`${reason} Already down to one set here, so only the weight holds.`),
-      };
-    }
-    held.pop();
-    return {
-      ...p, move: "hold", next: formatSets(held, units), nextSets: held, label: "Same weight, −1 set",
-      why: note(`${reason} The weight holds where it is.`),
-    };
-  }
-
+/** Recovering early is the opposite case and leaves the load rules alone: the weight the progression
+ * proposed stands, and a set goes on top of it. */
+function withAddedSet(p: Proposal, units: string, reason: string): Proposal {
+  if (p.move === "finished" || p.move === "deload") return p;
   const sets = p.nextSets ? p.nextSets.map((s) => ({ ...s })) : null;
   if (!sets || sets.length === 0) return p;
   sets.push({ ...sets[sets.length - 1] });
-  return { ...p, next: formatSets(sets, units), nextSets: sets, label: `${p.label}, +1 set`, why: note(reason) };
+  return { ...p, next: formatSets(sets, units), nextSets: sets, label: `${p.label}, +1 set`, why: `${p.why} Soreness: ${reason}` };
 }
 
 /** The swap recommendation, which belongs on a different exercise from the set change.
@@ -238,11 +242,12 @@ function withSetChange(
  * faster than the muscle can clear it, and that load is highest in the muscle's *first*, heaviest slot.
  * Telling a coach to swap the cable fly when the bench is what the tendon is complaining about would be
  * confidently wrong advice, so the two land where each one is true. */
-function withSwapNote(p: Proposal, muscle: string, cutFrom: string, reason: string): Proposal {
+function withSwapNote(p: Proposal, muscle: string, cutFrom: string | null, reason: string): Proposal {
   if (p.move === "finished") return p;
+  const where = cutFrom ? `A set comes off ${cutFrom}.` : `There is no accessory here to take a set off.`;
   return {
     ...p,
-    why: `${p.why} Soreness: ${reason} A set comes off ${cutFrom}; this is the heaviest ${muscle} slot, so it is the one to change.`,
+    why: `${p.why} Soreness: ${reason} ${where} This is the heaviest ${muscle} slot, so it is the one to change.`,
   };
 }
 
@@ -305,18 +310,41 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
   for (const [muscle, action] of volumeActionsForDay(program, dayId)) {
     const slots = muscles.flatMap((m, i) => (m === muscle ? [i] : []));
     if (slots.length === 0) continue;
-    const first = slots[0];
-    const last = slots[slots.length - 1];
-    // Where the two land on different exercises, the full explanation goes on the swap slot and the set
-    // slot gets a short pointer; where the muscle has only one exercise, volumeActionFor's own sentence
-    // already says both things and is used whole. Either way it is said once.
-    const split = action.swap && first !== last;
-    proposals[last] = withSetChange(
-      proposals[last], action, units,
-      split ? `${muscle} is still arriving unhealed, so a set comes off here too.` : action.reason,
-      lastWeek[last],
-    );
-    if (split) proposals[first] = withSwapNote(proposals[first], muscle, proposals[last].exercise, action.reason);
+
+    if (action.sets > 0) {
+      proposals[slots[slots.length - 1]] = withAddedSet(proposals[slots[slots.length - 1]], units, action.reason);
+      continue;
+    }
+    if (action.sets === 0) continue;
+
+    /* G144: a set never comes off a major lift. Jack: "I wouldn't take a set away from a major exercise.
+     * No matter what. I would take it away from one of the smaller accessories."
+     *
+     * `isMajorLift` is the generator's own classification plus the handful of real majors it misses -- see
+     * majorLift.ts, which was checked name by name against the whole library. Of the accessories, the LAST is the one -- the work done most fatigued, so the least
+     * productive set in the session. Where the muscle has no accessory at all, nothing is dropped; the
+     * weight still holds, which on its own is a real reduction in what the session asks for. */
+    const accessories = slots.filter((i) => !isMajorLift(proposals[i].exercise));
+    const cutFrom = accessories.length ? accessories[accessories.length - 1] : -1;
+    const cutName = cutFrom >= 0 ? proposals[cutFrom].exercise : null;
+
+    // When the swap rule has fired, volumeActionFor's own sentence covers the cut AND the swap. It goes on
+    // the swap slot below, so the cut slot takes a short one instead and neither repeats the other.
+    const cutReason = action.swap ? `${muscle} is still arriving unhealed, so a set comes off here.` : action.reason;
+
+    for (const i of slots) {
+      const note = i !== cutFrom
+        ? cutName
+          ? `${muscle} was still sore, so the weight holds. The set comes off ${cutName}.`
+          : `${muscle} was still sore, so the weight holds. Every ${muscle} movement here is a major lift and a set never comes off one, so none is dropped.`
+        : lastWeek[i].length <= 1
+          ? `${cutReason} Already down to one set here, so only the weight holds.`
+          : `${cutReason} The weight holds where it is.`;
+      proposals[i] = holdForSoreness(proposals[i], lastWeek[i], units, note, i === cutFrom);
+    }
+    if (action.swap) {
+      proposals[slots[0]] = withSwapNote(proposals[slots[0]], muscle, cutName, action.reason);
+    }
   }
   return { dayId, week: week.number, totalWeeks, proposals };
 }
