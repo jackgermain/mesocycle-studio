@@ -7191,8 +7191,25 @@ written history of every week's decision next to the numbers it was made from. O
 "Programmed" rather than the red "Progression", and the verdict stored against each exercise is `auto`, which
 is deliberately a third value and not `approved`: one means a person said yes, the other means nobody looked.
 
-**STILL TO RULE ON:** whether "the last time you train that body part each week" also means next week's
-*whole* allocation for that muscle should be set from that final session — today each slot progresses from
-its own occurrence a week earlier, so Monday's chest is set by last Monday's chest, not by Friday's.
+**RULED — progression is per slot, and it happens as soon as the session is complete.**
+
+> *"In terms of volume, making sure that you're not sore session over session is important. So you can't
+> program the next week until you know how the most recent session you did for that body part went, and was
+> logged, and feedback was taken from it. So I would say that the next Monday should be similar to the last
+> Monday. I've taught you how to progress sets and reps."*
+
+**Next Monday comes from last Monday**, not from whatever the most recent session for that muscle happened
+to be. Each slot has its own lineage and progresses along it by the rules already written down.
+
+The three preconditions in that sentence — trained, logged, feedback taken — are exactly what
+`progressionDueDay` already requires: a day with `feedbackDone` and ticked sets. So a session is programmed
+forward the moment it is complete and never before.
+
+**RULED — General accounts only, for now.**
+
+> *"No clients, just for general accounts for now."*
+
+A prescribed client keeps the review path: the app proposes, the coach decides. A coach training themselves
+keeps the switch they already had, since that is the same person directing their own training.
 
 ---
