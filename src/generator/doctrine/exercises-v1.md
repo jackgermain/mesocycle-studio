@@ -7111,3 +7111,39 @@ Arms specialties, where emphasising one arm muscle is the point.
 names one arm muscle should still carry some work for the other.
 
 ---
+
+**G142 — Soreness sets volume, not load, and one set moves per muscle per session.**
+
+> *"Those notifications need to be being sent no matter what. They're incredibly important. It completely
+> breaks our algorithm for training if they don't work… for general accounts, make sure that that feedback is
+> taken in."*
+
+The recovery-window rule (`generator/recoveryWindow.ts`, written from his own words about healing the day
+before you train a muscle again) existed for months with **zero callers**. The question was asked, the answer
+reached a desk, and the numbers never moved. Wiring it raised five questions doctrine had not answered:
+
+1. **A verdict changes sets, never weight.** How hard the last set was decides the weight (G62/G64); how
+   recovered the muscle was decides how much work it gets. They answer different questions and both apply — a
+   muscle can be under-recovered and still have had an easy top set. The old soreness toast promised the sets
+   would "hold at last week's number", which was a *load* hold and was never true of anything.
+2. **One set per muscle, not one per exercise.** A session with three quad exercises takes **one** set off
+   quads, not three. The verdict is about the muscle's dose.
+3. **It comes off the muscle's LAST slot.** That is the work done most fatigued, so it is the least
+   productive set in the session — and it is the first one a coach would drop by hand.
+4. **A swap recommendation goes on the FIRST slot.** The reason for a swap is that the tendon is accumulating
+   damage faster than the muscle can clear it, and tendon load is highest in the heaviest movement. Telling a
+   coach to change the cable fly when the bench is what the tendon is complaining about is confidently wrong.
+5. **A deload is never cut further, and a finished block is never touched.** C7a has already halved the sets;
+   taking another off is cutting a cut.
+
+**And a reading is spent exactly once.** `computeSorenessDue` stops asking after ten days, so a muscle can be
+trained on a day the check never asked about. A muscle's action only applies when its newest reading came from
+the session being proposed from — otherwise that session would re-spend a reading an earlier proposal already
+acted on, cutting the same muscle twice for one bad week. Older readings still count as *history*, which is
+what the two-confirmation add and the three-in-a-row swap need.
+
+**The lag is real and stated rather than hidden.** The check is asked *before* a session, so a reading judges
+the dose of the session before it, while the proposal it feeds is written one week on. That is inherent to
+asking beforehand: today's damage cannot be known today.
+
+---

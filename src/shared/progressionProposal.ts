@@ -19,6 +19,8 @@ import {
 } from "../generator/doubleProgression";
 import { bandForReps } from "../generator/repRanges";
 import { signalRecipient } from "./signalRecipient";
+import { volumeActionsForDay } from "./sorenessVolume";
+import type { VolumeAction } from "../generator/recoveryWindow";
 import { equipmentOf } from "../screens/exerciseHelpers";
 
 export interface ProposalInput {
@@ -184,6 +186,52 @@ export interface DayProposals {
   proposals: Proposal[];
 }
 
+/** Puts a muscle's recovery verdict into the numbers: one set on or off, load untouched.
+ *
+ * The load is deliberately left alone. The rules above decide the weight from how hard the last set was;
+ * recovery decides how *much* work the muscle gets. They answer different questions and both apply — a
+ * muscle can be under-recovered and still have had an easy top set. (The old soreness toast promised the
+ * sets would "hold at last week's number", which was a load hold and was never true of anything, because
+ * nothing read these answers at all. The doctrine in recoveryWindow.ts says a set, so it is a set.)
+ *
+ * Two moves are exempt. `finished` writes nothing anywhere — the block is over. `deload` has already had
+ * C7a halve its sets, and taking another off a deload week is cutting a cut. */
+function withSetChange(p: Proposal, action: VolumeAction, units: string, reason: string): Proposal {
+  const note = (extra: string) => `${p.why} Soreness: ${extra}`;
+  if (p.move === "finished" || p.move === "deload") return p;
+  const sets = p.nextSets ? p.nextSets.map((s) => ({ ...s })) : null;
+  if (!sets || sets.length === 0 || action.sets === 0) return p;
+  if (action.sets < 0 && sets.length <= 1) {
+    // Nothing left to take off. Say so rather than silently doing nothing, because a muscle still sore on
+    // one set is the case the swap rule exists for.
+    return { ...p, why: note(`${reason} Already down to one set here.`) };
+  }
+  if (action.sets < 0) sets.pop();
+  else sets.push({ ...sets[sets.length - 1] });
+  return {
+    ...p,
+    next: formatSets(sets, units),
+    nextSets: sets,
+    label: `${p.label}, ${action.sets < 0 ? "−1" : "+1"} set`,
+    why: note(reason),
+  };
+}
+
+/** The swap recommendation, which belongs on a different exercise from the set change.
+ *
+ * Sets come off the muscle's *last* slot — the one trained most fatigued, so the least productive work in
+ * the session. A swap is the opposite: the reason for it is that the tendon has been accumulating damage
+ * faster than the muscle can clear it, and that load is highest in the muscle's *first*, heaviest slot.
+ * Telling a coach to swap the cable fly when the bench is what the tendon is complaining about would be
+ * confidently wrong advice, so the two land where each one is true. */
+function withSwapNote(p: Proposal, muscle: string, cutFrom: string, reason: string): Proposal {
+  if (p.move === "finished") return p;
+  return {
+    ...p,
+    why: `${p.why} Soreness: ${reason} A set comes off ${cutFrom}; this is the heaviest ${muscle} slot, so it is the one to change.`,
+  };
+}
+
 function locateDay(program: Program, dayId: string): { day: TrainingDay; week: TrainingWeek } | null {
   for (const week of program.weeks) {
     const day = week.days.find((d) => d.id === dayId);
@@ -203,6 +251,9 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
   const sessionsPerWeek = Math.max(0, ...program.weeks.map((w) => w.days.length));
   const ids = day.order.length ? day.order : Object.keys(day.exercises);
   const proposals: Proposal[] = [];
+  // Parallel to `proposals`, so a muscle's verdict can find the slots it applies to. Not a lookup by
+  // exercise name: the same movement can legitimately appear twice in one session.
+  const muscles: string[] = [];
   for (const id of ids) {
     const ex = day.exercises[id];
     if (!ex || ex.timed) continue;
@@ -227,6 +278,26 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
       sessionsPerWeek,
       units,
     }));
+    muscles.push(ex.muscle);
+  }
+
+  // What the pre-session soreness check says about how much work each muscle should get next week. Only
+  // muscles whose newest reading came from this very session appear -- see sorenessVolume.ts for why that
+  // matters and how a reading is stopped from being spent twice.
+  for (const [muscle, action] of volumeActionsForDay(program, dayId)) {
+    const slots = muscles.flatMap((m, i) => (m === muscle ? [i] : []));
+    if (slots.length === 0) continue;
+    const first = slots[0];
+    const last = slots[slots.length - 1];
+    // Where the two land on different exercises, the full explanation goes on the swap slot and the set
+    // slot gets a short pointer; where the muscle has only one exercise, volumeActionFor's own sentence
+    // already says both things and is used whole. Either way it is said once.
+    const split = action.swap && first !== last;
+    proposals[last] = withSetChange(
+      proposals[last], action, units,
+      split ? `${muscle} is still arriving unhealed, so a set comes off here too.` : action.reason,
+    );
+    if (split) proposals[first] = withSwapNote(proposals[first], muscle, proposals[last].exercise, action.reason);
   }
   return { dayId, week: week.number, totalWeeks, proposals };
 }
@@ -239,8 +310,15 @@ function shiftIso(iso: string, days: number): string {
 /** The most recent finished session whose proposals have not been sent yet.
  *
  * Only looks back `withinDays`. Sessions finished before this existed have no sent mark either, and
- * without a window the first open after deploy would send someone's entire training history. */
-export function progressionDueDay(program: Program, todayIso: string, withinDays = 3): string | null {
+ * without a window the first open after deploy would send someone's entire training history.
+ *
+ * Eight days, not three. Three covered "finished a session, opened the app" and nothing else: a week
+ * trained Monday to Friday and reviewed on Saturday lost Monday, Tuesday and Wednesday outright — their
+ * proposals were never built, so the following week kept last week's numbers with no record of why. Jack,
+ * having submitted a full week: "all my training for this week is submitted, and now I want the algorithm
+ * to make progressions for the remainder of the block." Eight days covers a whole training week plus the
+ * day or two before anyone sits down to review it, and the sent mark still stops anything going twice. */
+export function progressionDueDay(program: Program, todayIso: string, withinDays = 8): string | null {
   const cutoff = shiftIso(todayIso, -withinDays);
   let best: TrainingDay | null = null;
   for (const week of program.weeks) {
@@ -356,7 +434,8 @@ export function applyProgressionToProgram(
   sourceDayId: string,
   payload: ProgressionPayload,
   setsFor: (index: number, proposal: Proposal) => PerformedSet[] | null,
-): { program: Program; touched: number } {
+): { program: Program; touched: number; written: number[] } {
+  const nothing = { program, touched: 0, written: [] };
   const next = structuredClone(program);
   let weekIdx = -1;
   let dayIdx = -1;
@@ -366,15 +445,15 @@ export function applyProgressionToProgram(
       dayIdx = di;
     }
   }));
-  if (weekIdx < 0) return { program, touched: 0 };
+  if (weekIdx < 0) return nothing;
   const source = next.weeks[weekIdx].days[dayIdx];
   const following = next.weeks[weekIdx + 1];
-  if (!following) return { program, touched: 0 };
+  if (!following) return nothing;
   const target = following.days.find((d) => d.code === source.code) ?? following.days[dayIdx];
-  if (!target) return { program, touched: 0 };
-  if (Object.values(target.exercises).some((ex) => ex.sets.some((s) => s.checked))) return { program, touched: 0 };
+  if (!target) return nothing;
+  if (Object.values(target.exercises).some((ex) => ex.sets.some((s) => s.checked))) return nothing;
 
-  let touched = 0;
+  const written: number[] = [];
   payload.proposals.forEach((p, i) => {
     if (p.move === "finished") return;
     const sets = setsFor(i, p);
@@ -406,7 +485,7 @@ export function applyProgressionToProgram(
       copy.prescribed = { ...copy.prescribed, reps: sets[k].reps, load: sets[k].load ?? copy.prescribed.load };
       ex.sets.push(copy);
     }
-    touched++;
+    written.push(i);
   });
-  return touched ? { program: next, touched } : { program, touched: 0 };
+  return written.length ? { program: next, touched: written.length, written } : nothing;
 }

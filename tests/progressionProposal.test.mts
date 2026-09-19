@@ -146,7 +146,10 @@ test("only the latest unsent finished session inside the window is due", () => {
     }],
   };
   assert.equal(progressionDueDay(program as never, "2026-09-10"), "recent");
-  assert.equal(progressionDueDay(program as never, "2026-09-20"), null, "nothing inside three days");
+  assert.equal(progressionDueDay(program as never, "2026-09-20"), null, "nothing inside the window");
+  // The window is a training week, not three days: a Monday session reviewed on Saturday used to fall out
+  // of it entirely and never have its proposals built at all.
+  assert.equal(progressionDueDay(program as never, "2026-09-15"), "recent", "six days back is still in");
 });
 
 test("proposals go to the coach, or to a coach's own desk, and nowhere else", () => {
@@ -215,6 +218,19 @@ test("approval writes only the included proposals into next week's same session,
   assert.deepEqual(sq.slice(1).map((s) => [s.prescribed.reps, s.prescribed.load]), [[8, 140], [8, 140], [10, 135]]);
   assert.equal(res.program.weeks[1].days[0].exercises.lp.sets[0].prescribed.load, 135, "a Bad one is not applied");
   assert.equal(res.program.weeks[0].days[0].exercises.sq.sets[1].prescribed.load, 135, "this week is not rewritten");
+});
+
+test("a batch approval reports which proposals actually landed, not just how many", () => {
+  // Approving a whole session is one write, so the screen can no longer infer per-exercise success from a
+  // count: a renamed or timed exercise in next week's session is skipped while its neighbours go through,
+  // and marking that one "written" would tell a coach a number is in the program when it is not.
+  const res = applyProgressionToProgram(twoWeeks() as never, "w1", payloadOf([
+    proposal({ exercise: "Not In Next Week", next: "3 × 10 @ 140 lb" }),
+    proposal({ next: "3 × 10 @ 140 lb" }),
+    proposal({ exercise: "Leg Press", next: "2 × 12 @ 300 lb" }),
+  ]) as never, (_, p) => proposedSets(p));
+  assert.deepEqual(res.written, [1, 2]);
+  assert.equal(res.touched, res.written.length, "the count stays the length of the list");
 });
 
 test("an approved deload removes the sets it drops, and text-only proposals still apply", () => {

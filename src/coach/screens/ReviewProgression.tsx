@@ -8,7 +8,7 @@ import { noteSignalCleared } from "../../shared/openSignals";
 import { EFFORT_WORDING } from "../../shared/signalScales";
 import { formatSets, plainWhy, proposedSets, readProgression, type ProgressionPayload } from "../../shared/progressionProposal";
 import { saveProgressionPayload } from "../../shared/progressionReview";
-import { applyProgressionForClient, readClientProgram } from "../clientProgramEdits";
+import { applyProgressionBatchForClient, applyProgressionForClient, readClientProgram } from "../clientProgramEdits";
 import { dayDisplayTitle } from "../../data/dayNumbering";
 import type { PerformedSet } from "../../generator/doubleProgression";
 
@@ -142,6 +142,54 @@ export default function ReviewProgression() {
     }
   }
 
+  /** Approves every exercise still to review, in one write.
+   *
+   * Reviewing a whole week one exercise at a time is around thirty submits, which is what "I want the
+   * algorithm to work automatically" actually runs into. This is still a review — every proposal gets the
+   * same `approved` verdict record, with the same numbers, so nothing is lost from the training data — it
+   * is just the reviewer saying yes to all of them at once. Anything they want to change, they change
+   * first; only what is left untouched goes through here. */
+  async function approveRest() {
+    if (!signal || !payload) return;
+    const pending = payload.proposals
+      .map((p, i) => ({ p, i, sets: proposedSets(p) ?? [] }))
+      .filter(({ i }) => !payload.reviews?.[String(i)]);
+    if (pending.length === 0) return;
+    setBusy("all");
+    setError(null);
+
+    // A finished block writes nothing anywhere, and a proposal with no readable sets has nothing to write.
+    const writable = new Map(pending.filter((x) => x.p.move !== "finished" && x.sets.length > 0).map((x) => [x.i, x.sets]));
+    let written: number[] = [];
+    if (sourceDayId && writable.size > 0) {
+      const result = await applyProgressionBatchForClient(signal.client_id, sourceDayId, payload, (i) => writable.get(i) ?? null);
+      if (result === null) {
+        setBusy(null);
+        setError(`Couldn't update ${whose} program — check your connection and try again.`);
+        return;
+      }
+      written = result;
+    }
+
+    const at = new Date().toISOString();
+    const reviews = { ...(payload.reviews ?? {}) };
+    for (const { i, p, sets } of pending) {
+      reviews[String(i)] = { verdict: "approved", sets: sets.length ? sets : (p.nextSets ?? []), at, applied: written.includes(i) };
+    }
+    const next: ProgressionPayload = { ...payload, reviews, completedAt: at };
+    const saved = await saveProgressionPayload(signal.id, next);
+    setBusy(null);
+    if (!saved) {
+      setError(written.length ? "Next week was updated, but the review didn't save — try again." : "That didn't save — check your connection and try again.");
+      return;
+    }
+    setPayload(next);
+    setEditing({});
+    if (await acknowledgeSignal(signal.id)) noteSignalCleared();
+    dispatch({ type: "SHOW_TOAST", message: `All ${total} reviewed — next week is set.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+  }
+
   return (
     <div className="screen">
       <BackHeader
@@ -159,7 +207,19 @@ export default function ReviewProgression() {
           </InfoBanner>
         )}
 
-        <div className="sh" style={{ margin: 0 }}>{done} of {total} done</div>
+        <div className="row" style={{ gap: 10, alignItems: "center" }}>
+          <div className="sh" style={{ margin: 0, flex: 1 }}>{done} of {total} done</div>
+          {done < total && (
+            <button
+              className="btn btn-ghost"
+              disabled={busy !== null}
+              onClick={approveRest}
+              style={{ flex: "none", height: 32, paddingInline: 12, fontSize: 12.5 }}
+            >
+              {busy === "all" ? "Approving…" : `Approve ${done === 0 ? `all ${total}` : `the other ${total - done}`}`}
+            </button>
+          )}
+        </div>
 
         {done === total && (
           <InfoBanner icon="ph-check-circle" tone="accent">All {total} reviewed — next week is set.</InfoBanner>

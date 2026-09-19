@@ -11,7 +11,10 @@ import type { LibraryExercise } from "./types";
  *
  * Returns how many places the edit landed, or null if it couldn't be applied at all. Zero is a real
  * answer, not a failure: it means the exercise the client named isn't in any session they have left. */
-async function editClientProgram(clientAccountId: string, edit: (p: Program) => { program: Program; touched: number }): Promise<number | null> {
+async function editClientProgram<T extends { program: Program; touched: number }>(
+  clientAccountId: string,
+  edit: (p: Program) => T,
+): Promise<T | null> {
   const { data, error: readError } = await supabase.from("client_state").select("data").eq("account_id", clientAccountId).maybeSingle();
   if (readError) {
     console.error("Failed to read client state", readError);
@@ -21,22 +24,22 @@ async function editClientProgram(clientAccountId: string, edit: (p: Program) => 
   const program = existing.program as Program | undefined;
   if (!program) return null;
 
-  const { program: nextProgram, touched } = edit(program);
-  if (touched === 0) return 0;
+  const result = edit(program);
+  if (result.touched === 0) return result;
 
   const { error } = await supabase
     .from("client_state")
-    .upsert({ account_id: clientAccountId, data: { ...existing, program: nextProgram }, updated_at: new Date().toISOString() });
+    .upsert({ account_id: clientAccountId, data: { ...existing, program: result.program }, updated_at: new Date().toISOString() });
   if (error) {
     console.error("Failed to write client state", error);
     return null;
   }
-  return touched;
+  return result;
 }
 
 /** Adds a warm-up set to every remaining session of an exercise a client reported pain on. */
 export function addWarmupSetForClient(clientAccountId: string, exerciseName: string): Promise<number | null> {
-  return editClientProgram(clientAccountId, (p) => addWarmupSetByName(p, exerciseName));
+  return editClientProgram(clientAccountId, (p) => addWarmupSetByName(p, exerciseName)).then((r) => r?.touched ?? null);
 }
 
 /** Swaps out an exercise a client reported pain on, for the rest of their block. Scoped to the whole
@@ -50,7 +53,7 @@ export function swapExerciseForClient(clientAccountId: string, exerciseName: str
       equipment: equipmentOf({ name: replacement.name }),
       hasVideo: replacement.hasVideo,
     }),
-  );
+  ).then((r) => r?.touched ?? null);
 }
 
 /** Writes approved progression proposals into next week's occurrence of the session they came from. Works
@@ -63,7 +66,25 @@ export function applyProgressionForClient(
   payload: ProgressionPayload,
   setsFor: Parameters<typeof applyProgressionToProgram>[3],
 ): Promise<number | null> {
-  return editClientProgram(accountId, (p) => applyProgressionToProgram(p, sourceDayId, payload, setsFor));
+  return editClientProgram(accountId, (p) => applyProgressionToProgram(p, sourceDayId, payload, setsFor))
+    .then((r) => r?.touched ?? null);
+}
+
+/** The same write, for several proposals at once, returning **which** ones landed rather than how many.
+ *
+ * Approving a session one exercise at a time is one read-modify-write per exercise; a week of five
+ * sessions is thirty of them, and a client with the app open can overwrite the program between any two.
+ * One write for the whole session is both faster and safer. The indices matter because a partial result is
+ * real -- an exercise renamed in next week's session, or made timed, is skipped -- and reporting those as
+ * written when they weren't is the kind of quiet lie that makes a coach trust the wrong numbers. */
+export function applyProgressionBatchForClient(
+  accountId: string,
+  sourceDayId: string,
+  payload: ProgressionPayload,
+  setsFor: Parameters<typeof applyProgressionToProgram>[3],
+): Promise<number[] | null> {
+  return editClientProgram(accountId, (p) => applyProgressionToProgram(p, sourceDayId, payload, setsFor))
+    .then((r) => r?.written ?? null);
 }
 
 /** Reads a client's live program without editing it — used when the AI button is invoked from somewhere
