@@ -29,7 +29,7 @@ import { AiFabHost } from "./shared/AiFabHost";
 import { CoachAiFab } from "./coach/components/CoachAiFab";
 import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "./shared/liveProgramAiEdit";
 import {
-  applyProgressionToProgram, autoReviewedPayload, payloadFor, progressionDueDay, proposalsForDay, proposedSets,
+  autoProgressDueDays, autoReviewedPayload, programFollowingWeek, progressionDueDay,
 } from "./shared/progressionProposal";
 import { sendProgressionProposals, sendProgressionRecord } from "./shared/progressionSignals";
 import { ownsTheirProgressions } from "./shared/selfDirected";
@@ -158,24 +158,15 @@ function ClientLayout() {
   // self-directed -- friends and family, and a coach training themselves -- owns their own program.
   const selfDirected = ownsTheirProgressions(account, previewingAsClient);
 
-  /* Next week's numbers for a finished session. Here rather than in the finish handler so it also catches a
-   * session finished on an older build or while offline: whatever is finished and unsent goes the next time
-   * this side of the app is open. Marked before sending, so the store saving and this effect re-running can
-   * never send the same session twice. One session per run; marking changes `state.program`, which re-runs
-   * this and picks up the next one, so a whole week drains in order.
-   *
-   * Two paths, and which one runs is the whole of the auto-programming switch:
-   *
-   * - **Self-directed** (a General account, or a coach training themselves): the numbers are written STRAIGHT
-   *   INTO next week. Jack: "I want the algorithm progressing reps, load etc, every week, automatically…
-   *   the last time you train that body part each week you have all the information you need to do the
-   *   programming for the following week." Nothing waits on a person. The signal still goes out, as a record
-   *   of what the app did rather than a request to approve it.
-   * - **A prescribed client**: unchanged. Their block is their coach's, so it stays a proposal for review.
-   *   That separation is the point of the roles and is not the switch's to override.
-   */
+  /* A PRESCRIBED CLIENT's finished session: next week's numbers proposed to their coach, who decides.
+   * Their block is their coach's, and that separation is the point of the roles. Here rather than in the
+   * finish handler so it also catches a session finished on an older build or while offline. Marked before
+   * sending, so the store saving and this effect re-running can never send the same session twice. One per
+   * run; marking changes `state.program`, which re-runs this and picks up the next, so a week drains in
+   * order. Self-directed accounts take the auto-programming effect below instead, never both -- two
+   * notifications for one session is how a desk stops being readable. */
   useEffect(() => {
-    if (!account) return;
+    if (!account || selfDirected) return;
     // Switched off from the Train tab. `=== false` rather than `!`: absent means on, because proposals
     // send for everyone today and every account saved before this field existed hydrates without it.
     // Nothing is marked as sent while it is off, so turning it back on picks up whatever is still recent
@@ -184,23 +175,32 @@ function ClientLayout() {
     const due = progressionDueDay(state.program, isoToday());
     if (!due) return;
 
-    if (!selfDirected) {
-      dispatch({ type: "MARK_PROGRESSION_SENT", dayId: due });
-      void sendProgressionProposals(account, state.program, due, state.profile.units);
-      return;
-    }
+    dispatch({ type: "MARK_PROGRESSION_SENT", dayId: due });
+    void sendProgressionProposals(account, state.program, due, state.profile.units);
+  }, [account, selfDirected, state.program, state.profile.units, state.profile.autoProgressions, dispatch]);
 
-    const result = proposalsForDay(state.program, due, state.profile.units);
-    if (!result || result.proposals.length === 0) {
-      dispatch({ type: "MARK_PROGRESSION_SENT", dayId: due });
-      return;
-    }
+  /* Auto programming, for an account that owns its own progressions. A WHOLE week at a time, not a session
+   * per render: Jack, standing on week 2 day 1 with week 1 fully logged — "you are supposed to take the
+   * information from week one, which is all logged, and use it to make progressions for where things should
+   * be by the end of week two, and then do the same thing once week two is complete for week three."
+   *
+   * Kept separate from the review effect above rather than branching inside it, because the two now read
+   * different marks and different windows and had started to read as one function doing two jobs. */
+  useEffect(() => {
+    if (!account || !selfDirected) return;
+    if (state.profile.autoProgressions === false) return;
+    const dueDays = autoProgressDueDays(state.program, isoToday());
+    if (dueDays.length === 0) return;
+
     // Applied here rather than inside the reducer so the list of what actually landed is available to put
-    // in the signal -- a proposal skipped because next week's session was already started is recorded as
+    // in each signal -- a proposal skipped because the following session was already started is recorded as
     // not applied, not quietly counted as done.
-    const { program, written } = applyProgressionToProgram(state.program, due, payloadFor(result), (_, p) => proposedSets(p));
-    dispatch({ type: "AUTO_PROGRESS", dayId: due, program });
-    void sendProgressionRecord(account, state.program, due, autoReviewedPayload(result, written));
+    const { program, results } = programFollowingWeek(state.program, dueDays, state.profile.units);
+    dispatch({ type: "AUTO_PROGRESS", dayIds: dueDays, program });
+    for (const r of results) {
+      if (r.result.proposals.length === 0) continue;
+      void sendProgressionRecord(account, state.program, r.dayId, autoReviewedPayload(r.result, r.written));
+    }
   }, [account, selfDirected, state.program, state.profile.units, state.profile.autoProgressions, dispatch]);
 
   // Registered once here rather than per screen: on this side there is only ever one program, so it's in

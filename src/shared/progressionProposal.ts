@@ -326,6 +326,58 @@ export function progressionDueDay(program: Program, todayIso: string, withinDays
   return best?.id ?? null;
 }
 
+/** Every finished session whose numbers have not yet been written into the following week, oldest first.
+ *
+ * Separate from `progressionDueDay` in three ways, all of them deliberate:
+ *
+ * 1. It reads `progressionAppliedAt`, **not** `progressionSentAt`. A session that was proposed for review
+ *    and never approved still has its progression to apply — that single shared mark is what stranded a
+ *    whole logged week.
+ * 2. It returns **all** of them, so a complete week programs the following week in one pass rather than one
+ *    session per render. Jack, on week 2 day 1: *"you are supposed to take the information from week one,
+ *    which is all logged, and use it to make progressions for where things should be by the end of week
+ *    two, and then do the same thing once week two is complete for week three."*
+ * 3. Oldest first, so the week is written in the order it was trained.
+ *
+ * Fourteen days rather than eight: a full week of training plus the week it feeds, which is the span this
+ * has to reach across to do what he asked. Anything older belongs to a block that has moved on. */
+export function autoProgressDueDays(program: Program, todayIso: string, withinDays = 14): string[] {
+  const cutoff = shiftIso(todayIso, -withinDays);
+  return program.weeks
+    .flatMap((w) => w.days)
+    .filter((d) => d.feedbackDone && !d.progressionAppliedAt && d.date >= cutoff && d.date <= todayIso)
+    .sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? -1 : 1))
+    .map((d) => d.id);
+}
+
+/** Writes every one of those sessions forward into the following week, in order.
+ *
+ * Each session is proposed from the program as it stands after the previous one was written, so a block
+ * where two sessions feed the same following-week slot cannot have the earlier one silently lost.
+ *
+ * A following-week session that has already been started is skipped by `applyProgressionToProgram` and
+ * comes back with nothing written — which is correct and worth surfacing rather than hiding: it is what
+ * happens to today's session when the week is programmed from the middle of it. */
+export function programFollowingWeek(
+  program: Program,
+  dayIds: string[],
+  units: string,
+): { program: Program; results: { dayId: string; result: DayProposals; written: number[] }[] } {
+  let current = program;
+  const results: { dayId: string; result: DayProposals; written: number[] }[] = [];
+  for (const dayId of dayIds) {
+    const result = proposalsForDay(current, dayId, units);
+    if (!result || result.proposals.length === 0) {
+      results.push({ dayId, result: result ?? { dayId, week: 0, totalWeeks: 0, proposals: [] }, written: [] });
+      continue;
+    }
+    const applied = applyProgressionToProgram(current, dayId, payloadFor(result), (_, p) => proposedSets(p));
+    current = applied.program;
+    results.push({ dayId, result, written: applied.written });
+  }
+  return { program: current, results };
+}
+
 /** Who reviews a session's proposals: the person's coach, or a coach's own desk when they are training
  * themselves (migration 0027 lets only that one self-addressed kind through). Anyone else has nobody. */
 export function progressionRecipient(account: { id: string; role: string; coach_id: string | null }): string | null {

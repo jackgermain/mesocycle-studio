@@ -6,7 +6,8 @@ import assert from "node:assert/strict";
 import {
   proposeNextWeek, targetEffortFor, proposalsForDay, progressionDueDay, progressionRecipient,
   encodeProgression, decodeProgression, formatSets, parseSets, applyProgressionToProgram,
-  proposedSets, readProgression, plainWhy, autoReviewedPayload, wasAutoApplied, type ProposalInput,
+  proposedSets, readProgression, plainWhy, autoReviewedPayload, wasAutoApplied, autoProgressDueDays,
+  programFollowingWeek, type ProposalInput,
 } from "../src/shared/progressionProposal.ts";
 
 const base: ProposalInput = {
@@ -231,6 +232,62 @@ test("a batch approval reports which proposals actually landed, not just how man
   ]) as never, (_, p) => proposedSets(p));
   assert.deepEqual(res.written, [1, 2]);
   assert.equal(res.touched, res.written.length, "the count stays the length of the list");
+});
+
+/** A week-1 session as it exists after being trained: every working set ticked, with real numbers on it. */
+function loggedDay(id: string, date: string, extra: Record<string, unknown> = {}) {
+  const d: any = sessionDay(id);
+  d.date = date;
+  d.status = "done";
+  d.feedbackDone = true;
+  for (const ex of Object.values<any>(d.exercises)) {
+    for (const s of ex.sets) {
+      if (s.isWarmup) continue;
+      s.checked = true;
+      s.actual = { reps: 10, load: 135 };
+    }
+    ex.sets[ex.sets.length - 1].effort = 2; // too light, so the weight has somewhere to go
+  }
+  return { ...d, ...extra };
+}
+
+test("a week proposed for review but never approved still has its progression to apply", () => {
+  /* The exact state Jack was in on week 2 day 1: every session of week 1 logged, every one already marked
+   * `progressionSentAt` by the review path, and week 2 still carrying its original numbers. Sharing one
+   * mark between "sent for review" and "written into the program" stranded the whole week -- auto
+   * programming skipped all of them as already handled. */
+  const sent = { progressionSentAt: "2026-09-14T10:00:00Z" };
+  const program = {
+    name: "P", totalWeeks: 4, coachName: "",
+    weeks: [
+      { number: 1, phase: "accumulation", days: [loggedDay("w1", "2026-09-14", sent), loggedDay("w1b", "2026-09-16", sent)] },
+      { number: 2, phase: "accumulation", days: [sessionDay("w2"), sessionDay("w2b")] },
+    ],
+  };
+  const before = program.weeks[1].days[0].exercises.sq.sets.map((s: any) => s.prescribed.load);
+
+  const due = autoProgressDueDays(program as never, "2026-09-21");
+  assert.deepEqual(due, ["w1", "w1b"], "both sent-but-unapproved sessions are still due");
+
+  const { program: next, results } = programFollowingWeek(program as never, due, "lb");
+  assert.equal(results.length, 2);
+  assert.ok(results[0].written.length > 0, "week 1 day 1 wrote into week 2");
+  assert.notDeepEqual(
+    next.weeks[1].days[0].exercises.sq.sets.map((s: any) => s.prescribed.load),
+    before,
+    "week 2 no longer carries week 1's numbers",
+  );
+});
+
+test("a session whose numbers are already in is never applied twice", () => {
+  const program = {
+    name: "P", totalWeeks: 4, coachName: "",
+    weeks: [
+      { number: 1, phase: "accumulation", days: [loggedDay("w1", "2026-09-14", { progressionAppliedAt: "2026-09-15T10:00:00Z" })] },
+      { number: 2, phase: "accumulation", days: [sessionDay("w2")] },
+    ],
+  };
+  assert.deepEqual(autoProgressDueDays(program as never, "2026-09-21"), [], "applied means done");
 });
 
 test("auto programming records every proposal as the app's own verdict, and only claims what landed", () => {

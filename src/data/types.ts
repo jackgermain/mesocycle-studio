@@ -124,6 +124,14 @@ export interface TrainingDay {
   /** When next week's proposed numbers for this session were sent for review. Marked before sending, so a
    * re-render or a reload never sends the same session twice. Absent on sessions from before it existed. */
   progressionSentAt?: string;
+  /** When next week's numbers were WRITTEN INTO the program from this session, by auto programming.
+   *
+   * Deliberately a second mark rather than reusing `progressionSentAt`. They record different events: sent
+   * means a proposal is waiting on a person, applied means the numbers are already in. Sharing one mark
+   * stranded a real week — every session of Jack's week 1 had been sent for review under the old path, so
+   * when auto programming arrived it skipped all of them as "already handled" and week 2 kept its original
+   * numbers. A session that was only ever proposed still has its progression to apply. */
+  progressionAppliedAt?: string;
 }
 
 export interface TrainingWeek {
