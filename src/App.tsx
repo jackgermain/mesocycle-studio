@@ -28,8 +28,11 @@ import IntakeForm from "./screens/IntakeForm";
 import { AiFabHost } from "./shared/AiFabHost";
 import { CoachAiFab } from "./coach/components/CoachAiFab";
 import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "./shared/liveProgramAiEdit";
-import { progressionDueDay } from "./shared/progressionProposal";
-import { sendProgressionProposals } from "./shared/progressionSignals";
+import {
+  applyProgressionToProgram, autoReviewedPayload, payloadFor, progressionDueDay, proposalsForDay, proposedSets,
+} from "./shared/progressionProposal";
+import { sendProgressionProposals, sendProgressionRecord } from "./shared/progressionSignals";
+import { ownsTheirProgressions } from "./shared/selfDirected";
 import { isoToday } from "./shared/dayStatus";
 import { ClientSideNav } from "./components/TabBar";
 import { CoachSideNav } from "./coach/components/CoachTabBar";
@@ -153,12 +156,24 @@ function ClientLayout() {
   const { pathname } = useLocation();
   // A prescribed client's block belongs to their coach, so the button isn't theirs to have. Everyone
   // self-directed -- friends and family, and a coach training themselves -- owns their own program.
-  const selfDirected = account?.role === "friend" || previewingAsClient;
+  const selfDirected = ownsTheirProgressions(account, previewingAsClient);
 
-  // Next week's proposed numbers for a finished session, sent for review. Here rather than in the finish
-  // handler so it also catches a session finished on an older build or while offline: whatever is finished
-  // and unsent goes the next time this side of the app is open. Marked before sending, so the store saving
-  // and this effect re-running can never send the same session twice.
+  /* Next week's numbers for a finished session. Here rather than in the finish handler so it also catches a
+   * session finished on an older build or while offline: whatever is finished and unsent goes the next time
+   * this side of the app is open. Marked before sending, so the store saving and this effect re-running can
+   * never send the same session twice. One session per run; marking changes `state.program`, which re-runs
+   * this and picks up the next one, so a whole week drains in order.
+   *
+   * Two paths, and which one runs is the whole of the auto-programming switch:
+   *
+   * - **Self-directed** (a General account, or a coach training themselves): the numbers are written STRAIGHT
+   *   INTO next week. Jack: "I want the algorithm progressing reps, load etc, every week, automatically…
+   *   the last time you train that body part each week you have all the information you need to do the
+   *   programming for the following week." Nothing waits on a person. The signal still goes out, as a record
+   *   of what the app did rather than a request to approve it.
+   * - **A prescribed client**: unchanged. Their block is their coach's, so it stays a proposal for review.
+   *   That separation is the point of the roles and is not the switch's to override.
+   */
   useEffect(() => {
     if (!account) return;
     // Switched off from the Train tab. `=== false` rather than `!`: absent means on, because proposals
@@ -168,9 +183,25 @@ function ClientLayout() {
     if (state.profile.autoProgressions === false) return;
     const due = progressionDueDay(state.program, isoToday());
     if (!due) return;
-    dispatch({ type: "MARK_PROGRESSION_SENT", dayId: due });
-    void sendProgressionProposals(account, state.program, due, state.profile.units);
-  }, [account, state.program, state.profile.units, state.profile.autoProgressions, dispatch]);
+
+    if (!selfDirected) {
+      dispatch({ type: "MARK_PROGRESSION_SENT", dayId: due });
+      void sendProgressionProposals(account, state.program, due, state.profile.units);
+      return;
+    }
+
+    const result = proposalsForDay(state.program, due, state.profile.units);
+    if (!result || result.proposals.length === 0) {
+      dispatch({ type: "MARK_PROGRESSION_SENT", dayId: due });
+      return;
+    }
+    // Applied here rather than inside the reducer so the list of what actually landed is available to put
+    // in the signal -- a proposal skipped because next week's session was already started is recorded as
+    // not applied, not quietly counted as done.
+    const { program, written } = applyProgressionToProgram(state.program, due, payloadFor(result), (_, p) => proposedSets(p));
+    dispatch({ type: "AUTO_PROGRESS", dayId: due, program });
+    void sendProgressionRecord(account, state.program, due, autoReviewedPayload(result, written));
+  }, [account, selfDirected, state.program, state.profile.units, state.profile.autoProgressions, dispatch]);
 
   // Registered once here rather than per screen: on this side there is only ever one program, so it's in
   // scope on the calendar, a workout, progress, nutrition — anywhere they happen to be.

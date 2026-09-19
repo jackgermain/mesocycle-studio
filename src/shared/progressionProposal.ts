@@ -361,9 +361,13 @@ export function progressionRecipient(account: { id: string; role: string; coach_
 /** A reviewer's verdict on one proposal. Kept inside the payload, next to the exact numbers it judged, so
  * the training data can never be separated from what the engine actually proposed. */
 export interface ProposalReview {
-  /** Approved as proposed, or edited before it went in. An edit is the most useful training data there is:
-   * the exact numbers the coach wanted instead, and why. */
-  verdict: "approved" | "edited";
+  /** Approved as proposed, edited before it went in, or applied automatically with no review at all.
+   *
+   * An edit is the most useful training data there is: the exact numbers the coach wanted instead, and why.
+   * `auto` is the self-directed path -- Jack: "I want the algorithm progressing reps, load etc, every week,
+   * automatically" -- and it is kept distinct from `approved` precisely so the two can never be confused
+   * later: one is a person saying yes, the other is nobody having looked. */
+  verdict: "approved" | "edited" | "auto";
   /** What went into next week -- the proposal's own sets when approved. */
   sets: PerformedSet[];
   /** Why it was changed. Required on an edit, absent on an approval. */
@@ -387,8 +391,37 @@ export interface ProgressionPayload {
 }
 
 export function encodeProgression(p: DayProposals): string {
-  const payload: ProgressionPayload = { v: 1, week: p.week, totalWeeks: p.totalWeeks, dayId: p.dayId, proposals: p.proposals };
-  return JSON.stringify(payload);
+  return JSON.stringify(payloadFor(p));
+}
+
+export function payloadFor(p: DayProposals): ProgressionPayload {
+  return { v: 1, week: p.week, totalWeeks: p.totalWeeks, dayId: p.dayId, proposals: p.proposals };
+}
+
+/** The same payload with every proposal already marked applied, for the self-directed path where the
+ * algorithm writes next week itself and nobody reviews anything.
+ *
+ * `written` is the list the write actually landed -- a proposal skipped because next week's session had
+ * already been started, or the exercise renamed, is recorded as not applied rather than quietly counted.
+ * The coach still receives this: it is a record of what the app did, not a request to approve it. */
+export function autoReviewedPayload(p: DayProposals, written: number[], at = new Date().toISOString()): ProgressionPayload {
+  const reviews: Record<string, ProposalReview> = {};
+  p.proposals.forEach((proposal, i) => {
+    reviews[String(i)] = {
+      verdict: "auto",
+      sets: proposedSets(proposal) ?? [],
+      at,
+      applied: written.includes(i),
+    };
+  });
+  return { ...payloadFor(p), reviews, completedAt: at };
+}
+
+/** True when nobody reviewed any of it -- every verdict is the algorithm's own. Used by the desk to say
+ * "applied" rather than "ready to review", and to keep an auto-applied session out of the red. */
+export function wasAutoApplied(payload: ProgressionPayload): boolean {
+  const reviews = Object.values(payload.reviews ?? {});
+  return reviews.length > 0 && reviews.length === payload.proposals.length && reviews.every((r) => r.verdict === "auto");
 }
 
 /** Never throws: a signal's detail is free text on every other kind, and a malformed one should show

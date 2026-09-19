@@ -1,6 +1,7 @@
 import React from "react";
 import { useStore } from "../state/store";
 import { useAuth } from "../lib/auth";
+import { ownsTheirProgressions } from "./selfDirected";
 import { TickButton } from "../components/UI";
 
 /** The two "let the app work it out" switches, in one place so every surface can show the same control.
@@ -33,23 +34,28 @@ function ToggleRow({ on, title, hint, onToggle }: { on: boolean; title: string; 
   );
 }
 
-/** Whether finishing a session works next week's numbers out for review.
+/** Whether finishing a session programs next week automatically.
  *
- * A coach training themselves, and nobody else. Training progressions belong to the coach in every case:
- * the app proposes next week's loads and the COACH reviews them. A General account is an athlete whose
- * loads are reviewed by their coach, not by them, so it gets no switch — Jack: "for general accounts they
- * do not approve the loads I do... the app makes the progressions for training and I will review them as
- * only I do review."
+ * **Self-directed accounts, which is a coach training themselves AND a General account.** It was coach-only
+ * for a while, on the reading that "for general accounts they do not approve the loads, I do" meant a
+ * General account should have no switch at all. That made it invisible on the one account Jack actually
+ * tests on: *"the auto programming button in the train tab, which is actually gone for some reason. It
+ * should be there."* Approving is not the same question as having the app do the work — a General account
+ * directs its own training, so the switch is theirs, exactly as auto nutrition already is.
  *
- * A coach training themselves is the one case where the athlete and the reviewer are the same person,
- * which is why the switch is theirs. This was briefly gated on "self-directed", which wrongly handed a
- * General account a switch over their own coach's mechanism. Nutrition is deliberately the opposite —
- * see AutoNutritionToggle. */
+ * **A prescribed client still gets no switch.** Their block belongs to their coach, and for them the app
+ * proposes while the coach reviews. That is the difference between the two roles, not something a switch
+ * should be able to erase.
+ *
+ * On means *applied*, not *suggested*. Jack: "I want the algorithm progressing reps, load etc, every week,
+ * automatically… the last time you train that body part each week you have all the information you need to
+ * do the programming for the following week." The coach still gets a record of what was written. */
 export function ProgressionToggle() {
   const { state, dispatch } = useStore();
   const { account, previewingAsClient } = useAuth();
-  const coachTrainingThemselves = account?.role === "coach" && previewingAsClient;
-  if (!coachTrainingThemselves) return null;
+  // The same predicate ClientLayout uses to decide whether to apply or only propose — see selfDirected.ts.
+  // A switch that renders on a different rule from the behaviour it controls is worse than no switch.
+  if (!ownsTheirProgressions(account, previewingAsClient)) return null;
 
   // Absent means on — see ClientProfile.autoProgressions for why this is never a falsy check.
   const on = state.profile.autoProgressions !== false;
@@ -59,7 +65,7 @@ export function ProgressionToggle() {
       title="Auto training programming"
       hint={
         on
-          ? "On — finishing a session works out next week's sets, reps and load for you to approve. Nothing changes your program on its own."
+          ? "On — finishing a session works out next week's sets, reps and load and writes them into your program. You can still change any of it."
           : "Off — finishing a session works nothing out for next week."
       }
       onToggle={() => {
@@ -67,7 +73,7 @@ export function ProgressionToggle() {
         dispatch({
           type: "SHOW_TOAST",
           message: !on
-            ? "Auto training programming on — next week's numbers come to you after each session."
+            ? "Auto training programming on — next week is set after each session."
             : "Auto training programming off — nothing will be worked out for next week.",
         });
         setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 2800);

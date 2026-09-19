@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import {
   proposeNextWeek, targetEffortFor, proposalsForDay, progressionDueDay, progressionRecipient,
   encodeProgression, decodeProgression, formatSets, parseSets, applyProgressionToProgram,
-  proposedSets, readProgression, plainWhy, type ProposalInput,
+  proposedSets, readProgression, plainWhy, autoReviewedPayload, wasAutoApplied, type ProposalInput,
 } from "../src/shared/progressionProposal.ts";
 
 const base: ProposalInput = {
@@ -231,6 +231,41 @@ test("a batch approval reports which proposals actually landed, not just how man
   ]) as never, (_, p) => proposedSets(p));
   assert.deepEqual(res.written, [1, 2]);
   assert.equal(res.touched, res.written.length, "the count stays the length of the list");
+});
+
+test("auto programming records every proposal as the app's own verdict, and only claims what landed", () => {
+  // The self-directed path writes next week itself and nobody reviews it. The signal still goes to the
+  // desk, so it has to say plainly which numbers went in -- a proposal skipped because next week's session
+  // was already started must not read as done.
+  const result = {
+    dayId: "w1", week: 1, totalWeeks: 2,
+    proposals: [
+      proposal({ exercise: "Not In Next Week", nextSets: [{ reps: 8, load: 140 }] }),
+      proposal({ nextSets: [{ reps: 8, load: 140 }] }),
+    ],
+  };
+  const payload = autoReviewedPayload(result as never, [1], "2026-09-19T12:00:00Z");
+  assert.equal(payload.reviews!["0"].verdict, "auto");
+  assert.equal(payload.reviews!["0"].applied, false, "it was skipped, so it is not claimed");
+  assert.equal(payload.reviews!["1"].applied, true);
+  assert.equal(payload.completedAt, "2026-09-19T12:00:00Z", "nothing is left waiting on a person");
+  assert.ok(wasAutoApplied(payload));
+});
+
+test("a session a person touched is never mistaken for one the app programmed", () => {
+  const base = { v: 1 as const, week: 1, totalWeeks: 2, proposals: [proposal({}), proposal({})] };
+  const at = "2026-09-19T12:00:00Z";
+  const auto = { verdict: "auto" as const, sets: [], at, applied: true };
+  assert.equal(wasAutoApplied(base as never), false, "nothing reviewed at all is not auto-applied");
+  assert.equal(
+    wasAutoApplied({ ...base, reviews: { "0": auto } } as never), false,
+    "half-done is not auto-applied either",
+  );
+  assert.equal(
+    wasAutoApplied({ ...base, reviews: { "0": auto, "1": { ...auto, verdict: "edited", note: "too heavy" } } } as never),
+    false,
+    "one human edit makes the whole session a reviewed one",
+  );
 });
 
 test("an approved deload removes the sets it drops, and text-only proposals still apply", () => {

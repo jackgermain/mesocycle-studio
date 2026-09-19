@@ -7159,3 +7159,40 @@ the dose of the session before it, while the proposal it feeds is written one we
 asking beforehand: today's damage cannot be known today.
 
 ---
+
+**G143 — A self-directed account is programmed automatically. Auto programming applies, it does not suggest.**
+
+> *"I want the algorithm progressing reps, load etc… every week… automatically. The last time you train that
+> body part each week you have all the information you need to do the programming for the following week in
+> terms of progressions, so that's what I want to happen. This is default for what is happening when you
+> enable the auto programming button in the train tab, which is actually gone for some reason. It should be
+> there."*
+
+Two rulings in one.
+
+**1. The switch belongs to anyone who directs their own training.** It had been gated to a coach training
+themselves, reading an earlier line — *"for general accounts they do not approve the loads, I do"* — as
+meaning a General account should have no switch at all. Consequence: the switch was invisible on the account
+Jack actually trains on, so the feature he had asked for looked deleted. **Approving someone else's loads is
+a different question from having the app do the arithmetic.** A General account directs its own training, and
+its nutrition switch has always worked exactly this way.
+
+**A prescribed client still gets no switch, and is still proposed-to rather than programmed.** Their block
+belongs to their coach. That is the whole difference between the roles and no switch may erase it.
+
+**2. On means applied, not suggested.** Finishing a session writes next week's sets, reps and load straight
+into the program. Nothing waits on a person. The reasoning is his: by the last time you train a body part in
+a week, the information needed to program the following week is complete, so there is nothing a review adds
+except delay.
+
+**The coach still receives the record.** Not as a request to approve — the numbers are already in — but so
+that a coach can see what their General account's block now says, and so a coach training themselves keeps a
+written history of every week's decision next to the numbers it was made from. On the desk it reads
+"Programmed" rather than the red "Progression", and the verdict stored against each exercise is `auto`, which
+is deliberately a third value and not `approved`: one means a person said yes, the other means nobody looked.
+
+**STILL TO RULE ON:** whether "the last time you train that body part each week" also means next week's
+*whole* allocation for that muscle should be set from that final session — today each slot progresses from
+its own occurrence a week earlier, so Monday's chest is set by last Monday's chest, not by Friday's.
+
+---

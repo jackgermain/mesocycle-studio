@@ -6,7 +6,7 @@ import { BUILD_ID, BUILT_AT } from "../../shared/build";
 import { ago } from "../../shared/ago";
 import { acknowledgeSignal, isJointUrgent, isSorenessAlerting, listRecentSignals, recurrenceCount, type ClientSignal } from "../../shared/signals";
 import { noteSignalCleared, refreshOpenSignalCount, setWeighInGapCount } from "../../shared/openSignals";
-import { readProgression } from "../../shared/progressionProposal";
+import { readProgression, wasAutoApplied } from "../../shared/progressionProposal";
 import { sorenessWording } from "../../data/mockData";
 import { loadWeighInGaps, applyWeighInDismissals, weighInKeys, type ClientWeighInGap } from "../weighInWatch";
 import { loadComplianceGaps, totalComplianceItems, applyDismissals, complianceKeys, type ClientComplianceGap } from "../complianceWatch";
@@ -101,8 +101,13 @@ export default function Desk() {
     // second-to-last set the client was told to hold their last set, so the exercise is already handled
     // for today and this is a note for next week's numbers.
     if (s.kind === "progression") {
-      const n = readProgression(s)?.proposals.length ?? s.severity;
-      return `Next week's numbers ready — ${n} exercise${n === 1 ? "" : "s"}`;
+      const payload = readProgression(s);
+      const n = payload?.proposals.length ?? s.severity;
+      const exercises = `${n} exercise${n === 1 ? "" : "s"}`;
+      // Auto programming wrote these itself. Saying "ready" would ask for a decision that has already been
+      // made, and send a coach to a screen where every row is already done.
+      if (payload && wasAutoApplied(payload)) return `Next week programmed automatically — ${exercises}`;
+      return `Next week's numbers ready — ${exercises}`;
     }
     if (s.kind === "nutrition") {
       // Two shapes share this kind. "missed" means nothing was logged at all, so there is no number to
@@ -422,6 +427,9 @@ export default function Desk() {
                   (s.kind === "nutrition" && s.detail === "missed");
                 // Every finished session sends one of these, so "recurring" would be true of all of them.
                 const times = s.kind === "progression" ? 0 : recurrenceCount(allSignals, s);
+                // Written by the app already, so it is history rather than a decision waiting on anyone.
+                // Red is reserved for numbers that will not move until the coach looks at them.
+                const autoApplied = s.kind === "progression" && !!readProgression(s) && wasAutoApplied(readProgression(s)!);
                 return (
                   <div key={s.id} className="cell elev-sm" style={urgent ? { borderLeft: "2px solid var(--color-accent)" } : undefined}>
                     <div className="row">
@@ -438,8 +446,8 @@ export default function Desk() {
                       </div>
                       <div style={{ flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                         {/* Red, so next week's numbers waiting on a decision stand out from reports that are only read. */}
-                        <span className={`tag ${s.kind === "progression" ? "tag-danger" : urgent ? "tag-accent" : "tag-neutral"}`}>
-                          {s.kind === "progression" ? "Progression" : s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : s.kind === "nutrition" ? (s.detail === "missed" ? "No meals" : "Nutrition") : "Pump"}
+                        <span className={`tag ${s.kind === "progression" ? (autoApplied ? "tag-neutral" : "tag-danger") : urgent ? "tag-accent" : "tag-neutral"}`}>
+                          {s.kind === "progression" ? (autoApplied ? "Programmed" : "Progression") : s.kind === "joint" ? "Joint" : s.kind === "soreness" ? "Soreness" : s.kind === "effort" ? "Failure" : s.kind === "nutrition" ? (s.detail === "missed" ? "No meals" : "Nutrition") : "Pump"}
                         </span>
                         {times > 1 && (
                           <span className="tag tag-accent" title={`Reported ${times} times in the last 90 days`}>
@@ -450,7 +458,7 @@ export default function Desk() {
                     </div>
                     <div className="row" style={{ gap: 8, marginTop: 9 }}>
                       <button className="btn btn-solid" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => (s.kind === "progression" ? nav(`/coach/review/${s.id}`) : setActingOn(s))}>
-                        {s.kind === "progression" ? "Review" : "Attention"}
+                        {s.kind === "progression" ? (autoApplied ? "See what changed" : "Review") : "Attention"}
                       </button>
                       <button className="btn btn-secondary" style={{ flex: 1, height: 36, fontSize: 12.5 }} onClick={() => clearSignal(s.id)}>
                         Ignore

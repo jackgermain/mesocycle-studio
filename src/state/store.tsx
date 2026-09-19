@@ -88,6 +88,7 @@ type Action =
   | { type: "DROP_SET"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "SET_FEEDBACK_DONE"; dayId: string }
   | { type: "MARK_PROGRESSION_SENT"; dayId: string }
+  | { type: "AUTO_PROGRESS"; dayId: string; program: Program }
   | { type: "SET_SORENESS_DONE"; dayId: string; answers?: TrainingDay["sorenessAnswers"] }
   | { type: "ADD_FOOD_ITEM"; mealId: string; item: LoggedFoodItem }
   | { type: "REMOVE_FOOD_ITEM"; mealId: string; itemId: string }
@@ -366,6 +367,22 @@ function reducer(state: AppState, action: Action): AppState {
     }
     case "MARK_PROGRESSION_SENT": {
       const program = structuredClone(state.program);
+      for (const week of program.weeks) {
+        const day = week.days.find((d) => d.id === action.dayId);
+        if (day) day.progressionSentAt = new Date().toISOString();
+      }
+      return { ...state, program };
+    }
+    /* Auto programming: next week's numbers written straight into the program, for an account that owns its
+     * own progressions. Jack: "I want the algorithm progressing reps, load etc, every week, automatically."
+     *
+     * The caller has already run applyProgressionToProgram and hands the finished program in, because it
+     * also needs to know WHICH proposals landed to record that in the signal. What must not be split is the
+     * sent mark: as two dispatches, the second is built from a `state.program` captured before the first and
+     * silently throws the mark away -- so the same session would be re-applied on the next render, and the
+     * next, compounding a load jump every time the effect ran. */
+    case "AUTO_PROGRESS": {
+      const program = structuredClone(action.program);
       for (const week of program.weeks) {
         const day = week.days.find((d) => d.id === action.dayId);
         if (day) day.progressionSentAt = new Date().toISOString();
