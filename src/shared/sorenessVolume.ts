@@ -23,7 +23,7 @@
  * known today. Both sessions are the same muscle in the same week of the same block, so the dose it
  * corrects is the same dose within a set or two.
  */
-import type { Program, TrainingDay } from "../data/types";
+import type { Program, TrainingDay, WorkSet } from "../data/types";
 import {
   judgeFromSoreness,
   judgeVolume,
@@ -82,7 +82,7 @@ export function sorenessReadings(program: Program, uptoDayId: string): Map<strin
   return out;
 }
 
-/** What each muscle's volume should do next week, for the session that was just finished.
+/** What each muscle's volume should do, judged from the check answered on this day.
  *
  * Only muscles whose newest reading belongs to this session appear — see the header. Muscles the rule has
  * nothing to say about are left out entirely rather than mapped to a no-op, so a caller iterating the map
@@ -96,4 +96,147 @@ export function volumeActionsForDay(program: Program, dayId: string): Map<string
     out.set(muscle, action);
   }
   return out;
+}
+
+/** What one recovery verdict changed, for the client's toast and the coach's desk. */
+export interface RecoveryEdit {
+  muscle: string;
+  /** The session whose dose the verdict was about — the one that gets changed. */
+  causedBy: string;
+  causedByLabel: string;
+  /** The session actually rewritten: next week's occurrence of `causedBy`. */
+  target: string;
+  sets: number;
+  /** The accessory the set moved on. Null when the muscle has no accessory in that session, in which case
+   * only the weight holds. */
+  exercise: string | null;
+  swap: boolean;
+  reason: string;
+}
+
+/** One edit in a sentence, for the toast the client sees and the note the coach reads. Names the session
+ * that changed, because it is deliberately NOT the one they are standing in. */
+export function describeRecoveryEdit(e: RecoveryEdit): string {
+  const where = `next ${e.causedByLabel}`;
+  if (e.sets < 0) return `${e.muscle} still sore — a set comes off ${e.exercise} on ${where}, weight unchanged.`;
+  if (e.sets > 0) return `${e.muscle} recovered early — a set goes on ${e.exercise} on ${where}.`;
+  return `${e.muscle} still sore — ${where} holds its weight; every ${e.muscle} movement there is a major lift, so no set comes off.`;
+}
+
+function shift(iso: string, days: number): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}
+
+function trains(day: TrainingDay, muscle: string): boolean {
+  return Object.values(day.exercises).some((e) => e.muscle === muscle);
+}
+
+/** Working sets — what a set count means everywhere else in the app. */
+function working(ex: { sets: WorkSet[] }): WorkSet[] {
+  return ex.sets.filter((s) => !s.isWarmup && !s.removed);
+}
+
+/** Applies a soreness check's verdicts to next week, on the session that CAUSED the soreness.
+ *
+ * > *"Then your Monday session volume would be reduced, because the Monday session is the reason that
+ * > you're there on Friday getting ready to train and you're still sore."*
+ *
+ * This is why the adjustment cannot live inside the proposal for the day the question was answered on.
+ * Train chest Monday and Friday, answer "still sore" on Friday, and the session that did too much was
+ * Monday's — so next **Monday** comes down, not next Friday. The reading only exists on Friday, by which
+ * time next Monday has already been programmed, so this amends it rather than producing it.
+ *
+ * Amending is safe: `applyProgressionToProgram` and this both refuse a session anyone has started, and next
+ * week's sessions have not been trained yet by definition.
+ *
+ * Two things change together, per G142 and G144:
+ * - every exercise for that muscle goes back to the weights and reps actually performed in the causing
+ *   session, because *"keep the load the same when a muscle is still sore"* is about the muscle;
+ * - one set moves on its last **accessory**, never on a major lift — and where it has no accessory, no set
+ *   moves at all and only the hold applies.
+ */
+export function applyRecoveryToNextWeek(
+  program: Program,
+  answeredOn: string,
+  isMajor: (name: string) => boolean,
+  labelOf: (day: TrainingDay) => string,
+): { program: Program; edits: RecoveryEdit[] } {
+  const actions = volumeActionsForDay(program, answeredOn);
+  if (actions.size === 0) return { program, edits: [] };
+
+  const next = structuredClone(program);
+  const days = next.weeks.flatMap((w, wi) => w.days.map((d, di) => ({ d, wi, di })));
+  const here = days.find((x) => x.d.id === answeredOn);
+  if (!here) return { program, edits: [] };
+  const answers = here.d.sorenessAnswers ?? {};
+
+  const edits: RecoveryEdit[] = [];
+  for (const [muscle, action] of actions) {
+    const gap = answers[muscle]?.lastTrainedDaysAgo;
+    if (gap === undefined) continue;
+
+    // The session that did the damage: `gap` days back, and it must actually train this muscle. Falling
+    // back to the latest earlier day that trains it covers a date that has shifted since the answer.
+    const wanted = shift(here.d.date, -gap);
+    const candidates = days.filter((x) => x.d.date < here.d.date && trains(x.d, muscle));
+    const cause = candidates.find((x) => x.d.date === wanted)
+      ?? [...candidates].sort((a, b) => (a.d.date < b.d.date ? 1 : -1))[0];
+    if (!cause) continue;
+
+    const following = next.weeks[cause.wi + 1];
+    if (!following) continue;
+    const target = following.days.find((d) => d.code === cause.d.code) ?? following.days[cause.di];
+    if (!target) continue;
+    // Never rewrite a session someone has already started training.
+    if (Object.values(target.exercises).some((e) => e.sets.some((s) => s.checked))) continue;
+
+    const order = target.order.length ? target.order : Object.keys(target.exercises);
+    const slots = order.map((id) => target.exercises[id]).filter((e) => e && !e.timed && e.muscle === muscle);
+    if (slots.length === 0) continue;
+
+    // The hold: back to what was actually performed in the causing session, exercise by exercise.
+    for (const ex of slots) {
+      const was = Object.values(cause.d.exercises).find((e) => e.name === ex.name);
+      if (!was) continue;
+      const performed = working(was).filter((s) => s.checked && s.actual);
+      working(ex).forEach((s, i) => {
+        const p = performed[i] ?? performed[performed.length - 1];
+        if (!p?.actual) return;
+        s.prescribed = { ...s.prescribed, reps: p.actual.reps, load: p.actual.load || s.prescribed.load };
+      });
+    }
+
+    // The set: on the last accessory, never a major lift.
+    const accessories = slots.filter((e) => !isMajor(e.name));
+    const move = accessories[accessories.length - 1] ?? null;
+    if (move && action.sets !== 0) {
+      const sets = working(move);
+      if (action.sets < 0 && sets.length > 1) {
+        sets[sets.length - 1].removed = { reason: `Still sore — volume pulled back on ${muscle}` };
+      } else if (action.sets > 0) {
+        const last = sets[sets.length - 1];
+        const copy = structuredClone(last);
+        copy.id = `${last.id}-recovery`;
+        copy.checked = false;
+        copy.actual = null;
+        delete copy.effort;
+        delete copy.removed;
+        move.sets.push(copy);
+      }
+    }
+
+    edits.push({
+      muscle,
+      causedBy: cause.d.id,
+      causedByLabel: labelOf(cause.d),
+      target: target.id,
+      sets: move ? action.sets : 0,
+      exercise: move?.name ?? null,
+      swap: action.swap,
+      reason: action.reason,
+    });
+  }
+
+  return edits.length ? { program: next, edits } : { program, edits: [] };
 }

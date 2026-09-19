@@ -9,13 +9,16 @@ import { useAuth } from "../lib/auth";
 import { sendSignals } from "../shared/signals";
 import { buildSorenessSignals } from "../shared/sorenessSignals";
 import { signalRecipient } from "../shared/signalRecipient";
+import { applyRecoveryToNextWeek, describeRecoveryEdit } from "../shared/sorenessVolume";
+import { isMajorLift } from "../shared/majorLift";
+import { ownsTheirProgressions } from "../shared/selfDirected";
 import { coachOnTheOtherEnd } from "../shared/coachName";
 import { judgeVolume, targetRecoveryDay } from "../generator/recoveryWindow";
 import { muscleColorVar } from "../shared/muscleColor";
 
 export default function Soreness({ dayId, due }: { dayId: string; due: { muscle: string; lastTrainedDaysAgo: number }[] }) {
   const { state, dispatch } = useStore();
-  const { account } = useAuth();
+  const { account, previewingAsClient } = useAuth();
   const nav = useNavigate();
   const found = findDay(state.program, dayId);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -37,7 +40,25 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
         ...(recovered[m.muscle] !== undefined ? { recoveredOnDay: recovered[m.muscle] } : {}),
       };
     }
-    dispatch({ type: "SET_SORENESS_DONE", dayId, answers: record });
+    /* `adjustVolume` is the auto-programming switch reaching the recovery rule. When it is on, the answers
+     * change next week's volume on the session that CAUSED the soreness -- Jack: "your Monday session
+     * volume would be reduced, because the Monday session is the reason that you're there on Friday getting
+     * ready to train and you're still sore." A prescribed client's block is their coach's, so for them the
+     * answers still only travel as a signal. */
+    const programsThemselves = ownsTheirProgressions(account, previewingAsClient) && state.profile.autoProgressions !== false;
+    dispatch({ type: "SET_SORENESS_DONE", dayId, answers: record, adjustVolume: programsThemselves });
+    // Re-run against a copy carrying the answers, only to SAY what changed. The reducer does the real write
+    // on its own state; the rule is pure, so both runs reach the same answer.
+    const withAnswers: typeof state.program = {
+      ...state.program,
+      weeks: state.program.weeks.map((w) => ({
+        ...w,
+        days: w.days.map((d) => (d.id === dayId ? { ...d, sorenessAnswers: record } : d)),
+      })),
+    };
+    const edits = programsThemselves
+      ? applyRecoveryToNextWeek(withAnswers, dayId, isMajorLift, dayDisplayTitle).edits
+      : [];
 
     /* EVERY answer is sent, one signal per muscle — not only the alarming ones.
      *
@@ -50,7 +71,12 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
      * carries the gap and, when asked, the recovery day — so the desk can say which of still sore / early /
      * on time / partly recovered this was instead of inferring it from the number alone. */
     const dayLabel = found ? dayDisplayTitle(found.day) : null;
-    const signals = buildSorenessSignals(due, answers, recovered, dayLabel);
+    // The edit goes on the muscle's own signal, so the desk shows the answer and what it changed together
+    // rather than leaving a coach to work out which session moved.
+    const signals = buildSorenessSignals(due, answers, recovered, dayLabel).map((s) => {
+      const e = edits.find((x) => x.muscle === s.muscle);
+      return e ? { ...s, note: `${s.note} — ${describeRecoveryEdit(e)}` } : s;
+    });
     // Not `account.coach_id`: a coach training themselves has none, and every answer they gave was dropped
     // before it left the phone. Migration 0033 lets them address it to their own desk.
     const to = account ? signalRecipient(account) : null;
@@ -59,13 +85,18 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
     // The old toast promised "those sets hold at last week's number". Nothing held anything: nothing in the
     // app read these answers. It now says only what is true.
     const coach = coachOnTheOtherEnd(account?.coach_id, state.program.coachName);
+    // When something actually moved, say that instead. It is the only visible proof the answers do anything,
+    // and for a long time they did not.
+    const cut = edits.find((e) => e.sets < 0) ?? edits.find((e) => e.sets > 0) ?? edits[0];
     dispatch({
       type: "SHOW_TOAST",
-      message: coach
-        ? `Noted — ${coach} has your answers.`
-        : to
-          ? "Noted — your answers are on your desk."
-          : "Noted — saved against this session.",
+      message: cut
+        ? describeRecoveryEdit(cut)
+        : coach
+          ? `Noted — ${coach} has your answers.`
+          : to
+            ? "Noted — your answers are on your desk."
+            : "Noted — saved against this session.",
     });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3200);
     nav(`/block/day/${dayId}`, { replace: true });

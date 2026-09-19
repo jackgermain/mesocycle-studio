@@ -8,8 +8,11 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { sorenessReadings, verdictForAnswer, volumeActionsForDay } from "../src/shared/sorenessVolume.ts";
-import { proposalsForDay } from "../src/shared/progressionProposal.ts";
+import {
+  applyRecoveryToNextWeek, describeRecoveryEdit, sorenessReadings, verdictForAnswer, volumeActionsForDay,
+} from "../src/shared/sorenessVolume.ts";
+import { isMajorLift } from "../src/shared/majorLift.ts";
+import { sorenessWording } from "../src/data/mockData.ts";
 
 type Answers = Record<string, { severity: number; lastTrainedDaysAgo: number; recoveredOnDay?: number }>;
 
@@ -96,119 +99,137 @@ test("a reading is only spent by the session it was taken at", () => {
   assert.equal(volumeActionsForDay(p, "d2").get("Quads"), undefined, "d2 asked nothing, so it changes nothing");
 });
 
-// --- the wire ----------------------------------------------------------------------------------------
+// --- the wire: the cut lands on the session that CAUSED the soreness -----------------------------------
 
-test("still sore takes one set off the muscle, not one off every exercise", () => {
-  const p = program(day("d1", "2026-09-10", sore(2)));
-  const squat = named(p, "d1", "Barbell Squat");
-  const ext = named(p, "d1", "Leg Extension");
-  assert.equal(ext.nextSets!.length, 2, "three sets became two");
-  assert.ok(ext.label.includes("−1 set"), ext.label);
-  assert.match(ext.why, /Still sore at the next session/);
-  assert.equal(squat.nextSets!.length, 3, "only one set comes off the muscle, not one per exercise");
+/** Monday: heavy squat plus a leg extension. Friday: a different quad session. */
+const monday = (id: string, date: string, soreness?: Answers) => ({
+  ...day(id, date, soreness), code: "L1", dow: "Mon",
 });
+const friday = (id: string, date: string, soreness?: Answers) => {
+  const d: any = day(id, date, soreness);
+  d.code = "L2";
+  d.dow = "Fri";
+  d.exercises.e1.name = "Bulgarian Split Squat";
+  d.exercises.e2.name = "Leg Curl";
+  d.exercises.e2.muscle = "Quads";
+  return d;
+};
+/** Next week's sessions have not been trained: nothing ticked, nothing logged. The rule refuses to rewrite
+ * a session anyone has started, so a fixture that leaves them checked silently tests nothing. */
+const upcoming = (d: any) => {
+  const copy = structuredClone(d);
+  for (const ex of Object.values<any>(copy.exercises)) {
+    for (const s of ex.sets) {
+      s.checked = false;
+      s.actual = null;
+      delete s.effort;
+    }
+  }
+  copy.status = "visible";
+  delete copy.feedbackDone;
+  return copy;
+};
 
-test("a still-sore muscle repeats last week's weight, whatever the load rule wanted", () => {
-  // Jack: "keep the load the same when a muscle is still sore." An easy top set would normally add weight;
-  // a muscle that arrived unhealed is not a muscle to put more weight on, so recovery overrules it.
-  const easy = day("d1", "2026-09-10", sore(2));
-  easy.exercises.e2.sets[2].effort = 2; // rated 2 -- G62 would move every set up a step
+const twoWeeks = (w1: any[], w2: any[]) => ({
+  name: "P", totalWeeks: 6, coachName: "",
+  weeks: [
+    { number: 2, phase: "accumulation", days: w1 },
+    { number: 3, phase: "accumulation", days: w2.map(upcoming) },
+  ],
+}) as never;
 
-  const alone = { ...easy, sorenessAnswers: undefined } as unknown as ReturnType<typeof day>;
-  const unchecked = named(program(alone), "d1", "Leg Extension");
-  assert.equal(unchecked.move, "load", "without the soreness reading this exercise adds weight");
-  assert.ok(unchecked.nextSets!.every((s) => s.load! > 90), unchecked.next);
+const setsOf = (p: any, dayId: string, name: string) => {
+  const d = p.weeks.flatMap((w: any) => w.days).find((x: any) => x.id === dayId);
+  const ex = Object.values(d.exercises).find((e: any) => e.name === name) as any;
+  return ex.sets.filter((s: any) => !s.isWarmup && !s.removed);
+};
 
-  const ext = named(program(easy), "d1", "Leg Extension");
-  assert.equal(ext.move, "hold");
-  assert.ok(ext.nextSets!.every((s) => s.load === 90), `last week's weight, got ${ext.next}`);
-  assert.deepEqual(ext.nextSets!.map((s) => s.reps), [10, 10], "and last week's reps");
-  assert.match(ext.why, /The weight holds where it is/);
-});
-
-test("one early reading holds; two running add a set", () => {
-  const once = program(day("d1", "2026-09-10", healedOn(1)));
-  assert.equal(named(once, "d1", "Leg Extension").nextSets!.length, 3, "one reading is noise");
-
-  const twice = program(day("d0", "2026-09-06", healedOn(1)), day("d1", "2026-09-10", healedOn(1)));
-  const ext = named(twice, "d1", "Leg Extension");
-  assert.equal(ext.nextSets!.length, 4);
-  assert.ok(ext.label.includes("+1 set"), ext.label);
-  assert.match(ext.why, /Add a set/);
-});
-
-test("three unhealed in a row asks for a different movement, in the heaviest slot", () => {
-  const p = program(
-    day("d0", "2026-09-03", sore(2)),
-    day("d1", "2026-09-07", sore(2)),
-    day("d2", "2026-09-10", sore(1)),
+test("still sore on Friday takes the set off next MONDAY, the session that caused it", () => {
+  // Jack: "your Monday session volume would be reduced, because the Monday session is the reason that
+  // you're there on Friday getting ready to train and you're still sore."
+  const p = twoWeeks(
+    [monday("mon", "2026-09-14"), friday("fri", "2026-09-18", sore(2, 4))],
+    [monday("mon2", "2026-09-21"), friday("fri2", "2026-09-25")],
   );
-  const squat = named(p, "d2", "Barbell Squat");
-  const ext = named(p, "d2", "Leg Extension");
-  assert.match(squat.why, /different loading profile/, "the tendon complaint is about the heavy slot");
-  assert.equal(squat.nextSets!.length, 3, "the swap note changes no numbers");
-  assert.equal(ext.nextSets!.length, 2, "and a set still comes off the last slot");
-  assert.ok(!/different loading profile/.test(ext.why), "the recommendation is not repeated on both");
+  const { program, edits } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+
+  assert.equal(edits.length, 1);
+  assert.equal(edits[0].causedBy, "mon", "Monday did the damage");
+  assert.equal(edits[0].target, "mon2", "so next Monday is what changes");
+  assert.equal(edits[0].exercise, "Leg Extension", "and it comes off the accessory, not the squat");
+
+  assert.equal(setsOf(program, "mon2", "Leg Extension").length, 2, "three became two");
+  assert.equal(setsOf(program, "mon2", "Barbell Squat").length, 3, "the major lift keeps its sets");
+  assert.equal(setsOf(program, "fri2", "Leg Curl").length, 3, "next Friday is untouched");
 });
 
-test("recovery on target leaves the volume exactly where it is", () => {
-  const p = program(day("d1", "2026-09-10", healedOn(3)));
-  assert.equal(named(p, "d1", "Leg Extension").nextSets!.length, 3);
-  assert.ok(!/Soreness:/.test(named(p, "d1", "Leg Extension").why));
+test("the whole muscle goes back to the weights it actually lifted in that session", () => {
+  const p: any = twoWeeks(
+    [monday("mon", "2026-09-14"), friday("fri", "2026-09-18", sore(1, 4))],
+    [monday("mon2", "2026-09-21"), friday("fri2", "2026-09-25")],
+  );
+  // Next Monday had already been programmed upward before Friday's answer existed.
+  for (const name of ["Barbell Squat", "Leg Extension"]) {
+    for (const s of setsOf(p, "mon2", name)) s.prescribed.load = 999;
+  }
+  const { program } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+  assert.ok(setsOf(program, "mon2", "Barbell Squat").every((s: any) => s.prescribed.load === 225), "squat back to 225");
+  assert.ok(setsOf(program, "mon2", "Leg Extension").every((s: any) => s.prescribed.load === 90), "extension back to 90");
 });
 
-test("a deload week is never cut further, and a finished block is never touched", () => {
-  // C7a only schedules a deload at five or more sessions a week, so the week has to really hold five.
-  const filler = ["2026-09-06", "2026-09-07", "2026-09-08", "2026-09-09"].map((d, i) => day(`f${i}`, d));
-  const deload = {
-    name: "P", totalWeeks: 5, coachName: "",
-    weeks: [{ number: 4, phase: "accumulation", days: [...filler, day("d1", "2026-09-10", sore(2))] }],
-  } as never;
-  // Week 4 of 5: next week is the deload, which has already halved the sets.
-  const d = proposalsForDay(deload, "d1", "lb")!.proposals.find((x) => x.exercise === "Leg Extension")!;
-  assert.equal(d.move, "deload");
-  assert.equal(d.nextSets!.length, 2, "C7a's half, not half minus one");
-
-  const finished = {
-    name: "P", totalWeeks: 2, coachName: "",
-    weeks: [{ number: 2, phase: "accumulation", days: [day("d1", "2026-09-10", sore(2))] }],
-  } as never;
-  const f = proposalsForDay(finished, "d1", "lb")!.proposals.find((x) => x.exercise === "Leg Extension")!;
-  assert.equal(f.move, "finished");
-  assert.equal(f.nextSets!.length, 3, "nothing is written past the end of a block");
+test("a session already started is never rewritten", () => {
+  const p: any = twoWeeks(
+    [monday("mon", "2026-09-14"), friday("fri", "2026-09-18", sore(2, 4))],
+    [monday("mon2", "2026-09-21"), friday("fri2", "2026-09-25")],
+  );
+  setsOf(p, "mon2", "Barbell Squat")[0].checked = true;
+  const { program, edits } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+  assert.equal(edits.length, 0);
+  assert.equal(program, p, "the same program comes back, untouched");
 });
 
-test("a set never comes off a major lift, even when it is the only place left", () => {
-  // Jack: "I wouldn't take a set away from a major exercise. No matter what. I would take it away from one
-  // of the smaller accessories." Both slots here are squats, so nothing is dropped -- but the weight still
-  // holds, which on its own is a real reduction in what the session asks for.
-  const compoundsOnly = day("d1", "2026-09-10", sore(2));
-  compoundsOnly.exercises.e2.name = "Hack Squat Machine";
-  const p = program(compoundsOnly);
-  for (const name of ["Barbell Squat", "Hack Squat Machine"]) {
-    const ex = named(p, "d1", name);
-    assert.equal(ex.nextSets!.length, 3, `${name} keeps its sets`);
-    assert.equal(ex.move, "hold");
-    assert.match(ex.why, /Every Quads movement here is a major lift/);
+test("recovering early adds the set to an accessory, never to the heavy lift", () => {
+  // Jack: "you're already milking out as much stimulus as you can early on in the session from those
+  // heavier lifts. That's why they're there in the first place, as priorities."
+  const p = twoWeeks(
+    [monday("mon", "2026-09-10", healedOn(1, 4)), friday("fri", "2026-09-14", healedOn(1, 4))],
+    [monday("mon2", "2026-09-17"), friday("fri2", "2026-09-21")],
+  );
+  const { program, edits } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+  assert.equal(edits[0]?.sets, 1);
+  assert.equal(edits[0].exercise, "Leg Extension");
+  assert.equal(setsOf(program, "mon2", "Leg Extension").length, 4);
+  assert.equal(setsOf(program, "mon2", "Barbell Squat").length, 3, "the squat is not where volume is added");
+});
+
+test("only 'Very sore' and 'Sore' pull volume back — slightly sore is left alone", () => {
+  // Jack: "sometimes you're a little bit more sore in the first week of a block... maybe 90%, 95% healed on
+  // a day, which isn't too big of a deal. So that's why I would only pull volume back if somebody submits
+  // still sore."
+  for (const [severity, expected] of [[1, 1], [2, 1], [3, 0], [4, 0]] as const) {
+    const p = twoWeeks(
+      [monday("mon", "2026-09-14"), friday("fri", "2026-09-18", sore(severity, 4))],
+      [monday("mon2", "2026-09-21"), friday("fri2", "2026-09-25")],
+    );
+    const { edits } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+    assert.equal(edits.length, expected, `severity ${severity} (${sorenessWording[severity - 1]})`);
   }
 });
 
-test("the cut skips past a major lift to reach the accessory behind it", () => {
-  // The old rule was "the muscle's last slot", which here would have taken a set off the leg press.
-  const withPress = day("d1", "2026-09-10", sore(2));
-  withPress.order = ["e1", "e2", "e3"];
-  withPress.exercises.e3 = { ...withPress.exercises.e1, id: "e3", name: "Leg Press — 45°" };
-  const p = program(withPress);
-  assert.equal(named(p, "d1", "Leg Press — 45°").nextSets!.length, 3, "the last slot is a major lift");
-  assert.equal(named(p, "d1", "Leg Extension").nextSets!.length, 2, "so the set comes off the accessory");
-  assert.match(named(p, "d1", "Leg Press — 45°").why, /set comes off Leg Extension/);
-});
-
-test("a muscle already down to one set still holds the weight, and says why", () => {
-  const one = day("d1", "2026-09-10", sore(2));
-  one.exercises.e2.sets = [{ ...one.exercises.e2.sets[2], effort: 2 }];
-  const ext = named(program(one), "d1", "Leg Extension");
-  assert.equal(ext.nextSets!.length, 1);
-  assert.equal(ext.nextSets![0].load, 90, "no set to take off, but the weight still does not move");
-  assert.match(ext.why, /Already down to one set/);
+test("a muscle whose every slot is a major lift holds its weight and keeps its sets", () => {
+  const p: any = twoWeeks(
+    [monday("mon", "2026-09-14"), friday("fri", "2026-09-18", sore(2, 4))],
+    [monday("mon2", "2026-09-21"), friday("fri2", "2026-09-25")],
+  );
+  for (const id of ["mon", "mon2"]) {
+    const d = p.weeks.flatMap((w: any) => w.days).find((x: any) => x.id === id);
+    d.exercises.e2.name = "Hack Squat Machine";
+  }
+  for (const s of setsOf(p, "mon2", "Hack Squat Machine")) s.prescribed.load = 999;
+  const { program, edits } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+  assert.equal(edits[0].exercise, null, "there is no accessory to take it off");
+  assert.equal(edits[0].sets, 0);
+  assert.equal(setsOf(program, "mon2", "Hack Squat Machine").length, 3, "no set is dropped");
+  assert.ok(setsOf(program, "mon2", "Hack Squat Machine").every((s: any) => s.prescribed.load === 90), "but the weight still holds");
+  assert.match(describeRecoveryEdit(edits[0]), /no set comes off/);
 });

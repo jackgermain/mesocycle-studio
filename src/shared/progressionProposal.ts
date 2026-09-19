@@ -19,9 +19,6 @@ import {
 } from "../generator/doubleProgression";
 import { bandForReps } from "../generator/repRanges";
 import { signalRecipient } from "./signalRecipient";
-import { volumeActionsForDay } from "./sorenessVolume";
-import { isMajorLift } from "./majorLift";
-import type { VolumeAction } from "../generator/recoveryWindow";
 import { equipmentOf } from "../screens/exerciseHelpers";
 
 export interface ProposalInput {
@@ -270,11 +267,6 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
   const sessionsPerWeek = Math.max(0, ...program.weeks.map((w) => w.days.length));
   const ids = day.order.length ? day.order : Object.keys(day.exercises);
   const proposals: Proposal[] = [];
-  // Both parallel to `proposals`. `muscles` is how a verdict finds the slots it applies to -- not a lookup
-  // by exercise name, since the same movement can legitimately appear twice in one session. `lastWeek` is
-  // what a still-sore muscle repeats, kept as numbers rather than re-parsed out of the formatted string.
-  const muscles: string[] = [];
-  const lastWeek: PerformedSet[][] = [];
   for (const id of ids) {
     const ex = day.exercises[id];
     if (!ex || ex.timed) continue;
@@ -300,52 +292,8 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
       sessionsPerWeek,
       units,
     }));
-    muscles.push(ex.muscle);
-    lastWeek.push(performed);
   }
 
-  // What the pre-session soreness check says about how much work each muscle should get next week. Only
-  // muscles whose newest reading came from this very session appear -- see sorenessVolume.ts for why that
-  // matters and how a reading is stopped from being spent twice.
-  for (const [muscle, action] of volumeActionsForDay(program, dayId)) {
-    const slots = muscles.flatMap((m, i) => (m === muscle ? [i] : []));
-    if (slots.length === 0) continue;
-
-    if (action.sets > 0) {
-      proposals[slots[slots.length - 1]] = withAddedSet(proposals[slots[slots.length - 1]], units, action.reason);
-      continue;
-    }
-    if (action.sets === 0) continue;
-
-    /* G144: a set never comes off a major lift. Jack: "I wouldn't take a set away from a major exercise.
-     * No matter what. I would take it away from one of the smaller accessories."
-     *
-     * `isMajorLift` is the generator's own classification plus the handful of real majors it misses -- see
-     * majorLift.ts, which was checked name by name against the whole library. Of the accessories, the LAST is the one -- the work done most fatigued, so the least
-     * productive set in the session. Where the muscle has no accessory at all, nothing is dropped; the
-     * weight still holds, which on its own is a real reduction in what the session asks for. */
-    const accessories = slots.filter((i) => !isMajorLift(proposals[i].exercise));
-    const cutFrom = accessories.length ? accessories[accessories.length - 1] : -1;
-    const cutName = cutFrom >= 0 ? proposals[cutFrom].exercise : null;
-
-    // When the swap rule has fired, volumeActionFor's own sentence covers the cut AND the swap. It goes on
-    // the swap slot below, so the cut slot takes a short one instead and neither repeats the other.
-    const cutReason = action.swap ? `${muscle} is still arriving unhealed, so a set comes off here.` : action.reason;
-
-    for (const i of slots) {
-      const note = i !== cutFrom
-        ? cutName
-          ? `${muscle} was still sore, so the weight holds. The set comes off ${cutName}.`
-          : `${muscle} was still sore, so the weight holds. Every ${muscle} movement here is a major lift and a set never comes off one, so none is dropped.`
-        : lastWeek[i].length <= 1
-          ? `${cutReason} Already down to one set here, so only the weight holds.`
-          : `${cutReason} The weight holds where it is.`;
-      proposals[i] = holdForSoreness(proposals[i], lastWeek[i], units, note, i === cutFrom);
-    }
-    if (action.swap) {
-      proposals[slots[0]] = withSwapNote(proposals[slots[0]], muscle, cutName, action.reason);
-    }
-  }
   return { dayId, week: week.number, totalWeeks, proposals };
 }
 

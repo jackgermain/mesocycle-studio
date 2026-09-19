@@ -10,6 +10,8 @@ import { dayDisplayTitle } from "../data/dayNumbering";
 import { supabase } from "../lib/supabase";
 import { withDerivedStatuses, isoToday } from "../shared/dayStatus";
 import { backfillMealDates } from "../shared/mealDays";
+import { applyRecoveryToNextWeek } from "../shared/sorenessVolume";
+import { isMajorLift } from "../shared/majorLift";
 import { insertWarmupSet } from "../shared/programEdits";
 import { addExerciseToProgram } from "../shared/addExercise";
 
@@ -89,7 +91,7 @@ type Action =
   | { type: "SET_FEEDBACK_DONE"; dayId: string }
   | { type: "MARK_PROGRESSION_SENT"; dayId: string }
   | { type: "AUTO_PROGRESS"; dayId: string; program: Program }
-  | { type: "SET_SORENESS_DONE"; dayId: string; answers?: TrainingDay["sorenessAnswers"] }
+  | { type: "SET_SORENESS_DONE"; dayId: string; answers?: TrainingDay["sorenessAnswers"]; adjustVolume?: boolean }
   | { type: "ADD_FOOD_ITEM"; mealId: string; item: LoggedFoodItem }
   | { type: "REMOVE_FOOD_ITEM"; mealId: string; itemId: string }
   | { type: "TOGGLE_FOOD_EATEN"; mealId: string; itemId: string }
@@ -405,13 +407,21 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, program };
     }
     case "SET_SORENESS_DONE": {
-      const program = structuredClone(state.program);
+      let program = structuredClone(state.program);
       for (const week of program.weeks) {
         const day = week.days.find((d) => d.id === action.dayId);
         if (!day) continue;
         day.sorenessDone = true;
         if (action.answers) day.sorenessAnswers = action.answers;
         if (day.status === "visible") day.status = "today";
+      }
+      /* G144 + Jack's Monday/Friday ruling: the answer changes next week's volume on the session that
+       * CAUSED the soreness, not the one it was answered on. Done here, in the same action that stores the
+       * answers, so the two can never come apart -- and so the answers are already on the program when the
+       * rule reads them back. Only for an account that programs itself; `adjustVolume` carries that gate
+       * from the screen, since a reducer cannot see the account. */
+      if (action.adjustVolume) {
+        program = applyRecoveryToNextWeek(program, action.dayId, isMajorLift, dayDisplayTitle).program;
       }
       return { ...state, program };
     }

@@ -7247,3 +7247,42 @@ would change generated programs — and a generator change has to be measured ac
 rendered, never assumed. This rule only ever protects an exercise from losing a set, so it needs none of it.
 
 ---
+
+**G145 — The volume cut lands on the session that CAUSED the soreness, and extra volume goes on accessories.**
+
+> *"Then your Monday session volume would be reduced, because the Monday session is the reason that you're
+> there on Friday getting ready to train and you're still sore."*
+
+Train chest Monday and Friday, answer **still sore** on Friday, and the session that did too much was
+**Monday's**. So next Monday comes down, not next Friday. G142 had it on the day the question was answered
+on, which is wrong for everything trained twice a week — which is most things, by his own frequency rule.
+
+The reading only exists on Friday, by which time next Monday has already been programmed, so the rule
+**amends** next Monday rather than producing it. Safe by construction: a session anyone has started is never
+rewritten, and next week's sessions have not been trained yet.
+
+**Only "Very sore" and "Sore" pull volume back.** Slightly sore is left alone, and that is deliberate:
+
+> *"Sometimes you're a little bit more sore in the first week of a block, especially that's the case for me,
+> and I'll be like maybe 90% healed, 95% healed on a day, which isn't too big of a deal, because you'll adapt
+> to the stress a little bit more. And then in week two it won't get you as bad, and then it'll be like that
+> for the remainder of the block. So that's why I would only pull volume back if somebody submits still sore."*
+
+**Extra volume goes on an accessory, never on the heavy lift.**
+
+> *"If you're doing heavy bench press and you're already doing three or four sets of six or eight or ten, I
+> would not add it to that. I would add it to an accessory later on in the session — a machine chest press or
+> a fly. Because you're already milking out as much stimulus as you can early on in the session from those
+> heavier lifts. That's why they're there in the first place, as priorities. The reason to be getting more
+> volume in general, for the most part, is just for muscle growth, and that can be done from not very heavy
+> lifting."*
+
+So the accessory rule is symmetric after all: G144 said a set never comes **off** a major lift, and this says
+one never goes **on** one either. Both directions move on the muscle's last accessory.
+
+**HIS SUGGESTION, NOT YET BUILT:** a short follow-up under "still sore" — *"you could even ask a mini button
+under that if you really want to, something very short and easy, like 'would you be healed tomorrow?'"* That
+would separate "still sore but nearly there" from "wrecked", which is the one distinction a single 1-5 answer
+cannot make on the low end.
+
+---
