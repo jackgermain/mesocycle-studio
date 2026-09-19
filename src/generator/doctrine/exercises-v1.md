@@ -7112,7 +7112,7 @@ names one arm muscle should still carry some work for the other.
 
 ---
 
-**G142 — Soreness sets volume, not load, and one set moves per muscle per session.**
+**G142 — A still-sore muscle repeats last week minus a set. Recovery overrules the load rules, downward only.**
 
 > *"Those notifications need to be being sent no matter what. They're incredibly important. It completely
 > breaks our algorithm for training if they don't work… for general accounts, make sure that that feedback is
@@ -7122,10 +7122,22 @@ The recovery-window rule (`generator/recoveryWindow.ts`, written from his own wo
 before you train a muscle again) existed for months with **zero callers**. The question was asked, the answer
 reached a desk, and the numbers never moved. Wiring it raised five questions doctrine had not answered:
 
-1. **A verdict changes sets, never weight.** How hard the last set was decides the weight (G62/G64); how
-   recovered the muscle was decides how much work it gets. They answer different questions and both apply — a
-   muscle can be under-recovered and still have had an easy top set. The old soreness toast promised the sets
-   would "hold at last week's number", which was a *load* hold and was never true of anything.
+1. **Still sore holds the weight too.**
+
+   > *"Keep the load the same when a muscle is still sore."*
+
+   The first draft of this rule had recovery change sets only, on the reasoning that how hard the last set
+   felt and how recovered the muscle was are different questions that both apply. Jack overruled it the same
+   day. A still-sore muscle **repeats last week exactly — same weight, same reps — minus a set**; whatever
+   G62/G64 proposed off the how-hard rating is discarded for that exercise rather than merged with it. A
+   muscle that arrived unhealed is not a muscle to put more weight on, however easy its top set felt.
+
+   This is the **only** place a recovery reading overrules the progression rules, and it only overrules them
+   downward. Recovering *early* says there was room for more work, not that the weight was wrong — so the
+   proposed weight stands there and a set simply goes on top.
+
+   (The old soreness toast had promised the sets would "hold at last week's number" all along. That turned
+   out to be the right rule attached to nothing: no code read the answers at all.)
 2. **One set per muscle, not one per exercise.** A session with three quad exercises takes **one** set off
    quads, not three. The verdict is about the muscle's dose.
 3. **It comes off the muscle's LAST slot.** That is the work done most fatigued, so it is the least

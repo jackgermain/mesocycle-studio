@@ -186,35 +186,49 @@ export interface DayProposals {
   proposals: Proposal[];
 }
 
-/** Puts a muscle's recovery verdict into the numbers: one set on or off, load untouched.
+/** Puts a muscle's recovery verdict into the numbers.
  *
- * The load is deliberately left alone. The rules above decide the weight from how hard the last set was;
- * recovery decides how *much* work the muscle gets. They answer different questions and both apply — a
- * muscle can be under-recovered and still have had an easy top set. (The old soreness toast promised the
- * sets would "hold at last week's number", which was a load hold and was never true of anything, because
- * nothing read these answers at all. The doctrine in recoveryWindow.ts says a set, so it is a set.)
+ * **Under-recovered outranks the load rules entirely.** Jack: *"keep the load the same when a muscle is
+ * still sore."* So a still-sore muscle repeats last week exactly — same weight, same reps — minus a set.
+ * Whatever G62/G64 proposed off the how-hard rating is discarded for that exercise, not merged with it: a
+ * muscle that arrived unhealed is not a muscle to put more weight on, however easy its top set felt. This
+ * is the one place a recovery reading overrules the progression, and it only overrules it downward.
+ *
+ * Adding a set is the opposite case and leaves the load rules alone. Recovering early says there was room
+ * for more work, not that the weight was wrong, so the proposed weight stands and a set goes on top.
  *
  * Two moves are exempt. `finished` writes nothing anywhere — the block is over. `deload` has already had
  * C7a halve its sets, and taking another off a deload week is cutting a cut. */
-function withSetChange(p: Proposal, action: VolumeAction, units: string, reason: string): Proposal {
+function withSetChange(
+  p: Proposal, action: VolumeAction, units: string, reason: string, loggedSets: PerformedSet[],
+): Proposal {
   const note = (extra: string) => `${p.why} Soreness: ${extra}`;
-  if (p.move === "finished" || p.move === "deload") return p;
-  const sets = p.nextSets ? p.nextSets.map((s) => ({ ...s })) : null;
-  if (!sets || sets.length === 0 || action.sets === 0) return p;
-  if (action.sets < 0 && sets.length <= 1) {
-    // Nothing left to take off. Say so rather than silently doing nothing, because a muscle still sore on
-    // one set is the case the swap rule exists for.
-    return { ...p, why: note(`${reason} Already down to one set here.`) };
+  if (p.move === "finished" || p.move === "deload" || action.sets === 0) return p;
+
+  if (action.sets < 0) {
+    // Last week's own numbers, not the proposed ones. `move` becomes a hold because that is now what it is,
+    // and applyProgressionToProgram removes the dropped set with its ordinary reason.
+    const held = loggedSets.map((s) => ({ ...s }));
+    if (held.length === 0) return p;
+    if (held.length === 1) {
+      // Nothing left to take off. The weight still holds, and it is said out loud rather than silently
+      // doing nothing, because a muscle still sore on one set is the case the swap rule exists for.
+      return {
+        ...p, move: "hold", next: formatSets(held, units), nextSets: held, label: "Same weight",
+        why: note(`${reason} Already down to one set here, so only the weight holds.`),
+      };
+    }
+    held.pop();
+    return {
+      ...p, move: "hold", next: formatSets(held, units), nextSets: held, label: "Same weight, −1 set",
+      why: note(`${reason} The weight holds where it is.`),
+    };
   }
-  if (action.sets < 0) sets.pop();
-  else sets.push({ ...sets[sets.length - 1] });
-  return {
-    ...p,
-    next: formatSets(sets, units),
-    nextSets: sets,
-    label: `${p.label}, ${action.sets < 0 ? "−1" : "+1"} set`,
-    why: note(reason),
-  };
+
+  const sets = p.nextSets ? p.nextSets.map((s) => ({ ...s })) : null;
+  if (!sets || sets.length === 0) return p;
+  sets.push({ ...sets[sets.length - 1] });
+  return { ...p, next: formatSets(sets, units), nextSets: sets, label: `${p.label}, +1 set`, why: note(reason) };
 }
 
 /** The swap recommendation, which belongs on a different exercise from the set change.
@@ -251,9 +265,11 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
   const sessionsPerWeek = Math.max(0, ...program.weeks.map((w) => w.days.length));
   const ids = day.order.length ? day.order : Object.keys(day.exercises);
   const proposals: Proposal[] = [];
-  // Parallel to `proposals`, so a muscle's verdict can find the slots it applies to. Not a lookup by
-  // exercise name: the same movement can legitimately appear twice in one session.
+  // Both parallel to `proposals`. `muscles` is how a verdict finds the slots it applies to -- not a lookup
+  // by exercise name, since the same movement can legitimately appear twice in one session. `lastWeek` is
+  // what a still-sore muscle repeats, kept as numbers rather than re-parsed out of the formatted string.
   const muscles: string[] = [];
+  const lastWeek: PerformedSet[][] = [];
   for (const id of ids) {
     const ex = day.exercises[id];
     if (!ex || ex.timed) continue;
@@ -265,12 +281,13 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
     // The final set's rating is the one asked for (G62). Falling back to the last set that has one covers
     // a session where the final set was removed after it was rated.
     const rated = [...working].reverse().find((s) => typeof s.effort === "number");
+    // A load of 0 is how some screens record bodyweight; treated as none, or it would read as a 0 lb
+    // "light weight" and get a 2.5 lb jump proposed.
+    const performed = working.map((s) => ({ reps: s.actual!.reps, load: s.actual!.load ? s.actual!.load : null }));
     proposals.push(proposeNextWeek({
       name: ex.name,
       equipment: equipmentOf(ex),
-      // A load of 0 is how some screens record bodyweight; treated as none, or it would read as a 0 lb
-      // "light weight" and get a 2.5 lb jump proposed.
-      sets: working.map((s) => ({ reps: s.actual!.reps, load: s.actual!.load ? s.actual!.load : null })),
+      sets: performed,
       targetReps: targets.length ? Math.max(...targets) : null,
       effort: rated?.effort ?? null,
       week: week.number,
@@ -279,6 +296,7 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
       units,
     }));
     muscles.push(ex.muscle);
+    lastWeek.push(performed);
   }
 
   // What the pre-session soreness check says about how much work each muscle should get next week. Only
@@ -296,6 +314,7 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
     proposals[last] = withSetChange(
       proposals[last], action, units,
       split ? `${muscle} is still arriving unhealed, so a set comes off here too.` : action.reason,
+      lastWeek[last],
     );
     if (split) proposals[first] = withSwapNote(proposals[first], muscle, proposals[last].exercise, action.reason);
   }

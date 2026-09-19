@@ -98,7 +98,7 @@ test("a reading is only spent by the session it was taken at", () => {
 
 // --- the wire ----------------------------------------------------------------------------------------
 
-test("still sore takes a set off the muscle's last slot, and leaves the weight alone", () => {
+test("still sore takes one set off the muscle's last slot, not one off every exercise", () => {
   const p = program(day("d1", "2026-09-10", sore(2)));
   const squat = named(p, "d1", "Barbell Squat");
   const ext = named(p, "d1", "Leg Extension");
@@ -108,12 +108,22 @@ test("still sore takes a set off the muscle's last slot, and leaves the weight a
   assert.equal(squat.nextSets!.length, 3, "only one set comes off the muscle, not one per exercise");
 });
 
-test("the weight still moves on its own rules while a set comes off", () => {
-  // Recovery says how much work; the how-hard rating says how heavy. Both apply.
-  const p = program(day("d1", "2026-09-10", sore(2)));
-  const ext = named(p, "d1", "Leg Extension");
-  const loads = new Set(ext.nextSets!.map((s) => s.load));
-  assert.ok(!loads.has(null), "a set cut never erases the weight");
+test("a still-sore muscle repeats last week's weight, whatever the load rule wanted", () => {
+  // Jack: "keep the load the same when a muscle is still sore." An easy top set would normally add weight;
+  // a muscle that arrived unhealed is not a muscle to put more weight on, so recovery overrules it.
+  const easy = day("d1", "2026-09-10", sore(2));
+  easy.exercises.e2.sets[2].effort = 2; // rated 2 -- G62 would move every set up a step
+
+  const alone = { ...easy, sorenessAnswers: undefined } as unknown as ReturnType<typeof day>;
+  const unchecked = named(program(alone), "d1", "Leg Extension");
+  assert.equal(unchecked.move, "load", "without the soreness reading this exercise adds weight");
+  assert.ok(unchecked.nextSets!.every((s) => s.load! > 90), unchecked.next);
+
+  const ext = named(program(easy), "d1", "Leg Extension");
+  assert.equal(ext.move, "hold");
+  assert.ok(ext.nextSets!.every((s) => s.load === 90), `last week's weight, got ${ext.next}`);
+  assert.deepEqual(ext.nextSets!.map((s) => s.reps), [10, 10], "and last week's reps");
+  assert.match(ext.why, /The weight holds where it is/);
 });
 
 test("one early reading holds; two running add a set", () => {
@@ -168,10 +178,11 @@ test("a deload week is never cut further, and a finished block is never touched"
   assert.equal(f.nextSets!.length, 3, "nothing is written past the end of a block");
 });
 
-test("a muscle already down to one set says so rather than silently doing nothing", () => {
+test("a muscle already down to one set still holds the weight, and says why", () => {
   const one = day("d1", "2026-09-10", sore(2));
-  one.exercises.e2.sets = [one.exercises.e2.sets[2]];
+  one.exercises.e2.sets = [{ ...one.exercises.e2.sets[2], effort: 2 }];
   const ext = named(program(one), "d1", "Leg Extension");
   assert.equal(ext.nextSets!.length, 1);
+  assert.equal(ext.nextSets![0].load, 90, "no set to take off, but the weight still does not move");
   assert.match(ext.why, /Already down to one set/);
 });
