@@ -12,6 +12,7 @@ import { withDerivedStatuses, isoToday } from "../shared/dayStatus";
 import { backfillMealDates } from "../shared/mealDays";
 import { applyRecoveryToNextWeek } from "../shared/sorenessVolume";
 import { isMajorLift } from "../shared/majorLift";
+import { reorderAcrossBlock } from "../shared/reorderDay";
 import { insertWarmupSet } from "../shared/programEdits";
 import { addExerciseToProgram } from "../shared/addExercise";
 
@@ -358,15 +359,11 @@ function reducer(state: AppState, action: Action): AppState {
       }
       return { ...state, program };
     }
-    case "REORDER_EXERCISES": {
-      const program = structuredClone(state.program);
-      for (const week of program.weeks) {
-        const day = week.days.find((d) => d.id === action.dayId);
-        if (!day) continue;
-        day.order = action.order;
-      }
-      return { ...state, program };
-    }
+    case "REORDER_EXERCISES":
+      // Across every remaining week of the same session, not just this one -- see shared/reorderDay.ts.
+      // The rule lives there because it has to match by NAME (keys are week-scoped) and that is exactly the
+      // kind of thing that needs a test, which this file cannot have: it creates the Supabase client.
+      return { ...state, program: reorderAcrossBlock(state.program, action.dayId, action.order) };
     case "MARK_PROGRESSION_SENT": {
       const program = structuredClone(state.program);
       for (const week of program.weeks) {

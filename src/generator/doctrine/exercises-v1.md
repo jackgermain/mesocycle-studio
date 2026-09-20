@@ -7286,3 +7286,35 @@ would separate "still sore but nearly there" from "wrecked", which is the one di
 cannot make on the low end.
 
 ---
+
+**G146 — The split is chosen in week one and holds for the block. Progression moves reps, load and sets — never exercises.**
+
+> *"Why the hell are all my exercises and stuff like that in different places? I literally taught you how to
+> program this. You're only progressing reps, load and sets. You're not changing exercises at all. The split
+> is selected in week one, and it stays like that throughout the whole program, unless an exercise needs to
+> be changed because it hurts, or because the machine isn't available."*
+
+Two things, and only the first was a rule the code had.
+
+**1. The progression engine never touches exercise identity, and did not here.** `applyProgressionToProgram`
+locates a target exercise by **name** and writes only `prescribed` reps and load, plus adding or removing
+sets. It cannot add, remove, rename or reorder a movement, and neither can the recovery rule. A session
+whose exercise list differs between weeks differed before either of them ran.
+
+**2. Reordering was scoped to one week, silently.** The reducer wrote `day.order` on the day whose `id`
+matched, and `TrainingDay.id` is unique per week — so reordering Monday of week 1 left Monday of week 2 in
+the order it was generated with, and the two weeks read as different programs. The loop was written as
+`for (const week of program.weeks)` and looked like it spanned the block, which is why it survived.
+
+Reordering now carries into **every later week of the same session code**, matched by exercise **name** —
+keys are week-scoped (`w1-d1-e1`, `w2-d1-e1`), so a key-matched reorder does nothing outside its own week.
+It never reaches backwards, never touches a finished session, and skips one already under way: moving the
+cards under someone mid-session is not a reorder. An exercise a later week has and the reordered day does
+not keeps its place at the end rather than dropping out of `order` and vanishing from the screen.
+
+**The same hazard remains for ADDING.** `addTargets` scopes an addition to one day or to every remaining
+session of that code, and the choice is the person's at the time. An exercise added with day scope in week 1
+is in week 1 only — which is correct behaviour for the option, and indistinguishable on screen from the
+reorder bug above.
+
+---

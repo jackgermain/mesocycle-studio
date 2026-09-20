@@ -45,8 +45,13 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
     <div className="screen">
       <CloseHeader kicker={`${dayDisplayTitle(day)} · Week ${week.number}`} title="Change the order" />
       <div className="screen-scroll">
+        {/* The scope has to be said out loud. This used to reorder this one week and nothing else, so week 2
+            of the same session kept the order it was generated with and the two read as different programs
+            -- Jack: "the split is selected in week one, and it stays like that throughout the whole
+            program." It now carries forward, and a change that reaches other weeks must say so. */}
         <InfoBanner icon="ph-info">
           Station busy? Move anything up or down, or tap an exercise to start it now. Unticked sets travel with it.
+          This order carries into every later week of this session.
         </InfoBanner>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
