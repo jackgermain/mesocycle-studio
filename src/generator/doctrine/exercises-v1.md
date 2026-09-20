@@ -7312,6 +7312,16 @@ It never reaches backwards, never touches a finished session, and skips one alre
 cards under someone mid-session is not a reorder. An exercise a later week has and the reordered day does
 not keeps its place at the end rather than dropping out of `order` and vanishing from the screen.
 
+**Repairing a block already in that state.** Fixing the reorder stops it recurring and repairs nothing, so
+`shared/blockShape.ts` aligns later weeks to the last COMPLETED session of that code — its exercises and its
+order — and runs on every open. Idempotent by construction, which is what makes a pass safe where a
+progression would compound. Additive only: a movement the reference has and a later week lacks is added
+untrained; one a later week has and the reference lacks is left where it is, because removing a movement is
+its own decision with its own scope and guessing at it from a shape difference would delete work nobody
+asked to lose. A session already under way is never the reference and never a target — it is the one most
+likely to be carrying the stale order this exists to repair, and moving the cards under someone mid-session
+is not a reorder.
+
 **The same hazard remains for ADDING.** `addTargets` scopes an addition to one day or to every remaining
 session of that code, and the choice is the person's at the time. An exercise added with day scope in week 1
 is in week 1 only — which is correct behaviour for the option, and indistinguishable on screen from the
