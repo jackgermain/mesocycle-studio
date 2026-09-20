@@ -10,7 +10,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { alignBlockShape } from "../src/shared/blockShape.ts";
+import { alignBlockShape, strayCopies } from "../src/shared/blockShape.ts";
 
 const ex = (week: number, i: number, name: string, checked: boolean) => [
   `w${week}-d1-e${i}`,
@@ -60,17 +60,56 @@ test("running it again changes nothing", () => {
   assert.equal(twice.program, once, "the same object comes back");
 });
 
-test("an exercise last week has and this week lacks is carried forward, unticked", () => {
+test("an exercise last week has and this week lacks is NOT invented here", () => {
+  /* The additive version of this rule put a seated dumbbell curl onto a leg day in Jack's own block, found
+   * within minutes of the deploy. A rule that can invent an exercise on a session is wrong in a way that is
+   * obvious to a lifter in seconds and invisible to a test written around the happy path. This one only
+   * permutes keys the day already has. */
   const p: any = block();
-  // Week 2 never got Hip Clean at all -- added to week 1 with "this day only".
   p.weeks[1].days[0].order = ["w2-d1-e1", "w2-d1-e2"];
   delete p.weeks[1].days[0].exercises["w2-d1-e3"];
   const { program } = alignBlockShape(p);
-  assert.deepEqual(namesOf(program, "w2"), WEEK1);
-  const d = program.weeks[1].days[0];
-  const added: any = Object.values(d.exercises).find((e: any) => e.name === "Hip Clean");
-  assert.ok(added, "it exists now");
-  assert.ok(added.sets.every((s: any) => !s.checked && s.actual === null), "and arrives untrained");
+  assert.deepEqual(namesOf(program, "w2"), ["Back Squat Box", "Lying Leg Curl"], "two exercises in, two out");
+});
+
+test("two different sessions that share a day code are never merged", () => {
+  // programConvert numbers days D1, D2... per slot, but appendWeeks copies whatever code a day had and an
+  // imported program carries someone else's. A repeated code is how an arm day reaches a leg day.
+  const p: any = block();
+  p.weeks[0].days.push({ ...day("arm1", 1, "2026-09-16", ["Seated Dumbbell Curl"], { done: true }), code: "L1" });
+  p.weeks[1].days.push({ ...day("arm2", 2, "2026-09-23", ["Seated Dumbbell Curl"]), code: "L1" });
+  const { program } = alignBlockShape(p);
+  assert.deepEqual(namesOf(program, "w2"), WEEK1, "the leg day is judged against the leg day");
+  assert.deepEqual(namesOf(program, "arm2"), ["Seated Dumbbell Curl"], "and the arm day against the arm day");
+});
+
+test("stray copies the additive version wrote are removed, unless they were trained", () => {
+  const p: any = block();
+  const d = p.weeks[1].days[0];
+  // Exactly the id shape blankCopy produced: <dayId>-<slug>. Nothing else in the app keys an exercise so.
+  d.exercises["w2-seated-dumbbell-curl"] = {
+    id: "w2-seated-dumbbell-curl", name: "Seated Dumbbell Curl", muscle: "Biceps", metaLine: "", hasVideo: false,
+    sets: [{ id: "x1", index: 1, type: "straight", checked: false, actual: null, prescribed: { reps: 10, load: 30 } }],
+  };
+  d.order = [...d.order, "w2-seated-dumbbell-curl"];
+  const { program, removed } = strayCopies(p);
+  assert.deepEqual(removed, ["w2:Seated Dumbbell Curl"]);
+  assert.deepEqual(namesOf(program, "w2"), WEEK2, "the leg day is its own again");
+
+  // One with a logged set stays: never throw away work someone actually did.
+  const trained: any = block();
+  const t = trained.weeks[1].days[0];
+  t.exercises["w2-seated-dumbbell-curl"] = {
+    id: "w2-seated-dumbbell-curl", name: "Seated Dumbbell Curl", muscle: "Biceps", metaLine: "", hasVideo: false,
+    sets: [{ id: "x1", index: 1, type: "straight", checked: true, actual: { reps: 10, load: 30 }, prescribed: { reps: 10, load: 30 } }],
+  };
+  t.order = [...t.order, "w2-seated-dumbbell-curl"];
+  assert.deepEqual(strayCopies(trained).removed, []);
+});
+
+test("a clean program is left exactly as it is", () => {
+  const p = block();
+  assert.equal(strayCopies(p).program, p, "the same object comes back");
 });
 
 test("an exercise only a later week has is never removed", () => {

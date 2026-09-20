@@ -33,7 +33,7 @@ import {
 } from "./shared/progressionProposal";
 import { sendProgressionProposals, sendProgressionRecord } from "./shared/progressionSignals";
 import { ownsTheirProgressions } from "./shared/selfDirected";
-import { alignBlockShape } from "./shared/blockShape";
+import { alignBlockShape, strayCopies } from "./shared/blockShape";
 import { isoToday } from "./shared/dayStatus";
 import { ClientSideNav } from "./components/TabBar";
 import { CoachSideNav } from "./coach/components/CoachTabBar";
@@ -195,8 +195,12 @@ function ClientLayout() {
   useEffect(() => {
     if (!account || !selfDirected) return;
     if (state.profile.autoProgressions === false) return;
-    const { program, changed } = alignBlockShape(state.program);
-    if (changed.length === 0) return;
+    // Cleanup first: the additive version of this rule shipped for one deploy and wrote exercises into
+    // sessions they did not belong in -- a seated dumbbell curl onto a leg day. Removing the code cannot
+    // undo what it already saved into someone's blob, so this does.
+    const cleaned = strayCopies(state.program);
+    const { program, changed } = alignBlockShape(cleaned.program);
+    if (changed.length === 0 && cleaned.removed.length === 0) return;
     dispatch({ type: "SET_PROGRAM", program });
   }, [account, selfDirected, state.program, state.profile.autoProgressions, dispatch]);
 

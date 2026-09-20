@@ -7312,15 +7312,33 @@ It never reaches backwards, never touches a finished session, and skips one alre
 cards under someone mid-session is not a reorder. An exercise a later week has and the reordered day does
 not keeps its place at the end rather than dropping out of `order` and vanishing from the screen.
 
-**Repairing a block already in that state.** Fixing the reorder stops it recurring and repairs nothing, so
-`shared/blockShape.ts` aligns later weeks to the last COMPLETED session of that code — its exercises and its
-order — and runs on every open. Idempotent by construction, which is what makes a pass safe where a
-progression would compound. Additive only: a movement the reference has and a later week lacks is added
-untrained; one a later week has and the reference lacks is left where it is, because removing a movement is
-its own decision with its own scope and guessing at it from a shape difference would delete work nobody
-asked to lose. A session already under way is never the reference and never a target — it is the one most
-likely to be carrying the stale order this exists to repair, and moving the cards under someone mid-session
-is not a reorder.
+**Repairing a block already in that state.** `shared/blockShape.ts` aligns later weeks to the ORDER of the
+last COMPLETED session of that code, and runs on every open. Idempotent by construction, which is what makes
+a pass safe where a progression would compound. A session already under way is neither reference nor target:
+it is the one most likely to be carrying the stale order, and moving the cards under someone mid-session is
+not a reorder.
+
+**It reorders. It does not add — and the first version did, which was a mistake caught in minutes.** That
+version also copied any exercise the reference had and a later week lacked. It put a **seated dumbbell curl
+onto a leg day** in Jack's own block: *"Why is there a seated dumbbell curl on day one week two. These are
+the dumbest mistakes I've ever seen. How am I supposed to be a test this."*
+
+Two things went wrong and both are worth keeping:
+
+1. **Sessions were grouped by `code` alone.** `programConvert` numbers days `D1`, `D2`… per slot, so codes
+   are unique within a week *there* — but `appendWeeks` copies whatever code a day already had, and an
+   imported program carries codes from someone else's spreadsheet. A repeated code merges two genuinely
+   different sessions, which is how an arm day reaches a leg day. Grouping is now code **and** position in
+   the week.
+2. **The rule was allowed to invent an exercise at all.** That is the real error. A rule that can put a
+   movement on a session it does not belong to is wrong in a way a lifter sees in seconds and a test suite
+   written around the happy path never does. The scope is now: permute keys the day already has. Nothing is
+   created, nothing is dropped.
+
+Removing the code could not undo what it had already written into a saved program, so `strayCopies` does —
+the additive version keyed every copy `<dayId>-<name slugified>`, a shape nothing else in the app produces,
+and any untouched one is removed on open. One with a logged set against it is kept: never throw away work
+someone actually did.
 
 **The same hazard remains for ADDING.** `addTargets` scopes an addition to one day or to every remaining
 session of that code, and the choice is the person's at the time. An exercise added with day scope in week 1

@@ -1,28 +1,38 @@
-/** Later weeks of a session carry the same exercises, in the same order, as the way it was actually trained.
+/** Later weeks of a session carry the same exercises in the same ORDER as the way it was actually trained.
  *
  * > *"You're literally copy-pasting it from last week to this week, with the addition of exercises that may
  * > or may not have been removed, and change the numbers on it. That's it. Nothing else."*
  *
- * The numbers half of that is `applyProgressionToProgram`. This is the shape half, and it was missing —
+ * The numbers half of that is `applyProgressionToProgram`. This is the order half, and it was missing —
  * which is why Hip Clean sat first in week 1 and last in week 2 of the same session. Fixing
- * `REORDER_EXERCISES` to carry forward (see reorderDay.ts) stops it happening again but cannot repair a
- * block where it already has.
+ * `REORDER_EXERCISES` to carry forward (see reorderDay.ts) stops it recurring but repairs nothing already
+ * in that state.
  *
- * **Idempotent, so it can run on every open.** Aligning an already-aligned week changes nothing, which is
- * what makes it safe to run as a pass rather than once per session — unlike a progression, which must apply
- * exactly once or it compounds.
+ * ## It reorders. It does not add.
  *
- * **Additive only.** An exercise the reference has and a later week lacks is added; an exercise a later week
- * has and the reference lacks is left alone. Removing a movement is a decision with its own action and its
- * own scope choice (`REMOVE_EXERCISE`), and guessing at it from a shape difference would delete work nobody
- * asked to lose.
+ * The first version also copied any exercise the reference had and a later week lacked. That put a **seated
+ * dumbbell curl onto a leg day** in Jack's own block, and he found it within minutes of the deploy. Whether
+ * the source was a repeated day `code` in an imported program or a movement sitting in week 1 he did not
+ * expect to travel, the lesson is the same: a rule that can invent an exercise on a session gets it wrong
+ * in a way that is obvious to a lifter within seconds and invisible to a test suite written around the
+ * happy path.
  *
- * **The reference is the most recently COMPLETED session of that code**, not the first and not one merely
- * under way. What he actually trained last week is the split, including any change he made on the day — but
- * a session still in progress has established nothing yet, and it is the likeliest one to be carrying the
- * stale order this exists to repair. Letting it be the reference would propagate the bug forward instead.
+ * So this only ever permutes keys **already in that day**. It cannot add, remove, rename or substitute
+ * anything. A much smaller promise, and the whole of what was actually reported.
+ *
+ * `strayCopies` cleans up what the additive version wrote before it was pulled.
+ *
+ * ## Idempotent, so it runs on every open
+ *
+ * Aligning an aligned week changes nothing and returns the same object, which is what makes a pass safe
+ * where a progression would compound.
+ *
+ * ## The reference is the most recently COMPLETED session
+ *
+ * Not the first, and not one merely under way: a session in progress has established nothing yet, and is
+ * the likeliest one to be carrying the stale order this exists to repair.
  */
-import type { Program, TrainingDay, WorkExercise } from "../data/types";
+import type { Program, TrainingDay } from "../data/types";
 
 function started(day: TrainingDay): boolean {
   return Object.values(day.exercises).some((ex) => ex.sets.some((s) => s.checked));
@@ -32,22 +42,18 @@ function orderedKeys(day: TrainingDay): string[] {
   return day.order.length ? day.order : Object.keys(day.exercises);
 }
 
-/** A fresh copy of an exercise for a week that has not happened: the prescription, none of the history. */
-function blankCopy(ex: WorkExercise, dayId: string): WorkExercise {
-  const copy = structuredClone(ex);
-  copy.id = `${dayId}-${ex.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-  copy.sets = copy.sets
-    .filter((s) => !s.removed)
-    .map((s, i) => ({
-      ...s,
-      id: `${copy.id}-s${i + 1}`,
-      checked: false,
-      actual: null,
-      effort: undefined,
-      removed: undefined,
-      lastWeek: undefined,
-    }));
-  return copy;
+/** Two sessions are the same session when they share a code AND a position in their week.
+ *
+ * The code alone was not enough. `programConvert` numbers days `D1`, `D2`… per slot, so codes are unique
+ * within a week there — but `appendWeeks` copies whatever code a day already had, and an imported program
+ * carries codes from someone else's spreadsheet. A repeated code silently merges two genuinely different
+ * sessions, and merging a leg day with an arm day is exactly how a curl reaches a squat session. */
+function sessionKey(program: Program, day: TrainingDay): string {
+  for (const week of program.weeks) {
+    const i = week.days.findIndex((d) => d.id === day.id);
+    if (i >= 0) return `${day.code}#${i}`;
+  }
+  return `${day.code}#?`;
 }
 
 export function alignBlockShape(program: Program): { program: Program; changed: string[] } {
@@ -55,14 +61,17 @@ export function alignBlockShape(program: Program): { program: Program; changed: 
   const days = next.weeks.flatMap((w) => w.days);
   const changed: string[] = [];
 
-  const byCode = new Map<string, TrainingDay[]>();
-  for (const d of days) byCode.set(d.code, [...(byCode.get(d.code) ?? []), d]);
+  const bySession = new Map<string, TrainingDay[]>();
+  for (const d of days) {
+    const key = sessionKey(next, d);
+    bySession.set(key, [...(bySession.get(key) ?? []), d]);
+  }
 
-  for (const sessions of byCode.values()) {
+  for (const sessions of bySession.values()) {
     const sorted = [...sessions].sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? -1 : 1));
     const complete = sorted.filter((d) => d.status === "done");
     const reference = complete[complete.length - 1];
-    // Nothing has been completed yet, so the generated shape is the only shape there is.
+    // Nothing completed yet, so the generated order is the only order there is.
     if (!reference) continue;
 
     const rank = new Map<string, number>();
@@ -74,29 +83,41 @@ export function alignBlockShape(program: Program): { program: Program; changed: 
 
     for (const day of sorted) {
       if (day.date <= reference.date || day.status === "done" || started(day)) continue;
-      const before = orderedKeys(day).map((k) => day.exercises[k]?.name).join("|");
-
-      // Anything trained last week that this week does not have yet.
-      const have = new Set(Object.values(day.exercises).map((e) => e.name));
-      for (const key of orderedKeys(reference)) {
-        const ex = reference.exercises[key];
-        if (!ex || have.has(ex.name)) continue;
-        const copy = blankCopy(ex, day.id);
-        day.exercises[copy.id] = copy;
-        day.order = [...orderedKeys(day), copy.id];
-      }
-
-      // Then the order itself. Stable, so anything the reference does not mention keeps its relative place
-      // at the end rather than being shuffled arbitrarily.
+      const before = orderedKeys(day).join("|");
+      // Stable: anything the reference does not mention keeps its relative place, after the rest. Only the
+      // day's own keys are permuted -- nothing is created and nothing is dropped.
       day.order = orderedKeys(day)
         .map((key, i) => ({ key, i, at: rank.get(day.exercises[key]?.name ?? "") ?? Infinity }))
         .sort((a, b) => a.at - b.at || a.i - b.i)
         .map((x) => x.key);
-      day.setCount = Object.values(day.exercises).reduce((n, ex) => n + ex.sets.length, 0);
-
-      if (orderedKeys(day).map((k) => day.exercises[k]?.name).join("|") !== before) changed.push(day.id);
+      if (day.order.join("|") !== before) changed.push(day.id);
     }
   }
 
   return changed.length ? { program: next, changed } : { program, changed };
+}
+
+/** Undoes the additive version of the rule above, which shipped briefly and wrote exercises into sessions
+ * they did not belong in.
+ *
+ * Identifiable exactly: it keyed every copy `<dayId>-<name slugified>`, a shape nothing else in the app
+ * produces — builder ids look like `w2-d1-e3`. Only ever removes an untouched copy, so a set someone has
+ * actually logged against one is never thrown away. */
+export function strayCopies(program: Program): { program: Program; removed: string[] } {
+  const next = structuredClone(program);
+  const removed: string[] = [];
+  for (const week of next.weeks) {
+    for (const day of week.days) {
+      for (const [key, ex] of Object.entries(day.exercises)) {
+        const slug = ex.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        if (key !== `${day.id}-${slug}`) continue;
+        if (ex.sets.some((s) => s.checked)) continue;
+        delete day.exercises[key];
+        day.order = day.order.filter((id) => id !== key);
+        day.setCount = Object.values(day.exercises).reduce((n, e) => n + e.sets.length, 0);
+        removed.push(`${day.id}:${ex.name}`);
+      }
+    }
+  }
+  return removed.length ? { program: next, removed } : { program, removed };
 }
