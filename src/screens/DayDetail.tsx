@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { findDay, useStore } from "../state/store";
 import { useAuth } from "../lib/auth";
-import { BackHeader, InfoBanner, StatCell } from "../components/UI";
+import { BackHeader, StatCell } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
@@ -13,10 +13,8 @@ import { ExerciseSection } from "./ExerciseSection";
 import { ProgressionToggle } from "../shared/AutomationToggles";
 import { computeSorenessDue } from "../shared/soreness";
 import { isoToday } from "../shared/dayStatus";
-import { coachOnTheOtherEnd } from "../shared/coachName";
 
 export default function DayDetail() {
-  const { account } = useAuth();
   const { dayId = "" } = useParams();
   const { state } = useStore();
   const found = findDay(state.program, dayId);
@@ -89,12 +87,6 @@ function ReopenedDay({ dayId }: { dayId: string }) {
           </div>
         </div>
 
-        <InfoBanner icon="ph-lock-simple">
-          Logged sessions are read-only after 24 hours.{" "}
-          {coachOnTheOtherEnd(account?.coach_id, state.program.coachName)
-            ? `Ask ${state.program.coachName} to correct anything wrong.`
-            : "Nothing here can be edited after that."}
-        </InfoBanner>
       </div>
       <TabBar />
     </div>
