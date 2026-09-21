@@ -29,6 +29,19 @@ const SECONDARY_MUSCLES: Record<string, string[]> = {
  * no per-exercise secondary muscles of their own (only custom ones do), which is why it has to live here. */
 const EXERCISE_SYNERGISTS: [RegExp, string[]][] = [[/hammer curl/i, ["Forearms"]]];
 
+/** Library categories that are not muscles, so the check never asks whether one has healed.
+ *
+ * Jack, shown "FULL BODY — LAST TRAINED 7 DAYS AGO" with a 1-5 soreness scale under it: *"Remove feedback
+ * for full body."* There is no such thing as full-body soreness on a 1-5 scale, and the answer could not be
+ * acted on if there were — the volume rule works by taking a set off one exercise for one muscle.
+ *
+ * `Full body` is the library's bucket for the olympic lifts AND the default for every cardio entry
+ * (`exCardio`), so without this a bike ride asks whether your full body has recovered.
+ *
+ * It stays in SECONDARY_MUSCLES above and is still expanded: a power clean really does fatigue back, quads,
+ * glutes and traps, and those are real muscles with real answers. Only the category itself is unaskable. */
+const NOT_A_MUSCLE = new Set(["Full body"]);
+
 function musclesWorked(day: TrainingDay): Set<string> {
   const set = new Set<string>();
   for (const ex of Object.values(day.exercises)) {
@@ -85,6 +98,9 @@ export function computeSorenessDue(program: Program, dayId: string): { muscle: s
 
   const due: { muscle: string; lastTrainedDaysAgo: number }[] = [];
   for (const muscle of todayMuscles) {
+    // Filtered here rather than inside musclesWorked, so a category still EXPANDS into the real muscles it
+    // trains on both sides of the comparison -- it just never becomes a question of its own.
+    if (NOT_A_MUSCLE.has(muscle)) continue;
     const lastDay = priorDays.find((d) => musclesWorked(d).has(muscle));
     if (!lastDay) continue;
     const gap = daysBetween(lastDay.date, target.date);

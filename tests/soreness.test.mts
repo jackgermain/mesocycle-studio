@@ -99,3 +99,30 @@ test("a muscle never trained before is not asked about", () => {
   const p = program([{ number: 3, days: [day("b", "2026-09-12", "Back", "upcoming")] }]);
   assert.deepEqual(computeSorenessDue(p, "b"), []);
 });
+
+test("a category is never asked about, but still expands into the muscles it trains", () => {
+  /* Jack, shown "FULL BODY — LAST TRAINED 7 DAYS AGO" with a 1-5 soreness scale under it: "Remove feedback
+   * for full body." There is no full-body soreness on a 1-5 scale, and no volume rule could act on the
+   * answer -- a cut takes one set off one exercise for one muscle.
+   *
+   * It is the library's bucket for the olympic lifts AND the default for every cardio entry, so without
+   * this a bike ride asks whether your full body has recovered. */
+  const p = program([
+    { number: 1, days: [day("w1", "2026-09-14", "Full body", "done", "Hip Clean")] },
+    { number: 2, days: [day("w2", "2026-09-21", "Full body", "upcoming", "Hip Clean")] },
+  ]);
+  const asked = computeSorenessDue(p, "w2").map((d) => d.muscle);
+  assert.ok(!asked.includes("Full body"), `never asked as a muscle, got ${asked.join(", ")}`);
+  // Still expanded: a power clean really does fatigue these, and each is a real muscle with a real answer.
+  // One level only -- Back is added, but Back's own synergists (biceps, rear delts, forearms) are not.
+  // That is the existing conservative design and worth keeping: a clean is not a row.
+  assert.deepEqual([...asked].sort(), ["Back", "Glutes", "Quads", "Traps"]);
+});
+
+test("cardio does not ask whether your full body has healed", () => {
+  const p = program([
+    { number: 1, days: [day("w1", "2026-09-14", "Full body", "done", "Stationary Bike")] },
+    { number: 2, days: [day("w2", "2026-09-16", "Full body", "upcoming", "Stationary Bike")] },
+  ]);
+  assert.ok(!computeSorenessDue(p, "w2").some((d) => d.muscle === "Full body"));
+});
