@@ -42,6 +42,35 @@ const EXERCISE_SYNERGISTS: [RegExp, string[]][] = [[/hammer curl/i, ["Forearms"]
  * glutes and traps, and those are real muscles with real answers. Only the category itself is unaskable. */
 const NOT_A_MUSCLE = new Set(["Full body"]);
 
+/** Muscles this session trains DIRECTLY — what is actually on the card.
+ *
+ * This is what the check asks about, and the distinction from `musclesWorked` below is the whole rule.
+ * Jack, for the third time, looking at a Day 3 asking after eight muscles: *"For the love of God, if I have
+ * to remind you one more time to not ask me for soreness feedback on a day that I'm not training the
+ * body part… there's no chest training, no triceps."*
+ *
+ * The synergist table was being applied to TODAY as well as to the history, so one chest exercise asked
+ * about chest, triceps and front delts, and one back exercise asked about back, biceps, rear delts and
+ * forearms. Seven questions from two movements, five of which name a muscle that is nowhere in the session.
+ *
+ * `ex.secondaryMuscles` DOES count as direct: those are tags the person put on the movement themselves —
+ * Jack, adding a hip clean, *"I want to be able to click on back and I also want to be able to click on
+ * full body, and quads and traps."* The table and the per-exercise regexes are my inferences, not his, and
+ * inferences do not get to invent a question. */
+function musclesTrainedDirectly(day: TrainingDay): Set<string> {
+  const set = new Set<string>();
+  for (const ex of Object.values(day.exercises)) {
+    set.add(ex.muscle);
+    for (const declared of ex.secondaryMuscles ?? []) set.add(declared);
+  }
+  return set;
+}
+
+/** Everything the session touches, synergists included.
+ *
+ * Used ONLY to answer "when was this muscle last trained", never to decide what to ask about. That side
+ * genuinely needs the expansion: Jack did hammer curls on Monday and reverse curls on Wednesday, and
+ * Wednesday's forearm work only counts as a repeat because Monday's hammer curls are credited here. */
 function musclesWorked(day: TrainingDay): Set<string> {
   const set = new Set<string>();
   for (const ex of Object.values(day.exercises)) {
@@ -93,7 +122,10 @@ export function computeSorenessDue(program: Program, dayId: string): { muscle: s
   }
   if (!target) return [];
 
-  const todayMuscles = musclesWorked(target);
+  // Directly trained, NOT the synergist expansion -- see musclesTrainedDirectly. The history lookup below
+  // still uses the full expansion, because "when did I last train this" and "what am I training now" are
+  // different questions and only the second one shows up on screen as something to answer.
+  const todayMuscles = musclesTrainedDirectly(target);
   const priorDays = doneDays.filter((d) => d.date < target!.date).sort((a, b) => b.date.localeCompare(a.date));
 
   const due: { muscle: string; lastTrainedDaysAgo: number }[] = [];

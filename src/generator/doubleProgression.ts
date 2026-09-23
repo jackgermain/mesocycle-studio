@@ -13,7 +13,7 @@
 
 import type { Equipment } from "../data/types";
 import { DUMBBELL_WEIGHTS, BARBELL_WEIGHT, stepForEquipment } from "../screens/exerciseHelpers";
-import { bandForReps, leverPreferenceFor } from "./repRanges";
+import { bandForReps, leverPreferenceFor, repCostPct } from "./repRanges";
 
 export interface PerformedSet {
   reps: number;
@@ -142,9 +142,24 @@ export function addRepsToFirst(
  * sets is an effective 3.3 lb, and the leftover sets are what next week promotes. `promote` defaults to
  * all-but-one for that reason; pass the set count to move everything at once.
  *
- * **The promoted sets always land on the band floor**, however big the jump, because of P11 -- the first
- * exposure to an unfamiliar load is inhibited and simply will not produce the reps the arithmetic says
- * it should. *"They'd probably only be able to do eight partly because of this."*
+ * **The promoted sets pay for the jump IN PROPORTION TO IT.** This used to read "always land on the band
+ * floor, however big the jump", sourced from P11 -- the first exposure to an unfamiliar load is inhibited
+ * and will not produce the reps arithmetic says it should: *"they'd probably only be able to do eight
+ * partly because of this."*
+ *
+ * Every example that rule was written from is a DUMBBELL jump of 14-17%. Applied to a barbell it is
+ * nonsense, and Jack caught it on his own bench: 4x6 @ 225 came back as **230x3, 230x3, 230x3, 225x6** --
+ * a 2.2% load increase charged at half the reps. *"Last week I did 225 for four sets of six and now you're
+ * telling me this week to do 230 for this? This is a straight load of crap."* The band floor for 6 reps is
+ * 3 (the 3-6 strength zone), so the flat rule cut 24 working reps to 15 to add five pounds.
+ *
+ * The cost of a rep is already written down: `repCostPct` -- at 10 reps one rep is 10% of the set, at 6
+ * reps it is 16.7%. So the reps a jump costs is how many rep-widths the load moved, rounded UP, which is
+ * where P11's inhibition now lives: a jump always costs at least one rep, never a fixed fraction of the
+ * range.
+ *
+ *   30 -> 35 lb at 10 reps: 16.7% / 10% = 1.67 -> 2 reps -> **2x8 @ 35.** His own worked example, exactly.
+ *   225 -> 230 lb at 6 reps: 2.2% / 16.7% = 0.13 -> 1 rep -> **230x5**, not 230x3.
  *
  * What happens to the sets left behind is `holdRemainder`, and Jack has done it both ways:
  *   - 3x10 @ 30  ->  2x8 @ 35, **1x8** @ 30   (dropped them too)
@@ -166,9 +181,22 @@ export function jumpLoad(
 
   const n = opts.promote ?? Math.max(1, sets.length - 1);
   return sets.map((s, i) => {
-    if (i < n) return { load: target, reps: band.min };
-    return hold ? { ...s } : { load: s.load, reps: band.min };
+    if (i < n) return { load: target, reps: repsAfterJump(s.reps, s.load ?? heaviest, target, band) };
+    return hold ? { ...s } : { load: s.load, reps: repsAfterJump(s.reps, s.load ?? heaviest, target, band) };
   });
+}
+
+/** What a set's reps become when its load steps up, priced off how much of the set one rep is worth.
+ *
+ * Rounded UP so a jump always costs at least one rep: that is P11's inhibition, which is real but small,
+ * and it is the only part of "land on the band floor" worth keeping. Never below the band floor, and never
+ * above where the set already was -- a load increase does not buy reps. */
+export function repsAfterJump(reps: number, from: number, to: number, band: RepBand): number {
+  if (!(reps > 0) || !(from > 0) || to <= from) return reps;
+  const costOfOneRep = repCostPct(reps); // 100 / reps
+  const jumpPct = ((to - from) / from) * 100;
+  const lost = Math.max(1, Math.ceil(jumpPct / costOfOneRep));
+  return Math.max(band.min, reps - lost);
 }
 
 /** Bring every set up to the heaviest load already in use, without going past it.

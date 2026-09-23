@@ -44,15 +44,21 @@ test("asks when the same muscle comes round again", () => {
   assert.equal(back.lastTrainedDaysAgo, 4);
 });
 
-test("synergists come along, because they are trained again too", () => {
-  // Back day works biceps whether or not the program says "biceps", and the previous back day worked them
-  // as well — so they are a muscle being trained again and the question is a fair one. Documented here
-  // because it looks like over-asking until you know it is the synergist table doing its job.
+test("synergists are NOT asked about — only what is on the card today", () => {
+  /* This test used to assert the opposite, on the reasoning that a back day works biceps whether or not the
+   * program says biceps. The reasoning is fine; applying it to the QUESTION LIST was not. One chest
+   * exercise asked about chest, triceps and front delts; one back exercise asked about back, biceps, rear
+   * delts and forearms. Jack, on a Day 3 asking after eight muscles:
+   *
+   *   "For the love of God, if I have to remind you one more time to not ask me for soreness feedback on a
+   *    day that I'm not training the body part I'm gonna crash out... there's no chest training, no triceps."
+   *
+   * The table is an inference of mine. An inference does not get to invent a question. */
   const p = program([
     { number: 2, days: [day("tue", "2026-09-08", "Back", "done"), day("sat", "2026-09-12", "Back", "upcoming")] },
   ]);
   const asked = computeSorenessDue(p, "sat").map((d) => d.muscle);
-  assert.ok(asked.includes("Biceps"), `expected biceps among ${asked.join(", ")}`);
+  assert.deepEqual(asked, ["Back"], "a back day asks about back, and nothing else");
 });
 
 test("asks in week 0 and week 1 too — Jack's week, reproduced", () => {
@@ -70,12 +76,31 @@ test("asks in week 0 and week 1 too — Jack's week, reproduced", () => {
     ]);
     const due = computeSorenessDue(p, "wed");
     const asked = due.map((d) => d.muscle);
-    assert.ok(asked.includes("Biceps"), `week ${n}: biceps should be asked, got [${asked.join(", ")}]`);
-    // This one needs the hammer-curl synergist as well as the gate being gone: a hammer curl is tagged
-    // biceps, and nothing linked it to forearm work until it was matched by name.
-    assert.ok(asked.includes("Forearms"), `week ${n}: forearms should be asked, got [${asked.join(", ")}]`);
-    assert.equal(due.find((d) => d.muscle === "Biceps")!.lastTrainedDaysAgo, 2);
+    /* Wednesday's reverse curls are tagged Forearms, so Forearms is what gets asked — and it only counts as
+     * a REPEAT because Monday's hammer curls are credited with forearm work by name. That is the synergist
+     * table doing its job on the side it belongs on: the history, never the question list. His words were
+     * "hammer curls on Monday and reverse curls work similar muscle groups", and the tissue they actually
+     * share is the forearm, not the biceps. */
+    assert.deepEqual(asked, ["Forearms"], `week ${n}: got [${asked.join(", ")}]`);
+    assert.equal(due.find((d) => d.muscle === "Forearms")!.lastTrainedDaysAgo, 2);
   }
+});
+
+test("training a muscle directly twice in a week is always asked about — his original complaint", () => {
+  // "Today I trained biceps for the second time this week, and I was not prompted a question this morning."
+  // Direct both times, so the narrowed rule still catches it.
+  const p = program([
+    {
+      number: 1,
+      days: [
+        day("mon", "2026-09-14", "Biceps", "done", "Hammer Curl"),
+        day("wed", "2026-09-16", "Biceps", "upcoming", "Dumbbell Curl"),
+      ],
+    },
+  ]);
+  const due = computeSorenessDue(p, "wed");
+  assert.deepEqual(due.map((d) => d.muscle), ["Biceps"]);
+  assert.equal(due[0].lastTrainedDaysAgo, 2);
 });
 
 test("a curl that is not a hammer curl does not count as forearm work", () => {
@@ -90,9 +115,9 @@ test("a curl that is not a hammer curl does not count as forearm work", () => {
       ],
     },
   ]);
-  const asked = computeSorenessDue(p, "wed").map((d) => d.muscle);
-  assert.ok(!asked.includes("Forearms"), `forearms should not be asked after spider curls, got [${asked.join(", ")}]`);
-  assert.ok(asked.includes("Biceps"), "biceps still should be — a reverse curl works them");
+  // Wednesday is a reverse-curl day, so Forearms is the only thing on the card — but a spider curl on
+  // Monday is not forearm work, so there is no earlier session to compare against and nothing is asked.
+  assert.deepEqual(computeSorenessDue(p, "wed"), []);
 });
 
 test("a muscle never trained before is not asked about", () => {
@@ -100,7 +125,7 @@ test("a muscle never trained before is not asked about", () => {
   assert.deepEqual(computeSorenessDue(p, "b"), []);
 });
 
-test("a category is never asked about, but still expands into the muscles it trains", () => {
+test("a category is never asked about, and its inferred expansion is not either", () => {
   /* Jack, shown "FULL BODY — LAST TRAINED 7 DAYS AGO" with a 1-5 soreness scale under it: "Remove feedback
    * for full body." There is no full-body soreness on a 1-5 scale, and no volume rule could act on the
    * answer -- a cut takes one set off one exercise for one muscle.
@@ -111,12 +136,9 @@ test("a category is never asked about, but still expands into the muscles it tra
     { number: 1, days: [day("w1", "2026-09-14", "Full body", "done", "Hip Clean")] },
     { number: 2, days: [day("w2", "2026-09-21", "Full body", "upcoming", "Hip Clean")] },
   ]);
-  const asked = computeSorenessDue(p, "w2").map((d) => d.muscle);
-  assert.ok(!asked.includes("Full body"), `never asked as a muscle, got ${asked.join(", ")}`);
-  // Still expanded: a power clean really does fatigue these, and each is a real muscle with a real answer.
-  // One level only -- Back is added, but Back's own synergists (biceps, rear delts, forearms) are not.
-  // That is the existing conservative design and worth keeping: a clean is not a row.
-  assert.deepEqual([...asked].sort(), ["Back", "Glutes", "Quads", "Traps"]);
+  // Nothing is asked: the only tag on the movement is a category, and the table's guess at what a clean
+  // fatigues is an inference, which no longer reaches the question list.
+  assert.deepEqual(computeSorenessDue(p, "w2"), []);
 });
 
 test("cardio does not ask whether your full body has healed", () => {
