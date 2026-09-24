@@ -15,7 +15,7 @@ import { NutritionForm } from "../shared/NutritionForm";
 import { AutoNutritionToggle } from "../shared/AutomationToggles";
 import FoodSearchSheet from "./FoodSearchSheet";
 import type { FoodItem } from "../data/foodDatabase";
-import type { PortionCategory, LoggedFoodItem, MealSection } from "../data/types";
+import type { PortionCategory, LoggedFoodItem, MealSection, ClientProfile } from "../data/types";
 import { dailyDeltaKcal, rateLabel, weeklyChangeLb } from "../shared/nutritionPlan";
 
 const PORTION_ICON: Record<PortionCategory, string> = {
@@ -427,6 +427,8 @@ export default function Nutrition() {
           </div>
         </div>
 
+        <LastAdjustment profile={profile} />
+
         <AutoNutritionToggle />
 
         {/* On the tab, not behind the ⋮ menu. Once tracking is set up there was no visible way back to the
@@ -799,6 +801,49 @@ function PortionsNutrition({
       )}
     </div>
   );
+}
+
+/** What the weekly review last did to the calories, and why.
+ *
+ * The adjustment applies on its own and used to say so in a toast that clears after five seconds. Open the
+ * tab without looking and your calories had moved with nothing on screen ever explaining it — the change is
+ * stored, it just had nowhere to be read. Jack: *"do my nutrition programming and actually set up the
+ * algorithm, and make my suggestions and why."* The why is the half that was missing.
+ *
+ * Reads the stored record rather than re-running the review: re-running would return null inside the
+ * seven-day cooldown, which is exactly the week this needs to be readable in. */
+function LastAdjustment({ profile }: { profile: ClientProfile }) {
+  const last = profile.lastNutritionAdjustment;
+  if (!last) return null;
+  const up = last.deltaKcal > 0;
+  const reason =
+    last.kind === "taper" ? "losing faster than target"
+      : last.kind === "followup" ? "the last change did not move the scale enough"
+        : up ? "the scale was drifting down" : "the scale was drifting up";
+  return (
+    <div className="cell" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+      <i
+        className={`ph ph-trend-${up ? "up" : "down"}`}
+        style={{ fontSize: 16, marginTop: 1, color: "var(--color-accent-300)" }}
+      />
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 12.5, fontWeight: 600 }}>
+          Maintenance {up ? "+" : "−"}{Math.abs(last.deltaKcal)} kcal
+        </div>
+        <div className="mu" style={{ marginTop: 3, lineHeight: 1.5 }}>
+          {dayMonth(last.date)} — {reason}. Your targets follow from it.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** "21 Sep", from an ISO date, without pulling in a formatter. Built off the parts rather than
+ * `new Date(iso)`, which parses a bare date as UTC and can show the day before in a western timezone. */
+function dayMonth(iso: string): string {
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const [, m, d] = iso.split("-").map(Number);
+  return MONTHS[m - 1] ? `${d} ${MONTHS[m - 1]}` : iso;
 }
 
 function MacroCol({ label, value, target, color, valueColor }: { label: string; value: number; target: number; color: string; valueColor?: string }) {
