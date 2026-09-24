@@ -13,7 +13,6 @@ import { applyRecoveryToNextWeek, describeRecoveryEdit } from "../shared/sorenes
 import { isMajorLift } from "../shared/majorLift";
 import { ownsTheirProgressions } from "../shared/selfDirected";
 import { coachOnTheOtherEnd } from "../shared/coachName";
-import { judgeVolume, targetRecoveryDay } from "../generator/recoveryWindow";
 import { muscleColorVar } from "../shared/muscleColor";
 
 export default function Soreness({ dayId, due }: { dayId: string; due: { muscle: string; lastTrainedDaysAgo: number }[] }) {
@@ -22,14 +21,11 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
   const nav = useNavigate();
   const found = findDay(state.program, dayId);
   const [answers, setAnswers] = useState<Record<string, number>>({});
-  // How many days after the last session the soreness stopped. Only asked when they say it healed --
-  // "still sore" is already unambiguous and needs no follow-up.
-  const [recovered, setRecovered] = useState<Record<string, number>>({});
-
-  const healed = (m: string) => (answers[m] ?? 0) >= 4;
-  const allAnswered = due.every(
-    (m) => answers[m.muscle] !== undefined && (!healed(m.muscle) || recovered[m.muscle] !== undefined),
-  );
+  /* There used to be a second question under every "healed" answer -- "how long did the soreness last?",
+   * with up to eight day-buttons. Jack: "there's too much feedback... when I click on fully healed it asks
+   * me another button after that, so let's remove that second button altogether. We don't need that on
+   * every body part." One tap per muscle now, and that is the whole check. */
+  const allAnswered = due.every((m) => answers[m.muscle] !== undefined);
 
   function submit() {
     const record: NonNullable<TrainingDay["sorenessAnswers"]> = {};
@@ -37,7 +33,6 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
       record[m.muscle] = {
         severity: answers[m.muscle],
         lastTrainedDaysAgo: m.lastTrainedDaysAgo,
-        ...(recovered[m.muscle] !== undefined ? { recoveredOnDay: recovered[m.muscle] } : {}),
       };
     }
     /* `adjustVolume` is the auto-programming switch reaching the recovery rule. When it is on, the answers
@@ -73,7 +68,7 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
     const dayLabel = found ? dayDisplayTitle(found.day) : null;
     // The edit goes on the muscle's own signal, so the desk shows the answer and what it changed together
     // rather than leaving a coach to work out which session moved.
-    const signals = buildSorenessSignals(due, answers, recovered, dayLabel).map((s) => {
+    const signals = buildSorenessSignals(due, answers, dayLabel).map((s) => {
       const e = edits.find((x) => x.muscle === s.muscle);
       return e ? { ...s, note: `${s.note} — ${describeRecoveryEdit(e)}` } : s;
     });
@@ -145,41 +140,6 @@ export default function Soreness({ dayId, due }: { dayId: string; due: { muscle:
               })}
             </div>
 
-            {/* The pre-session answer alone cannot tell "healed yesterday" from "healed on Tuesday", and
-                those mean opposite things for volume -- the first is correct, the second means a whole
-                day of growth went unbought. So ask, but only when they have said it healed. */}
-            {healed(m.muscle) && (
-              <div style={{ marginTop: 8 }}>
-                <div className="mu" style={{ fontSize: 12.5, marginBottom: 6 }}>
-                  How long did the soreness last?
-                </div>
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                  {Array.from({ length: m.lastTrainedDaysAgo + 1 }, (_, d) => d).map((d) => {
-                    const on = recovered[m.muscle] === d;
-                    const label = d === 0 ? "Never" : d === 1 ? "1 day" : `${d} days`;
-                    return (
-                      <button
-                        key={d}
-                        className={`pill-opt${on ? " on" : ""}`}
-                        onClick={() => setRecovered((r) => ({ ...r, [m.muscle]: d }))}
-                        // nowrap: a wrapping label makes one pill twice the height of its neighbours and the row
-                        // stops reading as a single set of options.
-                        style={{ height: 38, paddingInline: 12, fontSize: 12.5, whiteSpace: "nowrap" }}
-                      >
-                        {label}
-                      </button>
-                    );
-                  })}
-                </div>
-                {recovered[m.muscle] !== undefined &&
-                  judgeVolume(m.lastTrainedDaysAgo, recovered[m.muscle]) === "add-volume" && (
-                    <div className="mu" style={{ fontSize: 11.5, marginTop: 6, lineHeight: 1.5 }}>
-                      Recovered early — ideally it would settle around day{" "}
-                      {targetRecoveryDay(m.lastTrainedDaysAgo)}. Your coach will see there is room for more.
-                    </div>
-                  )}
-              </div>
-            )}
           </div>
         ))}
 

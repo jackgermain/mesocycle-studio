@@ -58,15 +58,24 @@ export function judgeVolume(gapDays: number, recoveredOnDay: number): VolumeVerd
 /** The verdict from what the app records today: a 1-5 soreness score taken on the day of the next
  * session for that muscle.
  *
- * Honest about its limits. A score of 5 on session day means the muscle healed *at some point* in the
- * gap -- which is the target case and the healed-too-early case both, and one reading cannot separate
- * them. Only the failure at the far end is unambiguous. Distinguishing "healed Thursday" from "healed
- * Tuesday" needs the client to say *when* it stopped being sore, which is one extra question and the
- * single highest-value thing that could be added to the check-in. */
+ * This WAS honest about its limits by returning "ambiguous" for a 5: the muscle healed at some point in
+ * the gap, which is the on-target case and the healed-far-too-early case both, and one reading cannot
+ * separate them. The fix was a follow-up question asking when the soreness stopped.
+ *
+ * That question is gone. Jack: *"There's too much feedback. When I click on fully healed it asks me another
+ * button after that, so let's remove that second button altogether. We don't need that on every body part."*
+ *
+ * So "ambiguous" would now be the answer to EVERY 5 forever, and `volumeActionFor` treats it as no change.
+ * Soreness could then only ever take volume AWAY -- a one-way ratchet down across a block, which is a worse
+ * failure than the imprecision it was protecting against. A 5 is read as room for more.
+ *
+ * The guard against over-reading it lives in `volumeActionFor` instead, and is stronger: it wants TWO
+ * consecutive clear readings before a set goes on, where one bad reading takes a set off immediately.
+ * Cautious in the direction that matters. */
 export function judgeFromSoreness(score: number): VolumeVerdict {
   if (score < SORENESS_VERY_SORE) return "reduce-volume";
   if (score < SORENESS_HEALED) return "on-target";
-  return "ambiguous";
+  return "add-volume";
 }
 
 /** How to act on a verdict, as a change to the muscle's working sets next session.

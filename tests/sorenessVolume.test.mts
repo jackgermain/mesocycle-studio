@@ -71,10 +71,19 @@ test("healing early, or never getting sore at all, is a day of growth left unbou
   assert.equal(verdictForAnswer({ severity: 5, lastTrainedDaysAgo: 4, recoveredOnDay: 0 }), "add-volume");
 });
 
-test("a 5 with no when is honestly ambiguous, not an invitation to add volume", () => {
-  // Answers saved before the follow-up question existed. "Healed at some point in four days" covers both
-  // the target case and the healed-far-too-early case, and one reading cannot separate them.
-  assert.equal(verdictForAnswer({ severity: 5, lastTrainedDaysAgo: 4 }), "ambiguous");
+test("a 5 on its own now means room for more", () => {
+  /* This asserted "ambiguous" while a follow-up question existed to resolve it -- "healed at some point in
+   * four days" covers both the on-target case and the healed-far-too-early case. Jack removed that
+   * question: "there's too much feedback... let's remove that second button altogether."
+   *
+   * Ambiguous would therefore be the answer to every 5 forever, and volumeActionFor treats it as no change,
+   * so soreness could only ever take volume AWAY. A one-way ratchet down across a block is a worse failure
+   * than the imprecision. The guard moved to volumeActionFor, where it is stronger: two consecutive clear
+   * readings to add a set, one bad reading to take one off. */
+  assert.equal(verdictForAnswer({ severity: 5, lastTrainedDaysAgo: 4 }), "add-volume");
+  assert.equal(verdictForAnswer({ severity: 4, lastTrainedDaysAgo: 4 }), "on-target");
+  assert.equal(verdictForAnswer({ severity: 3, lastTrainedDaysAgo: 4 }), "on-target");
+  assert.equal(verdictForAnswer({ severity: 2, lastTrainedDaysAgo: 4 }), "reduce-volume");
 });
 
 // --- history ------------------------------------------------------------------------------------------

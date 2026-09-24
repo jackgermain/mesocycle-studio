@@ -1,5 +1,4 @@
 import { isSorenessAlerting } from "./signalScales";
-import { judgeVolume } from "../generator/recoveryWindow";
 import { sorenessWording } from "../data/mockData";
 
 /** The signals a pre-session soreness check sends: one per muscle answered, whatever the answer.
@@ -27,7 +26,7 @@ export interface SorenessSignal {
   /** The real 1-5 answer. The early case used to be forced to 5; it is not any more. */
   severity: number;
   note: string;
-  /** `gapDays=N`, plus `recoveredOnDay=N` when that follow-up was answered. */
+  /** `gapDays=N`. Used to also carry `recoveredOnDay=N` from a follow-up question that no longer exists. */
   detail: string;
   dayLabel: string | null;
 }
@@ -35,7 +34,6 @@ export interface SorenessSignal {
 export function buildSorenessSignals(
   due: SorenessDue[],
   answers: Record<string, number>,
-  recovered: Record<string, number>,
   dayLabel: string | null,
 ): SorenessSignal[] {
   const days = (n: number) => `${n} day${n === 1 ? "" : "s"}`;
@@ -44,7 +42,6 @@ export function buildSorenessSignals(
     .map((m) => {
       const severity = answers[m.muscle];
       const gap = m.lastTrainedDaysAgo;
-      const recoveredOnDay = recovered[m.muscle];
       const base = { kind: "soreness" as const, muscle: m.muscle, severity, dayLabel };
 
       // Still sore on the day the muscle comes round again: the last session did more damage than the gap
@@ -53,18 +50,9 @@ export function buildSorenessSignals(
         return { ...base, note: `Still sore ${days(gap)} after training it`, detail: `gapDays=${gap}` };
       }
 
-      // Healed, and they said when — which is what separates "on target" from "a day of growth unbought".
-      if (recoveredOnDay !== undefined) {
-        const early = judgeVolume(gap, recoveredOnDay) === "add-volume";
-        const when = recoveredOnDay === 0 ? "Never got sore" : `Healed on day ${recoveredOnDay} of a ${gap}-day gap`;
-        return {
-          ...base,
-          note: `${when} — ${early ? "room for another set" : "on target"}`,
-          detail: `recoveredOnDay=${recoveredOnDay};gapDays=${gap}`,
-        };
-      }
-
-      // In between — a little sore, not yet healed. Worded with the same labels the client picked from.
+      // Everything else, worded with the same label the client picked from. There used to be a branch here
+      // for "healed, and they said when", reading a follow-up question that has since been removed -- Jack:
+      // "there's too much feedback... let's remove that second button altogether."
       return { ...base, note: `${sorenessWording[severity - 1]}, ${days(gap)} after training it`, detail: `gapDays=${gap}` };
     });
 }
