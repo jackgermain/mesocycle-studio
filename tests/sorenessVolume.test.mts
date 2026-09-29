@@ -197,18 +197,53 @@ test("a session already started is never rewritten", () => {
   assert.equal(program, p, "the same program comes back, untouched");
 });
 
-test("recovering early adds the set to an accessory, never to the heavy lift", () => {
-  // Jack: "you're already milking out as much stimulus as you can early on in the session from those
-  // heavier lifts. That's why they're there in the first place, as priorities."
+test("recovering early puts back a set soreness took off, and never more than that", () => {
+  /* This used to ADD a set outright. Jack, on a leg curl: "I did two sets of 14 last time. If I had a
+   * third set it's going to absolutely fry me. Why not add a little bit of load and keep the volume the
+   * same?" A third set on a two-set movement is +50% volume for that exercise in a week.
+   *
+   * So the rule is bounded on both sides now: it can take a set away and give that same set back, and it
+   * can never push an exercise past what was programmed. Load is the other lever and it progresses every
+   * week on its own. */
+  const p: any = twoWeeks(
+    [monday("mon", "2026-09-10", healedOn(1, 4)), friday("fri", "2026-09-14", healedOn(1, 4))],
+    [monday("mon2", "2026-09-17"), friday("fri2", "2026-09-21")],
+  );
+  const ext = Object.values<any>(
+    p.weeks[1].days.find((d: any) => d.id === "mon2").exercises,
+  ).find((e: any) => e.name === "Leg Extension");
+  // A set an earlier week's soreness reading took off. The reason string is how it is identified.
+  ext.sets[ext.sets.length - 1].removed = { reason: "Still sore — volume pulled back on Quads" };
+  assert.equal(setsOf(p, "mon2", "Leg Extension").length, 2, "down a set before the reading");
+
+  const { program, edits } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+  assert.equal(edits[0]?.sets, 1);
+  assert.equal(setsOf(program, "mon2", "Leg Extension").length, 3, "the cut set comes back");
+  assert.equal(setsOf(program, "mon2", "Barbell Squat").length, 3, "and nothing is added anywhere");
+});
+
+test("recovering early on a muscle nothing was cut from changes no volume at all", () => {
   const p = twoWeeks(
     [monday("mon", "2026-09-10", healedOn(1, 4)), friday("fri", "2026-09-14", healedOn(1, 4))],
     [monday("mon2", "2026-09-17"), friday("fri2", "2026-09-21")],
   );
-  const { program, edits } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
-  assert.equal(edits[0]?.sets, 1);
-  assert.equal(edits[0].exercise, "Leg Extension");
-  assert.equal(setsOf(program, "mon2", "Leg Extension").length, 4);
-  assert.equal(setsOf(program, "mon2", "Barbell Squat").length, 3, "the squat is not where volume is added");
+  const { program } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+  assert.equal(setsOf(program, "mon2", "Leg Extension").length, 3, "still three — no fourth set invented");
+  assert.equal(setsOf(program, "mon2", "Barbell Squat").length, 3);
+});
+
+test("a set removed for any other reason is not the recovery rule's to give back", () => {
+  // Ran out of time, or a coach dropped it deliberately. Only this rule's own cuts are restored.
+  const p: any = twoWeeks(
+    [monday("mon", "2026-09-10", healedOn(1, 4)), friday("fri", "2026-09-14", healedOn(1, 4))],
+    [monday("mon2", "2026-09-17"), friday("fri2", "2026-09-21")],
+  );
+  const ext = Object.values<any>(
+    p.weeks[1].days.find((d: any) => d.id === "mon2").exercises,
+  ).find((e: any) => e.name === "Leg Extension");
+  ext.sets[ext.sets.length - 1].removed = { reason: "Ran out of time" };
+  const { program } = applyRecoveryToNextWeek(p, "fri", isMajorLift, (d) => d.label);
+  assert.equal(setsOf(program, "mon2", "Leg Extension").length, 2, "left where it was put");
 });
 
 test("only 'Very sore' and 'Sore' pull volume back — slightly sore is left alone", () => {

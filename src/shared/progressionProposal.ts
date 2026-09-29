@@ -341,6 +341,38 @@ export function progressionDueDay(program: Program, todayIso: string, withinDays
  *
  * Fourteen days rather than eight: a full week of training plus the week it feeds, which is the span this
  * has to reach across to do what he asked. Anything older belongs to a block that has moved on. */
+/** Bump whenever the arithmetic that turns a logged session into next week's numbers changes.
+ *
+ * 2 — `repsAfterJump`: a promoted set pays for a load jump in proportion to its size instead of falling to
+ *     the band floor. The old rule turned 4x6 @ 225 into 230x3 for a 2.2% step.
+ * 3 — recovering well restores a set soreness removed rather than adding one on top.
+ */
+export const PROGRESSION_RULE_VERSION = 3;
+
+/** Sessions already programmed forward by an older version of the rules, whose following week nobody has
+ * started yet, so the numbers can still be corrected.
+ *
+ * This is the general answer to a problem this project keeps hitting: a derived value is computed once,
+ * written into the jsonb blob, and a later fix to the formula reaches nobody. Recomputing is safe to repeat
+ * because a proposal is derived from the SOURCE session's logged sets, never from what is currently written
+ * into the target -- so running it twice produces the same answer as running it once. */
+export function progressionsNeedingRecompute(program: Program): string[] {
+  const started = (day: TrainingDay) => Object.values(day.exercises).some((e) => e.sets.some((s) => s.checked));
+  const out: string[] = [];
+  program.weeks.forEach((week, wi) => {
+    week.days.forEach((day, di) => {
+      if (!day.progressionAppliedAt) return;
+      if ((day.progressionRuleVersion ?? 1) >= PROGRESSION_RULE_VERSION) return;
+      const following = program.weeks[wi + 1];
+      const target = following?.days.find((d) => d.code === day.code) ?? following?.days[di];
+      // Nothing to correct once it has been trained -- and applyProgressionToProgram would refuse anyway.
+      if (!target || target.status === "done" || started(target)) return;
+      out.push(day.id);
+    });
+  });
+  return out;
+}
+
 export function autoProgressDueDays(program: Program, todayIso: string, withinDays = 14): string[] {
   const cutoff = shiftIso(todayIso, -withinDays);
   return program.weeks

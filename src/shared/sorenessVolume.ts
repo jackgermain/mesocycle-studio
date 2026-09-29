@@ -123,6 +123,12 @@ export function describeRecoveryEdit(e: RecoveryEdit): string {
   return `${e.muscle} still sore — ${where} holds its weight; every ${e.muscle} movement there is a major lift, so no set comes off.`;
 }
 
+/** The exact reason string a soreness cut writes, so restoring can find its own work and nothing else's.
+ * A set someone removed themselves for running out of time is not this rule's to give back. */
+function cutReason(muscle: string): string {
+  return `Still sore — volume pulled back on ${muscle}`;
+}
+
 function shift(iso: string, days: number): string {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
@@ -213,16 +219,14 @@ export function applyRecoveryToNextWeek(
     if (move && action.sets !== 0) {
       const sets = working(move);
       if (action.sets < 0 && sets.length > 1) {
-        sets[sets.length - 1].removed = { reason: `Still sore — volume pulled back on ${muscle}` };
+        sets[sets.length - 1].removed = { reason: cutReason(muscle) };
       } else if (action.sets > 0) {
-        const last = sets[sets.length - 1];
-        const copy = structuredClone(last);
-        copy.id = `${last.id}-recovery`;
-        copy.checked = false;
-        copy.actual = null;
-        delete copy.effort;
-        delete copy.removed;
-        move.sets.push(copy);
+        // RESTORE, never add. Only a set this rule took off comes back, so recovering well returns the
+        // exercise to what was programmed and can never push it past it -- Jack: "I did two sets of 14 last
+        // time. If I had a third set it's going to absolutely fry me. Why not add a little bit of load and
+        // keep the volume the same?" The load is the other lever and it progresses on its own every week.
+        const putBack = move.sets.find((s) => s.removed?.reason === cutReason(muscle));
+        if (putBack) delete putBack.removed;
       }
     }
 

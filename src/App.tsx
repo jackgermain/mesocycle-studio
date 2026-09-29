@@ -30,6 +30,7 @@ import { CoachAiFab } from "./coach/components/CoachAiFab";
 import { reconcileLiveProgram, diffProgram, summarizeProgramForAi } from "./shared/liveProgramAiEdit";
 import {
   autoProgressDueDays, autoReviewedPayload, programFollowingWeek, progressionDueDay,
+  progressionsNeedingRecompute,
 } from "./shared/progressionProposal";
 import { sendProgressionProposals, sendProgressionRecord } from "./shared/progressionSignals";
 import { ownsTheirProgressions } from "./shared/selfDirected";
@@ -203,6 +204,23 @@ function ClientLayout() {
     if (changed.length === 0 && cleaned.removed.length === 0) return;
     dispatch({ type: "SET_PROGRAM", program });
   }, [account, selfDirected, state.program, state.profile.autoProgressions, dispatch]);
+
+  /* Sessions programmed forward by an older version of the arithmetic, recomputed in place.
+   *
+   * A proposal is written into next week once and never looked at again, so a bug in the rules stays frozen
+   * in the program long after the rules are fixed — Jack was still looking at a bench set at 230x3 a day
+   * after that was corrected. Safe to repeat: a proposal is derived from the SOURCE session's logged sets,
+   * so recomputing gives the same answer as computing it the first time.
+   *
+   * No signal goes out. Nothing new happened; the same session is being read again by better rules. */
+  useEffect(() => {
+    if (!account || !selfDirected) return;
+    if (state.profile.autoProgressions === false) return;
+    const stale = progressionsNeedingRecompute(state.program);
+    if (stale.length === 0) return;
+    const { program } = programFollowingWeek(state.program, stale, state.profile.units);
+    dispatch({ type: "AUTO_PROGRESS", dayIds: stale, program });
+  }, [account, selfDirected, state.program, state.profile.units, state.profile.autoProgressions, dispatch]);
 
   useEffect(() => {
     if (!account || !selfDirected) return;

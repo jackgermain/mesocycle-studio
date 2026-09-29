@@ -13,6 +13,7 @@ import { backfillMealDates } from "../shared/mealDays";
 import { applyRecoveryToNextWeek } from "../shared/sorenessVolume";
 import { isMajorLift } from "../shared/majorLift";
 import { reorderAcrossBlock } from "../shared/reorderDay";
+import { PROGRESSION_RULE_VERSION } from "../shared/progressionProposal";
 import { insertWarmupSet } from "../shared/programEdits";
 import { addExerciseToProgram } from "../shared/addExercise";
 
@@ -388,7 +389,11 @@ function reducer(state: AppState, action: Action): AppState {
       const at = new Date().toISOString();
       for (const week of program.weeks) {
         for (const day of week.days) {
-          if (action.dayIds.includes(day.id)) day.progressionAppliedAt = at;
+          if (!action.dayIds.includes(day.id)) continue;
+          day.progressionAppliedAt = at;
+          // Stamped so a later fix to the arithmetic can find these and recompute them. Without it a bad
+          // number stays frozen in the program forever -- see TrainingDay.progressionRuleVersion.
+          day.progressionRuleVersion = PROGRESSION_RULE_VERSION;
         }
       }
       return { ...state, program };

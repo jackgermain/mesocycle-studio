@@ -146,10 +146,26 @@ test("holding steady with a flat scale is success, not a stall", () => {
 });
 
 test("holding steady while drifting up pulls calories (MY CALL — N12 has no hold rule)", () => {
+  // 1.6 lb a week on a 203 lb frame is 0.8%/week — a real slide, not scale noise.
   const r = weeklyIntakeReview(profile({ rateTargetPct: 0 }), DRIFTING_UP, MONDAY)!;
   assert.equal(r.kind, "drift");
-  assert.equal(r.deltaKcal, -150, "the correction opposes the drift");
-  assert.equal(r.maintenanceKcal, 3230);
+  // 100, not the 150 stall step it used to borrow: a drift off flat wants a nudge, not a plan change.
+  assert.equal(r.deltaKcal, -100, "the correction opposes the drift");
+  assert.equal(r.maintenanceKcal, 3280);
+});
+
+test("holding steady within scale noise is left completely alone", () => {
+  /* The bug Jack hit: "Why the hell is my auto programming pulling three hundred calories from my diet
+   * when I've maintained basically the same weight over the last two weeks?" The drift branch was reusing
+   * STALL_PCT_PER_WEEK, 0.1% — about 0.2 lb a week at his bodyweight, which is less than one trip to the
+   * bathroom. He was charged the full 150 stall step twice in consecutive weeks for holding his weight.
+   *
+   * Half a pound a week is 0.25% here: under the 0.3% band, so nothing happens. */
+  const NOISE = [
+    w("2026-09-07", 203), w("2026-09-09", 203.2), w("2026-09-11", 202.9),
+    w("2026-09-14", 203.5), w("2026-09-16", 203.6), w("2026-09-18", 203.5),
+  ];
+  assert.equal(weeklyIntakeReview(profile({ rateTargetPct: 0 }), NOISE, MONDAY), null);
 });
 
 test("nothing fires twice inside the cooldown week", () => {

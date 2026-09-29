@@ -144,12 +144,22 @@ export function volumeActionFor(recent: VolumeVerdict[]): VolumeAction {
   if (latest === "reduce-volume") {
     return { sets: -1, swap: false, reason: "Still sore at the next session. Take a set off now." };
   }
+  /* Recovering well PUTS BACK a set soreness took off. It does not add one on top.
+   *
+   * This used to add a set outright, and Jack caught what that does to an exercise already working at high
+   * reps: *"I did two sets of 14 last time. If I had a third set it's going to absolutely fry me. Why not
+   * add a little bit of load and keep the volume the same?"* A third set on a two-set movement is +50%
+   * volume for that exercise in one week, which is not a nudge.
+   *
+   * Adding load is the other lever and it already runs every week off the how-hard rating — recovering well
+   * does not need to duplicate it. So the volume rule is now bounded on both sides: soreness can take a set
+   * away and give that same set back, and it can never push an exercise past what was programmed. */
   const clear = recent.slice(0, CONFIRMATIONS_TO_ADD);
   if (clear.length === CONFIRMATIONS_TO_ADD && clear.every((v) => v === "add-volume")) {
     return {
       sets: 1,
       swap: false,
-      reason: `Recovered early ${CONFIRMATIONS_TO_ADD} sessions running. Add a set.`,
+      reason: `Recovered early ${CONFIRMATIONS_TO_ADD} sessions running. Any set soreness took off goes back on; the load keeps progressing on its own.`,
     };
   }
   if (latest === "add-volume") {

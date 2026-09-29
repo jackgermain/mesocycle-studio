@@ -132,6 +132,17 @@ export interface TrainingDay {
    * when auto programming arrived it skipped all of them as "already handled" and week 2 kept its original
    * numbers. A session that was only ever proposed still has its progression to apply. */
   progressionAppliedAt?: string;
+  /** Which version of the progression rules wrote those numbers.
+   *
+   * The whole point of storing it: a proposal is computed once and written into next week, so a bug in the
+   * arithmetic stays frozen in everyone's program long after the arithmetic is fixed. Jack was still
+   * looking at a bench set at 230x3 a day after the rule that produced it was corrected, because his week
+   * was already marked applied and nothing ever looked at it again.
+   *
+   * Absent means version 1. When PROGRESSION_RULE_VERSION moves past the stored number, any session whose
+   * following week has not been started yet is recomputed from its own logged sets -- which is safe to
+   * repeat because a proposal is derived from what was lifted, not from what is currently written. */
+  progressionRuleVersion?: number;
 }
 
 export interface TrainingWeek {

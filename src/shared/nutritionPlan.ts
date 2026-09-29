@@ -753,6 +753,27 @@ export const STALL_MIN_SPAN_DAYS = 14;
 /** MY CALL: what counts as "no weight gain or loss". Daily bodyweight swings on water and food volume are
  * larger than a week of real change, so this is a rate band around zero rather than a literal zero. */
 export const STALL_PCT_PER_WEEK = 0.1;
+
+/** MY CALL: how far a MAINTENANCE goal can drift before it is worth correcting.
+ *
+ * Deliberately NOT `STALL_PCT_PER_WEEK`, which is what it used to be. The two numbers answer opposite
+ * questions and only look alike. On a cut, moving less than 0.1%/week means the diet has stopped working
+ * and the tight band is right, because movement is what you want. On maintenance, moving less than X means
+ * it IS working, so the band has to be at least as wide as the noise you would shrug at.
+ *
+ * At 0.1% it was not. Jack, at roughly 200 lb: *"why the hell is my auto programming pulling three hundred
+ * calories from my diet when I've maintained basically the same weight over the last two weeks?"* — 0.1% of
+ * 200 lb is 0.2 lb a week, which is less than one trip to the bathroom. He was flagged as drifting twice in
+ * consecutive weeks, at the 150 kcal STALL step each time, for holding his weight.
+ *
+ * 0.3% is about 0.6 lb a week, so roughly 1.2 lb across the two weeks it is measured over — real noise
+ * tolerated, a genuine 2.5 lb-a-month slide still caught. */
+export const MAINTENANCE_DRIFT_PCT_PER_WEEK = 0.3;
+
+/** MY CALL: the nudge for a maintenance drift, and much smaller than the stall step it used to borrow.
+ * A stall means the plan has stopped working and needs a real change; a drift off flat needs a correction
+ * proportional to a drift. Jack's own later ruling on step sizes: "just 50 cal to 100 cal changes". */
+export const MAINTENANCE_DRIFT_ADJUST_KCAL = 100;
 /** MY CALL: "taper down on progress" — the recent trend has fallen to under half of the fuller one. */
 export const TAPER_FRACTION = 0.5;
 /** The shorter window the recent trend is read over, against RATE_WINDOW_DAYS for the fuller one. */

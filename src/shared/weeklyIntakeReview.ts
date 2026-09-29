@@ -10,6 +10,8 @@ import {
   LATE_STALL_ADJUST_KCAL,
   STALL_ADJUST_KCAL,
   STALL_PCT_PER_WEEK,
+  MAINTENANCE_DRIFT_PCT_PER_WEEK,
+  MAINTENANCE_DRIFT_ADJUST_KCAL,
   round,
   type AdjustmentKind,
   type ObservedRate,
@@ -151,10 +153,11 @@ export function weeklyIntakeReview(
    * read the drift as "moving the wrong way" and decline to act, which is the right answer for a goal that
    * has a direction and the wrong one for a goal that does not. */
   if (goal === null) {
-    if (Math.abs(overall.pctPerWeek) < STALL_PCT_PER_WEEK) return null;
+    // Its OWN band and its OWN step -- see MAINTENANCE_DRIFT_PCT_PER_WEEK. Borrowing the stall numbers
+    // read holding steady as a problem and charged it the full stall correction, twice.
+    if (Math.abs(overall.pctPerWeek) < MAINTENANCE_DRIFT_PCT_PER_WEEK) return null;
     if (recentlyAdjusted(profile, today)) return null;
-    const late = (phaseWeek ?? 0) >= LATE_PHASE_FROM_WEEK;
-    const step = late ? LATE_STALL_ADJUST_KCAL : STALL_ADJUST_KCAL;
+    const step = MAINTENANCE_DRIFT_ADJUST_KCAL;
     const drifting = overall.lbPerWeek > 0;
     const deltaKcal = drifting ? -step : step;
     return finish(
