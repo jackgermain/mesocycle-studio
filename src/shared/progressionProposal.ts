@@ -21,9 +21,50 @@ import { bandForReps } from "../generator/repRanges";
 import { signalRecipient } from "./signalRecipient";
 import { equipmentOf } from "../screens/exerciseHelpers";
 
+/** The rep band an exercise floats inside, read from how it was ORIGINALLY PROGRAMMED.
+ *
+ * This replaces `bandForReps`, which derived a band from whatever the exercise is doing *this* week. That
+ * single invention caused both progressions Jack rejected, in opposite directions:
+ *
+ *   Bench 4x6 @ 225 — `bandForReps(6)` is the 3-6 strength zone, so 6 read as the TOP of the band (jump the
+ *   load) and the promoted sets landed on the FLOOR of 3. Nobody chose either number.
+ *
+ *   Leg curl 2x14 — the old function deliberately preferred "the zone with room to grow in", so at 12 the
+ *   band became 12-15, at 14 there was still room, reps climbed again, and the load lever never fired.
+ *   *"I did two sets of 14 last time… why not add a little bit of load and keep the volume the same?"*
+ *
+ * His band is CHOSEN AND FIXED, and it is the trigger for the load: *"I may keep the reps above eight reps
+ * at all times regardless of whether I make a weight jump… by the time that they can do eleven or twelve
+ * reps for three sets, I might jump the thirty fives."* Start at 10, floor at 8, jump at 11-12 — the
+ * programmed reps sit in the middle, two either side.
+ *
+ * Read from the EARLIEST week the exercise appears in, which is the prescription as written. Later weeks
+ * can have been rewritten by a progression, so reading those would let a bad week redefine the band and
+ * make the drift permanent — which is exactly how the leg curl got to 14.
+ */
+export function programmedBand(program: Program, exerciseName: string): { min: number; max: number } | null {
+  for (const week of program.weeks) {
+    for (const day of week.days) {
+      const ex = Object.values(day.exercises).find((e) => e.name === exerciseName && !e.timed);
+      if (!ex) continue;
+      const reps = ex.sets
+        .filter((s) => !s.isWarmup && !s.removed)
+        .map((s) => (typeof s.prescribed.reps === "number" ? s.prescribed.reps : parseInt(String(s.prescribed.reps), 10)))
+        .filter((n) => Number.isFinite(n) && n > 0);
+      if (reps.length === 0) continue;
+      const written = Math.max(...reps);
+      return { min: Math.max(1, written - 2), max: written + 2 };
+    }
+  }
+  return null;
+}
+
 export interface ProposalInput {
   name: string;
   equipment: Equipment;
+  /** The band this exercise floats inside, from `programmedBand`. Absent falls back to deriving one from
+   * the reps logged, which is the old behaviour and only right for a session with no program behind it. */
+  band?: { min: number; max: number };
   /** Working sets as logged, in order -- warm-ups, removed and unticked sets already left out. */
   sets: PerformedSet[];
   /** The rep target the sets were prescribed at, when there is a number to read. */
@@ -107,8 +148,11 @@ export function proposeNextWeek(i: ProposalInput): Proposal {
   const target = targetEffortFor(i.week + 1, lastTraining);
   const gap = target - e;
   const reps = i.sets.map((s) => s.reps);
-  const [lo, hi] = bandForReps(i.targetReps ?? Math.max(...reps));
-  const band = { min: lo, max: hi };
+  // The band the exercise was WRITTEN at, not one derived from what it is doing this week -- see
+  // programmedBand. Falling back to bandForReps only covers a session with no program behind it.
+  const fallback = bandForReps(i.targetReps ?? Math.max(...reps));
+  const band = i.band ?? { min: fallback[0], max: fallback[1] };
+  const [lo, hi] = [band.min, band.max];
   const loads = i.sets.map((s) => s.load);
   const bodyweight = loads.every((l) => l === null);
   const heaviest = Math.max(0, ...loads.map((l) => l ?? 0));
@@ -285,6 +329,7 @@ export function proposalsForDay(program: Program, dayId: string, units: string):
       name: ex.name,
       equipment: equipmentOf(ex),
       sets: performed,
+      band: programmedBand(program, ex.name) ?? undefined,
       targetReps: targets.length ? Math.max(...targets) : null,
       effort: rated?.effort ?? null,
       week: week.number,
@@ -345,9 +390,10 @@ export function progressionDueDay(program: Program, todayIso: string, withinDays
  *
  * 2 — `repsAfterJump`: a promoted set pays for a load jump in proportion to its size instead of falling to
  *     the band floor. The old rule turned 4x6 @ 225 into 230x3 for a 2.2% step.
+ * 4 — the rep band comes from how the exercise was PROGRAMMED, not from what it is doing this week.
  * 3 — recovering well restores a set soreness removed rather than adding one on top.
  */
-export const PROGRESSION_RULE_VERSION = 3;
+export const PROGRESSION_RULE_VERSION = 4;
 
 /** Sessions already programmed forward by an older version of the rules, whose following week nobody has
  * started yet, so the numbers can still be corrected.
