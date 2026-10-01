@@ -35,6 +35,7 @@ import {
 import { sendProgressionProposals, sendProgressionRecord } from "./shared/progressionSignals";
 import { ownsTheirProgressions } from "./shared/selfDirected";
 import { strayCopies } from "./shared/blockShape";
+import { restoreProgrammedOrder } from "./shared/restoreOrder";
 import { isoToday } from "./shared/dayStatus";
 import { ClientSideNav } from "./components/TabBar";
 import { CoachSideNav } from "./coach/components/CoachTabBar";
@@ -199,11 +200,15 @@ function ClientLayout() {
    * (reorderDay.ts). What remains here is strayCopies, which deletes exercises a bug of mine wrote into
    * sessions they never belonged in -- removing that code could not undo what it had already saved. */
   useEffect(() => {
-    if (!account || !selfDirected) return;
+    if (!account) return;
+    // Both are one-time undos of damage this app did to a saved program, not ongoing behaviour. strayCopies
+    // deletes exercises written into sessions they never belonged in; restoreProgrammedOrder puts order back
+    // to the week the block was written in and stamps itself so it never runs again.
     const cleaned = strayCopies(state.program);
-    if (cleaned.removed.length === 0) return;
-    dispatch({ type: "SET_PROGRAM", program: cleaned.program });
-  }, [account, selfDirected, state.program, dispatch]);
+    const { program, restored } = restoreProgrammedOrder(cleaned.program);
+    if (cleaned.removed.length === 0 && restored.length === 0 && program === cleaned.program) return;
+    dispatch({ type: "SET_PROGRAM", program });
+  }, [account, state.program, dispatch]);
 
   /* Sessions programmed forward by an older version of the arithmetic, recomputed in place.
    *

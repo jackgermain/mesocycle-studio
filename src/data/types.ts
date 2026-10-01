@@ -174,6 +174,13 @@ export interface Program {
    * Optional, and every reader must tolerate undefined: HYDRATE replaces state wholesale rather than merging
    * field by field, so a program saved before today arrives without it. */
   openEnded?: boolean;
+  /** Which one-time exercise-order repair has already been applied — see shared/restoreOrder.ts.
+   *
+   * A deleted bug of mine (`alignBlockShape`) had rewritten later weeks' order to match whatever shuffle
+   * happened in the last completed session. Removing the code could not undo what it had already saved, so
+   * the repair runs once and stamps itself. Once, deliberately: a pass that kept running would snap back a
+   * reorder the person made themselves on the very next render. */
+  orderRepairVersion?: number;
   coachName: string;
   weeks: TrainingWeek[];
 }
