@@ -53,7 +53,9 @@ export default function Progress() {
         />
         {state.nextProgram && (
           <InfoBanner icon="ph-hourglass" tone="accent">
-            Up next: <strong>{state.nextProgram.name}</strong> — starts automatically once you finish this block.
+            {/* It used to start on its own. That was removed today -- a whole new program appearing with no
+                action from you is exactly what the audit was for -- so this no longer promises it. */}
+            Up next: <strong>{state.nextProgram.name}</strong> — yours to start once you finish this block.
           </InfoBanner>
         )}
         <Seg
