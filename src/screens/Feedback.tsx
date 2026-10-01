@@ -105,7 +105,23 @@ export default function Feedback() {
   const composedDetail = [jointTissue, setScope, repMoment, progression, jointDetail.trim()].filter(Boolean).join(" · ");
 
   function finish() {
-    dispatch({ type: "SET_FEEDBACK_DONE", dayId });
+    // The answers are STORED, not just sent. They used to be collected, used to decide whether to notify a
+    // coach, and then dropped -- so the logged-day screen printed a hardcoded pump of 4 and "Joint pain:
+    // None reported" on every session ever finished, whatever was actually answered.
+    dispatch({
+      type: "SET_FEEDBACK_DONE",
+      dayId,
+      pump: Object.fromEntries(muscles.map(([m]) => [m, pump[m]]).filter(([, v]) => typeof v === "number")),
+      // null is "asked, and they said no pain", which is a different thing from never having been asked.
+      joint: jointYes && jointSeverity !== null
+        ? {
+            severity: jointSeverity,
+            location: jointLocation.trim(),
+            detail: composedDetail,
+            exercise: jointExercise && jointExercise !== NOT_ONE_EXERCISE ? jointExercise : null,
+          }
+        : null,
+    });
 
     // Only what the coach actually needs to act on gets sent -- a good pump on every muscle isn't news.
     const dayLabel = day ? dayDisplayTitle(day) : null;

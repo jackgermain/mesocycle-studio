@@ -17,11 +17,11 @@ export default function TodayRedirect() {
   const allDays = state.program.weeks.flatMap((w) => w.days);
   const allDone = allDays.length > 0 && allDays.every((d) => d.status === "done");
 
-  // The current block is fully logged and a coach queued what comes next — start it automatically rather
-  // than leaving the client stuck on "nothing scheduled" until someone notices and reassigns by hand.
-  useEffect(() => {
-    if (allDone && state.nextProgram) dispatch({ type: "PROMOTE_NEXT_PROGRAM" });
-  }, [allDone, state.nextProgram, dispatch]);
+  /* A coach's queued block used to START ITSELF here, the moment the last session of the current one was
+   * logged, so a whole new program could appear in someone's app with no action from them. The reasoning
+   * was that it saves the client being stuck on "nothing scheduled" -- but an audit of every automatic
+   * write found it, and Jack's rule covers it: nothing changes his training unless he does it. It is now a
+   * screen with a button, below. One tap instead of none, and he can see what he is agreeing to first. */
 
   // G120: a block asked for as "keep going until I end it" extends itself instead of ending.
   //
@@ -48,6 +48,53 @@ export default function TodayRedirect() {
   // nothing for that frame rather than flashing "Block complete" or "Nothing scheduled yet" -- on an
   // open-ended block neither is true, and both would be gone again immediately.
   if (allDone && !state.nextProgram && state.program.openEnded) return null;
+
+  if (allDone && state.nextProgram) {
+    const next = state.nextProgram;
+    const weeks = next.totalWeeks || next.weeks.length;
+    const days = next.weeks[0]?.days.length ?? 0;
+    return (
+      <div className="screen">
+        <div className="hdr" style={{ paddingBottom: 8 }}>
+          <div>
+            <div className="k">{state.program.name}</div>
+            <div className="h1">Block complete</div>
+          </div>
+        </div>
+        <div className="screen-scroll">
+          <InfoBanner icon="ph-check-circle" tone="accent">
+            Every session in this block is logged. {state.program.coachName} has your next one ready.
+          </InfoBanner>
+
+          <div className="cell" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div className="name">{next.name}</div>
+            <div className="mu">
+              <span className="mono">{weeks}</span> week{weeks === 1 ? "" : "s"}
+              {days > 0 ? <> · <span className="mono">{days}</span> day{days === 1 ? "" : "s"} a week</> : null}
+            </div>
+          </div>
+
+          <button
+            className="btn btn-primary btn-block"
+            style={{ height: 48 }}
+            onClick={() => {
+              dispatch({ type: "PROMOTE_NEXT_PROGRAM" });
+              dispatch({ type: "SHOW_TOAST", message: `${next.name} started.` });
+              setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
+            }}
+          >
+            <i className="ph ph-play" style={{ fontSize: 14 }} />
+            Start this block
+          </button>
+          <p className="mu" style={{ fontSize: 12, lineHeight: 1.6 }}>
+            Nothing changes until you tap it.
+          </p>
+          <ProgressionToggle />
+        </div>
+        <TabBar />
+      </div>
+    );
+  }
 
   if (allDone && !state.nextProgram) {
     const canBuild = canSelfBuildProgram(account?.role);

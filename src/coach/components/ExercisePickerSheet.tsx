@@ -49,7 +49,17 @@ export function ExercisePickerSheet({
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet" style={{ maxHeight: "82%", display: "flex", flexDirection: "column" }} onClick={(e) => e.stopPropagation()}>
+      {/* A FIXED height, not just a max. With `maxHeight` alone the sheet is only as tall as its content,
+          so it sits low on the screen and the iOS keyboard covers the search field the moment you start
+          typing — you cannot read what you are searching for. Jack: "the search bar as I start typing goes
+          down the screen and I can't read anything that I'm typing." Pinning the height keeps the field at
+          a fixed position near the top and lets the RESULTS scroll underneath it instead. Same fix, same
+          reason, as FoodSearchSheet. */}
+      <div
+        className="sheet"
+        style={{ height: "82%", maxHeight: "82%", display: "flex", flexDirection: "column" }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="row" style={{ marginBottom: 10 }}>
           <div style={{ flex: 1 }}>
             <div className="scr">{kicker}</div>
@@ -64,14 +74,17 @@ export function ExercisePickerSheet({
           <i className="ph ph-magnifying-glass" style={{ fontSize: 14 }} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search exercises" style={{ flex: 1, background: "none", border: "none", outline: "none", color: "var(--color-text)", fontSize: 14 }} autoFocus />
         </div>
-        <div className="row hscroll" style={{ gap: 6, marginTop: 8 }}>
+        <div className="row hscroll" style={{ gap: 6, marginTop: 8, flex: "none" }}>
           <button className={`chip${muscle === null ? " on" : ""}`} onClick={() => setMuscle(null)}>All</button>
           {MUSCLE_GROUPS.map((m) => (
             <button key={m} className={`chip${muscle === m ? " on" : ""}`} onClick={() => setMuscle(m)}>{m}</button>
           ))}
         </div>
 
-        <div style={{ overflowY: "auto", marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
+        {/* `minHeight: 0` is what actually lets this scroll. A flex child's default min-height is its
+            content, so without it the list refuses to shrink, the sheet grows past its own height, and the
+            search field above is pushed up off the screen as results come in. */}
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
           {filtered.map((e) => (
             <button key={e.id} className="cell row" style={{ textAlign: "left", cursor: "pointer" }} onClick={() => onPick(e)}>
               <div style={{ flex: 1, minWidth: 0 }}>

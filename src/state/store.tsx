@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { buildSelfProfile } from "../data/mockData";
-import type { ClientProfile, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, TrainingDay, WeighIn, WorkSet } from "../data/types";
+import type { ClientProfile, DayLog, Equipment, LoggedFoodItem, MealSection, Program, RemovalRecord, TrainingDay, WeighIn, WorkSet } from "../data/types";
 import type { WeighInSkip } from "../shared/weighIns";
 import { blankIntake, type Intake } from "../shared/intake";
 import { appendWeeks } from "../shared/programConvert";
@@ -91,7 +91,7 @@ type Action =
   | { type: "REMOVE_EXERCISE"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "ADD_EXERCISE"; dayId: string; exercise: { name: string; muscle: string; secondaryMuscles?: string[]; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle" }
   | { type: "DROP_SET"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
-  | { type: "SET_FEEDBACK_DONE"; dayId: string }
+  | { type: "SET_FEEDBACK_DONE"; dayId: string; pump?: Record<string, number>; joint?: DayLog["joint"] }
   | { type: "MARK_PROGRESSION_SENT"; dayId: string }
   | { type: "AUTO_PROGRESS"; dayIds: string[]; program: Program }
   | { type: "SET_SORENESS_DONE"; dayId: string; answers?: TrainingDay["sorenessAnswers"]; adjustVolume?: boolean }
@@ -416,9 +416,18 @@ function reducer(state: AppState, action: Action): AppState {
         day.status = "done";
         const doneSets = Object.values(day.exercises).reduce((n, e) => n + e.sets.filter((s) => s.checked).length, 0);
         // Tonnage ("12.4t") and time (48 min) were written here as constants and are gone -- see DayDetail.
-        // pumpAvg is STILL a constant: the finish flow collects a pump rating per muscle but never stores
-        // them on the day, so there is no real average to put here yet.
-        day.log = { sessionSets: doneSets, sessionTotal: doneSets, pumpAvg: 4 };
+        // pumpAvg was a constant 4 for the same reason: the finish flow asked for a rating per muscle and
+        // threw every one of them away, so every logged day in the app read "4 - good". Now it is the real
+        // mean of real answers, and the answers themselves are kept alongside it.
+        const scores = Object.values(action.pump ?? {}).filter((n) => typeof n === "number");
+        const avg = scores.length ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10 : 0;
+        day.log = {
+          sessionSets: doneSets,
+          sessionTotal: doneSets,
+          pumpAvg: avg,
+          ...(action.pump && scores.length ? { pump: action.pump } : {}),
+          ...(action.joint !== undefined ? { joint: action.joint } : {}),
+        };
       }
       return { ...state, program };
     }

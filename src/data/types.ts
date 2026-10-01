@@ -97,7 +97,19 @@ export type DayStatus = "done" | "today" | "visible";
 export interface DayLog {
   sessionSets: number;
   sessionTotal: number;
+  /** Mean of `pump` below, rounded to one decimal.
+   *
+   * This was the literal number 4, written on every finished session for every account, so every logged
+   * day in the app showed the same "4 · good" whatever anyone answered. The finish flow had been asking
+   * for a pump rating per muscle and throwing all of them away. */
   pumpAvg: number;
+  /** The per-muscle pump ratings as actually answered, 1-5. Absent on sessions finished before they were
+   * stored -- readers must tolerate it, and `pumpAvg` is the summary. */
+  pump?: Record<string, number>;
+  /** The joint report as actually answered. `null` means asked and answered "no pain", which is different
+   * from absent (never asked, or finished before this was stored) -- the logged-day screen used to print
+   * "None reported" for all three. */
+  joint?: { severity: number; location: string; detail: string; exercise: string | null } | null;
 }
 
 export interface TrainingDay {

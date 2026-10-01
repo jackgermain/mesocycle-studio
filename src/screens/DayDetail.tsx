@@ -6,6 +6,8 @@ import { BackHeader, StatCell } from "../components/UI";
 import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
+import { pumpWording, jointReasonLabels } from "../data/mockData";
+import { muscleColorVar } from "../shared/muscleColor";
 import DayWorkout from "./DayWorkout";
 import UpcomingDay from "./UpcomingDay";
 import Soreness from "./Soreness";
@@ -37,6 +39,57 @@ export default function DayDetail() {
   return <UpcomingDay dayId={dayId} />;
 }
 
+/** What was actually answered at the end of that session.
+ *
+ * Every line here used to be fiction. "Overall pump" printed `pumpAvg`, which the reducer wrote as the
+ * literal number 4 on every session ever finished, and "Joint pain" printed the fixed string "None
+ * reported" whatever had been said — including on a day someone reported a joint that stopped a set. The
+ * finish flow was asking both questions and throwing the answers away.
+ *
+ * A session finished before the answers were stored has no `pump`, and says so rather than inventing a
+ * number. That is a different state from `joint: null`, which means asked and answered "no pain". */
+function FeedbackThatDay({ log }: { log?: import("../data/types").DayLog }) {
+  const pump = log?.pump;
+  const rated = pump ? Object.entries(pump).filter(([, v]) => typeof v === "number") : [];
+  const joint = log?.joint;
+
+  return (
+    <div>
+      <div className="sh">Your feedback that day</div>
+      <div className="cell" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div className="row" style={{ fontSize: 12.5 }}>
+          <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Overall pump</span>
+          <span style={{ color: rated.length ? "var(--color-accent-300)" : "var(--color-neutral-400)" }}>
+            {rated.length ? `${log!.pumpAvg} · ${pumpWording[Math.round(log!.pumpAvg) - 1] ?? ""}` : "Not recorded"}
+          </span>
+        </div>
+        {/* Per muscle, because a 5 on one and a 2 on another average to something that describes neither. */}
+        {rated.map(([muscle, score]) => (
+          <div key={muscle} className="row" style={{ fontSize: 12, paddingLeft: 10 }}>
+            <span style={{ flex: 1, color: muscleColorVar(muscle) }}>{muscle}</span>
+            <span className="mu">{score} · {pumpWording[score - 1] ?? ""}</span>
+          </div>
+        ))}
+        <div className="row" style={{ fontSize: 12.5, alignItems: "flex-start" }}>
+          <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Joint pain</span>
+          <span style={{ color: joint ? "var(--color-danger, #e5484d)" : "var(--color-neutral-200)", textAlign: "right", maxWidth: "62%" }}>
+            {joint === undefined
+              ? "Not recorded"
+              : joint === null
+                ? "None reported"
+                : [joint.location, jointReasonLabels[joint.severity - 1]].filter(Boolean).join(" — ")}
+          </span>
+        </div>
+        {joint?.detail && (
+          <div className="mu" style={{ fontSize: 12, lineHeight: 1.5 }}>
+            {joint.detail}{joint.exercise ? ` · on ${joint.exercise}` : ""}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ReopenedDay({ dayId }: { dayId: string }) {
   const { state } = useStore();
   const nav = useNavigate();
@@ -62,7 +115,9 @@ function ReopenedDay({ dayId }: { dayId: string }) {
               constants "12.4t" and 48 minutes, so every logged day in the app showed the same two numbers.
               Jack: "remove the time thing cause we don't need that at all, and then we also don't need
               tonnage as well." Don't bring them back without a real source for either. */}
-          <StatCell label="Pump" value={day.log?.pumpAvg ?? "—"} valueColor="var(--color-accent-300)" />
+          {/* Em dash, not 0, when nothing was rated -- a session finished before the answers were stored
+              has no pump, and printing a number for it is how this screen came to show 4 for everyone. */}
+          <StatCell label="Pump" value={day.log?.pump ? day.log.pumpAvg : "—"} valueColor="var(--color-accent-300)" />
         </div>
 
         <ProgressionToggle />
@@ -73,19 +128,7 @@ function ReopenedDay({ dayId }: { dayId: string }) {
           return <ExerciseSection key={id} index={i + 1} dayId={dayId} ex={ex} readOnly="past" />;
         })}
 
-        <div>
-          <div className="sh">Your feedback that day</div>
-          <div className="cell" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <div className="row" style={{ fontSize: 12.5 }}>
-              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Overall pump</span>
-              <span style={{ color: "var(--color-accent-300)" }}>{day.log?.pumpAvg ?? "—"} · good</span>
-            </div>
-            <div className="row" style={{ fontSize: 12.5 }}>
-              <span style={{ flex: 1, color: "var(--color-neutral-400)" }}>Joint pain</span>
-              <span style={{ color: "var(--color-neutral-200)" }}>None reported</span>
-            </div>
-          </div>
-        </div>
+        <FeedbackThatDay log={day.log} />
 
       </div>
       <TabBar />
