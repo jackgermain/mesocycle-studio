@@ -1,4 +1,5 @@
 import type { Program, TrainingDay } from "../data/types";
+import { MUSCLE_GROUPS } from "../coach/exerciseLibrary";
 
 /** Coarse, muscle-group-level synergist relationships -- e.g. rows and pulldowns on back day meaningfully
  * fatigue biceps too, presses on chest day meaningfully fatigue triceps. Deliberately conservative (only
@@ -41,6 +42,23 @@ const EXERCISE_SYNERGISTS: [RegExp, string[]][] = [[/hammer curl/i, ["Forearms"]
  * It stays in SECONDARY_MUSCLES above and is still expanded: a power clean really does fatigue back, quads,
  * glutes and traps, and those are real muscles with real answers. Only the category itself is unaskable. */
 const NOT_A_MUSCLE = new Set(["Full body"]);
+
+/** The only tags the check will ever ask about: the library's real muscle groups, minus the categories.
+ *
+ * A whitelist, not a blacklist. The blacklist version held one entry, "Full body", and Jack was then asked
+ * about **UPPER** and **LOWER** — day labels his own custom exercises carry as their muscle:
+ *
+ * > *"For my feedback, I should not be being asked about upper or lower. The feedback should only be for
+ * > individual muscle parts."*
+ *
+ * Listing bad tags one at a time means waiting for him to find each one. Anything that is not a muscle he
+ * could be sore in — a day label, a session name, a category, whatever an import writes next — now fails
+ * the check by default rather than by being remembered.
+ */
+const ASKABLE_MUSCLES: ReadonlySet<string> = new Set(
+  MUSCLE_GROUPS.filter((m) => !NOT_A_MUSCLE.has(m)),
+);
+
 
 /** The muscles this session trains, as the primary mover of an exercise on the card. Nothing else.
  *
@@ -134,7 +152,7 @@ export function computeSorenessDue(program: Program, dayId: string): { muscle: s
   for (const muscle of todayMuscles) {
     // Filtered here rather than inside musclesWorked, so a category still EXPANDS into the real muscles it
     // trains on both sides of the comparison -- it just never becomes a question of its own.
-    if (NOT_A_MUSCLE.has(muscle)) continue;
+    if (!ASKABLE_MUSCLES.has(muscle)) continue;
     const lastDay = priorDays.find((d) => musclesWorked(d).has(muscle));
     if (!lastDay) continue;
     const gap = daysBetween(lastDay.date, target.date);

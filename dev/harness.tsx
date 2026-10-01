@@ -25,6 +25,8 @@ import { StoreProvider, useStore } from "../src/state/store";
 import { NutritionForm } from "../src/shared/NutritionForm";
 import { deriveNutritionTargets } from "../src/shared/derivedTargets";
 import FoodSearchSheet from "../src/screens/FoodSearchSheet";
+import ProgressTab from "../src/screens/ProgressTab";
+import { MemoryRouter } from "react-router-dom";
 
 const NIL_ACCOUNT = "00000000-0000-0000-0000-000000000000";
 
@@ -124,7 +126,99 @@ function FoodHarness() {
   );
 }
 
-const mode = new URLSearchParams(location.search).has("food") ? <FoodHarness /> : <Harness />;
+/** The Progress tab, seeded with a block and a fortnight of weigh-ins and meals.
+ *
+ * The tab is all charts, and a chart is the one thing reading the code cannot check: an SVG that computes
+ * the right numbers and draws them off the viewBox looks identical in a diff and wrong on a phone. */
+function ProgressHarness() {
+  const { state, dispatch, ready } = useStore();
+  const seeded = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!ready || seeded.current) return;
+    seeded.current = true;
+
+    const LIFTS: [string, number, number][] = [
+      ["Barbell Back Squat", 300, 5],
+      ["Barbell Deadlift", 385, 3],
+      ["Barbell Bench Press", 215, 6],
+      ["Lat Pulldown — Wide Grip", 170, 10],
+      ["Barbell Bent-Over Row", 175, 10],
+      ["Cable Lateral Raise", 25, 15],
+    ];
+    const day = (w: number, d: number, date: string, done: boolean) => ({
+      id: `w${w}d${d}`, code: `D${d}`, label: `Day ${d}`, dow: "Mon", date,
+      status: done ? "done" : "visible", muscleSummary: "", setCount: LIFTS.length,
+      order: LIFTS.map((_, i) => `w${w}d${d}e${i}`),
+      feedbackDone: done,
+      exercises: Object.fromEntries(LIFTS.map(([name, base, reps], i) => {
+        const load = base + (w - 1) * 10;
+        return [`w${w}d${d}e${i}`, {
+          id: `w${w}d${d}e${i}`, name, muscle: "Quads", metaLine: "", hasVideo: false,
+          sets: [1, 2, 3].map((n) => ({
+            id: `w${w}d${d}e${i}s${n}`, index: n, type: "straight", checked: done,
+            actual: done ? { reps, load } : null,
+            prescribed: { reps, load, effort: { scale: "RIR", value: 2 }, restSec: 120 },
+          })),
+        }];
+      })),
+    });
+
+    dispatch({
+      type: "SET_PROGRAM",
+      program: {
+        name: "Hypertrophy", totalWeeks: 4, coachName: "Coach",
+        weeks: [
+          { number: 1, phase: "accumulation", days: [day(1, 1, "2026-09-14", true), day(1, 2, "2026-09-16", true), day(1, 3, "2026-09-18", true)] },
+          { number: 2, phase: "accumulation", days: [day(2, 1, "2026-09-21", true), day(2, 2, "2026-09-23", true), day(2, 3, "2026-09-25", false)] },
+          { number: 3, phase: "accumulation", days: [day(3, 1, "2026-09-28", true), day(3, 2, "2026-09-30", false), day(3, 3, "2026-10-02", false)] },
+          { number: 4, phase: "deload", days: [day(4, 1, "2026-10-05", false), day(4, 2, "2026-10-07", false), day(4, 3, "2026-10-09", false)] },
+        ],
+      } as never,
+    });
+
+    for (const [date, weight] of [
+      ["2026-09-14", 202.8], ["2026-09-16", 203.2], ["2026-09-18", 202.9],
+      ["2026-09-21", 203.4], ["2026-09-23", 203.0], ["2026-09-25", 203.2],
+      ["2026-09-28", 203.2], ["2026-09-30", 203.6],
+    ] as [string, number][]) dispatch({ type: "LOG_WEIGHIN", date, weight });
+
+    dispatch({ type: "UPDATE_PROFILE", profile: { bodyweight: 203, units: "lb", macroTargets: { kcal: 3200, protein: 190, carbs: 360, fat: 95, trainingDayCarbBonus: 0 } } });
+  }, [ready, dispatch]);
+
+  React.useEffect(() => {
+    // Meals need the program in place first, and ADD_MEAL dates them.
+    if (!seeded.current || state.meals.length > 0) return;
+    const kcals = [3180, 3240, 3090, 3210, 2600, 3260, 3150, 3190];
+    [
+      "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24",
+      "2026-09-25", "2026-09-28", "2026-09-29", "2026-09-30",
+    ].forEach((date, i) => {
+      dispatch({ type: "ADD_MEAL", name: `Day ${i + 1}`, date });
+    });
+    setTimeout(() => {
+      const meals = JSON.parse(JSON.stringify(stateRef.current.meals));
+      meals.forEach((m: { id: string; date?: string }, i: number) => {
+        dispatch({
+          type: "ADD_FOOD_ITEM", mealId: m.id,
+          item: { id: `f${i}`, name: "Day's food", kcal: kcals[i] ?? 3200, protein: 190, carbs: 360, fat: 95, loggedAt: m.date, eaten: true } as never,
+        });
+      });
+    }, 0);
+  }, [state.meals.length, dispatch]);
+
+  const stateRef = React.useRef(state);
+  stateRef.current = state;
+
+  return <ProgressTab />;
+}
+
+const params = new URLSearchParams(location.search);
+const mode = params.has("food")
+  ? <FoodHarness />
+  : params.has("progress")
+    ? <MemoryRouter initialEntries={["/progress"]}><ProgressHarness /></MemoryRouter>
+    : <Harness />;
 createRoot(document.getElementById("root")!).render(
   <StoreProvider accountId={NIL_ACCOUNT} ownerName="Harness" coachName="Coach">
     {mode}

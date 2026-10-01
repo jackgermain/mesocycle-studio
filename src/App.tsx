@@ -16,6 +16,7 @@ import LiveSet from "./screens/LiveSet";
 import RemoveSet from "./screens/RemoveSet";
 import Reorder from "./screens/Reorder";
 import Feedback from "./screens/Feedback";
+import ProgressTab from "./screens/ProgressTab";
 import Progress from "./screens/Progress";
 import Nutrition from "./screens/Nutrition";
 import Inbox from "./screens/Inbox";
@@ -411,7 +412,10 @@ export default function App() {
               <Route path="/block/day/:dayId/exercise/:exerciseId/remove/:setId" element={<Gate><RemoveSet /></Gate>} />
               <Route path="/block/day/:dayId/reorder" element={<Gate><Reorder /></Gate>} />
               <Route path="/block/day/:dayId/finish" element={<Gate><Feedback /></Gate>} />
-              <Route path="/progress" element={<Gate><Progress /></Gate>} />
+              <Route path="/progress" element={<Gate><ProgressTab /></Gate>} />
+              {/* The old three-tab screen, still reachable: it holds the height/bodyweight editor and the
+                  phase card, neither of which has a home on the new tab yet. */}
+              <Route path="/progress/stats" element={<Gate><Progress /></Gate>} />
               <Route path="/progress/lifts" element={<Gate><AllLifts /></Gate>} />
               <Route path="/progress/lifts/:name" element={<Gate><LiftDetail /></Gate>} />
               <Route path="/nutrition" element={<Gate><Nutrition /></Gate>} />

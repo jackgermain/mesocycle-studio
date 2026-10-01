@@ -169,3 +169,32 @@ test("a muscle only tagged as a SECONDARY on today's exercises is never asked ab
   assert.ok(!asked.includes("Front delts"), `nor are front delts, got [${asked.join(", ")}]`);
   assert.deepEqual(asked, ["Triceps"], "the primary mover, and only that");
 });
+
+test("a day label is not a muscle — Upper and Lower are never asked about", () => {
+  /* His custom exercises carry day labels as their muscle, so the check asked "UPPER — last trained 7 days
+   * ago" with a 1-5 soreness scale under it. Jack: "I should not be being asked about upper or lower. The
+   * feedback should only be for individual muscle parts."
+   *
+   * The guard is a WHITELIST of the library's real muscle groups, not a list of bad tags. The blacklist
+   * version held one entry, "Full body", and the next junk tag got through — listing them one at a time
+   * means waiting for him to find each one. */
+  const p = program([
+    { number: 2, days: [day("w2", "2026-09-23", "Upper", "done", "Push Day A")] },
+    { number: 3, days: [day("w3", "2026-09-30", "Upper", "upcoming", "Push Day A")] },
+  ]);
+  assert.deepEqual(computeSorenessDue(p, "w3"), []);
+});
+
+test("every real muscle group still asks, so the whitelist cannot quietly mute one", () => {
+  // The failure mode of a whitelist is the opposite of a blacklist's: a muscle missing from it disappears
+  // silently. This pins that the 16 askable groups all still produce a question.
+  for (const muscle of ["Chest", "Back", "Biceps", "Triceps", "Quads", "Hamstrings", "Glutes", "Calves",
+                        "Abs", "Obliques", "Forearms", "Traps", "Front delts", "Side delts", "Rear delts",
+                        "Adductors"]) {
+    const p = program([
+      { number: 2, days: [day("a", "2026-09-23", muscle, "done")] },
+      { number: 3, days: [day("b", "2026-09-26", muscle, "upcoming")] },
+    ]);
+    assert.deepEqual(computeSorenessDue(p, "b").map((d) => d.muscle), [muscle], muscle);
+  }
+});
