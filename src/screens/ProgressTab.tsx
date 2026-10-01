@@ -30,8 +30,12 @@ import { DEFAULT_MAIN_LIFT_COUNT, liftSummaries, pickMainLifts } from "../shared
 import {
   blockWeeks, dailyIntake, liftMoves, weeklyDeltas, weekWeighIns, type BlockWeek,
 } from "../shared/progressSummary";
+import {
+  SPARKLINE_BOX, deltaBar, intakeBarHeight, intakeCeiling, sparklinePath,
+} from "../shared/chartGeometry";
 
 const DAYS_IN_WEEK = 7;
+const INTAKE_BOX_HEIGHT = 54;
 
 export default function ProgressTab() {
   const { state, dispatch } = useStore();
@@ -153,19 +157,24 @@ function WeekStrip({ weeks, selected, onSelect }: { weeks: BlockWeek[]; selected
   );
 }
 
+/** The geometry lives in chartGeometry.ts so it can be asserted against its own frame -- this tab shipped
+ * without ever being rendered, and a mark drawn outside the viewBox looks identical in a diff.
+ *
+ * Writing those tests found a real defect in the version that shipped: `max - min || 1` put a FLAT series
+ * along the bottom of the box, so a lift held at the same weight for three weeks was drawn as a line on the
+ * floor -- which reads as a collapse. A flat series now sits on the middle line, where it means nothing
+ * either way. */
 function Sparkline({ values }: { values: number[] }) {
-  if (values.length < 2) return <div style={{ width: 46, flex: "none" }} />;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const span = max - min || 1;
-  const points = values
-    .map((v, i) => `${(i / (values.length - 1)) * 44 + 1},${18 - ((v - min) / span) * 14}`)
-    .join(" L");
+  if (values.length < 2) return <div style={{ width: SPARKLINE_BOX.width, flex: "none" }} />;
   const rising = values[values.length - 1] > values[0];
   return (
-    <svg viewBox="0 0 46 20" style={{ width: 46, height: 20, flex: "none" }} aria-hidden="true">
+    <svg
+      viewBox={`0 0 ${SPARKLINE_BOX.width} ${SPARKLINE_BOX.height}`}
+      style={{ width: SPARKLINE_BOX.width, height: SPARKLINE_BOX.height, flex: "none" }}
+      aria-hidden="true"
+    >
       <path
-        d={`M${points}`}
+        d={sparklinePath(values)}
         fill="none"
         stroke={rising ? "var(--color-accent)" : "var(--color-neutral-600)"}
         strokeWidth="2"
@@ -373,12 +382,12 @@ function WeekDeltaChart({ deltas, selected, units }: { deltas: ReturnType<typeof
   if (withChange.length === 0) {
     return <div className="mu">Two weeks of weigh-ins and this fills in — one week has nothing to compare to.</div>;
   }
-  const biggest = Math.max(0.2, ...withChange.map((d) => Math.abs(d.change!)));
+  const biggest = Math.max(...withChange.map((d) => Math.abs(d.change!)), 0);
   return (
     <div style={{ display: "flex", alignItems: "stretch", gap: 6, height: 76 }}>
       {withChange.map((d) => {
-        const up = d.change! >= 0;
-        const size = Math.max(4, (Math.abs(d.change!) / biggest) * 26);
+        const { height: size, direction } = deltaBar(d.change!, biggest);
+        const up = direction === "up";
         const on = d.weekStart === selected;
         return (
           <div key={d.weekStart} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -403,11 +412,11 @@ function WeekDeltaChart({ deltas, selected, units }: { deltas: ReturnType<typeof
 }
 
 function IntakeBars({ intake, target }: { intake: ReturnType<typeof dailyIntake>; target: number }) {
-  const ceiling = Math.max(target * 1.3, ...intake.map((d) => d.kcal), 1);
+  const ceiling = intakeCeiling(intake.map((d) => d.kcal), target);
   return (
-    <div style={{ position: "relative", height: 54 }}>
+    <div style={{ position: "relative", height: INTAKE_BOX_HEIGHT }}>
       {target > 0 && (
-        <div style={{ position: "absolute", left: 0, right: 0, top: 54 - (target / ceiling) * 54, borderTop: "1px dashed var(--color-neutral-700)" }} />
+        <div style={{ position: "absolute", left: 0, right: 0, top: INTAKE_BOX_HEIGHT - (target / ceiling) * INTAKE_BOX_HEIGHT, borderTop: "1px dashed var(--color-neutral-700)" }} />
       )}
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "flex-end", gap: 4 }}>
         {intake.map((d) => {
@@ -418,7 +427,7 @@ function IntakeBars({ intake, target }: { intake: ReturnType<typeof dailyIntake>
               title={d.logged ? `${d.kcal} kcal` : "not logged"}
               style={{
                 flex: 1, minWidth: 0, borderRadius: "3px 3px 0 0",
-                height: d.logged ? Math.max(4, (d.kcal / ceiling) * 54) : 3,
+                height: intakeBarHeight(d.kcal, d.logged, ceiling, INTAKE_BOX_HEIGHT),
                 background: !d.logged
                   ? "var(--color-neutral-900)"
                   : near
