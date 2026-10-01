@@ -269,6 +269,14 @@ export interface ClientProfile {
   autoMaintenanceDelta?: number;
   /** Which one-time nutrition repair has run — see shared/nutritionRepair.ts. */
   nutritionRepairVersion?: number;
+  /** The lifts pinned to the Progress tab, in the order to show them. Absent means the app picks — see
+   * shared/mainLifts.ts, which takes one per movement pattern so a leg-heavy block cannot fill the screen
+   * with legs. Jack: "have the app pick the five main lifts, but have the option to change them, or remove
+   * how many of them are displayed." Set, it wins outright: a lift he put there stays there even once it
+   * stops being his heaviest, which is the whole point of choosing. */
+  mainLifts?: string[];
+  /** How many the app picks when `mainLifts` is unset. Absent means DEFAULT_MAIN_LIFT_COUNT. */
+  mainLiftCount?: number;
   /** The maintenance figure targets are an offset from (N1). Estimated to begin with, then corrected from
    * their own weigh-ins by N6 — the scale beats the formula. */
   maintenanceKcal?: number;
