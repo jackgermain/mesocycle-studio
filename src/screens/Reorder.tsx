@@ -4,6 +4,7 @@ import { findDay, useStore } from "../state/store";
 import { CloseHeader, InfoBanner } from "../components/UI";
 import { dayDisplayTitle } from "../data/dayNumbering";
 import type { TrainingDay, TrainingWeek } from "../data/types";
+import { roundLabels } from "../shared/supersetGroups";
 
 /** Split in two on purpose. The working order is seeded from the day, so the hook holding it can't simply
  * move above the "not found" check the way it can elsewhere -- seeding it before the program has loaded
@@ -22,6 +23,7 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
   const nav = useNavigate();
   const initialOrder = day.order.length ? day.order : Object.keys(day.exercises);
   const [order, setOrder] = useState(initialOrder);
+  const labels = roundLabels(day);
 
   function move(id: string, dir: -1 | 1) {
     const i = order.indexOf(id);
@@ -34,6 +36,30 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
 
   function moveToEnd(id: string) {
     setOrder((o) => [...o.filter((x) => x !== id), id]);
+  }
+
+  /* Supersets are applied IMMEDIATELY rather than on Save, because they are a different kind of edit: the
+   * order here is a local draft until saved, but linking two exercises writes through to every remaining
+   * week of this session at once. Jack: "I'd like to be able to add one or even more exercises to be able
+   * to superset, and then have rep progressions and set progressions for them individually." */
+  function linkedTo(a: string, b: string): boolean {
+    const idA = day.exercises[a]?.supersetId;
+    return !!idA && idA === day.exercises[b]?.supersetId;
+  }
+
+  function toggleLink(a: string, b: string) {
+    if (linkedTo(a, b)) {
+      dispatch({ type: "SET_SUPERSET", dayId, keys: [a, b], supersetId: null });
+      dispatch({ type: "SHOW_TOAST", message: "Separated — they rest between sets again." });
+    } else {
+      // Joining onto an existing round keeps its id, so a third exercise extends A1/A2 into A1/A2/A3
+      // rather than starting a new one next to it.
+      const existing = day.exercises[a]?.supersetId ?? day.exercises[b]?.supersetId;
+      const id = existing ?? `ss-${a}-${b}`;
+      dispatch({ type: "SET_SUPERSET", dayId, keys: [a, b], supersetId: id });
+      dispatch({ type: "SHOW_TOAST", message: "Supersetted — one of each is one set, no rest between." });
+    }
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 3000);
   }
 
   function save() {
@@ -61,9 +87,10 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
             const doneCount = ex.sets.filter((s) => s.checked).length;
             const isDone = doneCount === ex.sets.length;
             const inProgress = doneCount > 0 && !isDone;
+            const label = labels[id];
             return (
+              <React.Fragment key={id}>
               <div
-                key={id}
                 className="cell row"
                 style={{ opacity: isDone ? 0.6 : 1, border: inProgress ? "1px solid var(--color-accent)" : undefined, background: inProgress ? "var(--color-accent-900)" : "var(--color-surface)" }}
               >
@@ -81,12 +108,32 @@ function ReorderInner({ dayId, day, week }: { dayId: string; day: TrainingDay; w
                     {doneCount} of {ex.sets.length} sets{inProgress ? " · in progress" : ""}
                   </div>
                 </div>
+                {label && (
+                  <span className="tag tag-accent" style={{ flex: "none" }}>{label}</span>
+                )}
                 {isDone ? (
                   <i className="ph-fill ph-check-circle" style={{ fontSize: 16, color: "var(--color-accent)", flex: "none" }} />
                 ) : inProgress ? (
                   <span style={{ fontSize: 11, color: "var(--color-accent-300)", flex: "none" }}>in progress</span>
                 ) : null}
               </div>
+              {/* The link sits BETWEEN two rows, because that is what it joins. A per-exercise "make this a
+                  superset" control cannot say which neighbour it means, and chaining two links is what
+                  builds a round of three or more without a separate multi-select. */}
+              {i < order.length - 1 && (
+                <button
+                  onClick={() => toggleLink(id, order[i + 1])}
+                  style={{
+                    alignSelf: "center", background: "none", border: "none", cursor: "pointer",
+                    display: "flex", alignItems: "center", gap: 6, padding: "2px 8px", fontSize: 11,
+                    color: linkedTo(id, order[i + 1]) ? "var(--color-accent-300)" : "var(--color-neutral-600)",
+                  }}
+                >
+                  <i className={`ph ${linkedTo(id, order[i + 1]) ? "ph-link" : "ph-link-simple-break"}`} style={{ fontSize: 13 }} />
+                  {linkedTo(id, order[i + 1]) ? "Superset — no rest between" : "Superset with next"}
+                </button>
+              )}
+              </React.Fragment>
             );
           })}
         </div>

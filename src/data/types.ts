@@ -89,6 +89,17 @@ export interface WorkExercise {
   timed?: boolean;
   equipment?: Equipment;
   setup?: ExerciseSetup;
+  /** Exercises sharing this id are performed as one superset: a round of one set of each, back to back,
+   * with the rest taken after the round rather than between its members.
+   *
+   * An id on the member rather than a groups array on the day, because everything that walks a session
+   * iterates `exercises` and keys off `order` — a separate array would be a second source of truth those
+   * readers never consult, and would be left pointing at nothing the first time an exercise was deleted.
+   *
+   * Members must be CONTIGUOUS in `day.order`; `groupsOf` reads runs, so an id split apart by a reorder
+   * resolves to two groups rather than one round nobody can perform. Each member keeps its own sets, reps
+   * and load, so progressions carry on per exercise with no special case. */
+  supersetId?: string;
   sets: WorkSet[];
 }
 

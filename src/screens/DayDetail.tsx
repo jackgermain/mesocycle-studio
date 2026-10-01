@@ -12,6 +12,7 @@ import DayWorkout from "./DayWorkout";
 import UpcomingDay from "./UpcomingDay";
 import Soreness from "./Soreness";
 import { ExerciseSection } from "./ExerciseSection";
+import { roundLabels, showsRestAfter } from "../shared/supersetGroups";
 import { ProgressionToggle } from "../shared/AutomationToggles";
 import { computeSorenessDue } from "../shared/soreness";
 import { isoToday } from "../shared/dayStatus";
@@ -125,7 +126,7 @@ function ReopenedDay({ dayId }: { dayId: string }) {
         {exIds.map((id, i) => {
           const ex = day.exercises[id];
           if (!ex) return null;
-          return <ExerciseSection key={id} index={i + 1} dayId={dayId} ex={ex} readOnly="past" />;
+          return <ExerciseSection key={id} index={i + 1} dayId={dayId} ex={ex} readOnly="past" roundLabel={roundLabels(day)[id]} restsAfter={showsRestAfter(day, id)} />;
         })}
 
         <FeedbackThatDay log={day.log} />

@@ -14,6 +14,7 @@ import { applyRecoveryToNextWeek } from "../shared/sorenessVolume";
 import { isMajorLift } from "../shared/majorLift";
 import { reorderAcrossBlock } from "../shared/reorderDay";
 import { keepShape } from "../shared/programInvariant";
+import { setSuperset } from "../shared/supersetGroups";
 import { PROGRESSION_RULE_VERSION } from "../shared/progressionProposal";
 import { insertWarmupSet } from "../shared/programEdits";
 import { addExerciseToProgram } from "../shared/addExercise";
@@ -86,6 +87,9 @@ type Action =
   | { type: "SET_EFFORT"; dayId: string; exerciseId: string; setId: string; effort: number }
   | { type: "REMOVE_SET"; dayId: string; exerciseId: string; setId: string; reason: string }
   | { type: "REORDER_EXERCISES"; dayId: string; order: string[] }
+  /** Group exercises into one superset, or break them out of theirs with `supersetId: null`. Matched by
+   * NAME across the rest of the block, like every other scoped edit -- keys are week-scoped. */
+  | { type: "SET_SUPERSET"; dayId: string; keys: string[]; supersetId: string | null }
   | { type: "ADD_SET"; dayId: string; exerciseId: string; warmup?: boolean }
   | { type: "SWAP_EXERCISE"; exerciseKey: string; replacement: { name: string; muscle: string; equipment: Equipment; hasVideo: boolean }; scope: "day" | "mesocycle"; dayId?: string }
   | { type: "REMOVE_EXERCISE"; exerciseKey: string; scope: "day" | "mesocycle"; dayId?: string }
@@ -366,6 +370,35 @@ function reducer(state: AppState, action: Action): AppState {
       // The rule lives there because it has to match by NAME (keys are week-scoped) and that is exactly the
       // kind of thing that needs a test, which this file cannot have: it creates the Supabase client.
       return { ...state, program: reorderAcrossBlock(state.program, action.dayId, action.order) };
+    /* Supersets: a round of one set of each, back to back, rest after the round. The members keep their own
+     * sets, reps and load, so nothing in the progression engine needs to know this exists -- a superset is
+     * an order of execution and a rest rule, not a shared prescription.
+     *
+     * Applied to the SAME DAY IN EVERY REMAINING WEEK, matched by exercise name. Keys are week-scoped
+     * (`w1-d1-e1`), so a key-matched version would silently only ever change the week he was looking at --
+     * the exact trap that made his reorder look like it had not worked. A session already trained is left
+     * alone; history stays as it was performed. */
+    case "SET_SUPERSET": {
+      const program = structuredClone(state.program);
+      const anchor = program.weeks.flatMap((w) => w.days).find((d) => d.id === action.dayId);
+      if (!anchor) return state;
+      const names = action.keys.map((k) => anchor.exercises[k]?.name).filter(Boolean) as string[];
+      if (names.length === 0) return state;
+
+      for (const week of program.weeks) {
+        for (const day of week.days) {
+          if (day.code !== anchor.code || day.date < anchor.date) continue;
+          if (day.id !== anchor.id && (day.status === "done" || Object.values(day.exercises).some((e) => e.sets.some((s) => s.checked)))) continue;
+          const keys = names
+            .map((n) => Object.keys(day.exercises).find((k) => day.exercises[k].name === n))
+            .filter(Boolean) as string[];
+          if (keys.length !== names.length) continue;
+          const updated = setSuperset(day, keys, action.supersetId);
+          if (updated) day.exercises = updated;
+        }
+      }
+      return { ...state, program };
+    }
     case "MARK_PROGRESSION_SENT": {
       const program = structuredClone(state.program);
       for (const week of program.weeks) {

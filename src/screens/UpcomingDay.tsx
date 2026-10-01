@@ -7,6 +7,7 @@ import { DayNavControls } from "../components/DayNavControls";
 import { TabBar } from "../components/TabBar";
 import { dayDisplayTitle, dayKicker } from "../data/dayNumbering";
 import { ExerciseSection } from "./ExerciseSection";
+import { roundLabels, showsRestAfter } from "../shared/supersetGroups";
 import { ProgressionToggle } from "../shared/AutomationToggles";
 
 function daysAway(iso: string) {
@@ -54,7 +55,7 @@ export default function UpcomingDay({ dayId }: { dayId: string }) {
         {exIds.map((id, i) => {
           const ex = day.exercises[id];
           if (!ex) return null;
-          return <ExerciseSection key={id} index={i + 1} dayId={dayId} ex={ex} readOnly="future" />;
+          return <ExerciseSection key={id} index={i + 1} dayId={dayId} ex={ex} readOnly="future" roundLabel={roundLabels(day)[id]} restsAfter={showsRestAfter(day, id)} />;
         })}
       </div>
       <TabBar />

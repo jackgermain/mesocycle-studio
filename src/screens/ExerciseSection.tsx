@@ -86,10 +86,17 @@ export function ExerciseSection({
   onFormCheck,
   readOnly,
   askEffort = true,
+  roundLabel,
+  restsAfter = true,
 }: {
   index: number;
   dayId: string;
   ex: WorkExercise;
+  /** "A1", "A2"... when this exercise is part of a superset. Absent when it is performed on its own. */
+  roundLabel?: string;
+  /** False for every member of a superset except the last. "You don't rest in between sets of a superset.
+   * That's why it's called a superset." */
+  restsAfter?: boolean;
   menuOpen?: boolean;
   onToggleMenu?: (e: React.MouseEvent) => void;
   onAddSet?: () => void;
@@ -173,7 +180,10 @@ export function ExerciseSection({
             fontFamily: "var(--font-heading)",
           }}
         >
-          {allDone ? <i className="ph-fill ph-check" style={{ fontSize: 12 }} /> : index}
+          {/* The round label replaces the plain slot number when this is part of a superset: A1 and A2 is
+              how one is written on paper, and it is the only thing that says two cards are one piece of
+              work rather than two consecutive exercises. */}
+          {allDone ? <i className="ph-fill ph-check" style={{ fontSize: 12 }} /> : (roundLabel ?? index)}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontFamily: "var(--font-heading)", fontWeight: 500 }}>{ex.name}</div>
@@ -350,7 +360,7 @@ export function ExerciseSection({
             Extra set
           </button>
         )}
-        {ex.sets[0]?.prescribed.restSec ? (
+        {restsAfter && ex.sets[0]?.prescribed.restSec ? (
           <span className="mono" style={{ fontSize: 12.5, color: "var(--color-neutral-500)", display: "flex", alignItems: "center", gap: readOnly ? 5 : 2 }}>
             <i className="ph ph-timer" style={{ fontSize: 14 }} />
             {!readOnly && (

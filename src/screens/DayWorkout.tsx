@@ -17,6 +17,7 @@ import { AddExerciseSheet } from "../shared/AddExerciseSheet";
 import { canAddOwnExercise } from "../shared/canBuild";
 import { equipmentOf } from "./exerciseHelpers";
 import { ExerciseSection } from "./ExerciseSection";
+import { roundLabels, showsRestAfter } from "../shared/supersetGroups";
 import { SetEffortSheet } from "./SetEffortSheet";
 import { useRecordEffort } from "./useRecordEffort";
 import { effortOwedForDay, type OwedRating } from "../shared/effortOwed";
@@ -203,6 +204,8 @@ export default function DayWorkout({ dayId }: { dayId: string }) {
           if (!ex) return null;
           return (
             <ExerciseSection
+              roundLabel={roundLabels(day)[id]}
+              restsAfter={showsRestAfter(day, id)}
               key={id}
               index={i + 1}
               dayId={dayId}
