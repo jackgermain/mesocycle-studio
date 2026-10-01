@@ -89,6 +89,11 @@ export const libraryExercises: LibraryExercise[] = [
   ex("Barbell Bent-Over Row", "Back", true),
   ex("Pendlay Row", "Back", false),
   ex("Single-Arm Dumbbell Row", "Back", true),
+  // Both missing, and the gap is what let the matcher score an incline row against an incline PRESS and
+  // call it Chest. A library with no entry for a movement someone actually trains does not fail loudly --
+  // it quietly resolves to the nearest-looking thing and tags the wrong muscle for the rest of the block.
+  ex("Incline Dumbbell Row", "Back", true),
+  ex("Seal Row", "Back", false),
   ex("Cable Straight-Arm Pulldown", "Back", false),
   ex("Assisted Pull-Up Machine", "Back", false),
   ex("Assisted Pull-Up/Dip Machine", "Back", false),
@@ -351,6 +356,39 @@ const ABBREV: Record<string, string> = {
 /** Words that say what you're holding rather than what you're doing. Used only to break ties. */
 const GENERIC_WORDS = new Set(["barbell", "dumbbell", "cable", "machine", "smith", "seated", "standing", "bodyweight"]);
 
+/** The word in an exercise name that says what the body actually DOES. A row is not a press.
+ *
+ * Without this the matcher scored "Incline Dumbbell Row" against "Incline Dumbbell Press": two shared
+ * words out of four, the best score in the library, so it returned CHEST for a back exercise. Jack found it
+ * on his own pump screen -- *"CHEST - 3 SETS - Incline Db Row"* -- and then had to tell me: *"the incline
+ * dumbbell row is a back exercise, not a chest exercise."* I had spent three rounds narrowing the soreness
+ * check, which was reading this muscle and was right to.
+ *
+ * Qualifiers are the cheap words -- incline, dumbbell, seated, wide -- and two names can share all of them
+ * and still be opposite movements. So when BOTH names name a movement and they share none, it is not a
+ * match at any score. When only one names a movement there is no evidence either way and scoring decides,
+ * which is what keeps "Barbell RDL" resolving to Romanian Deadlift.
+ *
+ * Singular, because `words()` strips a trailing "s" before this is consulted. */
+const MOVEMENT_WORDS = new Set([
+  "row", "press", "curl", "raise", "fly", "flye", "extension", "pulldown", "pullover", "squat", "deadlift",
+  "lunge", "thrust", "bridge", "shrug", "crunch", "dip", "pushdown", "kickback", "abduction", "adduction",
+  "carry", "swing", "clean", "snatch", "jerk", "crossover", "rollout", "twist", "chop", "situp", "pullup",
+  "chinup", "pushup", "plank", "hyperextension", "goodmorning", "facepull", "shoulderpress", "skullcrusher",
+]);
+
+function movementsIn(tokens: Set<string>): Set<string> {
+  return new Set([...tokens].filter((t) => MOVEMENT_WORDS.has(t)));
+}
+
+/** True when both names say what they are and say different things. */
+function movementsDisagree(a: Set<string>, b: Set<string>): boolean {
+  const ma = movementsIn(a);
+  const mb = movementsIn(b);
+  if (ma.size === 0 || mb.size === 0) return false;
+  return ![...ma].some((m) => mb.has(m));
+}
+
 function words(name: string): Set<string> {
   const out = new Set<string>();
   for (const raw of normalizeExerciseName(name).split(" ")) {
@@ -402,6 +440,7 @@ export function resolveLibraryExercise(name: string): { exercise: LibraryExercis
   for (const ex of libraryExercises) {
     const exTokens = words(ex.name);
     if (!exTokens.size) continue;
+    if (movementsDisagree(tokens, exTokens)) continue;
     const smaller = tokens.size <= exTokens.size ? tokens : exTokens;
     const larger = smaller === tokens ? exTokens : tokens;
     if (![...smaller].every((t) => larger.has(t))) continue;
@@ -439,7 +478,9 @@ export function resolveLibraryExercise(name: string): { exercise: LibraryExercis
     if (!exNorm) continue;
     if (exNorm === norm) return { exercise: ex, confidence: "exact" };
 
-    const exTokens = [...words(ex.name)];
+    const exWords = words(ex.name);
+    if (movementsDisagree(tokens, exWords)) continue;
+    const exTokens = [...exWords];
     const overlap = exTokens.filter((t) => tokens.has(t)).length;
     // Requiring 2+ shared words (not just a single generic one like "press" or "raise") before counting
     // it as a match keeps this from confidently mislabeling an exercise the library doesn't actually have.

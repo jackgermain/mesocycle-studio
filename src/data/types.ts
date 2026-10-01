@@ -197,6 +197,10 @@ export interface Program {
    * as the order repair: without it the scan re-ran on every program change forever, which made a one-time
    * undo into permanent automatic behaviour. */
   strayRepairVersion?: number;
+  /** Which one-time exercise re-tag has run — see shared/retagExercises.ts. The muscle is copied onto an
+   * exercise when a program is built, so a matcher bug stays frozen in every week of every block built
+   * before it was fixed; this corrects it where the library is certain, once. */
+  retagVersion?: number;
   coachName: string;
   weeks: TrainingWeek[];
 }

@@ -36,6 +36,7 @@ import { sendProgressionProposals, sendProgressionRecord } from "./shared/progre
 import { ownsTheirProgressions } from "./shared/selfDirected";
 import { strayCopies } from "./shared/blockShape";
 import { restoreProgrammedOrder } from "./shared/restoreOrder";
+import { retagMisTaggedExercises } from "./shared/retagExercises";
 import { isoToday } from "./shared/dayStatus";
 import { ClientSideNav } from "./components/TabBar";
 import { CoachSideNav } from "./coach/components/CoachTabBar";
@@ -209,12 +210,17 @@ function ClientLayout() {
   useEffect(() => {
     if (!account || !ready) return;
     const cleaned = strayCopies(state.program);
-    const { program, restored } = restoreProgrammedOrder(cleaned.program);
+    const ordered = restoreProgrammedOrder(cleaned.program);
+    const { program, retagged } = retagMisTaggedExercises(ordered.program);
+    const restored = ordered.restored;
     if (program === state.program) return;
     dispatch({ type: "SET_PROGRAM", program });
     const parts = [
       restored.length ? `order put back on ${restored.length} session${restored.length === 1 ? "" : "s"}` : "",
       cleaned.removed.length ? `${cleaned.removed.length} exercise${cleaned.removed.length === 1 ? "" : "s"} removed` : "",
+      // Named, not counted: which muscle moved where is the whole point, and it changes what gets asked
+      // about soreness and what the volume counter books.
+      ...retagged.map((r) => `${r.exercise} is ${r.to}, not ${r.from}`),
     ].filter(Boolean);
     if (parts.length === 0) return;
     dispatch({ type: "SHOW_TOAST", message: `Fixed what an earlier bug changed — ${parts.join(", ")}.` });
