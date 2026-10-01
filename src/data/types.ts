@@ -263,6 +263,12 @@ export interface ClientProfile {
    * cannot be answered by looking at the scale alone — it depends on what was already tried and how long ago.
    * It is also what stops a correction firing every time the screen is opened. */
   lastNutritionAdjustment?: { date: string; kind: "stall" | "taper" | "followup"; deltaKcal: number };
+  /** Running total the weekly review has moved maintenance by, so a future correction can reverse itself
+   * exactly. Only the LAST adjustment used to be recorded, which is why undoing two firings meant falling
+   * back to the formula estimate instead of adding a known number back. */
+  autoMaintenanceDelta?: number;
+  /** Which one-time nutrition repair has run — see shared/nutritionRepair.ts. */
+  nutritionRepairVersion?: number;
   /** The maintenance figure targets are an offset from (N1). Estimated to begin with, then corrected from
    * their own weigh-ins by N6 — the scale beats the formula. */
   maintenanceKcal?: number;

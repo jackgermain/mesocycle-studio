@@ -37,6 +37,7 @@ import { ownsTheirProgressions } from "./shared/selfDirected";
 import { strayCopies } from "./shared/blockShape";
 import { restoreProgrammedOrder } from "./shared/restoreOrder";
 import { retagMisTaggedExercises } from "./shared/retagExercises";
+import { undoDriftAdjustments } from "./shared/nutritionRepair";
 import { isoToday } from "./shared/dayStatus";
 import { ClientSideNav } from "./components/TabBar";
 import { CoachSideNav } from "./coach/components/CoachTabBar";
@@ -226,6 +227,22 @@ function ClientLayout() {
     dispatch({ type: "SHOW_TOAST", message: `Fixed what an earlier bug changed — ${parts.join(", ")}.` });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 6000);
   }, [account, ready, state.program, dispatch]);
+
+  /* The same one-time-undo shape, for calories. The weekly review charged a maintenance goal the full stall
+   * correction for holding steady, twice, and fixing the threshold did nothing about the number already
+   * written into the profile — the third time today I fixed a rule and left its damage in place. */
+  useEffect(() => {
+    if (!account || !ready) return;
+    const { profile, undone } = undoDriftAdjustments(state.profile);
+    if (profile === state.profile) return;
+    dispatch({ type: "UPDATE_PROFILE", profile });
+    if (!undone) return;
+    dispatch({
+      type: "SHOW_TOAST",
+      message: `Calories corrected — an earlier bug cut your maintenance for holding your weight. Check Nutrition and retype it if it is not right.`,
+    });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 7000);
+  }, [account, ready, state.profile, dispatch]);
 
   /* Sessions programmed forward by an older version of the arithmetic, recomputed in place.
    *

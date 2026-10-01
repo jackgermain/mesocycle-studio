@@ -521,6 +521,9 @@ function reducer(state: AppState, action: Action): AppState {
           // the truthful flag — a number corrected from the scale beats the formula, which is N6 exactly.
           maintenanceKcalManual: true,
           lastNutritionAdjustment: { date: action.date, kind: action.kind, deltaKcal: action.deltaKcal },
+          // Accumulated so a correction can be reversed EXACTLY. Storing only the last one is why undoing
+          // two bad firings meant falling back to the formula rather than adding a known number back.
+          autoMaintenanceDelta: (state.profile.autoMaintenanceDelta ?? 0) + action.deltaKcal,
         },
       };
     case "MARK_NUTRITION_ALERT_SENT":
