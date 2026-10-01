@@ -148,3 +148,24 @@ test("cardio does not ask whether your full body has healed", () => {
   ]);
   assert.ok(!computeSorenessDue(p, "w2").some((d) => d.muscle === "Full body"));
 });
+
+test("a muscle only tagged as a SECONDARY on today's exercises is never asked about", () => {
+  /* Fourth report of the same thing: "You're only supposed to ask about soreness for that muscle the same
+   * day that you're supposed to train it again. I'm not training chest again until Friday, so I should not
+   * be asked about soreness until then. This goes for every single body part."
+   *
+   * The set had been narrowed from the synergist table to "primary plus the exercise's own secondaryMuscles"
+   * on the reasoning that those tags are his. They are — but a movement tagged "also hits chest" is still
+   * not a chest day, and chest kept appearing on days he was not benching. Primary mover only. */
+  const dipDay = day("w3d3", "2026-09-30", "Triceps", "upcoming", "Weighted Dip");
+  (dipDay as unknown as { exercises: Record<string, { secondaryMuscles: string[] }> })
+    .exercises.e1.secondaryMuscles = ["Chest", "Front delts"];
+  const p = program([
+    { number: 2, days: [day("w2", "2026-09-23", "Chest", "done", "Barbell Bench Press")] },
+    { number: 3, days: [day("w3", "2026-09-28", "Triceps", "done", "Tricep Rope Pushdown"), dipDay] },
+  ]);
+  const asked = computeSorenessDue(p, "w3d3").map((d) => d.muscle);
+  assert.ok(!asked.includes("Chest"), `chest is not trained today, got [${asked.join(", ")}]`);
+  assert.ok(!asked.includes("Front delts"), `nor are front delts, got [${asked.join(", ")}]`);
+  assert.deepEqual(asked, ["Triceps"], "the primary mover, and only that");
+});

@@ -42,28 +42,30 @@ const EXERCISE_SYNERGISTS: [RegExp, string[]][] = [[/hammer curl/i, ["Forearms"]
  * glutes and traps, and those are real muscles with real answers. Only the category itself is unaskable. */
 const NOT_A_MUSCLE = new Set(["Full body"]);
 
-/** Muscles this session trains DIRECTLY — what is actually on the card.
+/** The muscles this session trains, as the primary mover of an exercise on the card. Nothing else.
  *
- * This is what the check asks about, and the distinction from `musclesWorked` below is the whole rule.
- * Jack, for the third time, looking at a Day 3 asking after eight muscles: *"For the love of God, if I have
- * to remind you one more time to not ask me for soreness feedback on a day that I'm not training the
- * body part… there's no chest training, no triceps."*
+ * > *"You're only supposed to ask about soreness for that muscle the same day that you're supposed to train
+ * > it again. I'm not training chest again until Friday, so I should not be asked about soreness until
+ * > then. This goes for every single body part."*
  *
- * The synergist table was being applied to TODAY as well as to the history, so one chest exercise asked
- * about chest, triceps and front delts, and one back exercise asked about back, biceps, rear delts and
- * forearms. Seven questions from two movements, five of which name a muscle that is nowhere in the session.
+ * Said four times, and widened back out twice in between. The history of this one set:
  *
- * `ex.secondaryMuscles` DOES count as direct: those are tags the person put on the movement themselves —
- * Jack, adding a hip clean, *"I want to be able to click on back and I also want to be able to click on
- * full body, and quads and traps."* The table and the per-exercise regexes are my inferences, not his, and
- * inferences do not get to invent a question. */
+ * 1. Started as `musclesWorked` — primary PLUS the synergist table. One chest exercise asked about chest,
+ *    triceps and front delts; one back exercise asked about back, biceps, rear delts and forearms. A Day 3
+ *    asked after eight muscles.
+ * 2. Narrowed to primary plus the exercise's own `secondaryMuscles`, on the reasoning that those tags are
+ *    his, not mine. They are — but a movement tagged "also hits chest" is still not a chest day, and chest
+ *    kept appearing on days he was not benching.
+ * 3. Primary mover only. Every widening of this set has been wrong, so it does not get widened again
+ *    without him asking for it in those words.
+ *
+ * The synergist table still lives below in `musclesWorked`, where it answers a different question — WHEN a
+ * muscle was last trained — and never puts a question on screen. */
 function musclesTrainedDirectly(day: TrainingDay): Set<string> {
-  const set = new Set<string>();
-  for (const ex of Object.values(day.exercises)) {
-    set.add(ex.muscle);
-    for (const declared of ex.secondaryMuscles ?? []) set.add(declared);
-  }
-  return set;
+  // ONLY the primary mover. Not the synergist table, not the per-exercise regexes, and not the exercise's
+  // own secondaryMuscles -- a movement tagged "also hits chest" is not a chest day, and asking about chest
+  // on it is the exact thing being complained about. Every widening of this set has been wrong.
+  return new Set(Object.values(day.exercises).map((ex) => ex.muscle));
 }
 
 /** Everything the session touches, synergists included.

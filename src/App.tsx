@@ -34,7 +34,7 @@ import {
 } from "./shared/progressionProposal";
 import { sendProgressionProposals, sendProgressionRecord } from "./shared/progressionSignals";
 import { ownsTheirProgressions } from "./shared/selfDirected";
-import { alignBlockShape, strayCopies } from "./shared/blockShape";
+import { strayCopies } from "./shared/blockShape";
 import { isoToday } from "./shared/dayStatus";
 import { ClientSideNav } from "./components/TabBar";
 import { CoachSideNav } from "./coach/components/CoachTabBar";
@@ -188,22 +188,22 @@ function ClientLayout() {
    *
    * Kept separate from the review effect above rather than branching inside it, because the two now read
    * different marks and different windows and had started to read as one function doing two jobs. */
-  /* The shape half of "copy last week to this week and change the numbers". Later weeks of a session take
-   * the exercises and the ORDER of the last completed one, because reordering used to change a single week
-   * and a block can already be in that state — Jack: "the hip clean is at the very end of the day for some
-   * reason on week two day one." Idempotent, so it runs on every open rather than once per session; an
-   * already-aligned block returns the same object and nothing is written. */
+  /* NOTHING AUTOMATIC EVER CHANGES EXERCISE ORDER. There used to be an alignBlockShape pass here that
+   * rewrote every later week to match the last COMPLETED session, as a repair for a block already scrambled
+   * by the old single-week reorder bug. It had to go: the Reorder screen is also the in-session "station
+   * busy" control, so one shuffle while training week 2 silently became the order for the rest of the
+   * block. Jack, on week 3 day 3: "you completely changed the order of all my exercises week over week. I
+   * never asked you to do anything like that ever within a block."
+   *
+   * Order now changes only when he changes it, from the Reorder screen, which carries forward deliberately
+   * (reorderDay.ts). What remains here is strayCopies, which deletes exercises a bug of mine wrote into
+   * sessions they never belonged in -- removing that code could not undo what it had already saved. */
   useEffect(() => {
     if (!account || !selfDirected) return;
-    if (state.profile.autoProgressions === false) return;
-    // Cleanup first: the additive version of this rule shipped for one deploy and wrote exercises into
-    // sessions they did not belong in -- a seated dumbbell curl onto a leg day. Removing the code cannot
-    // undo what it already saved into someone's blob, so this does.
     const cleaned = strayCopies(state.program);
-    const { program, changed } = alignBlockShape(cleaned.program);
-    if (changed.length === 0 && cleaned.removed.length === 0) return;
-    dispatch({ type: "SET_PROGRAM", program });
-  }, [account, selfDirected, state.program, state.profile.autoProgressions, dispatch]);
+    if (cleaned.removed.length === 0) return;
+    dispatch({ type: "SET_PROGRAM", program: cleaned.program });
+  }, [account, selfDirected, state.program, dispatch]);
 
   /* Sessions programmed forward by an older version of the arithmetic, recomputed in place.
    *
