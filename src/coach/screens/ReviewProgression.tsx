@@ -250,8 +250,10 @@ export default function ReviewProgression() {
                   {review ? <i className="ph-fill ph-check" style={{ fontSize: 12 }} /> : idx + 1}
                 </div>
                 <div style={{ flex: 1, minWidth: 0, fontSize: 14.5, fontFamily: "var(--font-heading)" }}>{p.exercise}</div>
+                {/* Three verdicts, not two. "auto" is the self-directed path, where the numbers went in
+                    without anyone approving them -- calling that "Changed" implies a person chose it. */}
                 <span className={`tag ${review ? "tag-accent" : "tag-neutral"}`} style={{ flex: "none" }}>
-                  {review ? (review.verdict === "approved" ? "Approved" : "Changed") : "To review"}
+                  {!review ? "To review" : review.verdict === "approved" ? "Approved" : review.verdict === "auto" ? "Programmed" : "Changed"}
                 </span>
               </div>
 
