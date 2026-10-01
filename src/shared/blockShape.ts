@@ -18,8 +18,16 @@ import type { Program } from "../data/types";
  * Identifiable exactly: it keyed every copy `<dayId>-<name slugified>`, a shape nothing else in the app
  * produces — builder ids look like `w2-d1-e3`. Only ever removes an untouched copy, so a set someone has
  * actually logged against one is never thrown away. */
+/** Bump only to run a new one-time membership repair. */
+export const STRAY_REPAIR_VERSION = 1;
+
 export function strayCopies(program: Program): { program: Program; removed: string[] } {
+  // ONE TIME, and stamped. This had no stamp and so re-evaluated on every program change, forever -- an
+  // automatic membership write living permanently in the app, which is exactly what Jack banned: "there
+  // should be no changes... unless I moved them myself." A repair is a repair; it is not behaviour.
+  if ((program.strayRepairVersion ?? 0) >= STRAY_REPAIR_VERSION) return { program, removed: [] };
   const next = structuredClone(program);
+  next.strayRepairVersion = STRAY_REPAIR_VERSION;
   const removed: string[] = [];
   for (const week of next.weeks) {
     for (const day of week.days) {
@@ -34,5 +42,7 @@ export function strayCopies(program: Program): { program: Program; removed: stri
       }
     }
   }
-  return removed.length ? { program: next, removed } : { program, removed };
+  // The stamp alone is a change worth saving, so `next` is returned even when nothing was removed --
+  // otherwise this would re-scan on every program change for the life of the block.
+  return { program: next, removed };
 }

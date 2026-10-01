@@ -152,7 +152,7 @@ function PreviewBanner() {
 }
 
 function ClientLayout() {
-  const { state, dispatch } = useStore();
+  const { state, dispatch, ready } = useStore();
   const { account, previewingAsClient } = useAuth();
   const showingPreviewBanner = account?.role === "coach" && previewingAsClient;
   const desktop = useIsDesktop();
@@ -199,16 +199,27 @@ function ClientLayout() {
    * Order now changes only when he changes it, from the Reorder screen, which carries forward deliberately
    * (reorderDay.ts). What remains here is strayCopies, which deletes exercises a bug of mine wrote into
    * sessions they never belonged in -- removing that code could not undo what it had already saved. */
+  /* Both are ONE-TIME undos of damage this app did to a saved program, each stamped so it can never become
+   * ongoing behaviour. Gated on `ready` so they see the real hydrated program and not the blank default.
+   *
+   * They SAY what they changed. The audit's sharpest finding was about this effect: a silent reorder on app
+   * open is indistinguishable from the bug being apologised for, however correct the new order is — and the
+   * first run cannot tell order written by the deleted pass from order Jack chose himself. So if it is
+   * wrong, he finds out from a toast rather than from a scrambled session in the gym. */
   useEffect(() => {
-    if (!account) return;
-    // Both are one-time undos of damage this app did to a saved program, not ongoing behaviour. strayCopies
-    // deletes exercises written into sessions they never belonged in; restoreProgrammedOrder puts order back
-    // to the week the block was written in and stamps itself so it never runs again.
+    if (!account || !ready) return;
     const cleaned = strayCopies(state.program);
     const { program, restored } = restoreProgrammedOrder(cleaned.program);
-    if (cleaned.removed.length === 0 && restored.length === 0 && program === cleaned.program) return;
+    if (program === state.program) return;
     dispatch({ type: "SET_PROGRAM", program });
-  }, [account, state.program, dispatch]);
+    const parts = [
+      restored.length ? `order put back on ${restored.length} session${restored.length === 1 ? "" : "s"}` : "",
+      cleaned.removed.length ? `${cleaned.removed.length} exercise${cleaned.removed.length === 1 ? "" : "s"} removed` : "",
+    ].filter(Boolean);
+    if (parts.length === 0) return;
+    dispatch({ type: "SHOW_TOAST", message: `Fixed what an earlier bug changed — ${parts.join(", ")}.` });
+    setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 6000);
+  }, [account, ready, state.program, dispatch]);
 
   /* Sessions programmed forward by an older version of the arithmetic, recomputed in place.
    *

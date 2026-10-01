@@ -13,6 +13,7 @@ import { backfillMealDates } from "../shared/mealDays";
 import { applyRecoveryToNextWeek } from "../shared/sorenessVolume";
 import { isMajorLift } from "../shared/majorLift";
 import { reorderAcrossBlock } from "../shared/reorderDay";
+import { keepShape } from "../shared/programInvariant";
 import { PROGRESSION_RULE_VERSION } from "../shared/progressionProposal";
 import { insertWarmupSet } from "../shared/programEdits";
 import { addExerciseToProgram } from "../shared/addExercise";
@@ -385,7 +386,15 @@ function reducer(state: AppState, action: Action): AppState {
      * `progressionAppliedAt`, not `progressionSentAt`: a session proposed for review and never approved
      * still has its progression to apply. See TrainingDay for the week that fact stranded. */
     case "AUTO_PROGRESS": {
-      const program = structuredClone(action.program);
+      /* Numbers only. A progression may rewrite weights, reps and set COUNTS; it may never change which
+       * exercises a session holds or the order they are in. keepShape forces that structurally rather than
+       * trusting the caller -- see programInvariant.ts. Jack: "there should be no changes in order on any
+       * exercises unless I moved them myself... this should never ever ever change." */
+      const guarded = keepShape(state.program, action.program);
+      if (guarded.undone.length > 0) {
+        console.warn("[AUTO_PROGRESS] discarded a shape change no user asked for:", guarded.undone);
+      }
+      const program = structuredClone(guarded.program);
       const at = new Date().toISOString();
       for (const week of program.weeks) {
         for (const day of week.days) {

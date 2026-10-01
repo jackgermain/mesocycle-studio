@@ -181,6 +181,10 @@ export interface Program {
    * the repair runs once and stamps itself. Once, deliberately: a pass that kept running would snap back a
    * reorder the person made themselves on the very next render. */
   orderRepairVersion?: number;
+  /** Which one-time stray-exercise cleanup has run — see shared/blockShape.ts. Stamped for the same reason
+   * as the order repair: without it the scan re-ran on every program change forever, which made a one-time
+   * undo into permanent automatic behaviour. */
+  strayRepairVersion?: number;
   coachName: string;
   weeks: TrainingWeek[];
 }
