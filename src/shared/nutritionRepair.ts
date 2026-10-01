@@ -11,14 +11,17 @@
  * profile. The order repair and the stray-exercise cleanup both needed exactly this and I still did not
  * look for it here.
  *
- * ## Why it clears the pin rather than adding the calories back
+ * ## It only moves a number it can move correctly
  *
- * `APPLY_NUTRITION_ADJUSTMENT` writes `maintenanceKcal` and sets `maintenanceKcalManual`, which is what
- * stops `deriveNutritionTargets` recomputing over it — correct for a real correction, and the reason the
- * reduced figure is stuck rather than drifting back on its own. But only the LAST adjustment is stored, so
- * after two firings there is no record of how much to add back. Clearing the pin is the honest reset: the
- * estimate recomputes from his own bodyweight, body fat, age, height and activity, which is where it came
- * from before the review touched it.
+ * The first version cleared `maintenanceKcalManual` so the formula would rebuild the figure. That threw
+ * away a number Jack had typed: with the pin gone, turning auto nutrition on recomputed maintenance from
+ * body stats and dropped him from 3200 to the formula's 3090. A repair for an unasked-for change must not
+ * make another one.
+ *
+ * So the figure moves only where the amount is KNOWN. `autoMaintenanceDelta` is the running total, added in
+ * the same commit that fixed the threshold — present for anything adjusted since, absent for the firings
+ * that caused this. Where it is absent, the number is left exactly as it stands and he is asked to check
+ * it, because only the LAST adjustment was ever stored and nobody can reconstruct the rest.
  *
  * ## Narrow on purpose
  *
@@ -39,6 +42,9 @@ const MAINTENANCE_RATE_BAND = 0.05;
 export interface NutritionUndo {
   from: number;
   lastDeltaKcal: number;
+  /** The figure restored, when the total to reverse was on record. Null when it was not — the number is
+   * then left untouched and the person is asked to check it, because nobody can reconstruct it. */
+  restored: number | null;
 }
 
 export function undoDriftAdjustments(
@@ -53,12 +59,28 @@ export function undoDriftAdjustments(
   if (!last || !holding || profile.maintenanceKcal == null) return { profile: stamped, undone: null };
 
   const next: ClientProfile = { ...stamped };
-  // Unpin, so the estimate is recomputed from his own numbers rather than carrying deltas nobody can total.
-  delete next.maintenanceKcalManual;
+  // The cooldown resets either way: the adjustment that set it should never have fired.
   delete next.lastNutritionAdjustment;
-  // Cleared too, so the first review after this starts from a clean slate rather than treating the repair
-  // as its own previous move.
-  delete next.autoMaintenanceDelta;
 
-  return { profile: next, undone: { from: profile.maintenanceKcal, lastDeltaKcal: last.deltaKcal } };
+  /* THE PIN STAYS. The first version of this cleared `maintenanceKcalManual` so the formula would rebuild
+   * the figure — and that threw away a number Jack had typed. With the pin gone, turning auto nutrition on
+   * recomputed maintenance from body stats and dropped him from the 3200 he had entered to the formula's
+   * 3090: *"I don't know why it's still changing my calories. Whenever I enable the auto programming it
+   * decreases my calories from 3200 to 3090."* A repair for an unasked-for change must not make another one.
+   *
+   * So the number only moves when the amount to move it by is actually KNOWN. `autoMaintenanceDelta` is the
+   * running total, added in the same commit that fixed the threshold — present for anything adjusted since,
+   * absent for the two firings that caused this. Where it is absent the figure is left exactly as it stands
+   * and he is told to check it, which is the honest answer: nobody can reconstruct what to add back. */
+  const delta = profile.autoMaintenanceDelta;
+  if (delta === undefined || delta === 0) {
+    return { profile: next, undone: { from: profile.maintenanceKcal, lastDeltaKcal: last.deltaKcal, restored: null } };
+  }
+  next.maintenanceKcal = profile.maintenanceKcal - delta;
+  next.maintenanceKcalManual = true;
+  delete next.autoMaintenanceDelta;
+  return {
+    profile: next,
+    undone: { from: profile.maintenanceKcal, lastDeltaKcal: last.deltaKcal, restored: next.maintenanceKcal },
+  };
 }

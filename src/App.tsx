@@ -239,7 +239,9 @@ function ClientLayout() {
     if (!undone) return;
     dispatch({
       type: "SHOW_TOAST",
-      message: `Calories corrected — an earlier bug cut your maintenance for holding your weight. Check Nutrition and retype it if it is not right.`,
+      message: undone.restored != null
+        ? `Calories corrected — maintenance back to ${undone.restored}. An earlier bug cut it for holding your weight.`
+        : `An earlier bug cut your maintenance for holding your weight, and how much cannot be recovered. Check the number in Nutrition and retype it — typing it pins it.`,
     });
     setTimeout(() => dispatch({ type: "CLEAR_TOAST" }), 7000);
   }, [account, ready, state.profile, dispatch]);

@@ -26,16 +26,29 @@ const profile = (over: Partial<ClientProfile> = {}): ClientProfile => ({
   ...over,
 }) as ClientProfile;
 
-test("a maintenance goal that was cut has the pin removed, so the estimate recomputes", () => {
-  const { profile: fixed, undone } = undoDriftAdjustments(profile());
-  assert.deepEqual(undone, { from: 3090, lastDeltaKcal: -150 });
-  assert.equal(fixed.maintenanceKcalManual, undefined, "unpinned, so deriveNutritionTargets rebuilds it");
+test("where the total is on record, the exact calories go back and stay pinned", () => {
+  const { profile: fixed, undone } = undoDriftAdjustments(profile({ autoMaintenanceDelta: -300 }));
+  assert.equal(undone?.restored, 3390, "3090 + the 300 that was taken");
+  assert.equal(fixed.maintenanceKcal, 3390);
+  assert.equal(fixed.maintenanceKcalManual, true, "pinned, so the formula does not overwrite it");
+  assert.equal(fixed.autoMaintenanceDelta, undefined, "the debt is settled");
   assert.equal(fixed.lastNutritionAdjustment, undefined);
   assert.equal(fixed.nutritionRepairVersion, NUTRITION_REPAIR_VERSION);
 });
 
+test("where the total is NOT on record, the number is left alone rather than guessed at", () => {
+  /* The first version of this cleared the pin so the formula would rebuild the figure, and that threw away
+   * a number Jack had typed: "whenever I enable the auto programming it decreases my calories from 3200 to
+   * 3090." A repair for an unasked-for change must not make another one. Only the LAST adjustment was ever
+   * stored, so after two firings there is nothing to reconstruct from. */
+  const { profile: fixed, undone } = undoDriftAdjustments(profile({ maintenanceKcal: 3200 }));
+  assert.equal(undone?.restored, null, "says plainly that it could not be recovered");
+  assert.equal(fixed.maintenanceKcal, 3200, "untouched");
+  assert.equal(fixed.maintenanceKcalManual, true, "and still pinned — the formula never overrides a typed figure");
+});
+
 test("it runs once, so a number he types afterwards is never clawed back", () => {
-  const once = undoDriftAdjustments(profile()).profile;
+  const once = undoDriftAdjustments(profile({ autoMaintenanceDelta: -300 })).profile;
   const his: ClientProfile = { ...once, maintenanceKcal: 3350, maintenanceKcalManual: true };
   const again = undoDriftAdjustments(his);
   assert.equal(again.undone, null);
