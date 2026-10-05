@@ -71,14 +71,27 @@ export default function ProgressTab() {
 
   return (
     <div className="screen">
-      <HeroHeader title="The block" kicker={`${state.program.name} · ${weeks.length} weeks`} />
+      <HeroHeader
+        title="Progress"
+        kicker={`${state.program.name} · ${profile.name}`}
+        right={
+          <div style={{ textAlign: "right" }}>
+            <div className="num" style={{ fontSize: 20, fontWeight: 700, color: "var(--color-accent)" }}>
+              {week.number}<span style={{ color: "var(--color-neutral-700)", fontSize: 14 }}>/{weeks.length}</span>
+            </div>
+            <div className="scr">week</div>
+          </div>
+        }
+      />
       <div className="screen-scroll">
 
-        <WeekStrip weeks={weeks} selected={weekIndex} onSelect={setWeekIndex} />
+        <WeekBar weeks={weeks} selected={weekIndex} onSelect={setWeekIndex} />
+
+        <WeightAndFood week={week} />
 
         <MainLifts lifts={lifts} onChoose={() => setChoosing(true)} onAll={() => nav("/progress/lifts")} />
 
-        <WeightAndFood week={week} />
+        <SetsThisWeek week={week} />
 
         <div className="cell row" style={{ gap: 14, alignItems: "center" }}>
           <div>
@@ -113,46 +126,82 @@ export default function ProgressTab() {
   );
 }
 
-/** The block, as a row of weeks. A dot per session is how a missed week becomes visible without opening it. */
-function WeekStrip({ weeks, selected, onSelect }: { weeks: BlockWeek[]; selected: number; onSelect: (i: number) => void }) {
+/** The block as one thin bar, a segment per week — and every segment is a button.
+ *
+ * It reads as a progress bar, which is the look Jack picked, but *"make sure the graphs update and can be
+ * changed"*: tapping a segment is what changes which week every chart below is drawn for. A filled segment
+ * is a week trained, a hollow one is still to come, and a dashed one is the deload. */
+function WeekBar({ weeks, selected, onSelect }: { weeks: BlockWeek[]; selected: number; onSelect: (i: number) => void }) {
   return (
-    <div style={{ display: "flex", gap: 6 }}>
+    <div style={{ display: "flex", gap: 4, marginBottom: 2 }}>
       {weeks.map((w, i) => {
         const on = i === selected;
+        const done = w.sessionsTotal > 0 && w.sessionsDone === w.sessionsTotal;
+        const partial = w.sessionsDone > 0 && !done;
         return (
           <button
             key={w.number}
             onClick={() => onSelect(i)}
             aria-current={on ? "true" : undefined}
             aria-label={`Week ${w.number}, ${w.sessionsDone} of ${w.sessionsTotal} sessions logged`}
-            style={{
-              flex: 1, minWidth: 0, cursor: "pointer", padding: "9px 0 8px", borderRadius: 11,
-              background: on ? "var(--color-accent-900)" : "var(--color-surface)",
-              border: `1px solid ${on ? "var(--color-accent)" : "var(--color-neutral-900)"}`,
-              borderStyle: w.isDeload ? "dashed" : "solid",
-            }}
+            // A 3px bar is far too small to hit, so the button keeps a 44px target and the bar is drawn
+            // inside it -- the same reason the tab bar's icons sit in oversized boxes.
+            style={{ flex: 1, minWidth: 0, background: "none", border: "none", cursor: "pointer", padding: "14px 0", display: "block" }}
           >
-            <div className="num" style={{ fontSize: 13, fontWeight: 700, color: on ? "var(--color-accent-300)" : "var(--color-neutral-400)" }}>
-              {w.number}
-            </div>
-            {w.isDeload ? (
-              <div style={{ fontSize: 8.5, color: "var(--color-neutral-600)", marginTop: 6, letterSpacing: "0.06em" }}>DELOAD</div>
-            ) : (
-              <div style={{ display: "flex", gap: 2, justifyContent: "center", marginTop: 5 }}>
-                {Array.from({ length: Math.min(w.sessionsTotal, 6) }, (_, d) => (
-                  <span
-                    key={d}
-                    style={{
-                      width: 4, height: 4, borderRadius: "50%", display: "inline-block",
-                      background: d < w.sessionsDone ? "var(--color-accent)" : "var(--color-neutral-800)",
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+            <span
+              style={{
+                display: "block", height: on ? 5 : 3, borderRadius: 3,
+                background: done || partial ? "var(--color-accent)" : "var(--color-neutral-900)",
+                opacity: partial ? 0.55 : 1,
+                outline: w.isDeload ? "1px dashed var(--color-neutral-700)" : undefined,
+                outlineOffset: 2,
+              }}
+            />
           </button>
         );
       })}
+    </div>
+  );
+}
+
+/** Sets per muscle for the week being viewed.
+ *
+ * Scaled against the biggest muscle THIS WEEK, and labelled as that. The design showed each bar against "your
+ * range", but no per-muscle weekly range exists anywhere in the app — inventing one here would be a number
+ * nobody chose presented as a target, which is exactly the class of mistake this tab was rebuilt after. */
+function SetsThisWeek({ week }: { week: BlockWeek }) {
+  const { state } = useStore();
+  const counts = useMemo(() => {
+    const byMuscle = new Map<string, number>();
+    const days = state.program.weeks.find((w) => w.number === week.number)?.days ?? [];
+    for (const day of days) {
+      for (const ex of Object.values(day.exercises)) {
+        if (ex.timed) continue;
+        const sets = ex.sets.filter((s) => !s.isWarmup && !s.removed).length;
+        if (sets > 0) byMuscle.set(ex.muscle, (byMuscle.get(ex.muscle) ?? 0) + sets);
+      }
+    }
+    return [...byMuscle.entries()].map(([muscle, sets]) => ({ muscle, sets })).sort((a, b) => b.sets - a.sets);
+  }, [state.program, week.number]);
+
+  if (counts.length === 0) return null;
+  const most = Math.max(...counts.map((c) => c.sets), 1);
+
+  return (
+    <div>
+      <div className="sh">Sets this week</div>
+      <div className="cell" style={{ display: "flex", flexDirection: "column", gap: 11 }}>
+        {counts.map((c) => (
+          <div key={c.muscle} className="row" style={{ gap: 10, alignItems: "center" }}>
+            <div style={{ width: 66, flex: "none", fontSize: 12, color: muscleColorVar(c.muscle) }} className="trunc">{c.muscle}</div>
+            <div style={{ flex: 1, height: 7, borderRadius: 4, background: "var(--color-neutral-900)", overflow: "hidden" }}>
+              <div style={{ width: `${(c.sets / most) * 100}%`, height: "100%", borderRadius: 4, background: muscleColorVar(c.muscle) }} />
+            </div>
+            <div className="num" style={{ width: 26, flex: "none", textAlign: "right", fontSize: 12 }}>{c.sets}</div>
+          </div>
+        ))}
+        <div className="mu" style={{ fontSize: 10.5 }}>Prescribed working sets, against the biggest this week.</div>
+      </div>
     </div>
   );
 }
@@ -263,17 +312,30 @@ function WeightAndFood({ week }: { week: BlockWeek }) {
   const avgKcal = eaten.length ? Math.round(eaten.reduce((n, d) => n + d.kcal, 0) / eaten.length) : 0;
   const onTarget = target > 0 ? eaten.filter((d) => Math.abs(d.kcal - target) <= 150).length : 0;
 
+  /* ANY day of the week being viewed can be edited, not just today. "Make sure the graphs update and can be
+   * changed": a weigh-in typed wrong, or missed and remembered later, has to be fixable, and the week
+   * average it feeds is the number that moves someone's calories. Tapping a cell opens it; tapping the day
+   * already open closes it. */
+  const [editing, setEditing] = useState<string | null>(null);
   const [input, setInput] = useState("");
-  const loggedToday = state.weighIns.some((w) => w.date === today);
 
-  function logWeighIn() {
+  function openDay(date: string, current: number | null) {
+    if (editing === date) { setEditing(null); return; }
+    // A future day has not happened: there is nothing to record and nothing to correct.
+    if (date > today) return;
+    setEditing(date);
+    setInput(current != null ? String(current) : "");
+  }
+
+  function saveWeighIn() {
     const v = parseFloat(input);
-    if (!isNaN(v) && v > 0) {
-      dispatch({ type: "LOG_WEIGHIN", date: today, weight: v });
-      // No toast and no re-fetch: everything on this screen is derived from `state.weighIns`, so the day
-      // cell, the average and the delta bar have already moved by the time this returns.
-      setInput("");
+    if (editing && !isNaN(v) && v > 0) {
+      dispatch({ type: "LOG_WEIGHIN", date: editing, weight: v });
+      // No toast and no re-fetch: everything here is derived from `state.weighIns`, so the day cell, the
+      // average and the delta bar have already moved by the time this returns.
     }
+    setEditing(null);
+    setInput("");
   }
 
   return (
@@ -300,43 +362,62 @@ function WeightAndFood({ week }: { week: BlockWeek }) {
 
         {/* Seven days, blanks included. */}
         <div style={{ display: "flex", gap: 4, marginTop: 13 }}>
-          {days.map((d) => (
-            <div
-              key={d.date}
-              style={{
-                flex: 1, minWidth: 0, textAlign: "center", borderRadius: 8, padding: "7px 0 6px",
-                background: d.weight !== null ? "var(--color-accent-900)" : "transparent",
-                border: d.weight !== null ? "1px solid transparent" : "1px dashed var(--color-neutral-900)",
-              }}
-            >
-              <div style={{ fontSize: 9.5, color: "var(--color-neutral-600)" }}>{d.letter}</div>
-              <div className="num" style={{ fontSize: 11.5, fontWeight: 700, marginTop: 2, color: d.weight !== null ? "var(--color-text)" : "var(--color-neutral-800)" }}>
-                {d.weight ?? "—"}
-              </div>
-            </div>
-          ))}
+          {days.map((d) => {
+            const future = d.date > today;
+            const open = editing === d.date;
+            return (
+              <button
+                key={d.date}
+                onClick={() => openDay(d.date, d.weight)}
+                disabled={future}
+                aria-label={`${d.date}${d.weight != null ? `, ${d.weight} ${profile.units}` : ", not logged"}`}
+                style={{
+                  flex: 1, minWidth: 0, textAlign: "center", borderRadius: 8, padding: "7px 0 6px",
+                  cursor: future ? "default" : "pointer",
+                  opacity: future ? 0.4 : 1,
+                  background: open ? "var(--color-accent)" : d.weight !== null ? "var(--color-accent-900)" : "transparent",
+                  border: `1px ${d.weight !== null || open ? "solid" : "dashed"} ${open ? "var(--color-accent)" : d.weight !== null ? "transparent" : "var(--color-neutral-900)"}`,
+                }}
+              >
+                <div style={{ fontSize: 9.5, color: open ? "var(--color-surface)" : "var(--color-neutral-600)" }}>{d.letter}</div>
+                <div
+                  className="num"
+                  style={{
+                    fontSize: 11.5, fontWeight: 700, marginTop: 2,
+                    color: open ? "var(--color-surface)" : d.weight !== null ? "var(--color-text)" : "var(--color-neutral-800)",
+                  }}
+                >
+                  {d.weight ?? "—"}
+                </div>
+              </button>
+            );
+          })}
         </div>
         <div className="mu" style={{ marginTop: 6 }}>
           {logged.length} of 7 logged{logged.length > 0 ? " — the average is built from those" : ""}.
         </div>
 
-        {week.isCurrent && !loggedToday && (
+        {editing && (
           <div className="row" style={{ gap: 7, marginTop: 10 }}>
             <input
               className="input num"
               style={{ flex: 1, minWidth: 0, height: 38 }}
               type="number"
               inputMode="decimal"
-              placeholder={`Today's weight (${profile.units})`}
+              autoFocus
+              placeholder={`Weight on ${editing.slice(8)}/${editing.slice(5, 7)} (${profile.units})`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && logWeighIn()}
-              aria-label="Today's weight"
+              onKeyDown={(e) => e.key === "Enter" && saveWeighIn()}
+              aria-label={`Weight on ${editing}`}
             />
-            <button className="btn btn-solid" style={{ flex: "none", height: 38, fontSize: 12.5 }} onClick={logWeighIn}>
-              Log
+            <button className="btn btn-solid" style={{ flex: "none", height: 38, fontSize: 12.5 }} onClick={saveWeighIn}>
+              Save
             </button>
           </div>
+        )}
+        {!editing && (
+          <div className="mu" style={{ fontSize: 10.5, marginTop: 4 }}>Tap a day to add or correct it.</div>
         )}
 
         <div style={{ height: 1, background: "var(--color-neutral-900)", margin: "13px 0 12px" }} />
