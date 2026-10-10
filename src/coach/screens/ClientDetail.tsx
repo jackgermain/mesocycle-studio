@@ -326,6 +326,17 @@ export default function ClientDetail() {
                 subtitle={client.status === "unassigned" ? "From scratch, a saved program, or a spreadsheet" : client.programName}
                 onClick={() => nav(`/coach/clients/${client.id}/assign`)}
               />
+              {client.accountId && client.status !== "unassigned" && (
+                // Above "Log a session" on purpose: writing the prescription is the coaching, and logging
+                // in person is the occasional thing. Only shown once they have a program, since the editor
+                // has nothing to edit before that and says so.
+                <ActionRow
+                  icon="ph-sliders-horizontal"
+                  label="Write their numbers"
+                  subtitle="Sets, reps and load, week by week — logged sessions stay put"
+                  onClick={() => nav(`/coach/clients/${client.id}/program`)}
+                />
+              )}
               <ActionRow icon="ph-pencil-simple-line" label="Log a session in person" onClick={() => nav(`/coach/clients/${client.id}/log`)} />
               <ActionRow icon="ph-fork-knife" label="Nutrition protocol" onClick={() => nav(`/coach/clients/${client.id}/nutrition`)} />
               {client.accountId && client.status !== "unassigned" && (

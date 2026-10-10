@@ -6,7 +6,7 @@
       "runtimeExecutable": "/bin/bash",
       "runtimeArgs": [
         "-c",
-        "cd /Users/jack/Desktop/mesocycle-studio && exec /private/tmp/claude-501/-Users-jack-Desktop-mesocycle-studio/840acf3b-c89d-4c59-84cd-498d67139ab5/scratchpad/node-v22.23.2-darwin-arm64/bin/node node_modules/vite/bin/vite.js --port \"$PORT\" --strictPort"
+        "cd /Users/jack/Desktop/mesocycle-studio && exec /private/tmp/claude-501/-Users-jack-Desktop-mesocycle-studio/769b49be-0b68-4730-8177-fcb7d84653c1/scratchpad/nodedl/node-v22.23.2-darwin-arm64/bin/node node_modules/vite/bin/vite.js --port \"$PORT\" --strictPort"
       ],
       "port": 5184,
       "autoPort": true

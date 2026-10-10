@@ -5,7 +5,7 @@ import { SetEffortSheet } from "./SetEffortSheet";
 import { useRecordEffort } from "./useRecordEffort";
 import { effortOwedSet } from "../shared/effortOwed";
 import type { WorkExercise, WorkSet } from "../data/types";
-import type { LoadMode } from "../coach/types";
+import { loadModeOf } from "../coach/loadMode";
 import { isSpecialSet, specialSummary, stepLoad, typeLabel } from "./exerciseHelpers";
 import { TickButton } from "../components/UI";
 
@@ -58,19 +58,9 @@ function InlineNumberInput({ value, onCommit, placeholder, color, locked }: { va
  * sessions are read-only after 24 hours" rule -- editing history isn't safe to allow here. Either way the
  * set-count menu and "+Extra set" are hidden, since changing how many sets exist isn't a same-screen action
  * for a day you're not actively logging. */
-/** Which unit an exercise was prescribed in.
- *
- * Programs built before WorkExercise carried loadMode have to be read back off their sets, and the tell is
- * `load`: loadForLoadMode only returns a number for lb, so a null load with an RPE/RIR/%1RM scale means
- * that scale was the real prescription. Reading `effort` alone would not do -- effortForLoadMode fills in
- * {RIR, 2} for lb as a placeholder, which would print "RIR 2" under every barbell lift in the app. */
-function loadModeOf(ex: { loadMode?: LoadMode; sets: WorkSet[] }): LoadMode {
-  if (ex.loadMode) return ex.loadMode;
-  const first = ex.sets.find((s) => !s.removed) ?? ex.sets[0];
-  if (!first || first.prescribed.load !== null) return "lb";
-  const scale = first.prescribed.effort?.scale;
-  return scale === "RPE" ? "rpe" : scale === "%1RM" ? "pct1rm" : scale === "RIR" ? "rir" : "lb";
-}
+/* loadModeOf moved to coach/loadMode.ts -- the coach's program editor has to label a load exactly the way
+ * this screen does, and a second copy would be a second answer that fails silently (an editor printing
+ * "LB" over a number that is really an RPE). */
 
 export function ExerciseSection({
   index,

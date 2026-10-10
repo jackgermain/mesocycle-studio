@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nutrition form harness</title>
+    <!-- The same two icon stylesheets index.html loads. Without them every `ph-*` glyph in a real component
+         renders as nothing, which made the Stepper's +/- buttons look missing when they were present and
+         working -- a harness that silently drops part of the app's styling reports bugs that aren't there.
+         (It is also a fair demonstration of what a slow or blocked unpkg does to the real app.) -->
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" />
   </head>
   <body>
     <div id="root"></div>

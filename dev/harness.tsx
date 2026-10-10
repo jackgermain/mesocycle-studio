@@ -26,6 +26,7 @@ import { NutritionForm } from "../src/shared/NutritionForm";
 import { deriveNutritionTargets } from "../src/shared/derivedTargets";
 import FoodSearchSheet from "../src/screens/FoodSearchSheet";
 import ProgressTab from "../src/screens/ProgressTab";
+import { ProgramGate } from "../src/coach/screens/ClientProgram";
 import { MemoryRouter } from "react-router-dom";
 
 const NIL_ACCOUNT = "00000000-0000-0000-0000-000000000000";
@@ -213,12 +214,113 @@ function ProgressHarness() {
   return <ProgressTab />;
 }
 
+/** Drives the coach's program editor with no sign-in and no coach store.
+ *
+ * Mounts `ProgramGate` — everything below the client lookup — against a seeded block, so the part that can
+ * only be checked by looking at it gets looked at: the week strip, the lock badges, and whether a stepper
+ * renders at all for each of the four load modes. Reading the code cannot tell me that an RPE set shows an
+ * RPE stepper rather than nothing.
+ *
+ * The block is shaped to hit every branch on purpose: finished days, a missed day in the past, today's
+ * session with its first set already ticked, weeks still ahead, a superset pair, an exercise prescribed in
+ * RPE, a set with a null load inside a pounds exercise, and an AMRAP set whose reps are the string "6+". */
+function ProgramEditorHarness() {
+  const { dispatch, ready } = useStore();
+  const seeded = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!ready || seeded.current) return;
+    seeded.current = true;
+
+    const set = (id: string, index: number, over: Record<string, unknown> = {}) => ({
+      id, index, type: "straight", checked: false, actual: null,
+      prescribed: { reps: 8, load: 185, effort: { scale: "RIR", value: 2 }, restSec: 120 },
+      ...over,
+    });
+
+    const day = (id: string, d: number, date: string, status: string, over: Record<string, unknown> = {}) => ({
+      id, code: `D${d}`, label: ["Push", "Pull", "Legs"][d - 1] ?? "Day", dow: "Mon", date, status,
+      muscleSummary: "Chest · Back", setCount: 9,
+      order: [`${id}e1`, `${id}e2`, `${id}e3`, `${id}e4`],
+      exercises: {
+        [`${id}e1`]: {
+          id: `${id}e1`, name: "Barbell Bench Press", muscle: "Chest", metaLine: "", hasVideo: false,
+          loadMode: "lb",
+          sets: [
+            set(`${id}e1s1`, 1, { prescribed: { reps: 6, load: 225, effort: { scale: "RIR", value: 2 }, restSec: 180 }, checked: status === "today" }),
+            set(`${id}e1s2`, 2, { prescribed: { reps: 6, load: 225, effort: { scale: "RIR", value: 1 }, restSec: 180 } }),
+            // An AMRAP set: reps is a string no stepper can represent.
+            set(`${id}e1s3`, 3, { type: "amrap", prescribed: { reps: "6+", load: 215, effort: { scale: "RIR", value: 0 }, restSec: 180 } }),
+          ],
+        },
+        // A superset pair -- contiguous in `order`, which is what groupsOf requires.
+        [`${id}e2`]: {
+          id: `${id}e2`, name: "Incline Dumbbell Press", muscle: "Chest", metaLine: "", hasVideo: false,
+          loadMode: "lb", supersetId: "sup-a",
+          sets: [set(`${id}e2s1`, 1, { prescribed: { reps: 10, load: 70, effort: { scale: "RIR", value: 2 }, restSec: 0 } })],
+        },
+        [`${id}e3`]: {
+          id: `${id}e3`, name: "Cable Fly", muscle: "Chest", metaLine: "", hasVideo: false,
+          loadMode: "lb", supersetId: "sup-a",
+          sets: [
+            set(`${id}e3s1`, 1, { prescribed: { reps: 12, load: 30, effort: { scale: "RIR", value: 1 }, restSec: 90 } }),
+            // Null load inside a pounds exercise -- the "Bodyweight · add load" branch.
+            set(`${id}e3s2`, 2, { prescribed: { reps: 12, load: null, effort: { scale: "RIR", value: 1 }, restSec: 90 } }),
+          ],
+        },
+        // Prescribed by effort, not weight: load null and an RPE scale, which is how loadModeOf reads
+        // "this block is in RPE". The editor has to show an RPE stepper here, not an empty cell.
+        [`${id}e4`]: {
+          id: `${id}e4`, name: "Weighted Pull Up", muscle: "Back", metaLine: "", hasVideo: false,
+          loadMode: "rpe",
+          sets: [
+            set(`${id}e4s1`, 1, { prescribed: { reps: 8, load: null, effort: { scale: "RPE", value: 8 }, restSec: 150 } }),
+            set(`${id}e4s2`, 2, { prescribed: { reps: 8, load: null, effort: { scale: "RPE", value: 8.5 }, restSec: 150 } }),
+          ],
+        },
+      },
+      ...over,
+    });
+
+    dispatch({
+      type: "SET_PROGRAM",
+      program: {
+        name: "Upper / Lower", totalWeeks: 3, coachName: "Coach",
+        weeks: [
+          { number: 1, phase: "accumulation", days: [
+            day("w1d1", 1, "2026-09-28", "done", { feedbackDone: true }),
+            day("w1d2", 2, "2026-09-30", "done", { feedbackDone: true }),
+            day("w1d3", 3, "2026-10-02", "done", { feedbackDone: true }),
+          ] },
+          { number: 2, phase: "accumulation", days: [
+            day("w2d1", 1, "2026-10-05", "done", { feedbackDone: true }),
+            // Missed: in the past but never finished, so it must read PAST rather than LOGGED.
+            day("w2d2", 2, "2026-10-07", "visible"),
+            // Today, with its first bench set already ticked.
+            day("w2d3", 3, "2026-10-09", "today"),
+          ] },
+          { number: 3, phase: "deload", days: [
+            day("w3d1", 1, "2026-10-12", "visible"),
+            day("w3d2", 2, "2026-10-14", "visible"),
+            day("w3d3", 3, "2026-10-16", "visible"),
+          ] },
+        ],
+      } as never,
+    });
+    dispatch({ type: "UPDATE_PROFILE", profile: { bodyweight: 203, units: "lb" } });
+  }, [ready, dispatch]);
+
+  return <ProgramGate clientName="Sam Okafor" onBack={() => {}} />;
+}
+
 const params = new URLSearchParams(location.search);
 const mode = params.has("food")
   ? <FoodHarness />
   : params.has("progress")
     ? <MemoryRouter initialEntries={["/progress"]}><ProgressHarness /></MemoryRouter>
-    : <Harness />;
+    : params.has("program")
+      ? <MemoryRouter initialEntries={["/coach/clients/x/program"]}><ProgramEditorHarness /></MemoryRouter>
+      : <Harness />;
 createRoot(document.getElementById("root")!).render(
   <StoreProvider accountId={NIL_ACCOUNT} ownerName="Harness" coachName="Coach">
     {mode}

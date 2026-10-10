@@ -1,6 +1,25 @@
 import type { LoadMode } from "./types";
+import type { WorkSet } from "../data/types";
 
 export const LOAD_LABELS: Record<LoadMode, string> = { lb: "LB", pct1rm: "%1RM", rpe: "RPE", rir: "RIR" };
+
+/** Which unit an exercise's sets were prescribed in, falling back to reading it off the sets themselves.
+ *
+ * Lives here rather than in a screen because two surfaces now have to agree about it: the live session
+ * (`ExerciseSection`) and the coach's program editor (`ClientProgram`). A second copy would be a second
+ * answer, and the failure is silent — the editor would put "LB" over a number that is really an RPE.
+ *
+ * `loadMode` is absent on every program built before that field existed, hence the fallback. A set with a
+ * real load is pounds; a set with no load is prescribed by effort, and the effort SCALE says which one.
+ * Reading `effort` alone would not do — `effortForLoadMode` fills in {RIR, 2} as a placeholder for pounds,
+ * which would print "RIR 2" under every barbell lift in the app. */
+export function loadModeOf(ex: { loadMode?: LoadMode; sets: WorkSet[] }): LoadMode {
+  if (ex.loadMode) return ex.loadMode;
+  const first = ex.sets.find((s) => !s.removed) ?? ex.sets[0];
+  if (!first || first.prescribed.load !== null) return "lb";
+  const scale = first.prescribed.effort?.scale;
+  return scale === "RPE" ? "rpe" : scale === "%1RM" ? "pct1rm" : scale === "RIR" ? "rir" : "lb";
+}
 
 /** Every valid load value for a mode sits on one of these grids — e.g. RPE only ever lands on 1, 1.25, 1.5 … 10. */
 export const LOAD_RANGE: Record<LoadMode, { min: number; max: number; step: number }> = {

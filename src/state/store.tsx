@@ -18,6 +18,7 @@ import { setSuperset } from "../shared/supersetGroups";
 import { PROGRESSION_RULE_VERSION } from "../shared/progressionProposal";
 import { insertWarmupSet } from "../shared/programEdits";
 import { addExerciseToProgram } from "../shared/addExercise";
+import { prescriptionIsOpen } from "../shared/forwardOnly";
 
 export interface AppState {
   /** The last date a "day landed off target" signal was sent, so the coach hears once rather than once
@@ -82,6 +83,24 @@ type Action =
   | { type: "SET_NUTRITION_PROTOCOL"; protocol: Pick<ClientProfile, "weighInsPerWeek" | "weighInDays" | "nutritionMode" | "macroTargets" | "portionTargets" | "rateTargetLabel" | "bodyweight" | "bodyFatPct" | "maintenanceKcal" | "maintenanceKcalManual" | "rateTargetPct" | "nutritionPhaseStartedAt" | "autoNutrition" | "sex" | "ageYears" | "heightCm" | "activityLevel"> }
   | { type: "TICK_SET"; dayId: string; exerciseId: string; setId: string; actual: { reps: number; load: number | null; clusterBlocks?: number[]; assistanceSplit?: { unassisted: number; assisted: number } } }
   | { type: "EDIT_SET_TARGET"; dayId: string; exerciseId: string; setId: string; reps?: number; load?: number }
+  /** Rewrite what a set PRESCRIBES, which is a different act from EDIT_SET_TARGET above.
+   *
+   * EDIT_SET_TARGET writes `actual` — it is the live session adjusting what is being lifted right now. For
+   * a long time it was the only set-level edit in the app, which meant **nothing could prescribe a number
+   * by hand, for anybody.** Every writer of `prescribed.reps`/`prescribed.load` was either program
+   * authoring (programConvert, addExercise), the AI editor, or the progression algorithm. A coach wanting
+   * their client's Monday bench to read 235x5 had two options: replace the whole program, or wait for the
+   * algorithm to propose something and correct it.
+   *
+   * That is the root of every "why did it change my program" complaint — correcting proposals was the only
+   * lever that existed. This is the missing one.
+   *
+   * `load: null` is meaningful and distinct from omitted: it prescribes bodyweight.
+   *
+   * `effort` is here because a program in `pct1rm`/`rpe`/`rir` mode carries its prescription in
+   * `prescribed.effort.value` with `load` left null — see loadModeOf. An action that could only write
+   * `load` would be an editor that silently does nothing on any block not prescribed in pounds. */
+  | { type: "EDIT_PRESCRIPTION"; dayId: string; exerciseId: string; setId: string; reps?: number; load?: number | null; effort?: number }
   | { type: "SET_EXERCISE_REST"; dayId: string; exerciseId: string; restSec: number }
   | { type: "SET_CHECKED"; dayId: string; exerciseId: string; setId: string; checked: boolean }
   | { type: "SET_EFFORT"; dayId: string; exerciseId: string; setId: string; effort: number }
@@ -219,6 +238,32 @@ function reducer(state: AppState, action: Action): AppState {
             load: action.load ?? set.prescribed.load,
           };
         }
+      }
+      return { ...state, program };
+    }
+    case "EDIT_PRESCRIPTION": {
+      const program = structuredClone(state.program);
+      for (const week of program.weeks) {
+        const day = week.days.find((d) => d.id === action.dayId);
+        if (!day) continue;
+        const ex = day.exercises[action.exerciseId];
+        if (!ex) continue;
+        const set = ex.sets.find((s) => s.id === action.setId);
+        if (!set) continue;
+        // Forward only, enforced HERE rather than in the editor -- see shared/forwardOnly.ts. A screen that
+        // forgets to ask is the normal way this kind of rule gets lost, and the damage this app has already
+        // had to repair by hand (stray exercises, rewritten order) was all written by a caller that did not
+        // know about a rule living somewhere else.
+        if (!prescriptionIsOpen(day, set)) continue;
+        if (action.reps !== undefined) set.prescribed.reps = action.reps;
+        // Deliberately not snapped to a loadable weight. nearestValidLoad is right for a DERIVED load --
+        // the algorithm proposing 227.5lb on a bar that cannot make it -- but a figure a coach typed is the
+        // coach saying what they want, and quietly moving it is the same class of mistake as overriding a
+        // typed maintenance with a formula estimate.
+        if (action.load !== undefined) set.prescribed.load = action.load;
+        if (action.effort !== undefined && set.prescribed.effort) set.prescribed.effort.value = action.effort;
+        // `actual` is NOT touched. Prescribing and logging are different facts about a set, and the whole
+        // point of this action is that the app previously had no way to say the first one.
       }
       return { ...state, program };
     }
